@@ -1,0 +1,352 @@
+<manage-columns-modal *ngIf="columnManagement && columns" [(isHidden)]="hideManageColumnsModal" [shownColumns]="columns"
+    [hiddenColumns]="hiddenColumns" [buttons]="[{name:'Apply', execute:true }, {name:'Cancel', execute:false}]"
+    (execute)="execute($event)" (closed)="wasClosed($event)"></manage-columns-modal>
+
+<div class="ft-wrapper-overflow">
+    <div *ngIf="columns" overflowParent class="no-padding panel panel-default ft-content-overflow">
+        <table [mfData]="filteredData" #mf="mfDataTable" class="no-padding table table-hover"
+            [(mfRowsOnPage)]="rowsOnPage" [(mfActivePage)]="activePage" id="datatable">
+            <thead>
+                <tr class="actions-header" *ngIf="actionsHeader">
+                    <td [attr.colspan]="columns.length">
+                        <mfBootstrapPaginator class="pull-left"></mfBootstrapPaginator>
+                        <p class="pull-left ft-total-label">Total Rows: {{filteredData?.length}} ({{data?.length}})</p>
+                        <div class="btn-group pull-right" role="group">
+                            <button *ngIf="filteredData && allowExport" class="btn btn-sm btn-default"
+                                (click)="downloadCSV()">Export to CSV</button>
+                            <button *ngIf="columnManagement && !allowCreate"
+                                class="btn btn-sm btn-default ft-header-button" title="Manage Columns"
+                                (click)="manageColumns()"><span class="glyphicon glyphicon-th"></span></button>
+                            <button *ngIf="allowRefresh" class="btn btn-sm ft-header-button ft-refresh"
+                                title="Refresh (double click to enable)" (click)="hitRefresh()"
+                                (dblclick)="refreshAlways()" [ngClass]="{
+                                'btn-success' : animate,
+                                'btn-default' : !animate
+                            }">
+                                <span class="glyphicon glyphicon-refresh" [ngClass]="{
+                                    'glyphicon-refresh-animate' : animate
+                                }"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="names-header">
+                    <th *ngFor="let col of columns" [setClass]="col.class"
+                        [sorter]="col.sorting ? {order:'desc', property:col.property} : undefined"
+                        (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
+                            'fit': col.type === 'checkbox' || col.property === 'action',
+                            'percent':col.type === 'percent'
+                        }">
+                        <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
+                        <a *ngIf="col.headerlink" class="pull-left" (contextmenu)="openlink(col.headerlink)"
+                            title="Right click to open">{{col?.name}}</a>
+                        <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
+                            [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
+                            (ngModelChange)="toggleSelectAll($event)" />
+                    </th>
+                </tr>
+                <tr class="filter-header vert-aligned">
+                    <td *ngFor="let col of columns" class="tf-column" [setClass]="col.class">
+                        <input
+                            *ngIf="(col.type === 'text' || col.type === 'textarea' || col.type=='long-text' || col.type=='email') && col.filter"
+                            [ngModel]="textFilterData(col.property)" class="form-control input-sm"
+                            placeholder="{{col?.name}} Filter" maxlength="100"
+                            (keyup)="handleFilterChange(col, $event.currentTarget.value)">
+                        <div *ngIf="col.type === 'date' && col.filter">
+                            <ng-datepicker class="top-filter-date" [ngModel]="getFilterDate(col.property, 'from')"
+                                (ngModelChange)="dateFilterUpdate({property:col.property, from:$event})"
+                                [options]="optionsFrom"></ng-datepicker>
+                            <ng-datepicker id="due-date" name="due-date" [ngModel]="getFilterDate(col.property, 'to')"
+                                (ngModelChange)="dateFilterUpdate({property:col.property, to:$event})"
+                                [options]="optionsTo"></ng-datepicker>
+                        </div>
+                        <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
+                            [model]="textFilterData(col.property)" *ngIf="col.type === 'link' && col.filter"
+                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.values"
+                            (modelChange)="handleFilterChange(col, $event)"></lookup>
+
+                        <lookup-colored *ngIf="col.type === 'lookup-colored' && col.filter" [cutLongText]="true"
+                            [small]="true" [colorProperty]="'color'"
+                            [propertiesToShow]="[getLookupProperty(col.property, col.values)]" [array]="col.values"
+                            [placeholder]="col.placeholder ? col.placeholder : 'None'" [allowEmptyValue]="true"
+                            [model]="msFilterData(col)[0]"
+                            (modelChange)="msFilter(col.objectWithId ? col.objectWithId : col.entity, [$event])">
+                        </lookup-colored>
+
+                        <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete' && col.filter"
+                            [cutLongText]="true" [small]="true" [propertiesToShow]="col.propToShow" [array]="col.values"
+                            [placeholder]="col.placeholder ? col.placeholder : 'None'" [allowEmptyValue]="true"
+                            [model]="msFilterData(col)[0]" [emptyForFilter]="col.nullFilter"
+                            (modelChange)="msFilter(col.objectWithId ? col.objectWithId : col.entity, [$event])">
+                        </lookup-autocomplete>
+
+                        <div *ngIf="col.type === 'percent' && col.filter" [ngClass]="{
+                        'has-error': invalidRange(col)
+                    }">
+                            <input placeholder="from" class="inline form-control input-sm ft-range-selector"
+                                (keyup)="rangeKeyDown($event)"
+                                (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
+                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0" max="100"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            <input placeholder="to" class="inline form-control input-sm ft-range-selector"
+                                (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
+                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" max="100"
+                                (keyup)="rangeKeyDown($event)"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"
+                                (click)="removeRangeFilter(col.property)"></span>
+                        </div>
+                        <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
+                            *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
+                            [propertiesToShow]="col.propToShow" [array]="col.values" [model]="msFilterData(col)"
+                            (modelChange)="msFilter(col.property, $event)"></lookup-autocomplete-multiselect>
+                    </td>
+                </tr>
+            </thead>
+            <tbody *ngIf="(!mf.data || mf.data.length < 1) && !allowCreate">
+                <tr>
+                    <td [attr.colspan]="columns.length">Nothing to show</td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="(mf.data && mf.data.length > 0) || allowCreate">
+                <tr *ngIf="showCreation && allowCreate" class="form ft-creation-row" id="create-form"
+                    name="f-table-row">
+                    <td *ngFor="let col of columns" class="vert-aligned form-group" [ngClass]="{
+                                'fit text-center': col.type === 'checkbox',
+                                'has-error': (col.type === 'password' && isPasswordValid(col.property) !== '') || (col.type === 'text' && isTextValid(col.property) !== '') || (col.type === 'email' && isEmailValid(col.property)  !== '' )
+                            }">
+                        <input
+                            *ngIf="!col.excludeCreation && (col.type === 'text' || col.type === 'email' || col.type=='percent')"
+                            trim="blur" class="form-control input-sm" cols="150"
+                            [attr.maxlength]="col.creationLength ? col.creationLength : 100" [name]="new + col.property"
+                            type="text" [ngModel]="transformationsService.getPropertyValue(newEntity, col.property)"
+                            (ngModelChange)="setPropertyValue(newEntity, col.property, $event, true)"
+                            [placeholder]="col?.name" />
+
+                        <input *ngIf="!col.excludeCreation && col.type === 'password'"
+                            class="form-control input-sm ft-password" cols="150" [name]="'newPss'" type="password"
+                            trim="blur" [ngModel]="transformationsService.getPropertyValue(newEntity, col.property)"
+                            (ngModelChange)="setPropertyValue(newEntity, col.property, $event, true)"
+                            [placeholder]="col?.name" />
+
+                        <input *ngIf="!col.excludeCreation && col.type === 'password'"
+                            class="form-control input-sm ft-confirm-password" cols="150" [name]="'confPss'"
+                            type="password" trim="blur" [(ngModel)]="confirm" [placeholder]="'Confirm ' + col?.name" />
+
+                        <input *ngIf="!col.excludeCreation && col.type === 'checkbox'" type="checkbox"
+                            [name]="'new' + col?.name"
+                            [ngModel]="transformationsService.getPropertyValue(newEntity, col.property)"
+                            (ngModelChange)="setPropertyValue(newEntity, col.property, $event, true)">
+
+                        <button *ngIf="col.property === 'action'" (click)="createAction()"
+                            class="btn btn-sm btn-success row-action-button" [disabled]="!isNewEntityValid()">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+
+                        <lookup-autocomplete [cutLongText]="true"
+                            *ngIf="!col.excludeCreation && col.type === 'lookup-autocomplete'" [small]="true"
+                            [placeholder]="col?.name" [allowEmptyValue]="false" [propertiesToShow]="col.propToShow"
+                            [array]="col.values" [model]="getFilterLookupModel(col.property)"
+                            (modelChange)="setNewValueFromLookup(col.property, $event)"></lookup-autocomplete>
+
+                        <lookup-colored *ngIf="!col.excludeCreation && col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
+                            placeholder="col?.name" [allowEmptyValue]="false"
+                            [propertiesToShow]="[getLookupProperty(col.property, col.values)]"
+                            [array]="col.values" [model]="getFilterLookupModel(col.property)"
+                            (modelChange)="setNewValueFromLookup(col.property, $event)"
+                            [colorProperty]="'color'"></lookup-colored>
+                    </td>
+                </tr>
+                <tr *ngIf="showCreation && allowCreate && !isNewEntityValid()" class="danger ft-create-error">
+                    <td class="text-center" [attr.colspan]="columns.length">{{errorMessage}}</td>
+                </tr>
+                <tr class="ft-create-toggler" *ngIf="allowCreate">
+                    <td (click)="toggleCreation()" class="text-center clickable-element"
+                        [attr.colspan]="columns.length">
+                        <span class="glyphicon" aria-hidden="true" [ngClass]="{
+                            'glyphicon-plus':!showCreation,
+                            'glyphicon-minus':showCreation
+                        }"></span>
+                    </td>
+                </tr>
+                <tr *ngIf="allowBulkUpdate && hasSelectedRows()">
+                    <td *ngFor="let col of columns" class="vert-aligned" [setClass]="col.class">
+
+                        <div *ngIf="col.editable && !row.constantRow && col.bulkEdit" class="ft-cell">
+                            <inline-editor class="full-width" [placeholder]="col?.name"
+                                [config]="{empty:'Add ' + col?.name}"
+                                *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
+                                [maxLength]="col.creationLength ? col.creationLength : '100'" [name]="col.property"
+                                type="text" trim="blur"
+                                [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
+                                (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
+                            </inline-editor>
+
+                            <inline-editor [placeholder]="col?.name" *ngIf="(col.type === 'textarea')"
+                                [maxLength]="col.creationLength ? col.creationLength : '100'" [name]="col.property"
+                                [saveOnEnter]=false type="textarea" trim="blur" [config]="{empty:'Add...'}"
+                                [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
+                                (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
+                            </inline-editor>
+
+                            <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete'" [cutLongText]="true"
+                                [small]="true" [allowEmptyValue]="col.allowEmpty" [propertiesToShow]="col.propToShow"
+                                [array]="col.values"
+                                [model]="transformationsService.getPropertyValue(bulkChangeEntity, col.entity)"
+                                placeholder="Not Assigned"
+                                (modelChange)="setPropertyValue(bulkChangeEntity, col.entity, $event, false, false)">
+                            </lookup-autocomplete>
+
+                            <lookup-colored *ngIf="col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
+                                [colorProperty]="'color'"
+                                [propertiesToShow]="[getLookupProperty(col.property, col.values)]" [array]="col.values"
+                                placeholder="Not Assigned" [allowEmptyValue]="col.allowEmpty"
+                                [model]="transformationsService.getPropertyValue(bulkChangeEntity, col.entity)"
+                                (modelChange)="setPropertyValue(bulkChangeEntity, col.entity, $event, false, false)">
+                            </lookup-colored>
+
+                            <input *ngIf="col.type === 'checkbox'" [name]="col.property" type="checkbox" trim="blur"
+                                [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
+                                (ngModelChange)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)" />
+
+                            <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
+                                *ngIf="col.type === 'multiselect'" placeholder="{{col?.name}}"
+                                [propertiesToShow]="col.propToShow" [array]="col.values"
+                                [model]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
+                                (modelChange)="setPropertyValue(bulkChangeEntity, col.entity, $event, false, false)">
+                            </lookup-autocomplete-multiselect>
+
+                            <input *ngIf="col.type === 'time'" class="form-control input-sm ft-duration-input"
+                                [name]="col.property + rowNum" type="text" [textMask]="{mask:durationMask}"
+                                [ngModel]="transformationsService.calculateDuration(transformationsService.getPropertyValue(bulkChangeEntity, col.property))"
+                                (ngModelChange)="setDuration(bulkChangeEntity, col.property, $event)" />
+                        </div>
+
+                        <button *ngIf="col.property === 'action'" (click)="bulkUpdate()"
+                            class="btn btn-sm btn-success row-action-button">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr class="clickable-element ft-row" *ngFor="let entity of mf.data; let rowNum = index" [ngClass]="{
+                'danger': rowColor(entity)=='danger',
+                'warning': rowColor(entity)=='warning'
+                }">
+                    <td (click)="rowClicked(entity, col, $event)" *ngFor="let col of columns" class="vert-aligned"
+                        [ngClass]="{ 
+                        'text-center fit': col.type === 'checkbox',
+                        'lastSelectedRow': isLastSelected(entity)
+                    }" [customListener]="col.listeners" (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
+                        <div *ngIf="!isHidden(entity, col.property)" class="ft-cell"
+                            [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
+                            <inline-editor class="full-width" [placeholder]="col?.name"
+                                *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                [maxLength]="col.creationLength ? col.creationLength : '100'" [name]="col.property"
+                                type="text" trim="blur"
+                                [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
+                                (onSave)="setPropertyValue(entity, col.property, $event)">
+                            </inline-editor>
+
+                            <inline-editor [placeholder]="col?.name"
+                                *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                [maxLength]="col.creationLength ? col.creationLength : '100'" [name]="col.property"
+                                [saveOnEnter]=false type="textarea" trim="blur" [config]="{empty:'Add...'}"
+                                [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
+                                (onSave)="setPropertyValue(entity, col.property, $event)">
+                            </inline-editor>
+
+                            <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete'" [cutLongText]="true"
+                                [small]="true" [allowEmptyValue]="col.allowEmpty" [propertiesToShow]="col.propToShow"
+                                [array]="col.values"
+                                [model]="transformationsService.getPropertyValue(entity, col.entity)"
+                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                placeholder="Not Assigned" (modelChange)="setPropertyValue(entity, col.entity, $event)">
+                            </lookup-autocomplete>
+
+                            <lookup-colored *ngIf="col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
+                                [colorProperty]="'color'"
+                                [propertiesToShow]="[getLookupProperty(col.property, col.values)]" [array]="col.values"
+                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                placeholder="Not Assigned" [allowEmptyValue]="col.allowEmpty"
+                                [model]="transformationsService.getPropertyValue(entity, col.entity)"
+                                (modelChange)="setPropertyValue(entity, col.entity, $event)"></lookup-colored>
+
+                            <large-text-container *ngIf="col.type === 'long-text'"
+                                [text]="transformationsService.getPropertyValue(entity, col.property)">Loading...
+                            </large-text-container>
+
+                            <a *ngIf="col.type === 'password'">Reset</a>
+
+                            <input *ngIf="col.type === 'selector'" [name]="'select_' + rowNum" type="checkbox"
+                                [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
+                                (ngModelChange)="setPropertyValue(entity, col.property, $event, false, false)" />
+
+                            <input *ngIf="col.type === 'checkbox'" [name]="col.property + rowNum" type="checkbox"
+                                [ngModel]="!!transformationsService.getPropertyValue(entity, col.property)"
+                                (ngModelChange)="setPropertyValue(entity, col.property, $event)"
+                                (change)="sendUpdate(entity)"
+                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)" />
+
+                            <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link"
+                                [routerLink]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
+
+                            <a *ngIf="!col.editable && col.link" [routerLink]="createRouterLink(col, entity)"
+                                [queryParams]="col?.link.params">{{transformationsService.getPropertyValue(entity, col.property)}}</a>
+
+                            <div
+                                *ngIf="col.type === 'link' && !transformationsService.getPropertyValue(entity, col.property).link">
+                                {{transformationsService.getPropertyValue(entity, col.property).text}}</div>
+
+                            <div
+                                *ngIf="col.type === 'multiselect' && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty))">
+                                {{getMultiPropertyValueString(entity, col.property, col.propToShow)}}</div>
+
+                            <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
+                                *ngIf="col.type === 'multiselect' && (col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty))"
+                                placeholder="{{col?.name}}" [propertiesToShow]="col.propToShow" [array]="col.values"
+                                [model]="transformationsService.getPropertyValue(entity, col.property)"
+                                (modelChange)="setPropertyValue(entity, col.entity, $event)">
+                            </lookup-autocomplete-multiselect>
+
+                            <div *ngIf="col.type === 'date' && col.format" class="nowrap">
+                                {{transformationsService.getPropertyValue(entity, col.property) | date:col.format}}
+                            </div>
+
+                            <div *ngIf="col.type === 'date' && !col.format" class="nowrap">
+                                {{transformationsService.getPropertyValue(entity, col.property) | date:'dd/MM/yy hh:mm:ss a'}}
+                            </div>
+
+                            <div
+                                *ngIf="col.type === 'time' && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty))">
+                                {{transformationsService.msToDurationString(transformationsService.getPropertyValue(entity, col.property))}}
+                            </div>
+                            <input
+                                *ngIf="col.type === 'time' && col.editable && !entity.constantRow  && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                class="form-control input-sm ft-duration-input" [name]="col.property + rowNum"
+                                type="text" [textMask]="{mask:durationMask}"
+                                [ngModel]="transformationsService.calculateDuration(transformationsService.getPropertyValue(entity, col.property))"
+                                (ngModelChange)="setDuration(entity, col.property, $event)"
+                                (blur)="sendUpdate(entity)" />
+
+                            <div
+                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
+                                {{transformationsService.getPropertyValue(entity, col.property)}}</div>
+                        </div>
+
+                        <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow" (click)="removeAction(entity)"
+                            class="btn btn-sm btn-danger row-action-button">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td [attr.colspan]="columns.length">
+                        <mfBootstrapPaginator [rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

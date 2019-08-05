@@ -1,0 +1,59 @@
+<div class="panel-heading">
+  <div class="row clearfix">
+    <div class="pull-left">
+      <h2>Create New Customer</h2>
+    </div>
+  </div>
+</div>
+<div class="col-md-12 no-padding">
+  <form (ngSubmit)="processCustomerCreation()" #form="ngForm">
+    <div class="form-group" [ngClass]="{
+                'has-error': name.invalid && name.touched,
+                'has-success': name.valid && name.touched
+              }">
+      <div class="col-sm-12 no padding margin-bottom-10">
+        <div class="col-sm-1 col-label">
+          <label for="name" class="pull-left label-inline">Customer Name*:</label>
+        </div>
+        <div class="col-sm-4">
+          <input id="name" autofocus maxlength="100" name="name" [(ngModel)]="customer.name" type="text" trim="blur" class="form-control pull-left"
+            placeholder="name" #name required>
+        </div>
+        <div class="col-sm-1 col-label">
+          <label for="accounting" class="label-inline">Accounting:</label>
+        </div>
+        <div class="col-md-4">
+          <ui-switch class="pull-left label-inline" name="accounting" size="small" [(ngModel)]="customer.accounting"></ui-switch>
+        </div>
+      </div>
+      <div class="col-sm-12 no padding margin-bottom-10">
+        <div class="col-sm-1 col-label">
+          <label for="coordinator" class="label-inline">Unit Coordinator*:</label>
+        </div>
+        <div class="col-sm-4">
+          <lookup-autocomplete id="coordinator" name="coordinator" *ngIf="coordinators" [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']"
+            [array]="coordinators" [(model)]="customer.coordinator" placeholder="Unit Coordinator"></lookup-autocomplete>
+        </div>
+        <div *ngIf="customer.accounting && accountManagers" class="col-sm-1 col-label">
+          <label for="account_manager" class="label-inline">Account Manager*:</label>
+        </div>
+        <div *ngIf="customer.accounting && accountManagers" class="col-sm-4">
+          <lookup-autocomplete id="account_manager" name="account_manager" [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']"
+            [array]="accountManagers" [(model)]="customer.account_manager" placeholder="Account Manager"></lookup-autocomplete>
+        </div>
+      </div>
+      <div class="col-sm-12 no padding margin-bottom-10">
+        <div *ngIf="customer.accounting" class="col-label col-sm-1">
+          <label class="label-inline">Account Team:</label>
+        </div>
+        <div *ngIf="customer.accounting && users" class="col-sm-4">
+          <lookup-autocomplete-multiselect placeholder="Select Account Team Member" [propertiesToShow]="['first_name','second_name']"
+            [array]="users" [model]="customer.account_team" (onClosed)="updateAccountTeam($event)"></lookup-autocomplete-multiselect>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 form-group">
+      <button type="submit" class="btn btn-primary" [disabled]="form.invalid || !IsFormValid()">Create</button>
+    </div>
+  </form>
+</div>

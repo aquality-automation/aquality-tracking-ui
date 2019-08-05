@@ -1,0 +1,41 @@
+<div [hidden]="isHidden" class="overlay mt-overlay">
+    <div class="simple-modal panel" [ngClass]="{
+        'panel-warning':type=='warning',
+        'panel-danger':type=='error',
+        'panel-info':type=='info',
+        'panel-success':type=='success',
+        'panel-primary':type==''
+    }">
+        <div class="panel-heading col-sm-12">
+            <h4 class="panel-title pull-left">{{title}}</h4>
+            <span (click)="hideModal()" class="glyphicon glyphicon-remove clickable-element pull-right"
+                aria-hidden="true"></span>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-12 modal-message">
+                <div class="col-sm-6 me-padding-left-3">Do not Show:</div>
+                <div class="col-sm-6">Show:</div>
+                <div class="no-padding clearfix me-drop-parent pull-left">
+                    <ul class="col-sm-12 no-padding me-droppable mc-can-be-empty" [dragula]="'cols-bag'"
+                        [dragulaModel]='newHiddenColumns'>
+                        <li class="me-draggable" *ngFor="let hcol of newHiddenColumns">{{hcol.name}}</li>
+                    </ul>
+                </div>
+                <div class="no-padding clearfix me-drop-parent pull-right">
+                    <ul class="col-sm-12 no-padding me-droppable" [dragula]="'cols-bag'"
+                        [dragulaModel]='newShownColumns'>
+                        <li [ngClass]="{ 
+                            'mc-ignore-item':scol.name =='Action' || scol.name =='Selector'
+                        }" class="me-draggable" *ngFor="let scol of newShownColumns">{{scol.name}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-12 modal-buttons">
+                <div class="modal-buttons-form">
+                    <button type="button" autofocus (click)="apply(button.execute)" class="btn btn-sm btn-default"
+                        *ngFor="let button of buttons">{{button.name}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+.it-test-name-selector{
+  margin-top: 10px
+}
+
+.it-test-import-options{
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+ui-switch{
+  margin-left: 5px;
+}
+
+.it-test-name-selector > div{
+  padding-top: 10px;
+  float: left;
+  margin-right: 10px;
+}
+
+.greyout{
+  color:#dddddd;
+}
+
+.import-results-panel{
+  margin: 20px 0 0 0;
+}

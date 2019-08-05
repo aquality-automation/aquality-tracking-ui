@@ -1,0 +1,81 @@
+<div *ngIf="suite_stats.length > 0" class="holder">
+  <div *ngFor="let suite of suite_stats" class="no-padding" [ngClass]="{
+    'col-sm-3': suite_stats.length < 13,
+    'col-sm-2': suite_stats.length > 12
+  }">
+    <div class="card clearfix">
+      <div class="suite_name_holder">
+        <h3 class="suite_name CropLongTexts" [title]="suite.name">{{suite.name}}</h3>
+        <h6 *ngIf="suite.stat" class="CropLongTexts" [title]="suite.stat.build_name">{{suite.stat.build_name}}</h6>
+      </div>
+      <div *ngIf="suite.chartData" class="db-chart">
+        <div class="" style="display: block">
+          <canvas [id]="suite.name + Chart" baseChart [datasets]="suite.chartData" [labels]="suite.chartLabels"
+            [chartType]="doughnutChartType" [colors]="chartColors" [options]="chartOptions"></canvas>
+        </div>
+      </div>
+      <div *ngIf="suite.stat" class="db-stat col-sm-12 no-padding">
+        {{suite.stat.start_time | date: 'dd/MM/yyyy hh:mm a'}} | {{getDuration(suite.stat)}}
+      </div>
+      <div *ngIf="!suite.chartData" class="col-sm-6 db-chart">
+        <p>No data to show :(</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="settings-bar" [@slideInOut]="settingsBar">
+  <div class="settings-toggler" (click)="toggleSideBar()">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" [ngClass]="{
+        'glyphicon-chevron-left': settingsBar =='in',
+        'glyphicon-chevron-right': settingsBar =='out'
+      }"></span>
+  </div>
+
+  <div *ngIf="settingsBar" class="col-sm-12">
+    <button id="autoRefresh" class="btn btn-sm autoRefresh" title="Auto Refresh" (click)="autoRefresh()" [ngClass]="{
+    'btn-success' : refreshStatus,
+    'btn-default' : !refreshStatus
+    }">
+      Auto Refresh
+      <span class="glyphicon glyphicon-refresh" [ngClass]="{
+        'glyphicon-refresh-animate' : refreshStatus
+    }"></span>
+    </button>
+  </div>
+  
+  <div *ngIf="settingsBar" class="col-sm-12">
+    <ui-switch class="pull-left" id="detailed" size="small" [ngModel]="detailed" (change)="generateChartsData($event)">
+    </ui-switch>
+    <label class="pull-left ui-switch-sm-label" for="detailed">Detailed</label>
+  </div>
+
+  <div *ngIf="settingsBar" class="col-sm-12">
+    <label for="suites">Suites</label>
+    <lookup-autocomplete-multiselect id="suites" placeholder="Select Suites" [propertiesToShow]="['name']"
+      [array]="suites" [model]="suitesToShow" (onClosed)="updateSuites($event)"></lookup-autocomplete-multiselect>
+  </div>
+
+
+  <div *ngIf="settingsBar" class="col-sm-12">
+    <div class="input-group input-group-sm">
+      <input type="text" class="form-control" id="name" placeholder="Name" [(ngModel)]="newDashboardName">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-success" (click)="saveDashboard()"
+          [disabled]="!isDashboardNameValid()">Save</button>
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="settingsBar" class="col-sm-12 dashboards-holder">
+    <label for="suites">Dashboards</label>
+    <ul class="dashboards-list">
+      <li class="clearfix" *ngFor="let dashboard of dashboards">
+        <p class="pull-left no-margin" (click)="selectDashboard(dashboard)">{{dashboard.name}}</p>
+        <span *ngIf="!dashboard.notDeletable" class="glyphicon glyphicon-remove pull-right"
+          (click)="removeDashboard(dashboard)"></span>
+      </li>
+    </ul>
+  </div>
+
+</div>

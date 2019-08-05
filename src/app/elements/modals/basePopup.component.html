@@ -1,0 +1,26 @@
+<div [hidden]="isHidden" class="overlay">
+    <div class="simple-modal panel" [ngClass]="{
+        'panel-warning':type=='warning',
+        'panel-danger':type=='error',
+        'panel-info':type=='info',
+        'panel-success':type=='success',
+        'panel-primary':type==''
+    }">
+        <div class="panel-heading col-sm-12">
+            <h4 class="panel-title pull-left">{{title}}</h4>
+            <span (click)="hideModal()" class="glyphicon glyphicon-remove clickable-element pull-right"
+                aria-hidden="true"></span>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-12 modal-message">
+                {{message}}
+            </div>
+            <div class="col-sm-12 modal-buttons">
+                <div class="modal-buttons-form">
+                    <button autofocus (click)="onClick(button.execute)" class="btn btn-sm btn-default"
+                        *ngFor="let button of buttons">{{button.name}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

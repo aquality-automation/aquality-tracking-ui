@@ -1,0 +1,9 @@
+<div *ngIf="listOfResultResolutions && doughnutChartData.length > 0 && testResults.length > 0">
+    <span class="chart-option" for="includeNotExecuted" (click)="toggleNotExecuted()" [ngClass]="{
+    'crosslined': !includeNotExecuted
+  }">Include Not Executed</span>
+    <div style="display: block">
+      <canvas id="resultResolutionsChart" baseChart width="400" height="150" [data]="doughnutChartData" [labels]="doughnutChartLabels" [chartType]="doughnutChartType"
+        [colors]="chartColors" [options]="chartOptions" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+    </div>
+</div>

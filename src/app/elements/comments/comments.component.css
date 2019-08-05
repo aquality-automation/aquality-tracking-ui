@@ -1,0 +1,36 @@
+.comment-author{
+  font-style: oblique;
+}
+.comment-body{
+  padding-left: 15px;
+  margin-bottom: 5px;
+}
+.comment-section{
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom: 1px solid #9999;
+  padding-top: 5px;
+}
+
+.comments-block{
+  overflow-y: auto;
+  padding-top: 10px; 
+  padding-bottom: 5px;
+}
+
+.comment-editor-hint{
+  position: absolute;
+  bottom: 2px;
+  right: 20px;
+  color: #999999;
+}
+
+.comment-editor-hint:hover{
+  color: grey;
+  cursor: pointer
+}
+
+.comment-editor{
+  position: relative;
+}
+

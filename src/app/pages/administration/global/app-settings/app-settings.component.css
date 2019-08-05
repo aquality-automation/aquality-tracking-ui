@@ -1,0 +1,17 @@
+.margin-top-6px{
+  margin-top: 6px;
+}
+
+.greyout{
+  color:#dddddd;
+}
+
+.padding-left-15px{
+  padding-left: 15px;
+}
+
+.field-cell{
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 5px;
+}

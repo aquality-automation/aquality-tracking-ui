@@ -1,0 +1,11 @@
+.view-header-grid > ul li{
+  min-height: 31px;
+}
+
+.view-header-grid > ul li label{
+  margin-right: 5px;
+}
+
+.ci-link{
+  padding-right: 5px;
+}

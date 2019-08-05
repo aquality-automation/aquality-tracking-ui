@@ -1,0 +1,54 @@
+.mt-overlay{
+  display: block;
+}
+
+.mt-icon-horizontal{
+  height: 34px;
+  width: 8%;
+  text-align: center;
+  margin-top: 8;
+  float: left;
+}
+.mt-icon-vertical{
+  text-align: center;
+  margin: 8;
+}
+
+.mt-icon-remove{
+  transition: linear 0.2s;
+  height: 34px;
+  width: 8%;
+  text-align: center;
+  margin-top: 8;
+  float: left;
+  cursor: pointer;
+}
+
+.mt-icon-remove:hover{
+  color: #c03a3a;
+}
+
+.mt-field-horizontal{
+  width: 42%;
+  float: left;
+}
+
+.simple-modal{
+  top: 40%;
+}
+
+.modal-message{
+  max-height: 500px;
+  overflow: auto;
+}
+
+.mt-add-row{
+  transition: linear 0.5s;
+  text-align: center;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.mt-add-row:hover{
+  background-color: #ddd;
+}

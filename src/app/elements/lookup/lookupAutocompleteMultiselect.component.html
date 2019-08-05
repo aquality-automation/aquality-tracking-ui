@@ -1,0 +1,33 @@
+<div *ngIf="disabled" class="disabled-lookup">
+    {{disabledText()}}
+</div>
+<div *ngIf="array && !disabled" class="selector-container" (clickOutside)="onClickedOutside($event)"
+    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mouseup'">
+    <div>
+        <div tabindex="0" (click)="toggleOn()" class="form-control ms-main-selector">
+            <div class="ms-placeholder" *ngIf="!model || model.length === 0" [ngClass]="{'lookup-selector-sm': small}">
+                {{placeholder}} </div>
+            <div class="ms-box" [title]="textToShow(item)" *ngFor="let item of model">
+                <div class="ms-box-text">{{textToShow(item)}}</div> <span
+                    class="glyphicon glyphicon-remove remove-ms-box" (click)="removeFromSelected(item)"></span>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!hidden && filteredArray" class="selector-suggestions" [ngClass]="{
+      'cut-long-text': cutLongText
+    }">
+        <ul>
+            <li class="default-option">
+                <input (keyup)="onKey()" maxlength="100" (keyup.backspace)="onKey()" class="form-control input-sm ms-search"
+                    [(ngModel)]="searchText" placeholder="Search">
+            </li>
+            <li *ngIf="notSelectedArray.lenght === 0">
+                Nothing to select
+            </li>
+            <li tabindex="0" class="selector-button btn-default" *ngFor="let item of filteredArray"
+                [title]="textToShow(item)" (keyup.enter)="select(item)" (mousedown)="select(item)">
+                {{textToShow(item)}}
+            </li>
+        </ul>
+    </div>
+</div>

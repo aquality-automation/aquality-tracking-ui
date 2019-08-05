@@ -1,0 +1,68 @@
+<ng-progress [showSpinner]=false></ng-progress>
+<header calcheight>
+  <nav id="topnavbar" class="navbar navbar-inverse navbar-fixed-top navbar-collapse">
+    <div class="container-fluid header">
+
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+          data-target="#nav-to-collapse" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a routerLink="/" routerLinkActive="active" class="navbar-brand" [routerLinkActiveOptions]="{ exact: true }">
+          <img src="assets/sources/RPA1QA.png" class="d-inline pull-left">
+        </a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="nav-to-collapse">
+        <ul class="nav navbar-nav" id="navigation-left-side">
+          <li *ngFor="let navigation of navigations" [ngClass]="{'dropdown': navigation.children}" [id]="navigation.name">
+            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link"
+              [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
+            <a *ngIf="navigation.show && navigation.children" data-toggle="dropdown" href=""
+              class="dropdown-toggle">{{navigation.name}} 
+              <span *ngIf="navigation.children" class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li *ngFor="let child of navigation.children">
+                <a *ngIf="child.show" [routerLink]="child.link">{{child.name}}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav pull-right">
+          <li *ngIf="isLogged" id="logout">
+            <a routerLink="/" (click)="Logout()">Log out</a>
+          </li>
+        </ul>
+        <ul *ngIf="isLogged" class="nav navbar-nav pull-right" id="navigation-right-side">
+          <li [id]="navigation.id" *ngFor="let navigation of rightNavigations" [ngClass]="{'dropdown': navigation.children}">
+            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link"
+              [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
+            <a *ngIf="navigation.show && navigation.children" data-toggle="dropdown" href=""
+              class="dropdown-toggle">{{navigation.name}} 
+              <span *ngIf="navigation.children" class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li *ngFor="let child of navigation.children">
+                <a *ngIf="child.show && child.link" [routerLink]="child.link">{{child.name}}</a>
+                <a *ngIf="child.show && child.href" [href]="child.href">{{child.name}}</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="body">
+  <div class="container-fluid container-boarders">
+    <router-outlet (activate)="changeOfRoutes()"></router-outlet>
+  </div>
+  <simple-notifications [options]="options"></simple-notifications>
+</main>
+<div class="appVersion">
+  {{appVersion}}
+</div>

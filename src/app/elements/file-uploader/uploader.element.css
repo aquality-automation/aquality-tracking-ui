@@ -1,0 +1,47 @@
+.drop-zone {
+  border-radius: 2px;
+  z-index: 0;
+  position: relative;
+  content: "\f01b";
+  width: 100%;
+  min-height: 200px;
+  border: solid lightgrey 1px;
+  background-color: #f5f5f5;
+}
+
+.drop-zone:before {
+  z-index: 0;
+  content: "\f01b";
+  font-family: FontAwesome;
+  color: lightgray;
+  font-size: 100px;
+  position: absolute;
+  top: calc(50% - 71px);
+  left: calc(50% - 43px);
+}
+
+.drop-zone-table {
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.uploader {
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploader-danger {
+  color: red;
+}
+
+.uploader-button {
+  height: 22px;
+}
+
+.uploader-fileName {
+  min-width: 100px;
+  max-width: 210px;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}

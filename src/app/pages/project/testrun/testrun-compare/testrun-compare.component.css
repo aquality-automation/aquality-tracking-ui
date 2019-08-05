@@ -1,0 +1,12 @@
+.selector-container{
+  min-width: 100px !important;
+  width: 100px !important;
+}
+
+.margin-top-6px{
+  margin-top: 6px;
+}
+
+.greyout{
+  color:#dddddd;
+}

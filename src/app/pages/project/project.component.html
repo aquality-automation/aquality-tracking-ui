@@ -1,0 +1,15 @@
+<div class="panel-heading">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Select Project</h2>
+    </div>
+    <div *ngIf="userService.IsAdmin()" class="col-sm-6">
+      <a routerLink="/project/create-project" class="btn btn-primary pull-right" id="create-project-button">Create New Project</a>
+    </div>
+  </div>
+</div>
+<simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
+  (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+
+<table-filter *ngIf="projects && users && columns" [data]="projects" [columns]="columns" [defaultSortBy]="defSort" (action)="handleAction($event)"
+  [queryParams]="true" [allowDelete]="userService.IsAdmin()" (dataChange)="updateProj($event)" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>

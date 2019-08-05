@@ -1,0 +1,118 @@
+<form #form="ngForm" class="panel-heading no-padding">
+  <div class="col-md-12">
+    <div class="col-md-6">
+      <h2>Import Test Results</h2>
+    </div>
+    <div class="col-md-6">
+      <div class="col-md-6">
+        <lookup [array]="imports" [disabled]="fileListArray?.length > 0" [(model)]="format" [allowEmptyValue]="false" [placeholder]="placeholder"></lookup>
+      </div>
+      <div class="pull-right col-md-6 btn-group">
+        <label for="file-upload" type="button" class="btn btn-primary" [ngClass]="{
+            'disabled': !format 
+          }">Add Files</label>
+        <button type="submit" *ngIf="fileListArray?.length > 0" class="btn btn-success" [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
+          (click)="uploadAll($event)">Import All</button>
+        <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">Remove All</button>
+      </div>
+      <input [disabled]="format=='' || format==undefined" id="file-upload" type="file" (change)="fileChange($event)" multiple accept=".xml, .trx, .json"
+      />
+    </div>
+  </div>
+  <div *ngIf="fileListArray?.length > 0" class="panel panel-default col-md-12 form-group import-results-panel it-test-import-options clearfix">
+    <div class="col-md-3">
+      <label for="env">Test Suite Name{{reqMark('suite') ? '*' : ''}}:</label>
+      <lookup-autocomplete (searchText)="createTestSuite($event)" [allowCreation]="true" id="suite" name="suite" [model]="suite" (modelChange)="setSuite($event)"
+        [allowEmptyValue]="!reqMark('suite')" [propertiesToShow]="['name']" [array]="suites" placeholder="None"></lookup-autocomplete>
+    </div>
+    <div class="col-md-3">
+      <label for="env">Environment:</label>
+      <input id="env" name="env" [(ngModel)]="environment" type="text" trim="blur" class="form-control" placeholder="Environment"
+      />
+    </div>
+    <div class="col-md-3">
+      <label for="pattern">
+        <span title="Put regular expression pattern here, to identify if test was created before by matches in body." class="glyphicon glyphicon-info-sign clickable-element"></span> Unique body pattern:
+      </label>
+      <lookup-autocomplete (searchText)="createBodyPattern($event)" [allowCreation]="true" id="pattern" name="pattern" [(model)]="pattern"
+        [allowEmptyValue]="true" [propertiesToShow]="['name']" [array]="bodyPatterns" placeholder="None"></lookup-autocomplete>
+    </div>
+    <div class="col-md-3 checbox-section">
+      <label for="singleTestrunToggler">One Test Run:
+        <ui-switch id="singleTestrunToggler" name="singleTestrun" class="pull-right" size="small" [(ngModel)]="singleTestRun"></ui-switch>
+      </label>
+    </div>
+    <div class="col-md-3">
+      <label for="exec">Executor{{reqMark('executor') ? '*' : ''}}:</label>
+      <input [required]="reqMark('executor')" id="exec" name="exec" [(ngModel)]="executor" type="text" trim="blur" class="form-control"
+        placeholder="Executor" />
+    </div>
+    <div class="col-md-3">
+      <label for="build">Build Name{{reqMark('buildName') ? '*' : ''}}:</label>
+      <input [required]="reqMark('buildName')" id="build" name="build" [(ngModel)]="buildName" type="text" trim="blur" class="form-control"
+        placeholder="Build Name" />
+    </div>
+    <div *ngIf="suite" class="col-md-3">
+      <label for="testrun">Test Run:</label>
+      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testRun"
+        [allowEmptyValue]="true" [propertiesToShow]="['start_time', 'build_name']" [array]="testRuns" placeholder="None"></lookup-autocomplete>
+    </div>
+    <div class="col-md-3">
+      <label for="ci_build">CI Build:</label>
+      <input id="ci_build" name="ci_build" [(ngModel)]="ci_build" type="text" trim="blur" class="form-control"
+        placeholder="CI Build Link" max="500"/>
+    </div>
+  </div>
+  <div *ngIf="fileListArray?.length > 0 && (format === 'MSTest (.trx)' || format === 'TestNG (.xml)')" class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
+    <div>
+      <p>What do you want to use as test name?*</p>
+    </div>
+    <div>
+      <label for="testNamer"[ngClass]="{ 'greyout':!testName }">Unit Test Name:
+        <ui-switch id="testName" name="testName" class="pull-right" size="small" [ngModel]="testName" (ngModelChange)="testNameChange($event)"></ui-switch>
+      </label>
+    </div>
+    <div>
+      <label for="testClassName" [ngClass]="{ 'greyout':!testClassName }">Unit Test Class Name:
+        <ui-switch id="testClassName" name="testClassName" class="pull-right" size="small" [ngModel]="testClassName" (ngModelChange)="testClassNameChange($event)"></ui-switch>
+      </label>
+    </div>
+    <div>
+      <label *ngIf="format === 'MSTest (.trx)'" for="testDescription" [ngClass]="{ 'greyout':!testDescription }">Unit Test Description:
+        <ui-switch id="testDescription" name="testDescription" class="pull-right" size="small" [ngModel]="testDescription" (ngModelChange)="testDescriptionChange($event)"></ui-switch>
+      </label>
+    </div>
+  </div>
+  <div *ngIf="fileListArray?.length > 0" class="col-md-12 panel panel-default no-padding import-results-panel clearfix">
+    <div class="table table-hover">
+      <tbody>
+        <tr *ngFor="let file of fileListArray">
+          <td class="vert-aligned">{{file.name}}</td>
+          <td class="fit vert-aligned">{{(file.size/1024).toFixed(2)}} KB</td>
+          <td>
+            <div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
+              <button *ngIf="!singleTestRun" type="submit" [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
+                class="btn btn-success" (click)="upload(file, $event)">Import</button>
+              <button type="button" class="btn btn-danger" (click)="remove(file)">Remove</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </div>
+  </div>
+
+  <div class="col-md-12 no-padding clearfix import-results-panel">
+    <table-filter *ngIf="importResults" 
+    [allowDelete]="false"
+    [allowExport]="false" 
+    [data]="importResults"
+    [columnManagement]="false"
+    [columns]="resultsColumnsToShow"
+    [defaultSortBy]="sortBy"
+    [queryParams]="true"
+    [actionsHeader]="true"
+    [allowRefresh]="true"
+    (refresh)="getImportResults()"
+    ></table-filter>
+  </div>
+</form>

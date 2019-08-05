@@ -1,0 +1,42 @@
+<div *ngIf="disabled" class="disabled-lookup">
+    {{selectedItemText}}
+</div>
+<div *ngIf="array && !disabled" class="selector-container form-group" (clickOutside)="onClickedOutside($event)"
+    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mouseup'" [ngClass]="{
+    'has-error': lookupField.invalid && lookupField.touched,
+    'has-success': lookupField.valid && lookupField.touched
+  }">
+    <div>
+        <input [ngClass]="{
+        'inline-selector': inline,
+        'lookup-selector-sm': small
+      }" [disabled]="disabled" autocomplete="off" [required]="!allowEmptyValue" [placeholder]="placeholder"
+            #lookupField name="lookupField" [maxlength]="maxlength" (focus)="toggleOn()" class="form-control"
+            (click)="toggleOn()" (keyup.esc)="toggleOff()" (ngModelChange)="onKey($event)" [ngModel]="selectedItemText">
+    </div>
+    <div [hidden]="hidden" class="selector-suggestions cut-long-text"
+        *ngIf="filteredArray && filteredArray.length > 20">
+        <ul>
+            <li tabindex="0" class="selector-button btn-default default-option wrap-text"
+                title="To many items. Type something to search.">To many items. Type something to search.</li>
+        </ul>
+    </div>
+    <div [hidden]="hidden" class="selector-suggestions" *ngIf="filteredArray && filteredArray.length < 20" [ngClass]="{
+      'cut-long-text': cutLongText
+    }">
+        <ul>
+            <li *ngIf="filteredArray.length === 0 && !allowEmptyValue && (!allowCreation || inList())"
+                class="selector-button btn-default">No items</li>
+            <li tabindex="0" *ngIf="allowCreation && !inList() " class="selector-button btn-default default-option"
+                (keyup.enter)="sendSearchText()" (mousedown)="sendSearchText()">Add</li>
+            <li tabindex="0" *ngIf="allowEmptyValue" class="selector-button btn-default default-option"
+                (keyup.enter)="select(emptyValue)" (mousedown)="select(emptyValue)">{{placeholder}}</li>
+            <li tabindex="0" *ngIf="emptyForFilter" class="selector-button btn-default default-option"
+                (keyup.enter)="select(emptyValueForFilter)" (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
+            <li tabindex="0" [title]="textToShow(item)" class="selector-button btn-default wrap-text"
+                *ngFor="let item of filteredArray" (keyup.enter)="select(item)" (mousedown)="select(item)">
+                {{textToShow(item)}}
+            </li>
+        </ul>
+    </div>
+</div>

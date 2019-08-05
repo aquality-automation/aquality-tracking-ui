@@ -1,0 +1,26 @@
+pre{
+  background-color:transparent;
+}
+
+.button-col{
+  width: 150px;
+  display: inline-block;
+  position: absolute;
+  margin-top: 5px;
+}
+
+.token-col{
+  display: inline-block;
+  position: relative;
+  left: 150px;
+}
+
+.token-col > pre{
+  height: 34px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+div.panel-body{
+  min-height: 155px;
+}

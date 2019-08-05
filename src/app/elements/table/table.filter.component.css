@@ -1,0 +1,89 @@
+.ft-range-selector {
+  width: 70px !important;
+  min-width: 70px !important;
+}
+
+.ft-margin-top {
+  margin-top: 25px;
+}
+
+.ft-duration-input {
+  width: 70px;
+  min-width: 70px !important;
+}
+
+.table>tbody>tr>td {
+  padding: 4px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.ft-row {
+  height: 39px;
+}
+
+.ft-cell {
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.percent {
+  width: 180px !important;
+}
+
+.ft-date-width {
+  width: 135px !important;
+}
+
+.ft-width-180 {
+  width: 180px !important;
+}
+
+.ft-width-120 {
+  width: 120px !important;
+}
+
+.ft-width-150 {
+  width: 150px !important;
+}
+
+.ft-width-250 {
+  max-width: 250px !important;
+  ;
+  width: 250px !important;
+}
+
+.ft-width-350 {
+  max-width: 350px !important;
+  ;
+  width: 350px !important;
+}
+
+.ft-width-500 {
+  max-width: 500px !important;
+  ;
+  width: 500px !important;
+}
+
+.ft-width-500 .lt {
+  max-width: 500px !important;
+  ;
+  width: 500px !important;
+}
+
+.ft-header-button {
+  height: 30px;
+}
+
+.ft-header-button .glyphicon {
+  margin-bottom: 2px;
+}
+
+.tf-overflow {
+  overflow: auto
+}
+
+.ft-total-label {
+  margin: 7px;
+  font-weight: bold;
+}

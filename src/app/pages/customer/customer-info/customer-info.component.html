@@ -1,0 +1,94 @@
+<div class="panel-heading page">
+  <div class="row clearfix">
+    <div class="pull-left">
+      <h2>Customer Info - {{customer?.name}}</h2>
+    </div>
+  </div>
+</div>
+<div class="col-md-12 container" *ngIf="customer">
+  <div class="left-side clearfix">
+    <div class="inline info-panel panel panel-default no-padding margin-bottom-10">
+      <div class="panel-heading">Customer
+        <div class="btn-group pull-right">
+          <button *ngIf="canEdit" class="btn btn-success btn-sm panel-button" (click)="updateCustomer()" [disabled]="!IsFormValid()">Save</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="col-sm-12 fields-row no-padding">
+          <div class="col-sm-6 col-label">
+            <label for="name" class="label-inline">Name:</label>
+          </div>
+          <div class="col-sm-6 col-field no-padding">
+            <inline-editor [disabledInline]="!canEdit" maxLength="150" [name]="name" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur"
+              [(ngModel)]="customer.name" [required]="true"></inline-editor>
+          </div>
+        </div>
+        <div class="col-sm-12 fields-row no-padding">
+          <div class="col-sm-6 col-label">
+            <label for="coordinator" class="label-inline">Unit Coordinator:</label>
+          </div>
+          <div class="col-sm-6 col-field no-padding" [ngClass]="{'ci-label-inline': !canEdit}">
+            <lookup-autocomplete [disabled]="!canEdit" id="coordinator" name="coordinator" *ngIf="coordinators" [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']"
+              [array]="coordinators" [(model)]="customer.coordinator" placeholder="Unit Coordinator"></lookup-autocomplete>
+          </div>
+        </div>
+        <div class="col-sm-12 fields-row no-padding">
+          <div class="col-sm-6 col-label">
+            <label for="accounting" class="label-inline">Accounting:</label>
+          </div>
+          <div class="col-sm-6 col-field no-padding">
+            <ui-switch [disabled]="!canEdit" class="pull-left label-inline" name="accounting" size="small" [(ngModel)]="customer.accounting"></ui-switch>
+          </div>
+        </div>
+        <div *ngIf="customer.accounting" class="col-sm-12 no-padding">
+          <div class="col-sm-6 col-label">
+            <label for="coordinator" class="label-inline">Account Manager*:</label>
+          </div>
+          <div class="col-sm-6 col-field no-padding" [ngClass]="{'ci-label-inline': !canEdit}">
+            <lookup-autocomplete [disabled]="!canEdit" id="account_manager" name="account_manager" [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']"
+              [array]="accountManagers" [(model)]="customer.account_manager" placeholder="Account Manager"></lookup-autocomplete>
+          </div>
+          <div *ngIf="customer.accounting" class="col-sm-12">
+              <label class="label-inline">Account Team:</label>
+          </div>
+          <div *ngIf="customer.accounting && users"class="col-sm-12 account-team-field">
+            <lookup-autocomplete-multiselect [disabled]="!canEdit" placeholder="Select Account Team Member"
+              [propertiesToShow]="['first_name','second_name']" [array]="users" [model]="customer.account_team" (modelChange)="updateAccountTeam($event)"></lookup-autocomplete-multiselect>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="inline col-sm-12 attachments-panel panel panel-default no-padding no-margin margin-bottom-10">
+      <div class="panel-heading">Attachments</div>
+      <div class="panel-body no-padding">
+        <div>
+          <table *ngIf="customer.attachments && customer.attachments.length > 0" class="table">
+            <tbody>
+              <tr *ngFor="let attach of customer.attachments">
+                <td>
+                  <a class="clickable-element fileLink" (click)=downloadAttach(attach)>{{getAttachName(attach)}}</a>
+                </td>
+                <td class="fit">
+                  <button type="button" class="btn btn-danger btn-xs" (click)="removeAttachment(attach.id)" [disabled]="removingInProgress">
+                    <span class="glyphicon glyphicon-trash"></span> Remove
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <file-uploader *ngIf="URL" [URL]="URL" (uploaded)="getAttachments()"></file-uploader>
+      </div>
+    </div>
+  </div>
+  <div class="right-side no-padding clearfix">
+    <table-filter *ngIf="customer" [data]="customer.projects" [columns]="columns" [defaultSortBy]="defSort" [queryParams]="true"
+      (rowClick)="rowClicked($event)" (dataChange)="updateProj($event)" rowsOnPage="10" [allowCreate]="userService.IsAdmin() || userService.IsManager()" (action)="handleAction($event)"></table-filter>
+    <div class="col-sm-12 panel panel-default no-padding">
+      <div class="panel-heading">Comments</div>
+      <div class="panel-body no-padding comments-panel">
+        <comments-block [comments]="customer.comments" [showInputOnTop]="true" (addComment)="addComment($event)"></comments-block>
+      </div>
+    </div>
+  </div>
+</div>

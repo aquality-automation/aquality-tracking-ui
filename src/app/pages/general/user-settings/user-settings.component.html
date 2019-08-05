@@ -1,0 +1,83 @@
+<div class="panel-heading">
+  <h2>User Settings</h2>
+</div>
+<div class="panel panel-default pull-left no-padding margin-x-sm">
+  <div class="panel-heading">Info</div>
+  <div class="panel-body">
+    <div class="no-padding">
+      <div class="pull-left margin-right-10">
+        <b>First Name:</b>
+      </div>
+      <div class="pull-left margin-right-10">
+        {{user.first_name}}
+      </div>
+    </div>
+    <div class="no-padding">
+      <div class="pull-left margin-right-10">
+        <b>Last Name:</b>
+      </div>
+      <div class="pull-left margin-right-10">
+        {{user.second_name}}
+      </div>
+    </div>
+    <div class="no-padding">
+      <div class="pull-left margin-right-10">
+        <b>User Name:</b>
+      </div>
+      <div class="pull-left margin-right-10">
+        {{user.user_name}}
+      </div>
+    </div>
+    <div class="no-padding">
+      <div class="pull-left margin-right-10">
+        <b>Email:</b>
+      </div>
+      <div class="pull-left margin-right-10">
+        {{user.email}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel pull-left panel-default no-padding margin-x-sm">
+  <div class="panel-heading">Dashboard Notifications</div>
+  <div class="panel-body">
+    <div>
+      <div class="margin-y-sm ma-notifications">
+        <ui-switch class="pull-right" size="small" [(ngModel)]="user.audit_notifications" (ngModelChange)="updateUser()"></ui-switch>
+      </div>
+      <div class="no-padding margin-top-6px">
+        <label class="pull-left" [ngClass]="{ 'greyout':!user.audit_notifications }">Audit Notifications</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!user.ldap_user" class="panel col-lg-3 panel-default no-padding margin-x-sm">
+  <div class="panel-heading">Change Password</div>
+  <div class="panel-body">
+    <div class="col-sm-12 no-padding margin-y-sm">
+      <label class="col-sm-6 control-label label-inline" for="oldpass">Old Password</label>
+      <div class="col-sm-6">
+        <input class="form-control input-sm" id="oldpass" name="oldpass" type="password" maxlenght="150" [(ngModel)]="oldPass" />
+      </div>
+    </div>
+    <div class="col-sm-12 no-padding margin-y-sm form-group" [ngClass]="{ 'has-error': !IsConfirmValide() || !IsNewPasswordValide() }">
+      <label class="col-sm-6 control-label label-inline" for="password">Password</label>
+      <div class="col-sm-6">
+        <input class="form-control input-sm" id="password" name="password" type="password" maxlenght="150" [(ngModel)]="newPass" />
+        <span *ngIf="!IsNewPasswordValide()" class="help-block">Password must be at least 6 characters</span>
+      </div>
+    </div>
+    <div class="col-sm-12 no-padding margin-y-sm form-group" [ngClass]="{ 'has-error': !IsConfirmValide() }">
+      <label class="col-sm-6 control-label label-inline" for="passc">Confirm Password</label>
+      <div class="col-sm-6">
+        <input class="form-control input-sm" id="passc" name="passc" type="password" maxlenght="150" [(ngModel)]="confirmPass" />
+        <span *ngIf="!IsConfirmValide()" class="help-block">Password does not match the Confirm Password</span>
+      </div>
+    </div>
+    <div class="col-sm-12 no-padding margin-y-sm">
+      <button class="btn btn-primary center-block" [disabled]="!IsPasswordFormValide()" type="button" (click)="updatePassword()">Change</button>
+    </div>
+  </div>
+</div>

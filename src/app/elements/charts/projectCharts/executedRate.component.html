@@ -1,0 +1,19 @@
+<div class="col-sm-12 panel-padding">
+  <div *ngIf="exRateData" class="col-sm-3 chart-holder">
+    <canvas baseChart width="300" height="200" [data]="exRateData" [chartType]="pieType" [colors]="chartColors" [options]="exRatechartOptions"></canvas>
+    Shows ratio of passed tests and tests failed due to application issue to the total number of tests; represents the percentage of properly functioning tests
+  </div>
+  <div *ngIf="successRateData" class="col-sm-3 chart-holder">
+    <canvas baseChart width="300" height="200" [data]="successRateData" [chartType]="pieType" [colors]="successRatechartColors" [options]="successRatechartOptions"></canvas>
+    Shows ratio of tests failed due to application issues to the number of properly functioning tests; represents application quality
+  </div>
+  <div *ngIf="AutomationQualityData" class="col-sm-3 chart-holder">
+    <canvas baseChart width="300" height="200" [datasets]="AutomationQualityData" [options]="AutomationQualityOptions" [legend]="barChartLegend"
+      [colors]="AutomationQualityColors" [chartType]="barChartType"></canvas>
+      Shows automation solution quality taking into consideration number of failed tests as well as fail reasons 
+  </div>
+  <div *ngIf="AverageAutomationQualityData" class="col-sm-3 chart-holder">
+    <canvas baseChart width="300" height="200" [datasets]="AverageAutomationQualityData" [options]="AverageAutomationQualityOptions"
+      [legend]="barChartLegend" [colors]="AverageAutomationQualityColors" [chartType]="barChartType"></canvas>
+      Shows average automation quality over last 3 months </div>
+  </div>

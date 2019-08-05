@@ -1,0 +1,12 @@
+<div *ngIf="listOfFinalResults && doughnutChartData.length > 0 && testResults.length > 0">
+  <div style="display: block">
+    <canvas id="finalResultsChart" baseChart width="400" height="150"
+            [data]="doughnutChartData"
+            [labels]="doughnutChartLabels"
+            [chartType]="doughnutChartType"
+            [colors]="chartColors"
+            [options]="chartOptions"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)"></canvas>
+  </div>
+</div>

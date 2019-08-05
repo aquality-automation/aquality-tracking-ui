@@ -1,0 +1,34 @@
+.lt {
+    transition: max-height .5s ease-in-out;
+}
+
+.lt-container-hidden {
+    width: 100%;
+    overflow: auto;
+    height: auto;
+    max-height: 30px;
+    word-break: break-word !important;
+    white-space: pre-wrap;
+}
+
+.lt-normal-wrap {
+    white-space: normal;
+}
+
+.lt-wrapper-container {
+    width: 100%;
+    text-overflow: ellipsis;
+    height: auto;
+    max-height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.lt-container-shown {
+    width: 100%;
+    overflow: auto;
+    height: auto;
+    max-height: 400px;
+    word-break: break-word !important;
+    white-space: pre-wrap;
+}

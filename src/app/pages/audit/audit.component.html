@@ -1,0 +1,29 @@
+<div class="panel-heading">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Audits Dashboard</h2>
+    </div>
+  </div>
+</div>
+<div *ngIf="stats" class="col-sm-12">
+  <div class="btn-group pull-right">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Export to Excel
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li class="clickable-element">
+            <a class="dropdown-item" (click)="download(true)">All submitted audits</a>
+          </li>
+          <li class="clickable-element">
+            <a class="dropdown-item" (click)="download(false)">Last submitted audits</a>
+          </li>
+        </ul>
+  </div>
+</div>
+<br>
+<br>
+<div *ngIf="stats && auditors && columns && services" class="col-sm-12 no-padding">
+  <table-filter [data]="stats" [rowColors]="rowColors" [columns]="columns" [defaultSortBy]="defSort"
+    [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
+</div>

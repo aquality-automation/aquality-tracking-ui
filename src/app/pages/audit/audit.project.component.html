@@ -1,0 +1,13 @@
+<div class="panel-heading">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Project Audits - {{project.name}}</h2>
+    </div>
+  </div>
+</div>
+<div *ngIf="userService.IsAuditAdmin()" class="btn-group col-sm-1 pull-right no-padding margin-bottom-10">
+  <a class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</a>
+</div>
+<div class="col-sm-12 no-padding">
+    <table-filter *ngIf="data" [data]="data" [columns]="columns" [defaultSortBy]="defSort" [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
+</div>

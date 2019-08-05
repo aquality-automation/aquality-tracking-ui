@@ -1,0 +1,145 @@
+<notify-team-modal *ngIf="users" [(isHidden)]="hideNotifyModal" [testRun]="testRun" [users]="users"
+  [buttons]="[{name:'Send Email', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
+  (closed)="wasClosed($event)"></notify-team-modal>
+
+<print-testrun-modal *ngIf="testResults" [(isHidden)]="hidePrintModal" [testRun]="testRun" [testResults]="testResults"
+  [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
+  (closed)="wasClosed($event)"></print-testrun-modal>
+
+<div *ngIf="testRun" class="panel-body">
+  <div class="row panel-padding">
+    <div class="col-sm-2">
+      <h2 id="test-run-view">
+        Test Run
+      </h2>
+    </div>
+    <div *ngIf="testRun" class="col-sm-10 no-padding">
+      <div class="btn-group pull-right margin-right-cut-md">
+        <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
+          <span class="glyphicon glyphicon-modal-window"></span>
+        </button>
+        <button *ngIf="canEdit && canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
+          <span class="glyphicon glyphicon-send"></span>
+        </button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          Compare With
+          <span class="caret"></span>
+        </button>
+        <ul *ngIf="testRun.test_suite" class="dropdown-menu">
+          <li *ngIf="prevTR">
+            <a routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:prevTR, suite:testRun.test_suite.id, second_tr:testRun.id}">Previous Test Run</a>
+          </li>
+          <li *ngIf="nextTR">
+            <a routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id, second_tr:nextTR}">Next Test Run</a>
+          </li>
+          <li *ngIf="latestTR">
+            <a routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id, second_tr:latestTR}">Latest Test Run</a>
+          </li>
+          <li *ngIf="prevTR || nextTR || latestTR" role="separator" class="divider"></li>
+          <li>
+            <a routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id}">Select Test Run ...</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <br>
+    <hr>
+    <div class="col-sm-12 view-header-grid">
+      <ul>
+        <li class="col-md-6">
+          <label class="label-inline pull-left">Build Name:</label>
+          <div class="pull-left">
+            <inline-editor
+              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              maxLength="500" [name]="buildName" (onError)="buildNameError($event)" min="3" placeholder="Build Name"
+              type="text" trim="blur" [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()" [required]="true">
+            </inline-editor>
+          </div>
+        </li>
+        <li *ngIf="testRun.test_suite" class="col-md-6">
+          <label class="label-inline pull-left">Test Suite: </label>
+          <a class="label-inline pull-left"
+            routerLink="/project/{{testRun.project_id}}/testsuite/{{testRun.test_suite.id}}">{{testRun.test_suite.name}}</a>
+        </li>
+        <li
+          *ngIf="testRun.milestone || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          class="col-md-6">
+          <label class="label-inline pull-left">Milestone:</label>
+          <div class="pull-left">
+            <lookup-autocomplete
+              [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              (searchText)="createMilestone($event)" [allowCreation]="true" id="suite" name="milestone"
+              [(model)]="testRun.milestone" (modelChange)="testRunUpdate()" [allowEmptyValue]="true" [inline]="true"
+              [small]="true" [propertiesToShow]="['name']" [array]="milestones" placeholder="Not Selected">
+            </lookup-autocomplete>
+          </div>
+        </li>
+        <li
+          *ngIf="testRun.execution_environment || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          class="col-md-6">
+          <label class="label-inline pull-left">Execution Environment:</label>
+          <div class="pull-left">
+            <inline-editor
+              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              maxLength="500" [name]="ExecutionEnvironment" placeholder="Execution Environment" type="text" trim="blur"
+              [(ngModel)]="testRun.execution_environment" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+          </div>
+        </li>
+        <li
+          *ngIf="testRun.author || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          class="col-md-6">
+          <label class="label-inline pull-left">Executor:</label>
+          <div class="pull-left">
+            <inline-editor
+              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              maxLength="500" [name]="Executor" placeholder="Executor" type="text" trim="blur"
+              [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+          </div>
+        </li>
+        <li *ngIf="testRun?.finish_time" class="col-md-6">
+          <label class="label-inline pull-left">Duration: </label>
+          <p class="label-inline pull-left">{{calculateDuration()}}</p>
+        </li>
+        <li *ngIf="testRun" class="col-md-6">
+          <label class="label-inline">Debug Testrun:
+            <input (change)="changeDebugState($event.srcElement)" type="checkbox" name="isActive"
+              [(ngModel)]="testRun.debug"
+              [disabled]="!userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() && !userService.IsManager()">
+          </label>
+        </li>
+        <li class="col-md-6">
+          <label class="label-inline pull-left">Start Time: </label>
+          <p class="label-inline pull-left">{{testRun?.start_time | date:'dd/MM/yy hh:mm:ss a'}}</p>
+        </li>
+        <li
+          *ngIf="testRun.ci_build || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          class="col-md-6">
+          <label *ngIf="!testRun.ci_build" class="label-inline pull-left">CI Build: </label>
+          <a *ngIf="testRun.ci_build" class="label-inline pull-left ci-link" [href]="testRun.ci_build">CI Build</a>
+          <div class="pull-left">
+            <inline-editor
+              *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+              maxLength="500" [name]="Executor" placeholder="CI Build" type="text" trim="blur"
+              [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6" *ngIf="testResults?.length">
+      <final-result-chart [testResults]="testResults">Loading...</final-result-chart>
+    </div>
+    <div class="col-sm-6" *ngIf="testResults?.length">
+      <result-resolution-chart [testResults]="testResults">Loading...</result-resolution-chart>
+    </div>
+  </div>
+  <div class="row" *ngIf="testResults?.length">
+    <results-grid [testResults]="testResults" (resultUpdated)="updateResult($event)"
+      [testResultTempalte]="testResultTempalte">Loading...</results-grid>
+  </div>

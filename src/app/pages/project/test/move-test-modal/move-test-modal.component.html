@@ -1,0 +1,55 @@
+<div class="overlay mt-overlay">
+    <div class="simple-modal panel" [ngClass]="{
+        'panel-warning':type=='warning',
+        'panel-danger':type=='error',
+        'panel-info':type=='info',
+        'panel-success':type=='success',
+        'panel-primary':type==''
+    }">
+        <div class="panel-heading col-sm-12">
+            <h4 class="panel-title pull-left">{{title}}</h4>
+            <span (click)="hideModal()" class="glyphicon glyphicon-remove clickable-element pull-right" aria-hidden="true"></span>
+        </div>
+        <div class="panel-body">
+            <div class="col-sm-12 modal-message">
+                <div *ngFor="let pair of pairsToMove, let i = index" class="mt-row clearfix">
+                    <div class="mt-transition" [ngClass]="{
+                        'col-sm-12': pairsToMove.length === 1,
+                        'mt-field-horizontal': pairsToMove.length > 1
+                       }">
+                        <lookup-autocomplete class="mt-from" maxlength="1000" placeholder="Move from" [propertiesToShow]="['name']" [array]="tests" [(model)]="pair.from"></lookup-autocomplete>
+                    </div>
+                    <div class="mt-transition" [ngClass]="{
+                      'col-sm-12': pairsToMove.length === 1,
+                      'mt-icon-vertical': pairsToMove.length === 1,
+                      'mt-icon-horizontal': pairsToMove.length > 1
+                     }">
+                        <span class="glyphicon glyphicon-arrow-down" [ngClass]="{
+                          'glyphicon-arrow-down': pairsToMove.length === 1,
+                          'glyphicon-arrow-right': pairsToMove.length > 1
+                         }" aria-hidden="true"></span>
+                    </div>
+                    <div class="mt-transition" [ngClass]="{
+                      'col-sm-12': pairsToMove.length === 1,
+                      'mt-field-horizontal': pairsToMove.length > 1
+                     }">
+                        <lookup-autocomplete class="mt-to" maxlength="1000" placeholder="Move to" [propertiesToShow]="['name']" [array]="tests" [(model)]="pair.to"></lookup-autocomplete>
+                    </div>
+
+                    <div class="mt-transition mt-icon-remove" [hidden]="pairsToMove.length === 1" (click)="remove(i)">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </div>
+                </div>
+                <div class="col-sm-12 mt-add-row" (click)="addRow()">
+                    Move More
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </div>
+            </div>
+            <div class="col-sm-12 modal-buttons">
+                <div class="modal-buttons-form">
+                    <button [id]="button.name" autofocus (click)="validatePairs(button.execute)" class="btn btn-sm btn-default" *ngFor="let button of buttons">{{button.name}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+.left-side{
+  float:left;
+  margin-right: -380px;
+  width: 380px;
+}
+
+.right-side{
+  margin-left:400px;
+}
+
+.container{
+  min-width: 600px;
+  margin-bottom:10px;
+}
+
+.panel-heading.page{
+  margin: 20px;
+}
+
+.fields-row{
+  margin-bottom:10px;
+}
+
+.fileLink{
+  display: inline-block;
+  width: 260px;
+  word-wrap: break-word;
+}
+
+.account-team-field{
+  padding-right: 0;
+}

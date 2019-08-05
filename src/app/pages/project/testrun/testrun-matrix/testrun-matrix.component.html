@@ -1,0 +1,47 @@
+<div class="panel-body">
+  <div class="row panel-padding">
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>
+          Test Runs Matrix
+        </h2>
+      </div>
+    </div>
+    <div class="row">
+      <br>
+      <div class="col-sm-12 view-header-grid">
+        <div class="col-sm-2">
+          <label>Suite*</label>
+          <lookup-autocomplete *ngIf="suites" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="suites" [(model)]="selectedSuite"
+          [disabled]="false" [placeholder]="'Select Suite'" (modelChange)="setParams()"></lookup-autocomplete>
+        </div>
+        <div class="col-sm-2">
+          <label>Results number*</label>
+          <lookup *ngIf="resultNumbers" [enableSort]="false" [allowEmptyValue]="false" [array]="resultNumbers" [(model)]="resultsNumber"
+            [disabled]="false" [placeholder]="'Select Number of Results'" (modelChange)="setParams()"></lookup>
+        </div>
+        <div class="col-sm-2">
+          <label>Label</label>
+          <lookup-colored *ngIf="labels" [propertiesToShow]="['name']" [allowEmptyValue]="true" [array]="labels" [(model)]="label"
+            [disabled]="false" [placeholder]="'None'" (modelChange)="setParams()" colorProperty="color"></lookup-colored>
+        </div>
+        <div class="col-sm-2 show-button" *ngIf="selectedSuite">
+          <button class="btn btn-primary form-control" (click)="getMatrix()">Show</button>
+        </div>
+        <div *ngIf="dataToshow && tbCols && testRuns" class="col-sm-2 line-margin">
+            <div class="col-sm-2 margin-y-sm"><ui-switch class="pull-right" size="small" [ngModel]="showResolutions" (ngModelChange)="generateTable($event)"></ui-switch></div>
+            <div class="col-sm-10 no-padding margin-top-6px"><label class="pull-left" (click)="toggleShowResolutions()" [ngClass]="{
+                'greyout':!showResolutions
+            }">Show Resolutions</label></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <br>
+      <div *ngIf="dataToshow && dataToshow.length > 0" class="col-sm-12">
+          <table-filter *ngIf="tbCols && dataToshow" [allowExport]="true" [data]="dataToshow" [columns]="tbCols"
+          [queryParams]="true"></table-filter>
+      </div>
+    </div>
+  </div>
+</div>

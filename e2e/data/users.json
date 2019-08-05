@@ -1,0 +1,19 @@
+{
+    "admin":{
+        "user_name": "admin",
+        "password": "123456"
+    },
+    "creationTest":{
+        "user_name": "n.user",
+        "password": "newUser",
+        "first_name": "New",
+        "second_name": "User",
+        "email": "n.user@a1qa.com",
+        "admin":1,
+        "manager":1,
+        "auditor":1,
+        "audit_admin":1,
+        "unit_coordinator":1,
+        "account_manager":1
+    }
+}

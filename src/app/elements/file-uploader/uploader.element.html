@@ -1,0 +1,36 @@
+<div ng2FileDrop class="drop-zone" [uploader]="uploader">
+  <input #fileInput type="file" ng2FileSelect [uploader]="uploader" multiple
+    accept=".txt,.csv,.ppt,.pptx,.xls,.xlsx,.pdf,.doc,.docx,.jpg,.png,.jpeg,.zip" />
+  <table class="table drop-zone-table">
+    <tbody>
+      <tr class="uploader">
+        <td colspan="3">
+          <div (click)="triggerFile(fileInput)" class="btn btn-primary btn-xs">
+            <span class="glyphicon glyphicon-plus"></span> Add Files
+          </div>
+          <div class="btn btn-success btn-xs" (click)="uploader.uploadAll()">
+            <span class="glyphicon glyphicon-upload"></span> Upload All
+          </div>
+          <div class="btn btn-danger btn-xs" (click)="uploader.clearQueue()">
+            <span class="glyphicon glyphicon-trash"></span> Clear Queue
+          </div>
+        </td>
+      </tr>
+      <tr *ngFor="let item of uploader.queue">
+        <td *ngIf="item?.file?.size/1024/1024 <= 10" class="uploader-fileName">{{item._file.name}}</td>
+        <td *ngIf="item?.file?.size/1024/1024 > 10" class="uploader-danger uploader-fileName">{{item._file.name}} - The
+          file size exceeds the allowed limit of 10 MB</td>
+        <td>{{ item?.file?.size/1024/1024 | number:'.1' }} MB</td>
+        <td nowrap>
+          <button *ngIf="item?.file?.size/1024/1024 <= 10" type="button" class="btn btn-success btn-xs uploader-button"
+            (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+            <span class="glyphicon glyphicon-upload"></span>
+          </button>
+          <button type="button" class="btn btn-danger btn-xs uploader-button" (click)="item.remove()">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

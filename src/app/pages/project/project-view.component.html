@@ -1,0 +1,26 @@
+<div id="project-view" class="panel-heading">
+    <div class="row">
+      <div class="col-sm-8 text-capitalize">
+        <h2>{{project.name}}</h2>
+      </div>
+      <div *ngIf="notification && globaldata.auditModule" class="col-sm-4 alert" [ngClass]="{
+        'alert-success': notification.type === 'success',
+        'alert-danger': notification.type === 'danger',
+        'alert-warning': notification.type === 'warning'
+      }" style="white-space: pre-line;">{{notification.text}}</div>
+    </div>
+</div>
+<div *ngIf="!IsHideAll()" class="col-sm-12">
+  <executed-rate-chart [allTestRunStats] = "testRunStats"></executed-rate-chart>
+</div>
+<table-filter *ngIf="!IsHideAll()" [data]="testRuns"
+  [actionsHeader]="false"
+  [columns]="columns" 
+  [allowDelete]="false" 
+  (rowClick)="openTestRun($event.id)"
+  rowsOnPage="5"></table-filter>
+<div *ngIf="IsHideAll()">
+  <div id="empty" class="well well-sm">
+    This project is empty, add Test Run to see any information.
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="panel-body">
+    <div class="row panel-padding">
+        <div class="row">
+            <div class="col-sm-4">
+                <h2>
+                    Test Runs Comparison
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-sm-12 view-header-grid">
+                <div class="col-sm-2">
+                    <lookup-autocomplete *ngIf="suites" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="suites" [(model)]="selectedSuite"
+                        (modelChange)="fitTestRuns()" [disabled]="false" [placeholder]="'Select Suite'"></lookup-autocomplete>
+                </div>
+                <div class="col-sm-3">
+                    <lookup-autocomplete *ngIf="testRunsAvailable && selectedSuite" [allowEmptyValue]="false" [propertiesToShow]="['build_name', 'start_time']"
+                        [array]="testRunsAvailable" [(model)]="testRunFirst" (modelChange)="setParams()" [disabled]="false" [placeholder]="'Select First Test Run'" [sortBy]="lookupSortBy"></lookup-autocomplete>
+                </div>
+                <div class="col-sm-3">
+                    <lookup-autocomplete *ngIf="testRunsAvailable && selectedSuite" [allowEmptyValue]="false" [propertiesToShow]="['build_name', 'start_time']"
+                        [array]="testRunsAvailable" [(model)]="testRunSecond" (modelChange)="setParams()" [disabled]="false"
+                        [placeholder]="'Select Second Test Run'" [sortBy]="lookupSortBy"></lookup-autocomplete>
+                </div>
+                <div class="col-sm-2" *ngIf="testRunsAvailable && selectedSuite">
+                    <div class="col-sm-2 margin-y-sm"><ui-switch class="pull-right" size="small" [(ngModel)]="onlyDiffs"></ui-switch></div>
+                    <div class="col-sm-10 no-padding margin-top-6px"><label class="pull-left" (click)="toggleDiffs()" [ngClass]="{
+                        'greyout':!onlyDiffs
+                    }">Only Differences</label></div>
+                </div>
+                <div class="col-sm-2" *ngIf="testRuns && selectedSuite && testRunSecond && testRunFirst">
+                    <button class="btn btn-primary form-control" (click)="compare()">Compare</button>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <hr>
+            </div>
+            <div class="col-sm-12 view-header-grid">
+                    <div class="col-sm-2">
+                        <a *ngIf="shownSuite" routerLink="/project/{{shownSuite.project_id}}/testsuite/{{shownSuite.id}}"><b>Test Suite: </b>{{shownSuite.name}}</a>
+                    </div>
+                    <div class="col-sm-3">
+                        <a *ngIf="shownTestRunFirst" routerLink="/project/{{shownTestRunFirst.project_id}}/testrun/{{shownTestRunFirst.id}}"><b>First Test Run:</b> {{shownTestRunFirst.build_name}} - {{shownTestRunFirst.start_time | date:'dd/MM/yy hh:mm:ss a'}}</a>
+                        <div *ngIf="resultsFirst">
+                            <b>Total Results: </b>{{resultsFirst.length}}</div>
+                    </div>
+                    <div class="col-sm-3">
+                        <a *ngIf="shownTestRunSecond" routerLink="/project/{{shownTestRunSecond.project_id}}/testrun/{{shownTestRunSecond.id}}"><b>Second Test Run:</b> {{shownTestRunSecond.build_name}} - {{shownTestRunSecond.start_time | date:'dd/MM/yy hh:mm:ss a'}}</a>
+                        <div *ngIf="resultsSecond">
+                            <b>Total Results: </b>{{resultsSecond.length}}</div>
+                    </div>
+                </div>
+        </div>
+        <div class="row">
+            <br>
+            <div class="col-sm-12">
+                <table-filter *ngIf="tbCols" [allowExport]="true" [data]="onlyDiffs ? diffs : tests" [columns]="tbCols" [hiddenColumns]="tbHiddenCols" [hide]="hideVal"
+                    [queryParams]="true" [defaultSortBy]="sortBy" (rowClick)="rowClicked($event)" (dataChange)="resultUpdate($event)"
+                    (action)="handleAction($event)"></table-filter>
+            </div>
+        </div>
+    </div>
+</div>

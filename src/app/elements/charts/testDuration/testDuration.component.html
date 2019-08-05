@@ -1,0 +1,11 @@
+<div style="display: block;">
+        <canvas *ngIf="lineChartData.length > 0" #myCanvas baseChart width="400" height="100"
+                    [datasets]="lineChartData"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [colors]="lineChartColors"
+                    [chartType]="lineChartType"
+                    (chartClick)="chartClicked($event)">
+        </canvas>
+     </div>
+     

@@ -1,0 +1,5 @@
+<simple-popup *ngIf="tbCols" [(isHidden)]="hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
+    (execute)="execute($event)" (closed)="wasClosed($event)">
+</simple-popup>
+<table-filter id="users-table" *ngIf="tbCols" [data]="users" [queryParams]="true" [columns]="tbCols" [hide]="hideVal" (rowClick)="rowClicked($event)" (customEvent)="resetPassword($event)" [allowCreate]="true" [allowDelete]="true" (dataChange)="updateUser($event)"
+    (action)="handleAction($event)" (createEntity)="createEntityChange($event)"></table-filter>

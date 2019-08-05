@@ -1,0 +1,33 @@
+<div class="panel-heading">
+  <h2>Create New Project</h2>
+</div>
+<div class="panel-body">
+  <form (ngSubmit)="processProjectCreation()" #form="ngForm">
+    <div class="form-group" [ngClass]="{
+            'has-error': name.invalid && name.touched,
+            'has-success': name.valid && name.touched
+          }">
+      <div class="col-sm-12 no padding margin-bottom-10">
+        <div class="col-sm-1">
+          <label for="name" class="label-inline">Project Name*:</label>
+        </div>
+        <div class="col-sm-4">
+          <input id="name" autofocus maxlength="100" name="name" [(ngModel)]="newProject.name" type="text" trim="blur" class="form-control"
+            placeholder="name" required #name="ngModel">
+        </div>
+      </div>
+      <div class="col-sm-12 no padding margin-bottom-10">
+        <div class="col-sm-1">
+          <label for="customer" class="label-inline">Customer*:</label>
+        </div>
+        <div class="col-sm-4">
+          <lookup-autocomplete id="customer" *ngIf="customers" [allowEmptyValue]="false" [propertiesToShow]="['name']"
+            [array]="customers" [(model)]="newProject.customer" placeholder="Customer"></lookup-autocomplete>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button id="create-project-button" type="submit" class="btn btn-primary" [disabled]="form.invalid || !newProject.customer">Create</button>
+    </div>
+  </form>
+</div>

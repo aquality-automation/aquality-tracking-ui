@@ -1,0 +1,48 @@
+<div class="panel-body text-center">
+	<h2>Welcome to the REPORTING PORTAL</h2>
+	<hr style="height: 1px; background-color:black;" />
+	<form (ngSubmit)="tryAuth()" #form="ngForm">
+
+		<div *ngIf="appSettings && appSettings.ldap_auth === 1 && appSettings.base_auth === 1" class="row">
+			<div class="col-sm-5"></div>
+			<div class="col-sm-2">
+				<ul class="nav nav-tabs">
+					<li [ngClass]="{'active': ldapLogin}" (click)="setLdap(true)">
+						<a href="#">LDAP</a>
+					</li>
+					<li [ngClass]="{'active': !ldapLogin}" (click)="setLdap(false)">
+						<a href="#">Standard</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-sm-5"></div>
+			<div class="col-sm-2">
+				<div class="form-group" [ngClass]="{
+					'has-error': login.invalid && login.touched,
+					'has-success': login.valid && login.touched
+					}">
+					<input autofocus maxlength="100" id="login" name="login" [(ngModel)]="userName" type="text" trim="blur" class="col-10 form-control"
+					 placeholder="User Name" required #login="ngModel">
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-5"></div>
+			<div class="col-sm-2">
+				<div class="form-group" [ngClass]="{
+					'has-error': password.invalid && password.touched,
+					'has-success': password.valid && password.touched
+					}">
+					<input maxlength="100" id="password" name="password" [(ngModel)]="userPassword" type="password" class="form-control" placeholder="Password"
+					 required #password="ngModel">
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<button type="submit" class="btn btn-primary" [disabled]="form.invalid">Log in</button>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,76 @@
+<div class="panel-heading">
+  <h2>Create New Test Run</h2>
+</div>
+<div class="panel-body">
+  <form (ngSubmit)="processTestRunCreation()" #form="ngForm">
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group"
+            [ngClass]="{
+              'has-error': name.invalid && name.touched,
+              'has-success': name.valid && name.touched
+            }">
+            <label for="build_name">Build Name*:</label>
+            <input autofocus id="build_name" name="name" [(ngModel)]="newBuildName" type="text" trim="blur"  class="form-control" placeholder="build name" required
+            #name="ngModel"
+            >
+        </div>
+        <div class="form-group">
+          <label for="milestoneSelector" >Milestone:</label>
+          <select id="milestoneSelector" (ngModelChange)=milestoneChange($event) [(ngModel)]="selectedMilestone" *ngIf="milestones" class="form-control" name="Milestone">
+            <option [ngValue]=blankMilestone>Not assigned</option>
+            <option *ngFor="let milestone of milestones" [ngValue]=milestone>{{milestone.name}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dateLabel">Start Date:</label>
+          <div class="input-group">
+            <span class="input-group-btn">
+              <div (click)="toggleDatePicker()" class="btn btn-warning">Hide/Show Date Selector</div>
+            </span>
+            <input class="form-control" id="dateLabel" disabled name="dateLabel" [(ngModel)]="dateLabel"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="testsuiteSelector" >Test Suite*:</label>
+          <select required="true" id="testsuiteSelector" (ngModelChange)=testSuiteChange($event) [(ngModel)]="selectedTestsuite" *ngIf="testSuites" class="form-control" name="Testsuite">
+            <option *ngFor="let testSuite of testSuites" [ngValue]=testSuite>{{testSuite.name}}</option>
+          </select>
+        </div>
+        <div class="form-group"
+            [ngClass]="{
+              'has-error': environment.invalid && environment.touched,
+              'has-success': environment.valid && environment.touched
+            }">
+            <label for="env">Execution Environment:</label>
+            <input id="env" name="environment" [(ngModel)]="executionEnvironment" type="text" trim="blur"  class="form-control" placeholder="execution environment"
+            #environment="ngModel"
+            >
+        </div>
+      </div>
+    </div>
+
+    <div class="row panel-padding">
+      <div *ngIf="datePickerState" class="row">
+        <div class="col-sm-4">
+          <datepicker (selectionDone)="onSelectionDone($event)" name="datepicker" [(ngModel)]="date" [showWeeks]="true"></datepicker>
+        </div>
+        <div class="col-sm-8">
+          <label for="HH">HH:</label>
+          <input id="HH" type="number" min="0" max="23" maxlength=2 name="HH"
+          #HH (input)="setHours(HH.value)" [(ngModel)]="hours" placeholder="HH" class="form-control time-input"/>
+          <label for="mm">mm:</label>
+          <input id="mm" type="number" min="0" max="59" maxlength=2 name="mm"
+          #mm (input)="setMinutes(mm.value)" [(ngModel)]="minutes" placeholder="mm" class="form-control time-input" />
+        </div>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary" [disabled]="form.invalid" id="create-test-run-button">Create</button>
+      </div>
+    </div>
+  </form>
+</div>

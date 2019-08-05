@@ -1,0 +1,44 @@
+.selector-container {
+    margin-bottom: 5px;
+}
+
+.ms-main-selector {
+    min-width: 135px !important;
+    width: 100% !important;
+    height: fit-content !important;
+    height: -moz-fit-content !important;
+    min-height: 34px;
+    padding: 2px;
+    overflow-x: auto;
+}
+
+.ms-box {
+    width: max-content !important;
+    width: -moz-fit-content !important;
+    display: inline-table;
+    padding: 2px;
+    height: -moz-fit-content;
+    height: max-content;
+    margin: 2px;
+    font-size: 13px;
+    border-collapse: separate;
+    border: 1px solid #999999;
+    border-radius: 5px;
+}
+
+.ms-box-text {
+    float: left;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ms-placeholder {
+    padding: 4px;
+    color: #999999;
+}
+
+.remove-ms-box {
+    cursor: pointer;
+}

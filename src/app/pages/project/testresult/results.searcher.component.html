@@ -1,0 +1,25 @@
+<div class="flying-panel" [@slideInOut]="toggledOn">
+  <div *ngIf="toggledOn" class="row padding-y-05 before-table-header">
+    <div class="col-sm-1 text-center vert-aligned"> </div>
+    <form class="col-sm-10 no-margin" action="getResults()">
+      <div class="form-group text-center vert-aligned input-group no-margin">
+        <span class="input-group-addon">Search for same Test Results in project</span>
+        <input maxlength="500" id="searchByFailReason" name="searchByFailReason" class="form-control" type="text" trim="blur" [(ngModel)]="failReasonSearch">
+        <div class="input-group-btn">
+          <button (click)="getResults()" type="submit" class="btn btn-success">Search
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div *ngIf="toggledOn && testResults" id="searchTable">
+    <table-filter *ngIf="testResults" [hide]="hideVal" [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy" (rowClick)="rowClicked($event)"></table-filter>
+  </div>
+  <div class="header-tools-opener text-center" (click)="toggleTools()">
+    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" [ngClass]="{
+        'glyphicon-chevron-up': toggledOn =='in',
+        'glyphicon-chevron-down': toggledOn =='out'
+      }"></span>
+  </div>
+</div>

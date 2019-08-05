@@ -1,0 +1,84 @@
+<div [hidden]="isHidden" class="overlay mt-overlay">
+    <div class="simple-modal panel" [ngClass]="{
+      'panel-warning':type=='warning',
+      'panel-danger':type=='error',
+      'panel-info':type=='info',
+      'panel-success':type=='success',
+      'panel-primary':type==''
+  }">
+        <div class="panel-heading col-sm-12">
+            <h4 class="panel-title pull-left">{{title}}</h4>
+            <span (click)="hideModal()" class="glyphicon glyphicon-remove clickable-element pull-right"
+                aria-hidden="true"></span>
+        </div>
+        <div class="panel-body">
+            <div *ngIf="pdf && !isHidden" class="col-sm-10 preview">
+                <iframe type="application/pdf" width='100%' height='500' [src]='pdf | safe'></iframe>
+            </div>
+            <div class="col-sm-2 line-margin no-padding">
+                <label class="pull-left col-sm-12 inline-label clearfix">Results:</label>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showFailed" (ngModelChange)="regenerate()">
+                    </ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showFailed }">Failed</label>
+                </div>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showPassed" (ngModelChange)="regenerate()">
+                    </ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showPassed }">Passed</label>
+                </div>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showOther" (ngModelChange)="regenerate()">
+                    </ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showOther }">Other</label>
+                </div>
+                <hr class="col-sm-12 no-padding">
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="orAnd" (ngModelChange)="regenerate()">
+                    </ui-switch>
+                    <label class="pull-left inline-label">{{orAnd ? 'AND' : 'OR'}}</label>
+                </div>
+                <hr class="col-sm-12 no-padding">
+                <label class="pull-left col-sm-12 inline-label clearfix">Resolutions:</label>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showAppIssue"
+                        (ngModelChange)="regenerate()"></ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showAppIssue }">App Issue</label>
+                </div>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showTestIssue"
+                        (ngModelChange)="regenerate()"></ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showTestIssue }">Test Issue</label>
+                </div>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showOtherResolutions"
+                        (ngModelChange)="regenerate()"></ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showOtherResolutions }">Other</label>
+                </div>
+                <hr class="col-sm-12 no-padding">
+                <label class="pull-left col-sm-12 inline-label clearfix">Trend Chart:</label>
+                <div class="col-sm-12 no-padding clearfix">
+                    <ui-switch class="pull-right" size="small" [(ngModel)]="showChart" (ngModelChange)="regenerate()">
+                    </ui-switch>
+                    <label class="pull-left inline-label" [ngClass]="{ 'greyout':!showChart }">Show</label>
+                </div>
+                <div class="col-sm-12 no-padding clearfix">
+                    <input class="pull-right form-control form-control-sm" (blur)="regenerate()" type="number" min="5"
+                        max="30" step="5" [disabled]="!showChart" [(ngModel)]="testRunsToShow" />
+                </div>
+                <hr class="col-sm-12 no-padding">
+                <div class="col-sm-12 no-padding clearfix">
+                    <label for="summary" class=" col-sm-12">Summary:</label>
+                    <textarea class="form-control" rows="5" id="summary" [(ngModel)]="text"
+                        (blur)="regenerate()"></textarea>
+                </div>
+            </div>
+            <div class="col-sm-12 modal-buttons">
+                <div class="modal-buttons-form">
+                    <button autofocus (click)="doAction(button)" class="btn btn-sm btn-default"
+                        *ngFor="let button of buttons">{{button.name}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

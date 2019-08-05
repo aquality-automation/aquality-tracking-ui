@@ -1,0 +1,24 @@
+<div class="col-sm-12">
+  <div *ngIf="!disabled && showInputOnTop" class="comment-editor">
+    <app-ngx-editor clickableLinks [resizer]="false" [height]="150" [placeholder]="'Enter text here...'" [spellcheck]="true"
+      [(ngModel)]="htmlContent" (keydown.control.Enter)="add()"></app-ngx-editor>
+    <div class="comment-editor-hint" (click)="add()">Ctrl+Enter to add comment (or click here)</div>
+  </div>
+  <div class="comments-block" [style.maxHeight]="height">
+    <div class="comment-body" *ngIf="shownComments.length === 0">
+      No comments so far.
+    </div>
+    <div *ngFor="let comment of shownComments" class="comment-section">
+      <div class="comment-author">
+        <b>{{comment.author.first_name}} {{comment.author.second_name}}</b> added a comment - {{comment.created | date:'dd/MM/yy
+        hh:mm:ss'}}</div>
+      <div class="comment-body" [showHtml]="comment.body"></div>
+    </div>
+  </div>
+  <div *ngIf="comments && (comments.length > shownComments.length)" class="row-button" (click)="showAll()">More...</div>
+  <div *ngIf="!disabled && !showInputOnTop" class="bot-margin-sm comment-editor">
+    <app-ngx-editor clickableLinks [resizer]="false" [height]="150" [placeholder]="'Enter text here...'" [spellcheck]="true"
+      [(ngModel)]="htmlContent" (keydown.control.Enter)="add()"></app-ngx-editor>
+    <div class="comment-editor-hint" (click)="add()">Ctrl+Enter to add comment (or click here)</div>
+  </div>
+</div>

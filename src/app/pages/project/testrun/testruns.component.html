@@ -1,0 +1,21 @@
+<div class="panel-body">
+  <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
+    (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+  <div class="row">
+    <div class="col-sm-12">
+      <testrun-result-timeline *ngIf="testRunStatsFiltered" [testRunsStat]="testRunStatsFiltered"></testrun-result-timeline>
+      <br>
+      <div class="pull-right btn-group right-actions">
+        <button class="btn btn-primary" (click)="uploadResults()">Results As CSV</button>
+        <button class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/matrix">Suite Matrix</button>
+        <button class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/compare">Compare Test Runs</button>
+      </div>
+      <br>
+      <br>
+      <div class="col-sm-12">
+        <table-filter *ngIf="tbCols && labels" [allowDelete]="userService.IsManager() || userService.IsLocalManager() || userService.IsLocalAdmin()"
+          [allowExport]="true" [data]="testRuns" (shownData)="tableDataUpdate($event)" [columns]="tbCols" [hiddenColumns]="hiddenCols" [defaultSortBy]="sortBy"
+          [queryParams]="true" (rowClick)="rowClicked($event)" (dataChange)="testRunUpdate($event)" (action)="handleAction($event)"></table-filter>
+      </div>
+    </div>
+  </div>

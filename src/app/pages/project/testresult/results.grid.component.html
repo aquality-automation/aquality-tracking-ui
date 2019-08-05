@@ -1,0 +1,21 @@
+<br>
+<div *ngIf="testResults">
+  <results-searcher *ngIf="listOfResolutions" [listOfResolutions]="listOfResolutions" [finalResults]="finalResults">
+  </results-searcher>
+  <table-filter *ngIf="tbCols" 
+  [hide]="hideVal" 
+  [allowExport]="true" 
+  [data]="testResults" 
+  [rowsOnPageSet]="[5,10,20]" 
+  [rowsOnPage]="20"
+  [columns]="tbCols" 
+  [hiddenColumns]="tbHiddenCols" 
+  [allowBulkUpdate]="true" 
+  [defaultSortBy]="sortBy" 
+  [queryParams]="true" 
+  (customEvent)="serchForSameResults($event)" 
+  (rowClick)="rowClicked($event)" 
+  (dataChange)="resultUpdate($event)" 
+  (action)="handleAction($event)"
+  (bulkChanges)="bulkResultUpdate($event)"></table-filter>
+</div>

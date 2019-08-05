@@ -1,0 +1,8 @@
+{
+    "build1": {
+        "build_name": "build 1"
+    },
+    "build2": {
+        "build_name": "build 2"
+    }
+}

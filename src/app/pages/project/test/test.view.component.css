@@ -1,0 +1,42 @@
+.container{
+  min-width: 600px;
+  margin-bottom:10px;
+  width: 100%;
+}
+
+.description-text pre{
+  height: auto;
+  max-height: 0px;
+  overflow: hidden;
+  transition: ease-in-out 1s;
+}
+
+.description-text pre:hover{
+  cursor: pointer;
+  overflow: auto;
+}
+
+.inline-page-label{
+  margin-top: 5px !important;
+}
+
+.name-field{
+  font-size: 25px;
+  margin-left: 70px;
+}
+
+.header-info > div{
+  min-height: 31px;
+}
+
+.panel-heading{
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+.suite-links{
+  margin-right: 10px;
+}
+
+
+

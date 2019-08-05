@@ -1,0 +1,60 @@
+<div *ngIf="testSuite" class="panel-heading">
+  <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
+    [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
+    (closed)="wasClosed($event)"></simple-popup>
+  <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle"
+    [tests]="testSuite.tests" [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]"
+    (execute)="moveToExecute($event)" (closed)="moveToWasClosed($event)"></move-test-modal>
+  <div class="row">
+    <div class="col-sm-4">
+      <h2 class="pull-left" id="suite-view">Test Suite:</h2>
+      <lookup-autocomplete id="page-label-lookup" *ngIf="selectedTestSuite" class="pull-left page-label-lookup"
+        [allowEmptyValue]="true" [propertiesToShow]="['name']" [array]="testSuites" [model]="selectedTestSuite"
+        [disabled]="false" placeholder="All Tests" (modelChange)="suiteChange($event)"></lookup-autocomplete>
+    </div>
+    <div class="col-md-8">
+      <div class="btn-group pull-right" role="group">
+        <button class="btn btn-primary" routerLink="/project/{{testSuite.project_id}}/testrun/matrix"
+          [queryParams]="{suite:testSuite.id}">Suite Matrix</button>
+        <button id="move-test-btn"*ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+          class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
+        <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn">Export to CSV</button>
+        <button (click)="openTestCreation()"
+          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+          class="btn btn-primary">Add Test</button>
+      </div>
+    </div>
+    <hr class="col-sm-12 no-padding">
+    <div class="col-sm-12">
+      <div *ngIf="testSuite && testSuite.name" class="col-md-6">
+        <label class="pull-left label-inline">Name: </label>
+        <div class="pull-left">
+          <inline-editor id="name" name="name" type="text" trim="blur" empty="not set" max="50" min="4"
+            [(ngModel)]="testSuite.name" (onError)="nameError()" (onSave)="updateSuite()"
+            [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+          </inline-editor>
+        </div>
+      </div>
+      <div *ngIf="totalManualDuration" class="col-md-6">
+        <label>Total Manual Duration:</label>
+        <span id="totalManualDuration">{{totalManualDuration}}</span>
+      </div>
+      <div *ngIf="getLatestAutomationDuration()" class="col-md-6">
+        <label>Latest Automation Duration:</label>
+        <span id="latestAutomationDuration">{{getLatestAutomationDuration()}}</span>
+      </div>
+      <div class="col-md-6">
+        <label>Total Tests:</label>
+        <span id="testsNumber">{{testSuite?.tests?.length}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="panel-body">
+  <table-filter *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20"
+    [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
+    [defaultSortBy]="{ property: 'name', order: 'desc' }"
+    [allowDelete]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+    [allowBulkUpdate]="true" (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)"
+    (action)="handleAction($event)" (bulkChanges)="bulkUpdate($event)"></table-filter>
+</div>

@@ -1,0 +1,16 @@
+.active {
+    color: #FFF !important;
+}
+
+.navbar-brand {
+    padding-top: 6px;
+    width: 60px;
+}
+
+.navbar-brand>img {
+    width: 50px;
+    margin-top: 5px;
+    margin-left: -10px;
+    height: 30px;
+    margin-right: 10px;
+}

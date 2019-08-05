@@ -1,0 +1,43 @@
+<div *ngIf="project" class="panel-heading">
+  <div class="row">
+    <div class="col-sm-6">
+      <h2>Create Audit - {{project.name}}</h2>
+    </div>
+  </div>
+</div>
+<div *ngIf="this.hiddenServices.length > 0" class="alert alert-info pull-left margin-left-15">
+  <span class="glyphicon glyphicon-info-sign alert-icon" aria-hidden="true"></span>
+  <p *ngIf="this.hiddenServices.length === 1"class="alert-text">There is an opened audit for this project. <b>{{getHiddenServices()}}</b> Service is not available then.</p>
+  <p *ngIf="this.hiddenServices.length > 1"class="alert-text">There are some opened audits for this project. The following Services are not available then: <b>{{getHiddenServices()}}</b>.</p>
+</div>
+<div class="form-group col-sm-12">
+    <div class="col-sm-1">
+      <label for="service" class="label-inline">Service*:</label>
+    </div>
+    <div class="col-sm-3">
+      <lookup-colored id="service" *ngIf="services" placeholder="Select Service" [propertiesToShow]="['name']" [array]="services"
+        [(model)]="audit.service" (modelChange)="serviceUpdate()" colorProperty="color"></lookup-colored>
+    </div>
+  </div>
+<div *ngIf="audit" class="col-sm-12">
+  <form>
+    <div class="form-group col-sm-1">
+      <label for="auditors" class="label-inline">Auditors*:</label>
+    </div>
+    <div class="col-sm-3">
+      <lookup-autocomplete-multiselect *ngIf="auditors" placeholder="Select Auditor" [propertiesToShow]="['first_name','second_name']"
+        [array]="auditors" [(model)]="audit.auditors"></lookup-autocomplete-multiselect>
+    </div>
+  </form>
+</div>
+<div *ngIf="audit" class="form-group col-sm-12">
+  <div class="col-sm-1">
+    <label for="due-date">Due Date*:</label>
+  </div>
+  <div class="col-sm-3">
+    <ng-datepicker id="due-date" name="due-date" [ngModel]="audit.due_date" (ngModelChange)="dateUpdate($event)" [options]="options"></ng-datepicker>
+  </div>
+</div>
+<div class="form-group col-sm-12">
+  <button [disabled]="validate()" type="submit" class="btn btn-primary" (click)="createAudit()">Create</button>
+</div>

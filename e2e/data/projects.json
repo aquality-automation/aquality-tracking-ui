@@ -1,0 +1,32 @@
+{
+    "creation": {
+        "name": "Test creation",
+        "customer": {
+            "name": "-"
+        }
+    },
+    "testrunProject": {
+        "name" : "TestRun",
+        "customer": {
+            "name": "-"
+        }
+    },
+    "suiteProject": {
+        "name" : "Test Suite",
+        "customer": {
+            "name": "-"
+        }
+    },
+    "resolutionProject": {
+        "name" : "Test Resolution",
+        "customer": {
+            "name": "-"
+        }
+    },
+    "noResolutionProject": {
+        "name" : "Test No Resolution",
+        "customer": {
+            "name": "-"
+        }
+    }
+}

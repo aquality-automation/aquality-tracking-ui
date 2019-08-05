@@ -1,0 +1,4 @@
+.selector-main-button.disabled {
+    opacity: 1 !important;
+    cursor: default;
+}

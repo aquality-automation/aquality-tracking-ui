@@ -1,0 +1,202 @@
+<div *ngIf="generalSettings" class="panel panel-default">
+  <div class="panel-heading">General Settings <button class="btn btn-success btn-sm pull-right panel-button"
+      (click)="saveGeneral()">Save</button></div>
+  <div class="panel-body">
+    <div class="col-sm-4">
+      <div class="col-sm-2 margin-y-sm">
+        <ui-switch class="pull-right" size="small" [(ngModel)]="generalSettings.audits"></ui-switch>
+      </div>
+      <div class="col-sm-10 no-padding margin-top-6px">
+        <label class="pull-left" [ngClass]="{
+                  'greyout':!generalSettings.audits
+              }">Audits Module</label>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="col-sm-2 margin-y-sm">
+        <ui-switch class="pull-right" size="small" [ngModel]="generalSettings.ldap_auth" (change)="setLdap($event)">
+        </ui-switch>
+      </div>
+      <div class="col-sm-10 no-padding margin-top-6px">
+        <label class="pull-left" [ngClass]="{
+              'greyout':!generalSettings.ldap_auth
+          }">LDAP
+          Authorization</label>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="col-sm-2 margin-y-sm">
+        <ui-switch [disabled]="generalSettings.ldap_auth !== 1 || !generalSettings.ldap_auth" class="pull-right"
+          size="small" [(ngModel)]="generalSettings.base_auth"></ui-switch>
+      </div>
+      <div class="col-sm-10 no-padding margin-top-6px">
+        <label class="pull-left" [ngClass]="{
+              'greyout':!generalSettings.base_auth
+          }">Base
+          Authorization</label>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="ldapSettings && generalSettings && generalSettings.ldap_auth" class="panel panel-default">
+  <div class="panel-heading">LDAP Settings <button class="btn btn-success btn-sm pull-right panel-button"
+      (click)="saveLDAP()">Save</button></div>
+  <div class="panel-body">
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="ldapAdServer" class="label-inline">AD Server</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="ldapAdServer" maxlength="300" class="form-control input-sm" [(ngModel)]="ldapSettings.ldapAdServer">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="ldapSearchBaseUsers" class="label-inline">Base Search Users</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="ldapSearchBaseUsers" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.ldapSearchBaseUsers">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="security_auntification" class="label-inline">Authentication Type</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="security_auntification" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.security_auntification">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="userSearchFilter" class="label-inline">User Search Filter</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="userSearchFilter" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.userSearchFilter">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="domain" class="label-inline">Login Domain</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="domain" maxlength="300" class="form-control input-sm" [(ngModel)]="ldapSettings.domain">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="mailAttribute" class="label-inline">Mail Attribute</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="mailAttribute" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.mailAttribute">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="firstNameAttribute" class="label-inline">First Name Attribute</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="firstNameAttribute" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.firstNameAttribute">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="userNameAttribute" class="label-inline">User Name Attribute</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="userNameAttribute" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.userNameAttribute">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="lastNameAttribute" class="label-inline">Last Name Attribute</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="lastNameAttribute" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.lastNameAttribute">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="adminUserName" class="label-inline">Admin User Name</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="adminUserName" maxlength="300" class="form-control input-sm"
+          [(ngModel)]="ldapSettings.adminUserName">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="adminSecret" class="label-inline">Admin Password</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="adminSecret" maxlength="300" class="form-control input-sm" type="password"
+          [(ngModel)]="ldapSettings.adminSecret">
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="emailSettings" class="panel panel-default">
+  <div class="panel-heading">Email Settings <button class="btn btn-success btn-sm pull-right panel-button"
+      (click)="saveEmail()">Save</button></div>
+  <div class="panel-body">
+    <div class="col-sm-12">
+      <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.enabled"></ui-switch>
+      <label class="pull-left padding-left-15px">Email Notifications</label>
+    </div>
+    <div class="col-sm-12">
+      <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.use_auth"></ui-switch>
+      <label class="pull-left padding-left-15px">Use STMP Authentication</label>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="ldapSearchBaseUsers" class="label-inline">STMP Host</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="ldapSearchBaseUsers" maxlength="100" class="form-control input-sm" [(ngModel)]="emailSettings.host"
+          [disabled]="!emailSettings.enabled">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="ldapSearchBaseUsers" class="label-inline">STMP Port</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="ldapSearchBaseUsers" maxlength="4" class="form-control input-sm" [(ngModel)]="emailSettings.port"
+          [disabled]="!emailSettings.enabled">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="security_auntification" class="label-inline">STMP Email From</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="security_auntification" maxlength="100" class="form-control input-sm"
+          [(ngModel)]="emailSettings.from_email" [disabled]="!emailSettings.enabled">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="security_auntification" class="label-inline">STMP User</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="security_auntification" maxlength="100" class="form-control input-sm"
+          [(ngModel)]="emailSettings.user" [disabled]="!emailSettings.enabled">
+      </div>
+    </div>
+    <div class="col-sm-4 field-cell">
+      <div class="col-sm-4">
+        <label for="adminSecret" class="label-inline">STMP Password</label>
+      </div>
+      <div class="col-sm-8">
+        <input id="adminSecret" maxlength="100" class="form-control input-sm" type="password"
+          [(ngModel)]="emailSettings.password" [disabled]="!emailSettings.enabled">
+      </div>
+    </div>
+  </div>
+</div>

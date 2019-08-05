@@ -1,0 +1,22 @@
+{
+    "flowTest": {
+        "name": "Auto Flow Test",
+        "color": "Danger"
+    },
+    "global": [{
+        "name": "Not Assigned",
+        "color": "Primary"
+    },{
+        "name": "Application Issue",
+        "color": "Danger"
+    },{
+        "name": "Environment Issue",
+        "color": "Warning"
+    },{
+        "name": "Test Issue",
+        "color": "Warning"
+    },{
+        "name": "Test Design Issue",
+        "color": "Warning"
+    }]
+}

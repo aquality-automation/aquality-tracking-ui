@@ -1,0 +1,8 @@
+<div class="lt" *ngIf="text" [ngClass]="{
+    'lt-container-hidden': !showFull,
+    'lt-container-shown': showFull,
+    'lt-normal-wrap': wrap
+  }" (dblclick)="toggleFullView()" title="Double click to show\\hide full text">
+<div id="wrapper" [ngClass]="{
+'lt-wrapper-container': wrap
+}">{{text}}</div>

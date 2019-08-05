@@ -1,0 +1,45 @@
+
+.info-panel{
+  width: 320px;
+}
+
+.summary-panel{
+  width: calc(100% - 339px);
+}
+
+.inline{
+  display: inline-table;
+}
+
+.comments-panel{
+  width: calc(100% - 519px);
+}
+
+.comments-panel .panel-body{
+  word-wrap: break-word;
+}
+
+.fileLink{
+  display: inline-block;
+  width: 392px;
+  word-wrap: break-word;
+}
+
+.attachments-panel{
+  width: 500px;
+  max-width: 500px;
+}
+
+.uploader{
+  position: absolute;
+  bottom: 0;
+}
+
+.btn-heading{
+  height: 24px;
+  padding-top: 1px;
+}
+
+.summaryShow{
+  padding: 10px;
+}
