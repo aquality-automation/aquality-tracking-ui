@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-node
+      - image: circleci/openjdk:8-node-browsers
 
     working_directory: ~/repo
 
@@ -38,12 +38,15 @@ jobs:
             docker run --network container:api_tomcat_1 \
               appropriate/curl --retry 20 --retry-delay 60 --retry-connrefused http://localhost:8080/api/authInfo
 
+      - run: 
+          name: Install v1-dependencies
+          command: |
+            npm i && 
+
       - run:
           name: Run tests
           command: |
-            docker build . -t tests
-            docker run --network container:api_tomcat_1 \
-              tests
+            npm run e2e:headless
       
       - run:
           when: always
