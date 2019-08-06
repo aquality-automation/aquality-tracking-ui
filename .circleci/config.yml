@@ -48,4 +48,12 @@ jobs:
             docker build . -t tests
             docker run --network container:api_tomcat_1 \
               tests
+      
+      - run:
+          when: always
+          name: Generate allure
+          command: npm run allure
+
+      - store_test_results:
+          path: allure-report/
 
