@@ -40,14 +40,13 @@ jobs:
 
       - run: 
           name: Install dependencies
-          command: |
-            npm i
+          command: npm i
+            
 
       - run:
           name: Run tests
-          command: |
-            npm run e2e:headless
-      
+          command: npm run e2e:headless
+            
       - run:
           when: always
           name: Generate allure
