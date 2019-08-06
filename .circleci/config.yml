@@ -50,6 +50,6 @@ jobs:
           name: Generate allure
           command: npm run allure
 
-      - store_test_results:
+      - store_artifacts:
           path: allure-report/
 
