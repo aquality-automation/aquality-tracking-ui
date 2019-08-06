@@ -1,7 +1,7 @@
 import { LogIn } from '../pages/login.po';
 import * as users from '../data/users.json';
 
-describe('Log in', () => {
+fdescribe('Log in', () => {
   let logInPage: LogIn;
 
   beforeEach(() => {

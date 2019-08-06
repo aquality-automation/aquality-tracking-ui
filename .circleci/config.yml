@@ -52,4 +52,7 @@ jobs:
 
       - store_artifacts:
           path: allure-report/
+          
+      - store_artifacts:
+          path: allure-results/
 
