@@ -31,17 +31,18 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-            
+
       - run: 
           name: Install java
           command: | 
-            apt-get update
-            apt-get -y install software-properties-common
-            add-apt-repository -y ppa:webupd8team/java
-            echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-            echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
-            apt-get update
-            apt-get -y install oracle-java8-installer
+            apt-get -y -q update && \
+            apt-get -y -q upgrade && \
+            apt-get -y -q install software-properties-common htop && \
+            add-apt-repository ppa:webupd8team/java && \
+            apt-get -y -q update && \
+            echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
+            apt-get -y -q install oracle-java8-installer && \
+            update-java-alternatives -s java-8-oracle
 
       - run:
           name: Start docker-compose
