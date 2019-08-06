@@ -80,7 +80,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "node-jsencrypt": "^1.0.0",
-    "protractor": "~5.2.0",
+    "protractor": "~5.4.2",
     "request": "^2.88.0",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
