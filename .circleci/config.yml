@@ -21,6 +21,10 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: 
+          name: Show chrome version
+          command: google-chrome --version
+
+      - run: 
           name: Install docker-compose
           command: |
             set -x
@@ -42,7 +46,6 @@ jobs:
           name: Install dependencies
           command: npm i
             
-
       - run:
           name: Run tests
           command: npm run e2e:headless
