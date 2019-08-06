@@ -31,26 +31,21 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
-      - run:
-          name: Clone ReportingPortal
-          command:  |
-            git clone https://github.com/TrueAutomationValue/ReportingPortal.git
-            
+ 
       - run:
           name: Start docker-compose
           command:  |
-            cd ReportingPortal
+            cd api
             set -x
             docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
             docker-compose up -d
-            docker run --network container:reportingportal_tomcat_1 \
+            docker run --network container:api_tomcat_1 \
               appropriate/curl --retry 20 --retry-delay 60 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run --network container:reportingportal_tomcat_1 \
+            docker run --network container:api_tomcat_1 \
               tests
 
