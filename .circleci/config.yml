@@ -4,6 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:10.15.3
+      - image: circleci/openjdk:8
 
     working_directory: ~/repo
 
@@ -31,19 +32,7 @@ jobs:
             curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
-      - run: 
-          name: Install java
-          command: | 
-            sudo apt-get -y -q update && \
-            sudo apt-get -y -q upgrade && \
-            sudo apt-get -y -q install software-properties-common htop && \
-            sudo add-apt-repository ppa:webupd8team/java && \
-            sudo apt-get -y -q update && \
-            echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
-            sudo apt-get -y -q install oracle-java8-installer && \
-            sudo update-java-alternatives -s java-8-oracle
-
+            
       - run:
           name: Start docker-compose
           command:  |
