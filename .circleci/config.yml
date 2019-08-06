@@ -21,8 +21,11 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: 
-          name: Show chrome version
-          command: google-chrome --version
+          name: Update Google chrome
+          command: | 
+              sudo apt-get update
+              sudo apt-get install google-chrome-stable
+              google-chrome --version
 
       - run: 
           name: Install docker-compose
