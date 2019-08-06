@@ -39,9 +39,9 @@ jobs:
               appropriate/curl --retry 20 --retry-delay 60 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run: 
-          name: Install v1-dependencies
+          name: Install dependencies
           command: |
-            npm i && 
+            npm i
 
       - run:
           name: Run tests
