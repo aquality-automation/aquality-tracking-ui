@@ -33,7 +33,6 @@ FROM maven:3.5-jdk-8-alpine as results
 WORKDIR /result/back
 COPY --from=build-back /app /result/back/
 COPY --from=build-back /app/target/api.war /result/webapps/
-COPY --from=build-front /app/dist/ /result/webapps/ROOT/
 ARG DB_USER=root
 ARG DB_PASS
 ARG DB_HOST=db
