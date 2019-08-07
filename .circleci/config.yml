@@ -60,5 +60,5 @@ jobs:
       #     command: npm run allure
 
       - store_artifacts:
-          path: allure-report/
+          path: allure-results/
 
