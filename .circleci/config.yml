@@ -38,12 +38,7 @@ jobs:
           command: |
             sudo mkdir allure-results
             docker build . -t tests
-            docker run -d \
-              -it \
-              --name devtest \
-              --mount type=bind,source=/home/circleci/repo/allure-results,target=/app/allure-results \
-              --network container:api_tomcat_1 \
-              tests
+            docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results tests
             cd allure-results
             ls
       
