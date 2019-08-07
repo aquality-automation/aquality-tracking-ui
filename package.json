@@ -10,8 +10,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "e2e": "ng e2e && allure generate --clean",
-    "e2e:headless": "ng e2e --config protractor.headless.conf.js && allure generate --clean"
+    "e2e": "ng e2e",
+    "e2e:headless": "ng e2e --config protractor.headless.conf.js",
+    "allure": "allure generate --clean"
   },
   "private": true,
   "dependencies": {
