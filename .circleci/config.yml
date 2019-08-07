@@ -52,7 +52,13 @@ jobs:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run -ti --rm -v /home/circleci/repo/allure-results:/app cp tests /home/circleci/repo/allure-results/test.txt /app/test.txt
+            docker run -d \
+              -it \
+              --name devtest \
+              --mount type=bind,source="$(pwd)"/allure-results,target=/app \
+              tests
+            cd allure-results
+            ls
       
       # - run:
       #     when: always
