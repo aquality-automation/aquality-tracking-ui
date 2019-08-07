@@ -23,6 +23,7 @@ jobs:
       - run: 
           name: Install docker-compose
           command: |
+            pwd
             set -x
             curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
             chmod +x ~/docker-compose
@@ -41,6 +42,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            pwd
             docker build . -t tests
             docker run -i -v allure-report:/app/allure-report --network container:api_tomcat_1 tests << COMMANDS \
               cp - a /app/allure-report allure-report
