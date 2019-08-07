@@ -56,7 +56,7 @@ jobs:
             docker run -d \
               -it \
               --name devtest \
-              --mount type=bind,source=/home/circleci/repo/allure-results,target=/app \
+              --mount type=bind,source=~/repo/allure-results,target=/app \
               tests
             cd allure-results
             ls
