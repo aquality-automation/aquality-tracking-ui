@@ -51,11 +51,12 @@ jobs:
       - run:
           name: Run tests
           command: |
+            sudo mkdir allure-results
             docker build . -t tests
             docker run -d \
               -it \
               --name devtest \
-              --mount type=bind,source="$(pwd)"/allure-results,target=/app \
+              --mount type=bind,source=/home/circleci/repo/allure-results,target=/app \
               tests
             cd allure-results
             ls
