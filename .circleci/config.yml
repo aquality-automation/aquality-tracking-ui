@@ -10,62 +10,48 @@ jobs:
     steps:
       - checkout
 
-      # - restore_cache:
-      #     keys:
-      #       - v1-dependencies-{{ checksum "package.json" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
 
-      # - save_cache:
-      #     paths:
-      #       - node_modules
-      #     key: v1-dependencies-{{ checksum "package.json" }}
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
             
-      # - run:
-      #     name: Install Dependencies
-      #     command: npm i
+      - run:
+          name: Install Dependencies
+          command: npm i
 
-      # - run: 
-      #     name: Install docker-compose
-      #     command: |
-      #       set -x
-      #       curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-      #       chmod +x ~/docker-compose
-      #       sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
-      # - run:
-      #     name: Start docker-compose
-      #     command:  |
-      #       cd api
-      #       set -x
-      #       docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
-      #       docker-compose up -d
-      #       docker run --network container:api_tomcat_1 \
-      #         appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
-
-      # - run:
-      #     name: Run tests
-      #     command: |
-      #       docker build . -t tests
-      #       docker run -ti --rm -v /home/circleci/repo/allure-results:/results --network container:api_tomcat_1 tests
+      - run:
+          name: Start docker-compose
+          command:  |
+            cd api
+            set -x
+            docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
+            docker-compose up -d
+            docker run --network container:api_tomcat_1 \
+              appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
           name: Run tests
           command: |
-            pwd
             sudo mkdir allure-results
             docker build . -t tests
             docker run -d \
               -it \
               --name devtest \
-              --mount type=bind,source=/home/circleci/repo/allure-results,target=/app \
+              --mount type=bind,source=/home/circleci/repo/allure-results,target=/app/allure-results \
+              --network container:api_tomcat_1
               tests
             cd allure-results
             ls
       
-      # - run:
-      #     when: always
-      #     name: Generate allure
-      #     command: npm run allure
+      - run:
+          when: always
+          name: Generate allure
+          command: npm run allure
 
       - store_artifacts:
-          path: allure-results/
+          path: allure-report/
 
