@@ -3,14 +3,23 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8
+      - image: circleci/openjdk:8-node
 
     working_directory: ~/repo
 
     steps:
       - checkout
       - setup_remote_docker
-      
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
       - run: 
           name: Install docker-compose
           command: |
@@ -33,8 +42,14 @@ jobs:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run -i -v ${PWD}/allure-report:/app/allure-report --network container:api_tomcat_1 tests
+            docker run -ti --rm -v $(pwd)/allure-results:/app/allure-results --network container:api_tomcat_1 tests
+            
       
+      - run:
+          when: always
+          name: Generate allure
+          command: npm run allure
+
       - store_artifacts:
           path: allure-report/
 
