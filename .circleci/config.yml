@@ -41,10 +41,10 @@ jobs:
       - run:
           name: Run tests
           command: |
+            sudo mkdir -m 777 allure-results
             docker build . -t tests
-            docker run -ti --rm -v $(pwd)/allure-results:/app/allure-results --network container:api_tomcat_1 tests
+            docker run -ti --rm -v ${pwd}/allure-results:/app/allure-results --network container:api_tomcat_1 tests
             
-      
       - run:
           when: always
           name: Generate allure
