@@ -52,7 +52,7 @@ jobs:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run -ti --rm -v /home/circleci/repo/allure-results:/app
+            docker run -ti --rm -v /home/circleci/repo/allure-results:/app tests
       
       # - run:
       #     when: always
