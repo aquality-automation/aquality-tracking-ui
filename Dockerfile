@@ -6,6 +6,4 @@ RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' |
 RUN apt-get update 
 RUN apt-get -y install google-chrome-stable
 RUN npm i
-RUN npm i -g protractor 
-RUN webdriver-manager update
 CMD npm run e2e:headless

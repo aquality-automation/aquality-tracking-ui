@@ -21,16 +21,6 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: 
-          name: Install Chromedriver latest version
-          command: |
-            sudo apt-get update
-            sudo apt-get install lsb-release libappindicator3-1 fonts-liberation libxss1 xdg-utils
-            curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo dpkg -i google-chrome.deb
-            sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
-            rm google-chrome.deb
-
-      - run: 
           name: Install docker-compose
           command: |
             set -x
@@ -48,14 +38,13 @@ jobs:
             docker run --network container:api_tomcat_1 \
               appropriate/curl --retry 20 --retry-delay 60 --retry-connrefused http://localhost:8080/api/authInfo
 
-      - run: 
-          name: Install dependencies
-          command: npm i
-            
       - run:
           name: Run tests
-          command: npm run e2e:headless
-            
+          command: |
+            docker build . -t tests
+            docker run -i -v allure-report:/app/allure-report --network container:api_tomcat_1 tests << COMMANDS \
+              cp - a /app/allure-report allure-report
+      
       - run:
           when: always
           name: Generate allure
