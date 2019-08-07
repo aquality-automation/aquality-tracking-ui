@@ -51,10 +51,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            pwd
             sudo mkdir allure-results
-            cd allure-results
-            pwd
             docker build . -t tests
             docker run -d \
               -it \
