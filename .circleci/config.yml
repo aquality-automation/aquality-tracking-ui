@@ -46,7 +46,7 @@ jobs:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run -ti --rm -v $(pwd)/allure-results:/results --network container:api_tomcat_1 tests
+            docker run -ti --rm -v /home/circleci/repo/allure-results:/results --network container:api_tomcat_1 tests
             
       
       - run:
