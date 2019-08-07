@@ -2,14 +2,13 @@ version: 2
 
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:8-node
+    machine:
+      image: circleci/classic:latest 
 
     working_directory: ~/repo
 
     steps:
       - checkout
-      - setup_remote_docker
 
       # - restore_cache:
       #     keys:
@@ -51,6 +50,7 @@ jobs:
       - run:
           name: Run tests
           command: |
+            pwd
             sudo mkdir allure-results
             docker build . -t tests
             docker run -d \
