@@ -20,6 +20,10 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run:
+          name: Install Dependencies
+          command: npm i
+
       - run: 
           name: Install docker-compose
           command: |
@@ -42,7 +46,7 @@ jobs:
           name: Run tests
           command: |
             docker build . -t tests
-            docker run -ti --rm -v $(pwd)/allure-results:/app/allure-results --network container:api_tomcat_1 tests
+            docker run -ti --rm -v $(pwd)/allure-results:/results --network container:api_tomcat_1 tests
             
       
       - run:
