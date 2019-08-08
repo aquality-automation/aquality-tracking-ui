@@ -2,31 +2,26 @@ version: 2
 
 jobs:
   build:
-    docker:
-      - image: circleci/openjdk:8-node-browsers
+    machine:
+      image: circleci/classic:latest 
 
     working_directory: ~/repo
 
     steps:
       - checkout
-      - setup_remote_docker
 
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
-
+            
+      - run:
+          name: Install Dependencies
+          command: npm i
+          
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
-      - run: 
-          name: Install docker-compose
-          command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
 
       - run:
           name: Start docker-compose
@@ -36,17 +31,16 @@ jobs:
             docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
             docker-compose up -d
             docker run --network container:api_tomcat_1 \
-              appropriate/curl --retry 20 --retry-delay 60 --retry-connrefused http://localhost:8080/api/authInfo
-
-      - run: 
-          name: Install dependencies
-          command: |
-            npm i
+              appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
           name: Run tests
           command: |
-            npm run e2e:headless
+            sudo mkdir allure-results
+            docker build . -t tests
+            docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
+            cd allure-results
+            ls
       
       - run:
           when: always
@@ -55,7 +49,4 @@ jobs:
 
       - store_artifacts:
           path: allure-report/
-          
-      - store_artifacts:
-          path: allure-results/
 
