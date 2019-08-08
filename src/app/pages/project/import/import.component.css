@@ -24,3 +24,8 @@ ui-switch{
 .import-results-panel{
   margin: 20px 0 0 0;
 }
+
+.checbox-section {
+  padding-top: 10px;
+  padding-bottom: 4px;
+}

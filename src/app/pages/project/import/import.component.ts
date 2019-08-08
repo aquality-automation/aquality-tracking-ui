@@ -41,6 +41,7 @@ export class ImportComponent {
   executor = '';
   buildName = '';
   singleTestRun = false;
+  lastTestRun = false;
   placeholder = 'Select Import Type';
   imports: string[] = ['MSTest (.trx)',
     'Robot (.xml)',
@@ -195,9 +196,10 @@ export class ImportComponent {
     params += this.suite ? `&suite=${encodeURIComponent(this.suite.name)}` : '';
     params += this.singleTestRun ? `&singleTestRun=${this.singleTestRun}` : '';
     params += this.executor ? `&author=${this.executor}` : '';
-    params += this.buildName ? `&buildName=${this.buildName}` : '';
+    params += this.buildName && !this.lastTestRun ? `&buildName=${this.buildName}` : '';
     params += this.testRun ? `&testRunId=${this.testRun.id}` : '';
     params += this.ci_build ? `&cilink=${this.ci_build}` : '';
+    params += this.lastTestRun ? `&addToLastTestRun=${this.lastTestRun}` : '';
 
     return params;
   }
@@ -285,6 +287,6 @@ export class ImportComponent {
 
   async setSuite($event) {
     this.suite = $event;
-    this.testRuns = await this.testrunService.getTestRun({ test_suite: $event });
+    this.testRuns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
   }
 }
