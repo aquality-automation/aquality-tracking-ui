@@ -1,5 +1,5 @@
 <div *ngIf="audit" class="panel-heading">
-  <simple-popup *ngIf="!hideModal" [title]="ModalTitle" [message]="ModalMessage" [type]="'warning'" [buttons]="buttons"
+  <simple-popup [(isHidden)]="hideModal" [title]="ModalTitle" [message]="ModalMessage" [type]="'warning'" [buttons]="buttons"
     (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
   <div class="row">
     <div class="col-md-9">

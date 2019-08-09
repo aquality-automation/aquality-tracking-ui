@@ -48,7 +48,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
 
     constructor(
         private projectService: ProjectService,
-        private testRunService: TestRunService,
+        private testRunService: TestRunService
     ) {
         super();
     }
