@@ -42,6 +42,7 @@ export class AuditInfoComponent {
   };
   auditors: User[];
   URL: string;
+  events = { remove: 'remove', start: 'start', submit: 'submit', finish: 'finish' }
 
   constructor(
     public route: ActivatedRoute,
@@ -172,7 +173,7 @@ export class AuditInfoComponent {
   }
 
   startProgress() {
-    this.buttons = [{ name: 'yes', execute: 'start' }, { name: 'no', execute: 'false' }];
+    this.buttons = [{ name: 'yes', execute: this.events.start }, { name: 'no', execute: 'false' }];
     this.ModalTitle = `Start Audit for the ${this.audit.project.name} project`;
     this.ModalMessage =
       `Are you sure that you want to move current Audit to 'In Progress' status? Please note that the action cannot be undone.`;
@@ -188,7 +189,7 @@ export class AuditInfoComponent {
   }
 
   finishProgress() {
-    this.buttons = [{ name: 'yes', execute: 'finish' }, { name: 'no', execute: 'false' }];
+    this.buttons = [{ name: 'yes', execute: this.events.finish }, { name: 'no', execute: 'false' }];
     this.ModalTitle = `Finish Audit for the ${this.audit.project.name} project`;
     this.ModalMessage =
       `Are you sure that you want to move current Audit to 'In Review' status? Please note that the action cannot be undone.`;
@@ -204,7 +205,7 @@ export class AuditInfoComponent {
   }
 
   submitAudit() {
-    this.buttons = [{ name: 'yes', execute: 'submit' }, { name: 'no', execute: 'false' }];
+    this.buttons = [{ name: 'yes', execute: this.events.submit }, { name: 'no', execute: 'false' }];
     this.ModalTitle = `Submit Audit for the ${this.audit.project.name} project`;
     this.ModalMessage =
       `Are you sure that you want to move current Audit to 'Submitted' status? Please note that the action cannot be undone.`;
@@ -220,7 +221,7 @@ export class AuditInfoComponent {
   }
 
   cancelAudit() {
-    this.buttons = [{ name: 'yes', execute: 'remove' }, { name: 'no', execute: 'false' }];
+    this.buttons = [{ name: 'yes', execute: this.events.remove }, { name: 'no', execute: 'false' }];
     this.ModalTitle = `Remove Audit for the ${this.audit.project.name} project`;
     this.ModalMessage =
       `Are you sure that you want to cancel current Audit?
@@ -228,20 +229,29 @@ export class AuditInfoComponent {
     this.hideModal = false;
   }
 
-  execute($event) {
-    if ($event === 'remove') {
-      this.auditService.removeAudit(this.audit).subscribe(() => this.router.navigate(['/audit']));
-    } else if ($event === 'start') {
-      this.start();
-    } else if ($event === 'finish') {
-      this.finish();
-    } else if ($event === 'submit') {
-      this.submit();
-    }
+  execute(value: String | boolean) {
+    this.changeAuditStatus(value);
     this.hideModal = true;
   }
 
-  wasClosed($event) {
+  changeAuditStatus(value: String | boolean) {
+    switch (value) {
+      case this.events.remove:
+        this.auditService.removeAudit(this.audit).subscribe(() => this.router.navigate(['/audit']));
+        break;
+      case this.events.start:
+        this.start();
+        break;
+      case this.events.finish:
+        this.finish();
+        break;
+      case this.events.submit:
+        this.submit();
+        break;
+    }
+  }
+
+  wasClosed($event: boolean) {
     this.hideModal = $event;
   }
 
