@@ -37,7 +37,7 @@ export class ProjectComponent {
   ) {
     this.projectService.getProjects(this.project).subscribe(projects => {
       this.projects = projects;
-      this.userService.getUsersWithFilter({ unit_coordinator: 1 }).subscribe(result => {
+      this.userService.getUsers({ unit_coordinator: 1 }).subscribe(result => {
         this.users = result;
         if (userService.IsAdmin() || userService.IsHead() || userService.IsManager() || userService.IsUnitCoordinator()) {
           this.customerService.getCustomer().subscribe(res => {

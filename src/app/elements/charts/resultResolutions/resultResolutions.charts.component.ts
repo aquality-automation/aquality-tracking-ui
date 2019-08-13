@@ -46,7 +46,7 @@ export class ResultResolutionsChartsComponent implements OnChanges {
     this.resultResolutionService.getResolution().subscribe(result => {
       this.listOfResultResolutions = result;
       this.getData();
-    }, error => console.log(error));
+    }, error => this.resultResolutionService.handleError(error));
   }
 
   getData() {

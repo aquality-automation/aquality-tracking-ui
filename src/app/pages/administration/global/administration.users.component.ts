@@ -73,7 +73,7 @@ export class AdministrationUsersComponent {
     constructor(
         private userService: UserService
     ) {
-        this.userService.getUsers().subscribe(res => {
+        this.userService.getUsers({}).subscribe(res => {
             this.users = res;
         });
     }
@@ -124,7 +124,7 @@ export class AdministrationUsersComponent {
             for (const prop of Object.keys(user)) {
                 delete user[prop];
             }
-            this.userService.getUsers().subscribe(users => {
+            this.userService.getUsers({}).subscribe(users => {
                 this.users = users;
                 this.inProgress = false;
             });
@@ -155,7 +155,7 @@ export class AdministrationUsersComponent {
     async execute($event) {
         if (await $event) {
             this.userService.removeUser(this.userToRemove).subscribe(() => {
-                this.userService.getUsers().subscribe(users => {
+                this.userService.getUsers({}).subscribe(users => {
                     this.users = users;
                     this.inProgress = false;
                 });

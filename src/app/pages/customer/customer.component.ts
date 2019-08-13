@@ -31,7 +31,7 @@ export class CustomerComponent implements OnInit {
     ngOnInit() {
         this.customerService.getCustomer(undefined, true).subscribe(res => {
             this.customers = res;
-            this.userService.getUsers().subscribe(result => {
+            this.userService.getUsers({}).subscribe(result => {
                 this.users = result;
                 this.coordinators = result.filter(x => x.unit_coordinator === 1);
                 this.accountManagers = result.filter(x => x.account_manager === 1);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Project } from '../../../shared/models/project';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { ProjectService } from '../../../services/project.service';
@@ -13,7 +13,7 @@ import { User } from '../../../shared/models/user';
     SimpleRequester
   ]
 })
-export class AdministrationPermissionsComponent {
+export class AdministrationPermissionsComponent implements OnInit {
 
   hideModal = true;
   removeModalTitle: string;
@@ -29,36 +29,33 @@ export class AdministrationPermissionsComponent {
     private projectService: ProjectService,
     public userService: UserService
   ) {
-    this.projectService.getProjects({}).subscribe(result => {
-      this.projects = result;
-      this.selectedProject = this.projects[0];
-      this.userService.getProjectUsers(this.selectedProject.id).subscribe(res => {
-        this.users = res;
-        this.userService.getUsers().subscribe(users => {
-          this.externalUsers = users;
-          this.tbCols = [
-            {
-              name: 'Username',
-              property: 'user.user_name',
-              filter: true,
-              sorting: true,
-              type: 'lookup-autocomplete',
-              propToShow: ['user_name'],
-              entity: 'user',
-              values: this.externalUsers,
-              editable: false
-            },
-            { name: 'Admin', property: 'admin', filter: false, sorting: true, type: 'checkbox', editable: true },
-            { name: 'Manager', property: 'manager', filter: false, sorting: true, type: 'checkbox', editable: true },
-            { name: 'Engineer', property: 'engineer', filter: false, sorting: true, type: 'checkbox', editable: true }
-          ];
-        }, error => console.log(error));
-      }, error => console.log(error));
-    }, error => console.log(error));
   }
 
-  onProjectChange($event) {
-    this.selectedProject = $event;
+  async ngOnInit() {
+    this.projects = await this.projectService.getProjects({}).toPromise();
+    this.selectedProject = this.projects[0];
+    this.users = await this.userService.getProjectUsers(this.selectedProject.id).toPromise();
+    this.externalUsers = await this.userService.getUsers({}).toPromise();
+    this.tbCols = [
+      {
+        name: 'Username',
+        property: 'user.user_name',
+        filter: true,
+        sorting: true,
+        type: 'lookup-autocomplete',
+        propToShow: ['user_name'],
+        entity: 'user',
+        values: this.externalUsers,
+        editable: false
+      },
+      { name: 'Admin', property: 'admin', filter: false, sorting: true, type: 'checkbox', editable: true },
+      { name: 'Manager', property: 'manager', filter: false, sorting: true, type: 'checkbox', editable: true },
+      { name: 'Engineer', property: 'engineer', filter: false, sorting: true, type: 'checkbox', editable: true }
+    ];
+  }
+
+  onProjectChange(newProject: Project) {
+    this.selectedProject = newProject;
     this.reloadUsers();
   }
 
@@ -112,7 +109,7 @@ export class AdministrationPermissionsComponent {
   reloadUsers() {
     this.userService.getProjectUsers(this.selectedProject.id).subscribe(res => {
       this.users = res;
-      this.userService.getUsers().subscribe((users: User[]) => {
+      this.userService.getUsers({}).subscribe((users: User[]) => {
         this.externalUsers = users.filter(x => this.users.findIndex(y => y.user.user_name === x.user_name) === -1);
       }, error => console.log(error));
     }, error => console.log(error));
