@@ -28,7 +28,6 @@ export class AuditComment extends BaseComment {
 export class Auditor extends User {
   auditor_id?: number;
   audit_id?: number;
-  assignee_user_id?: number;
 }
 
 export class AuditNotification {

@@ -41,13 +41,13 @@ export class CustomerInfoComponent implements OnInit {
 
     ngOnInit() {
         this.URL = `/customer/attachment?customer_id=${this.route.snapshot.params['customer_id']}`;
-        this.userService.getUsersWithFilter({ unit_coordinator: 1 }).subscribe(result => {
+        this.userService.getUsers({ unit_coordinator: 1 }).subscribe(result => {
             this.coordinators = result.filter(x => x.unit_coordinator === 1);
         });
-        this.userService.getUsers().subscribe(result => {
+        this.userService.getUsers({}).subscribe(result => {
             this.users = result;
         });
-        this.userService.getUsersWithFilter({ account_manager: 1 }).subscribe(result => {
+        this.userService.getUsers({ account_manager: 1 }).subscribe(result => {
             this.accountManagers = result.filter(x => x.account_manager === 1);
         });
         this.customerService.getCustomer(+this.route.snapshot.params['customer_id'], true).subscribe(res => {
