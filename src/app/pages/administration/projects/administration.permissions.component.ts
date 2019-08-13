@@ -67,21 +67,27 @@ export class AdministrationPermissionsComponent implements OnInit {
     }
   }
 
-  async updateUser(permissions: LocalPermissions) {
-    await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
-    this.reloadUsers();
+  async updateUser(permissions: LocalPermissions): Promise<boolean> {
+    try {
+      await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
+      this.reloadUsers();
+      return true;
+    } catch (error) {
+      this.userService.handleSimpleError('Oops!', 'Was not able to update Permissions!');
+      return false;
+    }
   }
 
   async createUser(permissions: LocalPermissions) {
     permissions.project_id = this.selectedProject.id;
-    await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
-    for (const prop of Object.keys(permissions)) {
-      delete permissions[prop];
+    if (await this.updateUser(permissions)) {
+      for (const prop of Object.keys(permissions)) {
+        delete permissions[prop];
+      }
     }
-    this.reloadUsers();
   }
 
-  castPermissionsToFlatObject(permissions: LocalPermissions): LocalPermissions{
+  castPermissionsToFlatObject(permissions: LocalPermissions): LocalPermissions {
     return {
       user_id: permissions.user.id,
       project_id: permissions.project_id,
