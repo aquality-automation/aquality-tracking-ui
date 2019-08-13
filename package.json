@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "e2e": "ng e2e",
-    "e2e:headless": "ng e2e --config protractor.headless.conf.js",
+    "e2e:headless": "ng e2e --no-progress --config protractor.headless.conf.js",
     "allure": "allure generate --clean"
   },
   "private": true,
