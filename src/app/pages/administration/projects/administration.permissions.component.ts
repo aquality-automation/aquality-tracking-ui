@@ -68,29 +68,27 @@ export class AdministrationPermissionsComponent implements OnInit {
   }
 
   async updateUser(permissions: LocalPermissions) {
-    await this.userService.createOrUpdateProjectUser({
-      user_id: permissions.user.id,
-      project_id: permissions.project_id,
-      admin: +permissions.admin,
-      manager: +permissions.manager,
-      engineer: +permissions.engineer,
-      viewer: +permissions.viewer
-    });
+    await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
     this.reloadUsers();
   }
 
   async createUser(permissions: LocalPermissions) {
-    await this.userService.createOrUpdateProjectUser({
-      user_id: permissions.user.id,
-      project_id: this.selectedProject.id,
-      admin: +permissions.admin,
-      manager: +permissions.manager,
-      engineer: +permissions.engineer
-    });
+    permissions.project_id = this.selectedProject.id;
+    await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
     for (const prop of Object.keys(permissions)) {
       delete permissions[prop];
     }
     this.reloadUsers();
+  }
+
+  castPermissionsToFlatObject(permissions: LocalPermissions): LocalPermissions{
+    return {
+      user_id: permissions.user.id,
+      project_id: permissions.project_id,
+      admin: +permissions.admin,
+      manager: +permissions.manager,
+      engineer: +permissions.engineer
+    };
   }
 
   removeUser($event: LocalPermissions) {
