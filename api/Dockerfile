@@ -18,7 +18,7 @@ ENV BRANCH=${BRANCH}
 # Clone repos
 WORKDIR /app
 RUN git clone git@github.com:aquality-automation/aquality-tracking-api.git
-RUN cd aquality-tracking-api && git fetch origin && git checkout ${BRANCH} || git checkout -t -b ${BRANCH} origin/${BRANCH}
+RUN cd aquality-tracking-api && git fetch origin && git checkout ${BRANCH} || git checkout -t -b ${BRANCH} origin/${BRANCH} || git checkout develop
 
 FROM maven:3.5-jdk-8-alpine as build-back
 COPY --from=clone /app/aquality-tracking-api /app
