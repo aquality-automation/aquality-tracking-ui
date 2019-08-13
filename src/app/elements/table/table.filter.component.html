@@ -172,7 +172,7 @@
                 <tr *ngIf="allowBulkUpdate && hasSelectedRows()">
                     <td *ngFor="let col of columns" class="vert-aligned" [setClass]="col.class">
 
-                        <div *ngIf="col.editable && !row.constantRow && col.bulkEdit" class="ft-cell">
+                        <div *ngIf="col.editable && col.bulkEdit" class="ft-cell">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 [config]="{empty:'Add ' + col?.name}"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
