@@ -59,43 +59,38 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.reloadUsers();
   }
 
-  handleAction($event) {
-    if ($event.action === 'create') {
-      this.createUser($event.entity);
-    } else if ($event.action === 'remove') {
-      this.removeUser($event.entity);
+  handleAction(event: { action: string; entity: LocalPermissions; }) {
+    if (event.action === 'create') {
+      this.createUser(event.entity);
+    } else if (event.action === 'remove') {
+      this.removeUser(event.entity);
     }
   }
 
-  updateUser($event) {
-    this.userService.createOrUpdateProjectUser({
-      user_id: $event.user.id,
-      project_id: $event.project_id,
-      admin: +$event.admin,
-      manager: +$event.manager,
-      engineer: +$event.engineer,
-      viewer: +$event.viewer
-    }).subscribe(res => {
-      this.reloadUsers();
+  async updateUser(permissions: LocalPermissions) {
+    await this.userService.createOrUpdateProjectUser({
+      user_id: permissions.user.id,
+      project_id: permissions.project_id,
+      admin: +permissions.admin,
+      manager: +permissions.manager,
+      engineer: +permissions.engineer,
+      viewer: +permissions.viewer
     });
-
+    this.reloadUsers();
   }
 
-  createUser(user) {
-    this.userService.createOrUpdateProjectUser({
-      user_id: user.user.id,
+  async createUser(permissions: LocalPermissions) {
+    await this.userService.createOrUpdateProjectUser({
+      user_id: permissions.user.id,
       project_id: this.selectedProject.id,
-      admin: user.admin === true ? 1 : 0,
-      manager: user.manager === true ? 1 : 0,
-      engineer: user.engineer === true ? 1 : 0
-    }).subscribe(
-      res => {
-        for (const prop of Object.keys(user)) {
-          delete user[prop];
-        }
-        this.reloadUsers();
-      }
-    );
+      admin: +permissions.admin,
+      manager: +permissions.manager,
+      engineer: +permissions.engineer
+    });
+    for (const prop of Object.keys(permissions)) {
+      delete permissions[prop];
+    }
+    this.reloadUsers();
   }
 
   removeUser($event: LocalPermissions) {
