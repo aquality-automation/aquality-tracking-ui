@@ -32,11 +32,11 @@ export class CreateProjectComponent implements OnInit {
 
   async processProjectCreation() {
     try {
-      this.projectService.createProjects(this.newProject);
-      this.router.navigate(['/project/']);
-      this.projectService.handleSuccess(`${this.newProject.name} project is created!`);
+      await this.projectService.createProjects(this.newProject);
+      await this.router.navigate(['/project/']);
+      await this.projectService.handleSuccess(`${this.newProject.name} project is created!`);
     } catch (err) {
-      this.projectService.handleError(err);
+      await this.projectService.handleError(err);
     }
   }
 }

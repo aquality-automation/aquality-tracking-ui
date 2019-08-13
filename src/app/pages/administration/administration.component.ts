@@ -11,7 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
     ProjectService,
     SimpleRequester,
     UserService,
-    ]
+  ]
 })
 export class AdministrationComponent {
 
@@ -24,7 +24,9 @@ export class AdministrationComponent {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    this.projectService.getProjects(this.project).subscribe(result => {this.projects = result; }, error => console.log(error));
+    this.projectService.getProjects(this.project).subscribe(result => {
+      this.projects = result;
+    }, error => this.projectService.handleError(error));
     this.redirect();
   }
 

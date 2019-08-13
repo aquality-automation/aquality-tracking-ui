@@ -117,7 +117,6 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
             itemValue = itemValue[prop];
           });
           if (typeof itemValue === 'number') {
-            console.log(props);
             itemValue = this.datepipe.transform(new Date(itemValue), 'yyyy-MM-dd hh:mm:ss a');
           }
           textToShow = `${textToShow} ${itemValue}`;
