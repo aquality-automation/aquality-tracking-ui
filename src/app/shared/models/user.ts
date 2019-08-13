@@ -1,5 +1,3 @@
-import stringUtils from '../utils/string.utils';
-
 export class User {
   first_name?: string;
   id?: number;

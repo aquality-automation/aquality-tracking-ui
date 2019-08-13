@@ -45,17 +45,17 @@ export class AuditCreateComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const results = await Promise.all([
-      this.userService.getUsers().toPromise(),
+    const [auditors, services, project, auditStats] = await Promise.all([
+      this.userService.getUsers({auditor: 1}).toPromise(),
       this.auditService.getServices().toPromise(),
       this.projectService.getProjects({ id: this.route.snapshot.params['projectId'] }).toPromise(),
-      await this.auditService.getAuditStats().toPromise()
+      this.auditService.getAuditStats().toPromise()
     ]);
 
-    this.auditors = results[0].filter((x: User) => x.auditor === 1);
-    this.services = results[1];
-    this.project = results[2][0];
-    this.auditStatsByProject = results[3].filter((x: AuditStat) => x.id === this.project.id);
+    this.auditors = auditors;
+    this.services = services;
+    this.project = project[0];
+    this.auditStatsByProject = auditStats.filter((x: AuditStat) => x.id === this.project.id);
 
     this.audit.due_date = this.auditStatsByProject[0].last_submitted_date
       ? this.auditService.createDueDate(new Date(this.auditStatsByProject[0].last_submitted_date))

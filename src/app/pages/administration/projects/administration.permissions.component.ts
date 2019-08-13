@@ -35,7 +35,7 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.projects = await this.projectService.getProjects({}).toPromise();
     this.selectedProject = this.projects[0];
     this.users = await this.userService.getProjectUsers(this.selectedProject.id).toPromise();
-    this.externalUsers = await this.userService.getUsers().toPromise();
+    this.externalUsers = await this.userService.getUsers({}).toPromise();
     this.tbCols = [
       {
         name: 'Username',
@@ -109,7 +109,7 @@ export class AdministrationPermissionsComponent implements OnInit {
   reloadUsers() {
     this.userService.getProjectUsers(this.selectedProject.id).subscribe(res => {
       this.users = res;
-      this.userService.getUsers().subscribe((users: User[]) => {
+      this.userService.getUsers({}).subscribe((users: User[]) => {
         this.externalUsers = users.filter(x => this.users.findIndex(y => y.user.user_name === x.user_name) === -1);
       }, error => console.log(error));
     }, error => console.log(error));
