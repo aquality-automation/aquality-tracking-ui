@@ -59,43 +59,42 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.reloadUsers();
   }
 
-  handleAction($event) {
-    if ($event.action === 'create') {
-      this.createUser($event.entity);
-    } else if ($event.action === 'remove') {
-      this.removeUser($event.entity);
+  handleAction(event: { action: string; entity: LocalPermissions; }) {
+    if (event.action === 'create') {
+      this.createUser(event.entity);
+    } else if (event.action === 'remove') {
+      this.removeUser(event.entity);
     }
   }
 
-  updateUser($event) {
-    this.userService.createOrUpdateProjectUser({
-      user_id: $event.user.id,
-      project_id: $event.project_id,
-      admin: +$event.admin,
-      manager: +$event.manager,
-      engineer: +$event.engineer,
-      viewer: +$event.viewer
-    }).subscribe(res => {
+  async updateUser(permissions: LocalPermissions): Promise<boolean> {
+    try {
+      await this.userService.createOrUpdateProjectUser(this.castPermissionsToFlatObject(permissions));
       this.reloadUsers();
-    });
-
+      return true;
+    } catch (error) {
+      this.userService.handleSimpleError('Oops!', 'Was not able to update Permissions!');
+      return false;
+    }
   }
 
-  createUser(user) {
-    this.userService.createOrUpdateProjectUser({
-      user_id: user.user.id,
-      project_id: this.selectedProject.id,
-      admin: user.admin === true ? 1 : 0,
-      manager: user.manager === true ? 1 : 0,
-      engineer: user.engineer === true ? 1 : 0
-    }).subscribe(
-      res => {
-        for (const prop of Object.keys(user)) {
-          delete user[prop];
-        }
-        this.reloadUsers();
+  async createUser(permissions: LocalPermissions) {
+    permissions.project_id = this.selectedProject.id;
+    if (await this.updateUser(permissions)) {
+      for (const prop of Object.keys(permissions)) {
+        delete permissions[prop];
       }
-    );
+    }
+  }
+
+  castPermissionsToFlatObject(permissions: LocalPermissions): LocalPermissions {
+    return {
+      user_id: permissions.user.id,
+      project_id: permissions.project_id,
+      admin: +permissions.admin,
+      manager: +permissions.manager,
+      engineer: +permissions.engineer
+    };
   }
 
   removeUser($event: LocalPermissions) {
