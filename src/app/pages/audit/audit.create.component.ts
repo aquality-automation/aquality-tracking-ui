@@ -57,9 +57,10 @@ export class AuditCreateComponent implements OnInit {
     this.project = project[0];
     this.auditStatsByProject = auditStats.filter((x: AuditStat) => x.id === this.project.id);
 
-    this.audit.due_date = this.auditStatsByProject[0].last_submitted_date
-      ? this.auditService.createDueDate(new Date(this.auditStatsByProject[0].last_submitted_date))
-      : this.auditService.createDueDate(new Date(this.auditStatsByProject[0].created));
+    const lastAuditStat = this.auditStatsByProject[0];
+    this.audit.due_date = lastAuditStat.last_submitted_date
+      ? this.auditService.createDueDate(new Date(lastAuditStat.last_submitted_date))
+      : this.auditService.createDueDate(new Date(lastAuditStat.created));
     this.audit.project = { id: this.project.id };
     this.filterServicesList();
     this.audit.service = this.services.find(x => x.id === 1) || this.services[0];
