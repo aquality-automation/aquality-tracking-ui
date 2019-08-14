@@ -77,7 +77,6 @@ export class AuditInfoComponent {
         }
 
         this.updateCanEdit();
-
         this.getAttachments();
 
         this.editorConfig = {

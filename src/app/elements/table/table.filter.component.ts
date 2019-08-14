@@ -138,6 +138,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     });
 
     this.bulkChanges.emit(entitiesToUpdate);
+    this.bulkChangeEntity = {};
   }
 
   hasSelectedRows() {
