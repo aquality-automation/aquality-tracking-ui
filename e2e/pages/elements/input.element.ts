@@ -1,4 +1,4 @@
-import { ElementFinder, Locator } from 'protractor';
+import { ElementFinder, Locator, Key } from 'protractor';
 import { BaseElement } from './base.element';
 
 export class Input extends BaseElement {
@@ -9,6 +9,11 @@ export class Input extends BaseElement {
     public async typeText(value: string) {
         await this.element.clear();
         return this.element.sendKeys(value);
+    }
+
+    public async clear() {
+        await this.element.sendKeys(Key.chord(Key.CONTROL, 'a'));
+        await this.element.sendKeys(Key.DELETE);
     }
 
     getValue() {

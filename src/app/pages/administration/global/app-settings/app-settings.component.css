@@ -15,3 +15,23 @@
   padding-right: 0;
   padding-bottom: 5px;
 }
+
+.settings-section{
+  border-top: solid 1px #f5f5f5;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.label-inline {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.email-pattern-hint {
+  padding: 4px;
+}
+
+.email-pattern-hint .lt-container-shown{
+  margin-top: -20px;
+}

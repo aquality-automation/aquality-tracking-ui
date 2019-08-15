@@ -54,20 +54,21 @@ describe('Full Admin Administartion User Flow', () => {
             return expect(userAdministration.getCreationError()).toEqual('Fill all required fields');
         });
 
-        it('User name is automatically filled after fill in first and last name', async () => {
+        it('No errors after everything was fixed', async () => {
             await Promise.all([
                 userAdministration.fillFirstName(userToCreate.first_name),
-                userAdministration.fillLastName(userToCreate.second_name)
+                userAdministration.fillLastName(userToCreate.second_name),
+                userAdministration.fillUserName(userToCreate.user_name),
+                userAdministration.fillEmail(userToCreate.email),
+                userAdministration.fillPassword(userToCreate.password),
+                userAdministration.fillConfirmPassword(userToCreate.password)
             ]);
-            return expect(userAdministration.getUserName()).toEqual(userToCreate.user_name);
-        });
-
-        it('Email is automatically filled after fill in first and last name', () => {
-            return expect(userAdministration.getEmail()).toEqual(userToCreate.email);
+            await expect(userAdministration.getCreationError()).toEqual('');
         });
 
         it('I can see error message when passwords are not match', async () => {
             await userAdministration.fillPassword(userToCreate.password);
+            await userAdministration.fillConfirmPassword(userToCreate.password + 1);
             await expect(userAdministration.getCreationError()).toEqual('Password does not match the Confirm Password.');
             return userAdministration.fillConfirmPassword(userToCreate.password);
         });
@@ -87,7 +88,7 @@ describe('Full Admin Administartion User Flow', () => {
                 .toEqual(`Fill all required fields, Email should be equal to this pattern: example@domain.com, Password does not match the Confirm Password.`);
         });
 
-        it('No errors when everything filled fine', async () => {
+        it('No errors after everything was fixed', async () => {
             await Promise.all([
                 userAdministration.fillPassword(userToCreate.password),
                 userAdministration.fillFirstName(userToCreate.first_name),

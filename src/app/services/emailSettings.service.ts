@@ -5,12 +5,18 @@ import { EmailSettings } from '../shared/models/appSettings';
 @Injectable()
 export class EmailSettingsService extends SimpleRequester {
 
-  getEmailSettings() {
-    return this.doGet('/settings/email').map(res => res.json());
+  getEmailSettings(): Promise<EmailSettings> {
+    return this.doGet('/settings/email').map(res => res.json()).toPromise();
   }
 
-  updateEmailSettings(emailSettings: EmailSettings) {
-    return this.doPost('/settings/email', emailSettings).map(res => res);
+  async updateEmailSettings(emailSettings: EmailSettings): Promise<EmailSettings> {
+    try {
+      emailSettings = await this.doPost('/settings/email', emailSettings).map(res => res.json()).toPromise();
+      this.handleSuccess('Email Settings were updated!');
+      return emailSettings;
+    } catch (error) {
+      return emailSettings;
+    }
   }
 
   getEmailsStatus() {

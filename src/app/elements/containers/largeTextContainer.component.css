@@ -4,9 +4,9 @@
 
 .lt-container-hidden {
     width: 100%;
-    overflow: auto;
     height: auto;
     max-height: 30px;
+    overflow: hidden;
     word-break: break-word !important;
     white-space: pre-wrap;
 }
@@ -26,9 +26,13 @@
 
 .lt-container-shown {
     width: 100%;
-    overflow: auto;
     height: auto;
+    overflow: hidden;
     max-height: 400px;
     word-break: break-word !important;
     white-space: pre-wrap;
+}
+
+.lt-overflow-auto {
+    overflow: auto !important;
 }

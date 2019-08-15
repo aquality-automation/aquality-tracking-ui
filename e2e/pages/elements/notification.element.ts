@@ -9,13 +9,13 @@ export class Notification extends BaseElement {
 
     async isError() {
         await this.isVisible();
-        const classAttr: string = await element(by.tagName('simple-notification > div')).getAttribute('class');
+        const classAttr: string = await this.getContainer().getAttribute('class');
         return classAttr.includes('error');
     }
 
     async isSuccess() {
         await this.isVisible();
-        const classAttr: string = await element(by.tagName('simple-notification > div')).getAttribute('class');
+        const classAttr: string = await this.getContainer().getAttribute('class');
         return classAttr.includes('success');
     }
 
@@ -28,6 +28,10 @@ export class Notification extends BaseElement {
     }
 
     close() {
-        return element(by.tagName('simple-notification')).click();
+        return this.getContainer().click();
+    }
+
+    private getContainer() {
+        return element(by.tagName('simple-notification > div'));
     }
 }
