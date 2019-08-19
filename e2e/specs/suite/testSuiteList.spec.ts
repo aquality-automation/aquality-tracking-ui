@@ -12,7 +12,7 @@ import suites from '../../data/suites.json';
 import { browser } from 'protractor';
 import { SuiteView } from '../../pages/suite/view.po';
 
-fdescribe('Full Admin Test Suite List', () => {
+describe('Full Admin Test Suite List', () => {
 
   const logIn: LogIn = new LogIn();
   const projectCreate: ProjectCreate = new ProjectCreate();
