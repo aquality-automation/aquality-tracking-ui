@@ -11,6 +11,7 @@ import * as JsEncryptModule from 'jsencrypt';
 
 @Component({
   templateUrl: './Login.component.html',
+  styleUrls: ['./Login.component.css'],
   providers: [
     ApplicationSettingsService,
     SimpleRequester,
