@@ -4,6 +4,7 @@ import { ApplicationSettingsService } from '../../../../services/applicationSett
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { environment } from '../../../../../environments/environment';
+import { Constants } from './app-settings.constants';
 
 @Component({
     templateUrl: 'app-settings.component.html',
@@ -20,21 +21,22 @@ export class AppSettingsComponent implements OnInit {
     public ldapSettings: LDAPSettings;
     public emailSettings: EmailSettings;
     public apiHost: string;
+    public emailHelpText = Constants.emailPatternHelpText;
+    public emailHelpTextHint = Constants.emailHelpTextHint;
 
     constructor(
         private appSettingService: ApplicationSettingsService,
         private emailSettingsService: EmailSettingsService
-    ) {}
-    ngOnInit() {
+    ) { }
+
+    async ngOnInit() {
         this.appSettingService.getGeneralSettings().subscribe(res => {
             this.generalSettings = res;
         });
         this.appSettingService.getLDAPSettings().subscribe(res => {
             this.ldapSettings = res;
         });
-        this.emailSettingsService.getEmailSettings().subscribe(res => {
-            this.emailSettings = res;
-        });
+        this.emailSettings = await this.emailSettingsService.getEmailSettings();
     }
 
     saveGeneral() {
@@ -63,6 +65,19 @@ export class AppSettingsComponent implements OnInit {
     saveEmail() {
         this.emailSettings.enabled = +this.emailSettings.enabled;
         this.emailSettings.use_auth = +this.emailSettings.use_auth;
-        this.emailSettingsService.updateEmailSettings(this.emailSettings).subscribe();
+        if (this.isEmailPatternValid()) {
+            this.emailSettingsService.updateEmailSettings(this.emailSettings);
+        } else {
+            this.emailSettingsService.handleSimpleError(Constants.emailPatternErrorMessageHeader,
+                Constants.emailPatternErrorMessage);
+        }
+    }
+
+    isEmailPatternValid(): boolean {
+        if (this.emailSettings.default_email_pattern && this.emailSettings.default_email_pattern !== '') {
+            const regExp = new RegExp('(.+@.+[.][A-z]+)');
+            return regExp.test(this.emailSettings.default_email_pattern);
+        }
+        return true;
     }
 }
