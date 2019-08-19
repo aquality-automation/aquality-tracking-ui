@@ -15,26 +15,26 @@ describe('Full Admin Administartion User Flow', () => {
 
     const validateUser = async () => {
         const data = await userAdministration.getUserData(userToCreate);
-                expect(data[userAdministration.columns.firstName]).toBe(userToCreate.first_name,
-                    `${userAdministration.columns.firstName} is not correct`);
-                expect(data[userAdministration.columns.lastName]).toBe(userToCreate.second_name,
-                    `${userAdministration.columns.lastName} is not correct`);
-                expect(data[userAdministration.columns.userName]).toBe(userToCreate.user_name,
-                    `${userAdministration.columns.userName} is not correct`);
-                expect(data[userAdministration.columns.email]).toBe(userToCreate.email,
-                    `${userAdministration.columns.email} is not correct`);
-                expect(data[userAdministration.columns.auditAdmin]).toBe(!!userToCreate.audit_admin,
-                    `${userAdministration.columns.auditAdmin} is not correct`);
-                expect(data[userAdministration.columns.auditor]).toBe(!!userToCreate.auditor,
-                    `${userAdministration.columns.auditor} is not correct`);
-                expect(data[userAdministration.columns.coordinator]).toBe(!!userToCreate.manager,
-                    `${userAdministration.columns.coordinator} is not correct`);
-                expect(data[userAdministration.columns.admin]).toBe(!!userToCreate.admin,
-                    `${userAdministration.columns.admin} is not correct`);
-                expect(data[userAdministration.columns.accountManager]).toBe(!!userToCreate.account_manager,
-                    `${userAdministration.columns.accountManager} is not correct`);
-                expect(data[userAdministration.columns.unitCoordinator]).toBe(!!userToCreate.unit_coordinator,
-                    `${userAdministration.columns.unitCoordinator} is not correct`);
+        expect(data[userAdministration.columns.firstName]).toBe(userToCreate.first_name,
+            `${userAdministration.columns.firstName} is not correct`);
+        expect(data[userAdministration.columns.lastName]).toBe(userToCreate.second_name,
+            `${userAdministration.columns.lastName} is not correct`);
+        expect(data[userAdministration.columns.userName]).toBe(userToCreate.user_name,
+            `${userAdministration.columns.userName} is not correct`);
+        expect(data[userAdministration.columns.email]).toBe(userToCreate.email,
+            `${userAdministration.columns.email} is not correct`);
+        expect(data[userAdministration.columns.auditAdmin]).toBe(!!userToCreate.audit_admin,
+            `${userAdministration.columns.auditAdmin} is not correct`);
+        expect(data[userAdministration.columns.auditor]).toBe(!!userToCreate.auditor,
+            `${userAdministration.columns.auditor} is not correct`);
+        expect(data[userAdministration.columns.coordinator]).toBe(!!userToCreate.manager,
+            `${userAdministration.columns.coordinator} is not correct`);
+        expect(data[userAdministration.columns.admin]).toBe(!!userToCreate.admin,
+            `${userAdministration.columns.admin} is not correct`);
+        expect(data[userAdministration.columns.accountManager]).toBe(!!userToCreate.account_manager,
+            `${userAdministration.columns.accountManager} is not correct`);
+        expect(data[userAdministration.columns.unitCoordinator]).toBe(!!userToCreate.unit_coordinator,
+            `${userAdministration.columns.unitCoordinator} is not correct`);
     };
 
     beforeAll(async () => {
@@ -97,14 +97,12 @@ describe('Full Admin Administartion User Flow', () => {
         });
 
         it('I can create user with all permissions', async () => {
-            await Promise.all([
-                userAdministration.setUnitCoordinator(userToCreate.unit_coordinator),
-                userAdministration.setAccountManager(userToCreate.account_manager),
-                userAdministration.setAdmin(userToCreate.admin),
-                userAdministration.setCoordinator(userToCreate.manager),
-                userAdministration.setAuditor(userToCreate.auditor),
-                userAdministration.setAuditAdmin(userToCreate.audit_admin),
-            ]);
+            await userAdministration.setUnitCoordinator(userToCreate.unit_coordinator);
+            await userAdministration.setAccountManager(userToCreate.account_manager);
+            await userAdministration.setAdmin(userToCreate.admin);
+            await userAdministration.setCoordinator(userToCreate.manager);
+            await userAdministration.setAuditor(userToCreate.auditor);
+            await userAdministration.setAuditAdmin(userToCreate.audit_admin);
             await userAdministration.clickCreate();
             return validateUser();
         });
@@ -145,28 +143,25 @@ describe('Full Admin Administartion User Flow', () => {
                 userToCreate.user_name, userAdministration.columns.userName);
         });
 
-        it('I can remove all user permissions', () => {
+        it('I can remove all user permissions', async () => {
             userToCreate.unit_coordinator = 0;
             userToCreate.account_manager = 0;
             userToCreate.admin = 0;
             userToCreate.manager = 0;
             userToCreate.auditor = 0;
             userToCreate.audit_admin = 0;
-
-            return Promise.all([
-                userAdministration.updateUser(!!userToCreate.unit_coordinator, userAdministration.columns.unitCoordinator,
-                    userToCreate.user_name, userAdministration.columns.userName),
-                userAdministration.updateUser(!!userToCreate.account_manager, userAdministration.columns.accountManager,
-                    userToCreate.user_name, userAdministration.columns.userName),
-                userAdministration.updateUser(!!userToCreate.admin, userAdministration.columns.admin,
-                    userToCreate.user_name, userAdministration.columns.userName),
-                userAdministration.updateUser(!!userToCreate.manager, userAdministration.columns.coordinator,
-                    userToCreate.user_name, userAdministration.columns.userName),
-                userAdministration.updateUser(!!userToCreate.auditor, userAdministration.columns.auditor,
-                    userToCreate.user_name, userAdministration.columns.userName),
-                userAdministration.updateUser(!!userToCreate.audit_admin, userAdministration.columns.auditAdmin,
-                    userToCreate.user_name, userAdministration.columns.userName),
-            ]);
+            await userAdministration.updateUser(!!userToCreate.unit_coordinator, userAdministration.columns.unitCoordinator,
+                userToCreate.user_name, userAdministration.columns.userName);
+            await userAdministration.updateUser(!!userToCreate.account_manager, userAdministration.columns.accountManager,
+                userToCreate.user_name, userAdministration.columns.userName);
+            await userAdministration.updateUser(!!userToCreate.admin, userAdministration.columns.admin,
+                userToCreate.user_name, userAdministration.columns.userName);
+            await userAdministration.updateUser(!!userToCreate.manager, userAdministration.columns.coordinator,
+                userToCreate.user_name, userAdministration.columns.userName);
+            await userAdministration.updateUser(!!userToCreate.auditor, userAdministration.columns.auditor,
+                userToCreate.user_name, userAdministration.columns.userName);
+            await userAdministration.updateUser(!!userToCreate.audit_admin, userAdministration.columns.auditAdmin,
+                userToCreate.user_name, userAdministration.columns.userName);
         });
 
         it('I can see all filleds updated', () => {

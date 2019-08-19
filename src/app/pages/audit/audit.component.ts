@@ -45,9 +45,9 @@ export class AuditComponent implements OnInit {
   ngOnInit() {
     this.auditService.getAuditStats().subscribe(res => {
       this.stats = res;
-      this.userService.getUsersWithFilter({ unit_coordinator: 1 }).subscribe(users => this.coordinators = users);
-      this.userService.getUsers().subscribe(users => {
-        this.auditors = users.filter(user => user.auditor === 1);
+      this.userService.getUsers({ unit_coordinator: 1 }).subscribe(users => this.coordinators = users);
+      this.userService.getUsers({ auditor: 1}).subscribe(users => {
+        this.auditors = users;
         this.userService.IsAuditAdmin() ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
         this.stats.forEach(stat => {
           if (stat.last_submitted_date || stat.last_created_due_date) {

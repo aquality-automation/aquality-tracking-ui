@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Audit, AuditStat, Service, Auditor } from '../../shared/models/audit';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuditService } from '../../services/audits.service';
@@ -8,6 +8,7 @@ import { Project } from '../../shared/models/project';
 import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
 import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../services/transformations.service';
+import { User } from '../../shared/models/user';
 
 @Component({
   templateUrl: './audit.create.component.html',
@@ -17,7 +18,7 @@ import { TransformationsService } from '../../services/transformations.service';
     UserService
   ]
 })
-export class AuditCreateComponent {
+export class AuditCreateComponent implements OnInit {
   dateUpdated = false;
   auditors: Auditor[];
   hiddenServices: Service[] = [];
@@ -41,29 +42,28 @@ export class AuditCreateComponent {
     private projectService: ProjectService,
     private route: ActivatedRoute
   ) {
-    this.userService.getUsers().subscribe(users => {
-      this.auditors = users.filter(x => {
-        if (x.auditor === 1) {
-          x.assignee_user_id = x.id;
-          return true;
-        }
-        return false;
-      });
-      this.auditService.getServices().subscribe(services => this.services = services);
-      this.projectService.getProjects({ id: this.route.snapshot.params['projectId'] }).subscribe(projects => {
-        this.project = projects[0];
-        this.auditService.getAuditStats().subscribe(auditStats => {
-          this.auditStatsByProject = auditStats.filter(x => x.id === this.project.id);
-          const stat = this.auditStatsByProject[0];
-          this.audit.due_date = stat.last_submitted_date
-            ? this.auditService.createDueDate(new Date(stat.last_submitted_date))
-            : this.auditService.createDueDate(new Date(stat.created));
-          this.audit.project = { id: this.project.id };
-          this.filterServicesList();
-          this.audit.service = this.services.find(x => x.id === 1) || this.services[0];
-        });
-      });
-    });
+  }
+
+  async ngOnInit() {
+    const [auditors, services, project, auditStats] = await Promise.all([
+      this.userService.getUsers({auditor: 1}).toPromise(),
+      this.auditService.getServices().toPromise(),
+      this.projectService.getProjects({ id: this.route.snapshot.params['projectId'] }).toPromise(),
+      this.auditService.getAuditStats().toPromise()
+    ]);
+
+    this.auditors = auditors;
+    this.services = services;
+    this.project = project[0];
+    this.auditStatsByProject = auditStats.filter((x: AuditStat) => x.id === this.project.id);
+
+    const lastAuditStat = this.auditStatsByProject[0];
+    this.audit.due_date = lastAuditStat.last_submitted_date
+      ? this.auditService.createDueDate(new Date(lastAuditStat.last_submitted_date))
+      : this.auditService.createDueDate(new Date(lastAuditStat.created));
+    this.audit.project = { id: this.project.id };
+    this.filterServicesList();
+    this.audit.service = this.services.find(x => x.id === 1) || this.services[0];
   }
 
   validate() {

@@ -51,8 +51,8 @@ export class AuditInfoComponent {
     public auditService: AuditService
   ) {
     this.URL = `/audit/attachment?audit_id=${this.route.snapshot.params['auditId']}`;
-    this.userService.getUsers().subscribe(users => {
-      this.auditors = users.filter(x => x.auditor === 1);
+    this.userService.getUsers({auditor: 1}).subscribe(users => {
+      this.auditors = users;
       this.auditService.getServices().subscribe(services => this.services = services);
       this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(audits => {
         if (audits.length === 0) {
@@ -77,7 +77,6 @@ export class AuditInfoComponent {
         }
 
         this.updateCanEdit();
-
         this.getAttachments();
 
         this.editorConfig = {

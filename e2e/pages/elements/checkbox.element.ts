@@ -1,5 +1,6 @@
 import { Locator, ElementFinder } from 'protractor';
 import { BaseElement } from './base.element';
+import { scrollIntoView } from '../../utils/js.util';
 
 export class Checkbox extends BaseElement {
     constructor(locator: Locator | ElementFinder) {
@@ -15,6 +16,7 @@ export class Checkbox extends BaseElement {
     }
 
     async setState(state: boolean) {
+        await scrollIntoView(this.element);
         if ((await this.element.isSelected()) !== state) {
             return this.element.click();
         }

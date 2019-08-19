@@ -41,8 +41,12 @@ export class UserService extends SimpleRequester {
     return this.doGet('/project/users?projectId=' + projectId).map(res => res.json());
   }
 
-  createOrUpdateProjectUser(localPermissions: LocalPermissions) {
-    return this.doPost('/users/permissions', localPermissions).map(res => res);
+  createOrUpdateProjectUser(localPermissions: LocalPermissions): Promise<LocalPermissions> {
+    return this.doPost('/users/permissions', localPermissions).map(res => {
+      const permissions: LocalPermissions = res.json();
+      this.handleSuccess(`Permissions were updated.`);
+      return permissions;
+    }).toPromise();
   }
 
   checkIsAccountTeamMember() {
@@ -56,14 +60,8 @@ export class UserService extends SimpleRequester {
     });
   }
 
-  getUsers() {
-    return this.doGet('/users').map(res => res.json());
-  }
-
-  getUsersWithFilter(user: User) {
-    let params = '';
-    if (user.unit_coordinator) { params = `?unit_coordinator=${user.unit_coordinator}`; }
-    return this.doGet(`/users${params}`).map(res => res.json());
+  getUsers(user: User) {
+    return this.doGet('/users', user).map(res => res.json());
   }
 
   createOrUpdateUser(user: User) {

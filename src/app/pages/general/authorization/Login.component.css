@@ -1,0 +1,47 @@
+#orange-drop {
+    animation: pulseorange 3s ease infinite alternate;
+}
+
+#red-drop {
+    animation: pulsered 3s ease infinite alternate;
+}
+
+#green-drop {
+    animation: pulsegreen 3s ease infinite alternate;
+}
+
+@keyframes pulseorange {
+    0% {
+        fill:#ffce00;
+    }
+    50% {
+        fill:#ff0000;
+    }
+    100% {
+        fill:#00ff00;
+    }
+}
+
+@keyframes pulsegreen {
+    0% {
+        fill:#ff0000;
+    }
+    50% {
+        fill:#00ff00;
+    }
+    100% {
+        fill:#ffce00;
+    }
+}
+
+@keyframes pulsered {
+    0% {
+        fill:#00ff00;
+    }
+    50% {
+        fill:#ffce00;
+    }
+    100% {
+        fill:#ff0000;
+    }
+}
