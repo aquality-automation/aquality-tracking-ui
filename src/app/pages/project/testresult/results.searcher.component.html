@@ -14,7 +14,7 @@
     </form>
   </div>
   <div *ngIf="toggledOn && testResults" id="searchTable">
-    <table-filter *ngIf="testResults" [hide]="hideVal" [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy" (rowClick)="rowClicked($event)"></table-filter>
+    <table-filter *ngIf="testResults" [hide]="hideVal" [queryParams]="false" [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy"></table-filter>
   </div>
   <div class="header-tools-opener text-center" (click)="toggleTools()">
     <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" [ngClass]="{
