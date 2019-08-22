@@ -4,7 +4,7 @@
   <div *ngIf="projects" class="col-md-12 vert-aligned">
     <label class="col-md-2 label-inline control-label">Select Project:</label>
     <div class="col-sm-3">
-      <lookup-autocomplete placeholder="Select Project" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects"
+      <lookup-autocomplete id="project-selector" placeholder="Select Project" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects"
         [model]="selectedProject" (modelChange)="onProjectChange($event)"></lookup-autocomplete>
     </div>
   </div>
@@ -18,10 +18,10 @@ If you have Import token you don't need your credentials to import.
 Add 'importToken' parameter to you request and don't use Authorization header anymore.</pre>
         </div>
         <div class="button-col no-padding">
-          <button class="btn btn-success" (click)="generateTokenAction()">Generate Token</button>
+          <button id="generateTocken" class="btn btn-success" (click)="generateTokenAction()">Generate Token</button>
         </div>
         <div class="token-col label-inline">
-          <pre *ngIf="token">{{token}}</pre>
+          <pre *ngIf="token" id="tokenValue">{{token}}</pre>
           <div *ngIf="token" class="alert alert-warning no-margin" role="alert">
             Remember this token, you will not see it ever again!
           </div>

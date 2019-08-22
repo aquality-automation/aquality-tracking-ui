@@ -1,5 +1,6 @@
 import { elements, names } from './constants';
 import { BasePage } from '../../base.po';
+import { waiter } from '../../../utils/wait.util';
 
 export class TestRunList extends BasePage {
     constructor() {
@@ -16,5 +17,17 @@ export class TestRunList extends BasePage {
 
     async openTestRun(buildName: string) {
         return elements.testRunsTable.clickRow(buildName, 'Build');
+    }
+
+    async waitForTestRun(buildName: string) {
+        return waiter.forTrue(async () => {
+            const isDisplayed = await this.isTestRunRowDisplayed(buildName);
+            if (isDisplayed) {
+                return true;
+            }
+            await this.menuBar.import();
+            await this.menuBar.testRuns();
+            return false;
+        }, 5, 3000);
     }
 }

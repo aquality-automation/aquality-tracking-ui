@@ -1,6 +1,6 @@
 import { by, element } from 'protractor';
-import { Input } from '../../elements/input.element';
-import { Multiselect } from '../../elements/multiselect.element';
+import { Input } from '../../../elements/input.element';
+import { Multiselect } from '../../../elements/multiselect.element';
 
 export const baseUrl = '/create/test';
 

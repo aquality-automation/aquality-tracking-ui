@@ -141,9 +141,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   applyFilters() {
-    this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
-    this.sort(this.defaultSortBy);
-    this.shownData.emit(this.filteredData);
+    if (this.data) {
+      this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
+      this.sort(this.defaultSortBy);
+      this.shownData.emit(this.filteredData);
+    }
   }
 
   sort(sorter: { property: string, order: string }) {

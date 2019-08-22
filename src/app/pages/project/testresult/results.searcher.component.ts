@@ -24,6 +24,7 @@ import { FinalResult } from '../../../shared/models/final-result';
     ]),
   ],
   templateUrl: './results.searcher.component.html',
+  styleUrls: ['./results.searcher.component.css'],
   providers: [
     SimpleRequester,
     TestResultService,

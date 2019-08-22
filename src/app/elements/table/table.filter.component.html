@@ -101,7 +101,7 @@
                 </tr>
             </thead>
             <tbody *ngIf="(!mf.data || mf.data.length < 1) && !allowCreate">
-                <tr>
+                <tr id="noDataRow">
                     <td [attr.colspan]="columns.length">Nothing to show</td>
                 </tr>
             </tbody>

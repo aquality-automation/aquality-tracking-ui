@@ -44,6 +44,6 @@ export class ProjectService extends SimpleRequester {
   }
 
   createImportToken(project: Project) {
-    return this.doGet(`/project/importToken`, project).map(res => res.json());
+    return this.doGet(`/project/importToken`, {id: project.id}).map(res => res.json());
   }
 }

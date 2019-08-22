@@ -1,5 +1,6 @@
 import { by, element } from 'protractor';
-import { SmartTable } from '../../elements/smartTable.element';
+import { SmartTable } from '../../../elements/smartTable.element';
+import { ResultSearcher } from '../../../elements/searcher';
 
 export const baseUrl = function (projectId, testRunId) {
     return `/project/${projectId}/testrun/${testRunId}`;
@@ -19,7 +20,8 @@ export const elements = {
     milestoneField: element(by.xpath(`//li[.//label[contains(text(), '${names.milestoneLabel}')]]//input`)),
     testSuiteLink: element(by.xpath(`//li[.//label[contains(text(), '${names.testSuiteLabel}')]]//a`)),
     startTimeLabel: element(by.xpath(`//li[.//label[contains(text(), '${names.startTimeLabel}')]]//p`)),
-    resultsTable: new SmartTable(by.css('results-grid table-filter'))
+    resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
+    resultSearcher: new ResultSearcher(by.id('resultSearcher'))
 };
 
 export const regexps = {

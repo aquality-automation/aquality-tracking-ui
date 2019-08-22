@@ -28,5 +28,11 @@
         "customer": {
             "name": "-"
         }
+    },
+    "testRunResultSearcherProject": {
+        "name" : "TestRunResultSearcherProject",
+        "customer": {
+            "name": "-"
+        }
     }
 }

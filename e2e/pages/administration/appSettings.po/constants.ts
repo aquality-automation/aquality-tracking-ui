@@ -1,6 +1,6 @@
 import { by, element } from 'protractor';
-import { Input } from '../../elements/input.element';
-import { LargeTextContainer } from '../../elements/largeTextContainer';
+import { Input } from '../../../elements/input.element';
+import { LargeTextContainer } from '../../../elements/largeTextContainer';
 
 export const baseUrl = '/administration/global/appSettings';
 

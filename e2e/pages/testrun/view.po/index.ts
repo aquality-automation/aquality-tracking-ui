@@ -8,6 +8,8 @@ export class TestRunView extends BasePage {
     super(elements.uniqueElement, names.pageName);
   }
 
+  public resultSearcher = elements.resultSearcher;
+
   navigateTo(projectId: number, testRunId: number) {
     return browser.get(baseUrl(projectId, testRunId));
   }
@@ -42,6 +44,10 @@ export class TestRunView extends BasePage {
     const handles = await browser.getAllWindowHandles();
     await browser.switchTo().window(handles[handles.length - 1]);
     await browser.waitForAngular();
+  }
+
+  async rightClickFailReason(failReason: string) {
+    return elements.resultsTable.rightClickCell(columns.failReason, failReason, columns.failReason);
   }
 
   async getStartTime() {
