@@ -51,10 +51,10 @@ describe('Test Run Result Searcher', () => {
 
     it('Can be opened', async () => {
         await projectView.menuBar.testRuns();
-        await testRunList.waitForTestRun(builds.build_2);
+        expect(testRunList.waitForTestRun(builds.build_2)).toBe(true, 'Import was not finished!');
         await testRunList.openTestRun(builds.build_1);
         await testRunView.resultSearcher.openSearcher();
-        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(true, 'Searcher is not Opened');
+        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(true, 'Searcher was not Opened');
     });
 
     it('Can be executed by pressing Enter', async () => {
@@ -73,16 +73,16 @@ describe('Test Run Result Searcher', () => {
 
     it('Can be closed', async () => {
         await testRunView.resultSearcher.closeSearcher();
-        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(false, 'Searcher is not Closed');
+        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(false, 'Searcher was not Closed');
     });
 
     it('Can find results by Fail Reason Right Click', async () => {
         const failReason = 'step was skippedstep was skipped';
         await testRunView.rightClickFailReason(failReason);
-        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(true, 'Searcher is not Opened');
+        expect(testRunView.resultSearcher.isSearcherOpened()).toBe(true, 'Searcher was not Opened');
         expect(testRunView.resultSearcher.getSearchValue())
             .toBe(failReason, 'Search field filled with wrong value!');
         const incorrectValues = await testRunView.resultSearcher.onlyContainsFailReasonWith(failReason);
-        expect(incorrectValues.length).toBe(0, `there are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
+        expect(incorrectValues.length).toBe(0, `There are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
     });
 });
