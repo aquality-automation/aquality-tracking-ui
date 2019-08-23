@@ -24,6 +24,8 @@ export class TestResult {
   fail_reason?: string;
   assigned_user?: LocalPermissions;
   assignee?: number;
+  fail_reason_regex?: string;
+  limit?: number;
 }
 
 export class TestResultStat {
