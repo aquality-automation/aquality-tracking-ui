@@ -39,7 +39,7 @@ export class ResultSearcherComponent {
   failReasonSearch = '';
   tbCols: any[];
   isRegexSearch = false;
-  limit = 100;
+  limit = 10;
   pendingSearch = false;
 
   constructor(
@@ -54,12 +54,6 @@ export class ResultSearcherComponent {
 
   toggleRegexpSearch() {
     this.isRegexSearch = !this.isRegexSearch;
-  }
-
-  async searchForAll() {
-    this.limit = 0;
-    await this.getResults();
-    this.limit = 100;
   }
 
   async getResults() {

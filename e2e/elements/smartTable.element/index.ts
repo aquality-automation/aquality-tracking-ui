@@ -37,6 +37,11 @@ export class SmartTable extends BaseElement {
         lookup: (cell: ElementFinder) => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
     };
 
+    public async getTotalRows() {
+        const totalLabel = await this.element.element(by.css('.ft-total-label')).getText();
+        return totalLabel.match(/.*\((\d+)\)/)[1];
+    }
+
     public async openCreation() {
         if (!(await this.isCreationOpened())) {
             await this.creationToggler.click();

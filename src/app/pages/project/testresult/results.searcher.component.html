@@ -10,8 +10,9 @@
           <button id="regexpSearch" (click)="toggleRegexpSearch()" type="button" class="btn"
             title="Search by regular expression."
             [ngClass]="{'btn-default': !isRegexSearch, 'btn-success': isRegexSearch}">(.*)</button>
-          <button id="regexpSearch" (click)="searchForAll()" type="button" class="btn btn-warning"
-            title="Search for all results (might be slow).">Show All</button>
+          <button class="btn limit-results" type="button">
+            <input id="limitResults" name="limitResults" class="form-control" type="number" placeholder="Limit" title="Results Limit." [(ngModel)]="limit" step="10">
+          </button>
           <button id="startResultsSearch" (click)="getResults()" type="submit" class="btn btn-success"
             title="Search for last 100 results.">Search
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
