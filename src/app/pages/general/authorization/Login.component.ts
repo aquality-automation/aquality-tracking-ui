@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.appSettingsService.getAuthSettings().subscribe(res => {
+    this.appSettingsService.getGeneralSettings().subscribe(res => {
       this.appSettings = res;
       this.ldapLogin = this.appSettings.ldap_auth === 1;
     });

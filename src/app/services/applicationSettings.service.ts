@@ -20,8 +20,4 @@ export class ApplicationSettingsService extends SimpleRequester {
   updateLDAPSettings(ldapSettings: LDAPSettings) {
     return this.doPost('/settings/ldap', ldapSettings).map(res => res);
   }
-
-  getAuthSettings() {
-    return this.doGet('/authInfo').map(res => res.json());
-  }
 }

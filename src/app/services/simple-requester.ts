@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, XHRBackend, Response, ResponseContentType} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
+import { Http, Headers, RequestOptions, XHRBackend, Response, ResponseContentType } from '@angular/http';
+import { Observable } from 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import { CookieService } from 'angular2-cookie/core';
 import { environment } from '../../environments/environment';
@@ -80,25 +80,27 @@ export class SimpleRequester extends Http {
     return this.intercept(super.get(this.api + url), false);
   }
 
-  public doGet(url: string, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false) {
+  public doGet(url: string, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false, handleError: boolean = true) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.get(this.api + url, { headers: headers, params: params}), showLoading);
+    return this.intercept(super.get(this.api + url, { headers: headers, params: params }), showLoading, handleError);
   }
 
   public doDownload(url: string) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.get(this.api + url, { headers: headers, responseType: ResponseContentType.Blob}), false);
+    return this.intercept(super.get(this.api + url, { headers: headers, responseType: ResponseContentType.Blob }), false);
   }
 
-  intercept(observable: Observable<Response>, showLoading: boolean): Observable<Response> {
+  intercept(observable: Observable<Response>, showLoading: boolean, handleError: boolean = true): Observable<Response> {
     if (showLoading) {
       this.globaldata.requestQuery++;
     }
     return observable
       .catch((err, source) => {
-        this.handleError(err);
+        if (handleError) {
+          this.handleError(err);
+        }
         return Observable.throw(err.statusText);
       })
       .do((res: Response) => {
@@ -140,7 +142,6 @@ export class SimpleRequester extends Http {
     }
     if (+err.status === 401) {
       this.cookieService.remove('iio78');
-      this.router.navigate(['/']);
     }
     this.notificationsService.error(
       `Ooops! ${err.status} code`,

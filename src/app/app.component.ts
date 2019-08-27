@@ -193,7 +193,7 @@ export class AppComponent {
   }
 
   async getInfo() {
-    this.isLogged = await this.userService.handleIsLogged();
+    this.isLogged = await this.userService.handleIsLogged(undefined, false);
     this.globaldata.auditModule = await this.settingsService.getGeneralSettings().toPromise();
     if (this.isLogged && this.route.firstChild && this.route.firstChild.firstChild) {
       await this.getProjectInfo();

@@ -34,14 +34,13 @@ export class CreateTestComponent {
     });
   }
 
-  processTestCreation() {
-    const test: Test = {
+  async processTestCreation() {
+    let test: Test = {
       name: this.newTestName,
       body: this.body,
       suites: this.testSuitesSelected,
       project_id: this.route.snapshot.params['projectId'] };
-    this.testService.createTest(test).subscribe(result => {
-      this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/test/' + result]);
-    }, error => console.log(error));
+    test = await this.testService.createTest(test);
+    this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/test/' + test.id]);
   }
 }

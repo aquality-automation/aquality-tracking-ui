@@ -7,7 +7,6 @@ import { GlobalDataService } from '../../services/globaldata.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    private router: Router,
     public userService: UserService,
     protected globaldata: GlobalDataService,
   ) { }
@@ -15,7 +14,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     const isLogged = await this.userService.handleIsLogged(state.url);
     if (!isLogged) {
-      this.router.navigate(['/'], { queryParams: { returnUrl: this.globaldata.returnURL } });
+      this.userService.redirectToLogin();
     }
     return isLogged;
   }

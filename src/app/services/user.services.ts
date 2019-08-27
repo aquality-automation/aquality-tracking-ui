@@ -26,8 +26,8 @@ export class UserService extends SimpleRequester {
     }).toPromise();
   }
 
-  private isAuthorized() {
-    return this.doGet('/users/isAuthorized').map(res => {
+  private isAuthorized(handleError: boolean = true) {
+    return this.doGet('/users/isAuthorized', undefined, false, handleError).map(res => {
       this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
       return res.json();
     }).toPromise();
@@ -73,12 +73,11 @@ export class UserService extends SimpleRequester {
     });
   }
 
-  private async checkAuth(): Promise<boolean> {
-    const user: User = await this.isAuthorized();
-    if (user && user.user_name) {
-      this.globaldata.currentUser = user;
+  private async checkAuth(handleError: boolean = true): Promise<boolean> {
+    try {
+      this.globaldata.currentUser = await this.isAuthorized(handleError);
       return true;
-    } else {
+    } catch (error) {
       this.globaldata.currentUser = undefined;
       return false;
     }
@@ -97,8 +96,8 @@ export class UserService extends SimpleRequester {
     }
   }
 
-  async handleIsLogged(returnUrl?: string): Promise<boolean> {
-    const isLogged = await this.checkAuth();
+  async handleIsLogged(returnUrl?: string, handleError: boolean = true): Promise<boolean> {
+    const isLogged = await this.checkAuth(handleError);
     if (!isLogged) {
       this.globaldata.returnURL = returnUrl || this.router.url;
       this.cookieService.remove('iio78');
