@@ -11,7 +11,6 @@ export interface CanComponentDeactivate {
 export class PendingChanges implements CanDeactivate<TestResultViewComponent> {
   async canDeactivate(component: TestResultViewComponent) {
     const result = await component.canDeactivate();
-    console.log(result);
     return result;
   }
 }

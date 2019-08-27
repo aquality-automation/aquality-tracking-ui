@@ -42,7 +42,7 @@ const sendPostWithfiles = (endpoint: string, params: object, filesAsString: stri
 
 const doImport = async (params: ImportParams, filesAsString: string[], fileNames: string[]): Promise<boolean> => {
     try {
-        const res = await sendPostWithfiles('/import', params, filesAsString, fileNames);
+        await sendPostWithfiles('/import', params, filesAsString, fileNames);
         return true;
     } catch (err) {
         return false;

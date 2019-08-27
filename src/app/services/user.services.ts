@@ -30,7 +30,7 @@ export class UserService extends SimpleRequester {
     return this.doGet('/users/isAuthorized').map(res => {
       this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
       return res.json();
-    });
+    }).toPromise();
   }
 
   getPermissionsForProject(projectId: number) {
@@ -73,21 +73,15 @@ export class UserService extends SimpleRequester {
     });
   }
 
-  private checkAuth(): Promise<boolean> {
-    return this.isAuthorized().map(result => {
-      if (result) {
-        const user: User = result;
-        if (user && user.user_name) {
-          this.globaldata.currentUser = user;
-          return true;
-        }
-      } else {
-        this.globaldata.currentUser = undefined;
-        return false;
-      }
-    }, error => {
+  private async checkAuth(): Promise<boolean> {
+    const user: User = await this.isAuthorized();
+    if (user && user.user_name) {
+      this.globaldata.currentUser = user;
+      return true;
+    } else {
+      this.globaldata.currentUser = undefined;
       return false;
-    }).toPromise();
+    }
   }
 
   removeUser(user: User) {
@@ -97,25 +91,19 @@ export class UserService extends SimpleRequester {
     });
   }
 
-  async handleIsLogged(returnUrl) {
-    let isLogged = false;
-    await this.IsLogged().then(res => {
-      isLogged = res;
-      if (!res) {
-        this.globaldata.returnURL = returnUrl || this.router.url;
-        this.router.navigate(['/'], { queryParams: { returnUrl: returnUrl }});
-      }
-    });
-    return isLogged;
+  async redirectToLogin() {
+    if (!(await this.router.navigate(['/']))) {
+      await this.router.navigate(['/']);
+    }
   }
 
-  async IsLogged(): Promise<boolean> {
-    return this.checkAuth().catch(e => {
-      this.globaldata.returnURL = this.router.url;
-      this.router.navigate(['/'], { queryParams: { returnUrl: this.router.url }});
+  async handleIsLogged(returnUrl?: string): Promise<boolean> {
+    const isLogged = await this.checkAuth();
+    if (!isLogged) {
+      this.globaldata.returnURL = returnUrl || this.router.url;
       this.cookieService.remove('iio78');
-      return false;
-    });
+    }
+    return isLogged;
   }
 
   IsAdmin(): boolean {
@@ -305,7 +293,7 @@ export class UserService extends SimpleRequester {
 
   getAnyLocalPermissions() {
     if (!this.globaldata.currentUser) {
-      this.IsLogged().then(isLogged => {
+      this.handleIsLogged().then(isLogged => {
         if (isLogged) {
           return this.doGet(`/users/permissions?userId=${this.globaldata.currentUser.id}`).map(res => res.json());
         }

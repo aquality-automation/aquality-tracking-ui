@@ -2,18 +2,22 @@ import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { UserService } from '../../services/user.services';
+import { GlobalDataService } from '../../services/globaldata.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-
   constructor(
+    private router: Router,
     public userService: UserService,
+    protected globaldata: GlobalDataService,
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
-    return islogged;
+    const isLogged = await this.userService.handleIsLogged(state.url);
+    if (!isLogged) {
+      this.router.navigate(['/'], { queryParams: { returnUrl: this.globaldata.returnURL } });
+    }
+    return isLogged;
   }
 }
 
@@ -22,8 +26,7 @@ export class ProjectGuard implements CanActivate {
   constructor(
     private router: Router,
     public userService: UserService
-  ) {
-  }
+  ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
