@@ -17,4 +17,24 @@ export class SuiteList extends BasePage {
     clickRemoveSuiteButton(name: string) {
         return elements.testSuiteTable.clickAction(name, columns.name);
     }
+
+    openCreationRow() {
+        return elements.testSuiteTable.openCreation();
+    }
+
+    setCreationName(name: string) {
+        return elements.testSuiteTable.fillCreation(name, columns.name);
+    }
+
+    acceptCreation() {
+        return elements.testSuiteTable.clickCreateAction();
+    }
+
+    getCreationError() {
+        return elements.testSuiteTable.getCreationError();
+    }
+
+    updateSuiteName(newName: string, oldName: string) {
+        return elements.testSuiteTable.editRow(newName, columns.name, oldName, columns.name);
+    }
 }

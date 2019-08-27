@@ -86,5 +86,12 @@ export class TestSuiteComponent implements OnInit {
     suite.project_id = this.route.snapshot.params['projectId'];
     await this.testSuiteService.createTestSuite(suite);
     await this.updateSuites();
+    this.testSuiteService.handleSuccess(`Suite '${suite.name}' was created!`);
+  }
+
+  async suiteUpdate(suite: TestSuite) {
+    await  this.testSuiteService.createTestSuite(suite);
+    await this.updateSuites();
+    this.testSuiteService.handleSuccess(`Suite '${suite.name}' was updated!`);
   }
 }
