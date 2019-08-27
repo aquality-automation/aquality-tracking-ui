@@ -1,6 +1,6 @@
 import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder } from 'protractor';
 import { BaseElement } from '../base.element';
-import { logger } from '../../../utils/log.util';
+import { logger } from '../../utils/log.util';
 import { Checkbox } from '../checkbox.element';
 import { InlineEditor } from '../inlineEditor.element';
 import { Lookup } from '../lookup.element';
@@ -136,6 +136,11 @@ export class SmartTable extends BaseElement {
         return cell.click();
     }
 
+    public async rightClickCell(columnToClick: string, searchValue: string, searchColumn: string) {
+        const cell = await this.getCell(columnToClick, searchValue, searchColumn);
+        return browser.actions().click(cell, protractor.Button.RIGHT).perform();
+    }
+
     public async editRow(value: string | boolean, column: string, searchValue: string, searchColumn: string) {
         const cell = await this.getCell(column, searchValue, searchColumn);
         if (await this.rowElements.inlineEditor(cell).element.isPresent()) {
@@ -196,6 +201,23 @@ export class SmartTable extends BaseElement {
             return this.refreshButton.click();
         }
         throw new Error('You are trying to Refresh table without refresh action');
+    }
+
+    public async hasNoData() {
+        return this.element.element(by.id('noDataRow')).isPresent();
+    }
+
+    public async getColumValues(columnName: string): Promise<string[]> {
+        const columnIndex = await this.getColumnIndex(columnName);
+        const rows = await this.getAllRows();
+        const values: string[] = [];
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const cell: ElementFinder = await this.getCellFromRow(row, columnIndex);
+            values.push(await cell.getText());
+        }
+
+        return values;
     }
 
     private async isCellContainsEditableElement(cell: ElementFinder) {
@@ -266,11 +288,11 @@ export class SmartTable extends BaseElement {
     private async getRow(value: string | number, columnName: string): Promise<ElementFinder> {
         const rows = await this.getRows(value, columnName);
         if (rows.length < 1) {
-            throw new Error(`No rows were found by ${value} value in ${columnName} column`);
+            throw new Error(`No rows were found by '${value}' value in '${columnName}' column`);
         }
 
         if (rows.length > 1) {
-            logger.warn(`Multiple rows were found by ${value} value in ${columnName} column, the first will be used`);
+            logger.warn(`Multiple rows were found by '${value}' value in '${columnName}' column, the first will be used`);
         }
         return rows[0];
     }

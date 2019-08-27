@@ -43,7 +43,7 @@ export class ImportTokenComponent {
 
   generateToken() {
     this.projectService.createImportToken(this.selectedProject).subscribe(res => {
-      this.token = res.token;
+      this.token = res.import_token;
     });
   }
 

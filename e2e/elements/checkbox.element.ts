@@ -1,6 +1,6 @@
 import { Locator, ElementFinder } from 'protractor';
 import { BaseElement } from './base.element';
-import { scrollIntoView } from '../../utils/js.util';
+import { scrollIntoView } from '../utils/js.util';
 
 export class Checkbox extends BaseElement {
     constructor(locator: Locator | ElementFinder) {

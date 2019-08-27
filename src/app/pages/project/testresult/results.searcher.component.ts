@@ -24,6 +24,7 @@ import { FinalResult } from '../../../shared/models/final-result';
     ]),
   ],
   templateUrl: './results.searcher.component.html',
+  styleUrls: ['./results.searcher.component.css'],
   providers: [
     SimpleRequester,
     TestResultService,
@@ -92,10 +93,8 @@ export class ResultSearcherComponent {
     if (this.failReasonSearch.length > 150) {
       this.failReasonSearch = this.failReasonSearch.slice(0, 150);
     }
-    this.testResults = await this.testResultService.getTestResult({ fail_reason: this.failReasonSearch });
-  }
-
-  rowClicked($event) {
-    window.open(`#/project/${this.route.snapshot.params['projectId']}/testresult/${$event.id}`);
+    this.testResults = await this.testResultService.getTestResult({
+      fail_reason: this.failReasonSearch
+    });
   }
 }

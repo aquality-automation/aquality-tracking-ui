@@ -1,5 +1,5 @@
 import { browser } from 'protractor';
-import { BasePage } from '../base.po';
+import { BasePage } from '../../base.po';
 import { elements, names, baseUrl } from './constants';
 
 export class TestResultView extends BasePage {

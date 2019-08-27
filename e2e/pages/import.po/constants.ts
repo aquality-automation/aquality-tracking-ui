@@ -1,8 +1,8 @@
 import { by, element } from 'protractor';
-import { Autocomplete } from '../elements/autocomplete.element';
-import { Lookup } from '../elements/lookup.element';
-import { UiSwitch } from '../elements/ui-switch';
-import { SmartTable } from '../elements/smartTable.element';
+import { Autocomplete } from '../../elements/autocomplete.element';
+import { Lookup } from '../../elements/lookup.element';
+import { UiSwitch } from '../../elements/ui-switch';
+import { SmartTable } from '../../elements/smartTable.element';
 
 export const baseUrl = (id: number) => `/project/${id}/import`;
 

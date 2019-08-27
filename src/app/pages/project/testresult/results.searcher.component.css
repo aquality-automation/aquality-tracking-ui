@@ -1,0 +1,4 @@
+.result-searcher-table {
+    overflow: auto;
+    max-height: 300px;
+}

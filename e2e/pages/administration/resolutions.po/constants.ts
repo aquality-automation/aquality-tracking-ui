@@ -1,6 +1,6 @@
 import { by, element } from 'protractor';
-import { Autocomplete } from '../../elements/autocomplete.element';
-import { SmartTable } from '../../elements/smartTable.element';
+import { Autocomplete } from '../../../elements/autocomplete.element';
+import { SmartTable } from '../../../elements/smartTable.element';
 
 export const baseUrl = '/administration/global/users';
 

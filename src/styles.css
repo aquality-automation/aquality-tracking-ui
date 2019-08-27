@@ -386,11 +386,6 @@ td.wrap {
   padding-bottom: 0.5em;
 }
 
-#searchTable {
-  overflow: auto;
-  max-height: 300px;
-}
-
 ul.spinner {
   position: absolute;
   right: 50%;

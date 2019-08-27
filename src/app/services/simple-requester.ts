@@ -54,7 +54,7 @@ export class SimpleRequester extends Http {
     return this.intercept(super.delete(this.api + url, { headers, params }), false);
   }
 
-  public doPostFiles(url: string, fileList) {
+  public doPostFiles(url: string, fileList: File[]) {
     this.turnOnModal();
     const formData: FormData = new FormData();
     let i = 0;

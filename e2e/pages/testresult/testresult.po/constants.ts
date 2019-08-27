@@ -1,5 +1,5 @@
 import { by, element } from 'protractor';
-import { Lookup } from '../elements/lookup.element';
+import { Lookup } from '../../../elements/lookup.element';
 
 export const baseUrl = function (projectId, testresultId) {
     return `/project/${projectId}/testresult/${testresultId}`;

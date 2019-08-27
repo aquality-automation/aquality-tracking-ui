@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 @Directive({
-  selector: '[sorter], [defaultSorter]'
+  selector: '[sorter]'
 })
 export class TableSorterDerective implements AfterViewChecked {
   @Input()
@@ -32,9 +32,11 @@ export class TableSorterDerective implements AfterViewChecked {
   sendSort(element: HTMLElement) {
     const columns: HTMLElement[] = Array.prototype.slice.call(element.parentElement.getElementsByTagName('th'), 0);
     columns.forEach(column => {
-      if (!element.classList.contains(this.sorter.property)) {
+      if (!column.classList.contains(this.sorter.property)) {
         const span = column.getElementsByTagName('span')[0];
-        if (span) { span.remove(); }
+        if (span) {
+          span.remove();
+        }
       }
     });
 
