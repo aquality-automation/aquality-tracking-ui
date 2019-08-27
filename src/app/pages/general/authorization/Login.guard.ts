@@ -14,7 +14,7 @@ export class LoginGuard implements CanActivate {
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     const isLogged = await this.userService.handleIsLogged();
     if (isLogged) {
-      await this.router.navigate(['/project']);
+      this.router.navigate(['/project']);
     }
     return !isLogged;
   }

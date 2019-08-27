@@ -11,7 +11,7 @@ import { doImport } from '../../utils/aqualityTrackingAPI.util';
 import { prepareProject } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
 
-fdescribe('Test Run Result Searcher', () => {
+describe('Test Run Result Searcher', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();

@@ -1,5 +1,9 @@
 import superagent from 'superagent';
 import { environment } from '../../src/environments/environment';
+import { TestRun } from '../../src/app/shared/models/testRun';
+import { TestSuite } from '../../src/app/shared/models/testSuite';
+import { Test } from '../../src/app/shared/models/test';
+import { TestResult } from '../../src/app/shared/models/test-result';
 
 export class ImportParams {
     projectId: number;
@@ -7,6 +11,10 @@ export class ImportParams {
     format: string;
     suite: string;
 }
+
+const createAuthHeaderValue = (token: string, projectId: number) => {
+    return `Basic ${Buffer.from(`project:${projectId}:${token}`).toString('base64')}`;
+};
 
 const serializeToQueryString = (object: object) => {
     if (!object) {
@@ -25,8 +33,27 @@ const getFullURL = (endpoint: string, params: object) => {
     return environment.host + endpoint + serializeToQueryString(params);
 };
 
-const sendGet = async (endpoint: string, params: object) => {
-    return superagent.get(getFullURL(endpoint, params));
+const sendGet = async (endpoint: string, params: object, token: string, projectId: number) => {
+    try {
+        const resp = await superagent.get(getFullURL(endpoint, params))
+            .set('Authorization', createAuthHeaderValue(token, projectId))
+            .set('Accept', 'application/json');
+        return resp.body;
+    } catch (error) {
+        throw new Error(`Was not able to get ${endpoint}`);
+    }
+};
+
+const sendPost = async (endpoint: string, params: object, body: any, token: string, projectId: number) => {
+    try {
+        const resp = await superagent.post(getFullURL(endpoint, params))
+            .send(body)
+            .set('Authorization', createAuthHeaderValue(token, projectId))
+            .set('Accept', 'application/json');
+        return resp.body;
+    } catch (error) {
+        throw new Error(`Was not able to create ${endpoint}`);
+    }
 };
 
 const sendPostWithfiles = (endpoint: string, params: object, filesAsString: string[], filenames: string[]) => {
@@ -49,4 +76,29 @@ const doImport = async (params: ImportParams, filesAsString: string[], fileNames
     }
 };
 
-export { doImport };
+const createTestRun = async (testRun: TestRun, token: string, projectId: number) => {
+    return sendPost('/testrun', undefined, testRun, token, projectId);
+};
+
+const getSuites = async (testSuite: TestSuite, token: string, projectId: number): Promise<TestSuite[]> => {
+    return sendGet('/suite', testSuite, token, projectId);
+};
+
+const getTests = (test: Test, token: string, projectId: number): Promise<Test[]> => {
+    return sendGet('/test', test, token, projectId);
+};
+
+const getResults = (testResult: TestResult, token: string, projectId: number): Promise<TestResult[]> => {
+    return sendGet('/testresult', testResult, token, projectId);
+};
+
+const postResult = (testResult: TestResult, token: string, projectId: number): Promise<TestResult> => {
+    return sendPost('/testresult', undefined, testResult, token, projectId);
+};
+
+const postTest = (test: Test, token: string, projectId: number): Promise<Test> => {
+    return sendPost('/test', undefined, test, token, projectId);
+};
+
+
+export { doImport, createTestRun, getSuites, getTests, getResults, postResult, postTest };

@@ -1,4 +1,3 @@
-import { User } from './user';
 import { ResultResolution } from './result_resolution';
 import { FinalResult } from './final-result';
 import { LocalPermissions } from './LocalPermissions';
@@ -18,7 +17,7 @@ export class TestResult {
   debug?: number;
   updated?: Date;
   log?: string;
-  start_date?: string;
+  start_date?: string | Date;
   finish_date?: string;
   final_result_updated?: Date;
   fail_reason?: string;
