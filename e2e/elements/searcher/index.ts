@@ -58,6 +58,22 @@ export class ResultSearcher extends BaseElement {
     return classValue.includes('up');
   }
 
+  disableRegexpSearch() {
+    return this.setRegexpSearch(false);
+  }
+
+  enableRegexpSearch() {
+    return this.setRegexpSearch(true);
+  }
+
+  getNumberOfResults() {
+    return this.resultSearcherTable.getTotalRows();
+  }
+
+  setLimit(limit: string) {
+    return new Input(By.id('limitResults')).typeText(limit);
+  }
+
   async onlyContainsFailReasonWith(failReasonPart: string): Promise<string[]> {
     const values = await this.resultSearcherTable.getColumValues('Fail Reason');
     const incorrectValues: string[] = [];
@@ -69,5 +85,13 @@ export class ResultSearcher extends BaseElement {
     }
 
     return incorrectValues;
+  }
+
+  private async setRegexpSearch(state: boolean): Promise<void> {
+    const regexpToggler = this.element.element(By.id('regexpSearch'));
+    if ((await regexpToggler.getAttribute('class')).includes('btn-success') !== state) {
+      return regexpToggler.click();
+    }
+    return;
   }
 }

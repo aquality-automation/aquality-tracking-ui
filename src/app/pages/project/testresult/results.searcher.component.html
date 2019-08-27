@@ -3,10 +3,18 @@
     <div class="col-sm-1 text-center vert-aligned"> </div>
     <form class="col-sm-10 no-margin" action="getResults()">
       <div class="form-group text-center vert-aligned input-group no-margin">
-        <span class="input-group-addon">Search for same Test Results in project</span>
-        <input maxlength="500" id="searchByFailReason" name="searchByFailReason" class="form-control" type="text" trim="blur" [(ngModel)]="failReasonSearch">
+        <span class="input-group-addon">Search by Fail Reason in project</span>
+        <input maxlength="500" id="searchByFailReason" name="searchByFailReason" class="form-control" type="text"
+          trim="blur" [(ngModel)]="failReasonSearch">
         <div class="input-group-btn">
-          <button id="startResultsSearch" (click)="getResults()" type="submit" class="btn btn-success">Search
+          <button id="regexpSearch" (click)="toggleRegexpSearch()" type="button" class="btn"
+            title="Search by regular expression."
+            [ngClass]="{'btn-default': !isRegexSearch, 'btn-success': isRegexSearch}">(.*)</button>
+          <button class="btn limit-results" type="button">
+            <input id="limitResults" name="limitResults" class="form-control" type="number" placeholder="Limit" title="Results Limit." [(ngModel)]="limit" step="10">
+          </button>
+          <button id="startResultsSearch" (click)="getResults()" type="submit" class="btn btn-success"
+            title="Search for last 100 results.">Search
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
           </button>
         </div>
@@ -14,7 +22,9 @@
     </form>
   </div>
   <div *ngIf="toggledOn && testResults" class="result-searcher-table">
-    <table-filter *ngIf="testResults" id="resultSearcherTable" [hide]="hideVal" [queryParams]="false" [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy"></table-filter>
+    <loader-component [show]="pendingSearch"></loader-component>
+    <table-filter *ngIf="testResults" id="resultSearcherTable" [hide]="hideVal" [queryParams]="false"
+      [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy"></table-filter>
   </div>
   <div id="resultSearcherOpener" class="header-tools-opener text-center" (click)="toggleTools()">
     <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" [ngClass]="{

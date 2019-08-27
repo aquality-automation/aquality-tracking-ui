@@ -11,7 +11,7 @@ import { doImport } from '../../utils/aqualityTrackingAPI.util';
 import { prepareProject } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
 
-describe('Test Run Result Searcher', () => {
+fdescribe('Test Run Result Searcher', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
@@ -40,6 +40,10 @@ describe('Test Run Result Searcher', () => {
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await executeCucumberImport();
+        await projectView.menuBar.testRuns();
+        const isTestRunAppear = await testRunList.waitForTestRun(builds.build_2);
+        expect(isTestRunAppear).toBe(true, 'Import was not finished!');
+        await testRunList.openTestRun(builds.build_1);
     });
 
     afterAll(async () => {
@@ -50,9 +54,6 @@ describe('Test Run Result Searcher', () => {
     });
 
     it('Can be opened', async () => {
-        await projectView.menuBar.testRuns();
-        expect(testRunList.waitForTestRun(builds.build_2)).toBe(true, 'Import was not finished!');
-        await testRunList.openTestRun(builds.build_1);
         await testRunView.resultSearcher.openSearcher();
         expect(testRunView.resultSearcher.isSearcherOpened()).toBe(true, 'Searcher was not Opened');
     });
@@ -68,7 +69,7 @@ describe('Test Run Result Searcher', () => {
         await testRunView.resultSearcher.search(failReason);
         expect(testRunView.resultSearcher.hasNoResults()).toBe(false, 'Searcher does not find any results.');
         const incorrectValues = await testRunView.resultSearcher.onlyContainsFailReasonWith(failReason);
-        expect(incorrectValues.length).toBe(0, `there are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
+        expect(incorrectValues.length).toBe(0, `There are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
     });
 
     it('Can be closed', async () => {
@@ -84,5 +85,25 @@ describe('Test Run Result Searcher', () => {
             .toBe(failReason, 'Search field filled with wrong value!');
         const incorrectValues = await testRunView.resultSearcher.onlyContainsFailReasonWith(failReason);
         expect(incorrectValues.length).toBe(0, `There are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
+    });
+
+    it('Can use Regular expression for search', async () => {
+        const failReason = 'step was failed';
+        await testRunView.resultSearcher.enableRegexpSearch();
+        await testRunView.resultSearcher.search('step was (.{4})ed$');
+        const incorrectValues = await testRunView.resultSearcher.onlyContainsFailReasonWith(failReason);
+        expect(incorrectValues.length).toBe(0, `There are some incorrect fail reasons:\r\n${incorrectValues.join('\r\n')}`);
+    });
+
+    it('Can disable Regular expression for search', async () => {
+        await testRunView.resultSearcher.disableRegexpSearch();
+        await testRunView.resultSearcher.search('step was (.{4})ed$');
+        expect(testRunView.resultSearcher.hasNoResults()).toBe(true, 'Searcher found some results but should not.');
+    });
+
+    it('Can limit search results', async () => {
+        await testRunView.resultSearcher.setLimit('1');
+        await testRunView.resultSearcher.search('step was');
+        expect(testRunView.resultSearcher.getNumberOfResults()).toBe('1', 'Results Number is wrong!');
     });
 });

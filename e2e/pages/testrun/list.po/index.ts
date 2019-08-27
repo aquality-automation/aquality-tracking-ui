@@ -27,7 +27,7 @@ export class TestRunList extends BasePage {
             }
             await this.menuBar.import();
             await this.menuBar.testRuns();
-            return false;
+            return await this.isTestRunRowDisplayed(buildName);
         }, 5, 3000);
     }
 }
