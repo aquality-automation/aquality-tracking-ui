@@ -1,15 +1,4 @@
 FROM alpine/git as clone
-RUN apk update && \
-    apk add --update git && \
-    apk add --update openssh
-
-# Make ssh dir and add key
-RUN mkdir /root/.ssh/
-ADD /ssh/id_rsa /root/.ssh/id_rsa
-
-# Create known_hosts
-RUN chmod -R 600 /root/.ssh/ && \
-    ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 # Define branch
 ARG BRANCH 
