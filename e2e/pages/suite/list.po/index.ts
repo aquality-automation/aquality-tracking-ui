@@ -6,6 +6,13 @@ export class SuiteList extends BasePage {
         super(elements.uniqueElement, names.pageName);
     }
 
+    async createSuite(name: string) {
+        await this.openCreationRow();
+        await this.setCreationName(name);
+        await this.acceptCreation();
+        return this.notification.isSuccess();
+    }
+
     isTestSuitePresent(name: string): any {
         return elements.testSuiteTable.isRowExists(name, columns.name);
     }

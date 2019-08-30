@@ -13,7 +13,6 @@ const customerRoutes: Routes = [
       { path: '', component: CustomerComponent, canActivate: [CustomerDashboardGuard]},
       { path: 'create', component: CustomerCreateComponent, canActivate: [CustomerCreateGuard]},
       { path: ':customer_id', component: CustomerInfoComponent, canActivate: [CustomerDashboardGuard]}
-
     ]
   }
 ];

@@ -11,15 +11,11 @@ export class LoginGuard implements CanActivate {
     public userService: UserService
   ) { }
 
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let isLogged;
-    await this.userService.IsLogged().then(result => {
-      if (result) {
-        this.router.navigate(['/project']);
-        isLogged = false;
-      }
-      isLogged = true;
-    });
-    return isLogged;
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+    const isLogged = await this.userService.handleIsLogged(undefined, false);
+    if (isLogged) {
+      this.router.navigate(['/project']);
+    }
+    return !isLogged;
   }
 }
