@@ -10,8 +10,8 @@
 
 .loader-spinner {
     position: absolute;
-    right: calc(50% - 64px);
-    top: calc(50% - 128px);
+    right: calc(50% - 43px);
+    top: calc(50% - 90px);
 }
 
 .loader-spinner {
@@ -20,17 +20,17 @@
 
 @keyframes lds-hourglass {
     25% {
-        transform-origin: 56.5px 137.5px;
+        transform-origin: 43.5px 92px;
         transform: rotate(0);
         animation-timing-function: ease;
     }
     75% {
-        transform-origin: 56.5px 137.5px;
+        transform-origin: 43.5px 92px;
         transform: rotate(720deg);
         animation-timing-function: ease;
     }
     100% {
-        transform-origin: 56.5px 137.5px;
+        transform-origin: 43.5px 92px;
         transform: rotate(720deg);
     }
 }
