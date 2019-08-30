@@ -54,12 +54,8 @@ describe('Full Admin Test Suite', () => {
     return expect(testSuiteList.isTestSuitePresent(suite.name)).toBe(true);
   });
 
-  it('Suite should be selected in suites lookup', async () => {
+  it('Suite name should be inherited from create page', async () => {
     await testSuiteList.clickTestSuite(suite.name);
-    return expect(testSuiteView.getNameOfLabelTestSuite()).toEqual(suite.name);
-  });
-
-  it('Suite name should be inherited from create page', () => {
     return expect(testSuiteView.getNameOfTestSuite()).toEqual(suite.name);
   });
 
@@ -73,15 +69,5 @@ describe('Full Admin Test Suite', () => {
 
   it('Automation Duration Label shouldn`t be shown', () => {
     return expect(testSuiteView.isAutomationDurationLabel()).toBe(false, 'Automation Duration Label is expected to absent');
-  });
-
-  it('I can Remove Test Suite', async () => {
-    await (await testSuiteView.menuBar.tests()).suites();
-    await testSuiteList.clickRemoveSuiteButton(suite.name);
-    await expect(testSuiteList.modal.isVisible()).toBe(true, 'Remove Test Run modal is not opened');
-    await testSuiteList.modal.clickActionBtn('yes');
-    await testSuiteList.refresh();
-    await expect(testSuiteList.isTestSuitePresent(suite.name)).toBe(false,
-      `Suite ${suite.name} is still displayed`);
   });
 });

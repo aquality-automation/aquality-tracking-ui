@@ -140,6 +140,6 @@
     </div>
   </div>
   <div class="row" *ngIf="testResults?.length">
-    <results-grid [testResults]="testResults" (resultUpdated)="updateResult($event)"
+    <results-grid id="testRunViewResultsGrid" [testResults]="testResults" (resultUpdated)="updateResult($event)"
       [testResultTempalte]="testResultTempalte">Loading...</results-grid>
   </div>

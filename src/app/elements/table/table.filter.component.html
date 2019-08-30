@@ -54,10 +54,10 @@
                             (keyup)="handleFilterChange(col, $event.currentTarget.value)">
                         <div *ngIf="col.type === 'date' && col.filter">
                             <ng-datepicker class="top-filter-date" [ngModel]="getFilterDate(col.property, 'from')"
-                                (ngModelChange)="dateFilterUpdate({property:col.property, from:$event})"
+                                (ngModelChange)="handleDateFilterUpdate({property:col.property, from:$event})"
                                 [options]="optionsFrom"></ng-datepicker>
                             <ng-datepicker id="due-date" name="due-date" [ngModel]="getFilterDate(col.property, 'to')"
-                                (ngModelChange)="dateFilterUpdate({property:col.property, to:$event})"
+                                (ngModelChange)="handleDateFilterUpdate({property:col.property, to:$event})"
                                 [options]="optionsTo"></ng-datepicker>
                         </div>
                         <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
@@ -69,42 +69,39 @@
                             [small]="true" [colorProperty]="'color'"
                             [propertiesToShow]="[getLookupProperty(col.property, col.values)]" [array]="col.values"
                             [placeholder]="col.placeholder ? col.placeholder : 'None'" [allowEmptyValue]="true"
-                            [model]="msFilterData(col)[0]"
-                            (modelChange)="msFilter(col.objectWithId ? col.objectWithId : col.entity, [$event])">
+                            [model]="getLookupFilterValue(col)[0]"
+                            (modelChange)="handleLookupFilterChange(col.objectWithId ? col.objectWithId : col.entity, [$event])">
                         </lookup-colored>
 
                         <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete' && col.filter"
                             [cutLongText]="true" [small]="true" [propertiesToShow]="col.propToShow" [array]="col.values"
                             [placeholder]="col.placeholder ? col.placeholder : 'None'" [allowEmptyValue]="true"
-                            [model]="msFilterData(col)[0]" [emptyForFilter]="col.nullFilter"
-                            (modelChange)="msFilter(col.objectWithId ? col.objectWithId : col.entity, [$event])">
+                            [model]="getLookupFilterValue(col)[0]" [emptyForFilter]="col.nullFilter"
+                            (modelChange)="handleLookupFilterChange(col.objectWithId ? col.objectWithId : col.entity, [$event])">
                         </lookup-autocomplete>
 
-                        <div *ngIf="col.type === 'percent' && col.filter" [ngClass]="{
-                        'has-error': invalidRange(col)
-                    }">
+                        <div *ngIf="col.type === 'percent' && col.filter" [ngClass]="{ 'has-error': isRangeInvalid(col) }">
                             <input placeholder="from" class="inline form-control input-sm ft-range-selector"
-                                (keyup)="rangeKeyDown($event)"
+                                (keyup)="rangeKeyUp($event)"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
                                 [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0" max="100"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <input placeholder="to" class="inline form-control input-sm ft-range-selector"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
                                 [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" max="100"
-                                (keyup)="rangeKeyDown($event)"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                (keyup)="rangeKeyUp($event)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"
                                 (click)="removeRangeFilter(col.property)"></span>
                         </div>
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
-                            [propertiesToShow]="col.propToShow" [array]="col.values" [model]="msFilterData(col)"
-                            (modelChange)="msFilter(col.property, $event)"></lookup-autocomplete-multiselect>
+                            [propertiesToShow]="col.propToShow" [array]="col.values" [model]="getLookupFilterValue(col)"
+                            (modelChange)="handleLookupFilterChange(col.property, $event)"></lookup-autocomplete-multiselect>
                     </td>
                 </tr>
             </thead>
             <tbody *ngIf="(!mf.data || mf.data.length < 1) && !allowCreate">
-                <tr>
+                <tr id="noDataRow">
                     <td [attr.colspan]="columns.length">Nothing to show</td>
                 </tr>
             </tbody>
@@ -149,12 +146,12 @@
                             [array]="col.values" [model]="getFilterLookupModel(col.property)"
                             (modelChange)="setNewValueFromLookup(col.property, $event)"></lookup-autocomplete>
 
-                        <lookup-colored *ngIf="!col.excludeCreation && col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
-                            placeholder="col?.name" [allowEmptyValue]="false"
-                            [propertiesToShow]="[getLookupProperty(col.property, col.values)]"
-                            [array]="col.values" [model]="getFilterLookupModel(col.property)"
-                            (modelChange)="setNewValueFromLookup(col.property, $event)"
-                            [colorProperty]="'color'"></lookup-colored>
+                        <lookup-colored *ngIf="!col.excludeCreation && col.type === 'lookup-colored'"
+                            [cutLongText]="true" [small]="true" placeholder="col?.name" [allowEmptyValue]="false"
+                            [propertiesToShow]="[getLookupProperty(col.property, col.values)]" [array]="col.values"
+                            [model]="getFilterLookupModel(col.property)"
+                            (modelChange)="setNewValueFromLookup(col.property, $event)" [colorProperty]="'color'">
+                        </lookup-colored>
                     </td>
                 </tr>
                 <tr *ngIf="showCreation && allowCreate && !isNewEntityValid()" class="danger ft-create-error">
@@ -233,11 +230,9 @@
                 'warning': rowColor(entity)=='warning'
                 }">
                     <td (click)="rowClicked(entity, col, $event)" *ngFor="let col of columns" class="vert-aligned"
-                        [ngClass]="{ 
-                        'text-center fit': col.type === 'checkbox',
-                        'lastSelectedRow': isLastSelected(entity)
-                    }" [customListener]="col.listeners" (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
-                        <div *ngIf="!isHidden(entity, col.property)" class="ft-cell"
+                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' }" 
+                        [customListener]="col.listeners" (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
+                        <div *ngIf="!isPropertyShouldBeHidden(entity, col.property)" class="ft-cell"
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
@@ -333,8 +328,8 @@
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
                         </div>
 
-                        <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow" (click)="removeAction(entity)"
-                            class="btn btn-sm btn-danger row-action-button">
+                        <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow"
+                            (click)="removeAction(entity)" class="btn btn-sm btn-danger row-action-button">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </button>
                     </td>

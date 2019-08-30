@@ -213,14 +213,13 @@ export class TestSuiteViewComponent implements OnInit {
     return this.users.find(x => x.user.id === id);
   }
 
-  testUpdate($event: Test) {
+  async testUpdate($event: Test) {
     this.calculateManualDuration();
     if ($event.developer) {
       $event.developer_id = $event.developer.user_id;
     }
-    this.testService.createTest($event).subscribe(() => { }, () => {
-      this.testService.getTest({ test_suite_id: this.testSuite.id }).subscribe(res => this.testSuite.tests = res);
-    });
+    await this.testService.createTest($event);
+    this.testService.getTest({ test_suite_id: this.testSuite.id }).subscribe(res => this.testSuite.tests = res);
   }
 
   bulkUpdate(tests: Test[]) {

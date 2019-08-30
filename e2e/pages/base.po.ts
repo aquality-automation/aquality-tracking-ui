@@ -1,8 +1,8 @@
-import { MenuBar } from './elements/menuBar.element';
-import { Notification } from './elements/notification.element';
+import { MenuBar } from '../elements/menuBar.element';
+import { Notification } from '../elements/notification.element';
 import { ElementFinder, browser, protractor } from 'protractor';
 import { logger } from '../utils/log.util';
-import { Modal } from './elements/modal.element';
+import { Modal } from '../elements/modal.element';
 
 const EC = protractor.ExpectedConditions;
 
@@ -31,5 +31,11 @@ export class BasePage {
 
     async refresh() {
         await browser.refresh();
+    }
+
+    async getCurrentProjectId(): Promise<number> {
+        const url = `${await browser.getCurrentUrl()}/`;
+        const regexp = /.*\/project\/(\d+)\/.*/;
+        return +(url.match(regexp)[1]);
     }
 }

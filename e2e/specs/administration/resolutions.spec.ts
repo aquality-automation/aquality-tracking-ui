@@ -11,7 +11,7 @@ import { ResolutionAdministration } from '../../pages/administration/resolutions
 import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
 import { TestRunList } from '../../pages/testrun/list.po';
 import { TestRunView } from '../../pages/testrun/view.po';
-import { TestResultView } from '../../pages/testresult.po';
+import { TestResultView } from '../../pages/testresult/testresult.po';
 import { browser } from 'protractor';
 import { colors } from '../../pages/administration/resolutions.po/constants';
 

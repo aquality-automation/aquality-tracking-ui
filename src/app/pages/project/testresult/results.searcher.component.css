@@ -1,0 +1,13 @@
+.result-searcher-table {
+    overflow: auto;
+    max-height: 300px;
+}
+
+.limit-results {
+    padding: 0;
+    border: none;
+}
+
+.limit-results > input {
+    width: 100px;
+}

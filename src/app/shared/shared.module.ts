@@ -36,6 +36,7 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { InputTrimModule } from 'ng2-trim-directive';
+import { LoaderComponent } from '../elements/loader/loader.component';
 
 @NgModule({
   imports: [
@@ -77,7 +78,8 @@ import { InputTrimModule } from 'ng2-trim-directive';
     AutofocusDirective,
     MaxLength,
     ManageColumnsModalComponent,
-    OverflowDirective
+    OverflowDirective,
+    LoaderComponent
   ],
   exports: [
     ClickableLinks,
@@ -115,7 +117,8 @@ import { InputTrimModule } from 'ng2-trim-directive';
     HttpClientModule,
     ChartsModule,
     HttpModule,
-    InputTrimModule
+    InputTrimModule,
+    LoaderComponent
   ]
 })
 export class SharedModule {}

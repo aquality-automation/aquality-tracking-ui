@@ -193,7 +193,7 @@ export class AppComponent {
   }
 
   async getInfo() {
-    this.isLogged = await this.userService.IsLogged();
+    this.isLogged = await this.userService.handleIsLogged(undefined, false);
     this.globaldata.auditModule = await this.settingsService.getGeneralSettings().toPromise();
     if (this.isLogged && this.route.firstChild && this.route.firstChild.firstChild) {
       await this.getProjectInfo();
@@ -219,9 +219,10 @@ export class AppComponent {
     }
   }
 
-  Logout() {
+  async Logout() {
     this.cookieService.remove('iio78');
     this.isLogged = false;
     this.globaldata.Clear();
+    await this.userService.redirectToLogin();
   }
 }

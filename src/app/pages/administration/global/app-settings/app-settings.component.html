@@ -142,60 +142,82 @@
   </div>
 </div>
 <div *ngIf="emailSettings" class="panel panel-default">
-  <div class="panel-heading">Email Settings <button class="btn btn-success btn-sm pull-right panel-button"
-      (click)="saveEmail()">Save</button></div>
+  <div class="panel-heading">Email Settings
+    <button id="saveEmailSettings"class="btn btn-success btn-sm pull-right panel-button" (click)="saveEmail()">Save</button>
+  </div>
   <div class="panel-body">
-    <div class="col-sm-12">
-      <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.enabled"></ui-switch>
-      <label class="pull-left padding-left-15px">Email Notifications</label>
-    </div>
-    <div class="col-sm-12">
-      <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.use_auth"></ui-switch>
-      <label class="pull-left padding-left-15px">Use STMP Authentication</label>
-    </div>
-    <div class="col-sm-4 field-cell">
-      <div class="col-sm-4">
-        <label for="ldapSearchBaseUsers" class="label-inline">STMP Host</label>
+    <div class="user-email-settings clearfix">
+      <div class="col-sm-6 field-cell">
+        <div class="col-sm-4">
+          <label for="defaultEmailPattern" class="label-inline">Default Email Pattern</label>
+        </div>
+        <div class="col-sm-8">
+          <input id="defaultEmailPattern" maxlength="50" class="form-control input-sm float-left"
+            [(ngModel)]="emailSettings.default_email_pattern">
+        </div>
       </div>
-      <div class="col-sm-8">
-        <input id="ldapSearchBaseUsers" maxlength="100" class="form-control input-sm" [(ngModel)]="emailSettings.host"
-          [disabled]="!emailSettings.enabled">
+      <div class="col-sm-6 panel panel-info email-pattern-hint">
+        <large-text-container id="defaultEmailPatternHint" [text]="emailHelpText" [hint]="emailHelpTextHint">
+        </large-text-container>
       </div>
     </div>
-    <div class="col-sm-4 field-cell">
-      <div class="col-sm-4">
-        <label for="ldapSearchBaseUsers" class="label-inline">STMP Port</label>
+    <div class="notifications clearfix">
+      <div class="notifications-expander clearfix settings-section">
+        <div class="col-sm-12">
+          <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.enabled"></ui-switch>
+          <label class="pull-left padding-left-15px">Email Notifications</label>
+        </div>
       </div>
-      <div class="col-sm-8">
-        <input id="ldapSearchBaseUsers" maxlength="4" class="form-control input-sm" [(ngModel)]="emailSettings.port"
-          [disabled]="!emailSettings.enabled">
-      </div>
-    </div>
-    <div class="col-sm-4 field-cell">
-      <div class="col-sm-4">
-        <label for="security_auntification" class="label-inline">STMP Email From</label>
-      </div>
-      <div class="col-sm-8">
-        <input id="security_auntification" maxlength="100" class="form-control input-sm"
-          [(ngModel)]="emailSettings.from_email" [disabled]="!emailSettings.enabled">
-      </div>
-    </div>
-    <div class="col-sm-4 field-cell">
-      <div class="col-sm-4">
-        <label for="security_auntification" class="label-inline">STMP User</label>
-      </div>
-      <div class="col-sm-8">
-        <input id="security_auntification" maxlength="100" class="form-control input-sm"
-          [(ngModel)]="emailSettings.user" [disabled]="!emailSettings.enabled">
-      </div>
-    </div>
-    <div class="col-sm-4 field-cell">
-      <div class="col-sm-4">
-        <label for="adminSecret" class="label-inline">STMP Password</label>
-      </div>
-      <div class="col-sm-8">
-        <input id="adminSecret" maxlength="100" class="form-control input-sm" type="password"
-          [(ngModel)]="emailSettings.password" [disabled]="!emailSettings.enabled">
+      <div *ngIf="emailSettings.enabled" class="notification-settings settings-section clearfix">
+        <div class="col-sm-12">
+          <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.use_auth"></ui-switch>
+          <label class="pull-left padding-left-15px">Use STMP Authentication</label>
+        </div>
+        <div class="col-sm-4 field-cell">
+          <div class="col-sm-4">
+            <label for="ldapSearchBaseUsers" class="label-inline">STMP Host</label>
+          </div>
+          <div class="col-sm-8">
+            <input id="ldapSearchBaseUsers" maxlength="100" class="form-control input-sm"
+              [(ngModel)]="emailSettings.host" [disabled]="!emailSettings.enabled">
+          </div>
+        </div>
+        <div class="col-sm-4 field-cell">
+          <div class="col-sm-4">
+            <label for="ldapSearchBaseUsers" class="label-inline">STMP Port</label>
+          </div>
+          <div class="col-sm-8">
+            <input id="ldapSearchBaseUsers" maxlength="4" class="form-control input-sm" [(ngModel)]="emailSettings.port"
+              [disabled]="!emailSettings.enabled">
+          </div>
+        </div>
+        <div class="col-sm-4 field-cell">
+          <div class="col-sm-4">
+            <label for="security_auntification" class="label-inline">STMP Email From</label>
+          </div>
+          <div class="col-sm-8">
+            <input id="security_auntification" maxlength="100" class="form-control input-sm"
+              [(ngModel)]="emailSettings.from_email" [disabled]="!emailSettings.enabled">
+          </div>
+        </div>
+        <div class="col-sm-4 field-cell">
+          <div class="col-sm-4">
+            <label for="security_auntification" class="label-inline">STMP User</label>
+          </div>
+          <div class="col-sm-8">
+            <input id="security_auntification" maxlength="100" class="form-control input-sm"
+              [(ngModel)]="emailSettings.user" [disabled]="!emailSettings.enabled">
+          </div>
+        </div>
+        <div class="col-sm-4 field-cell">
+          <div class="col-sm-4">
+            <label for="adminSecret" class="label-inline">STMP Password</label>
+          </div>
+          <div class="col-sm-8">
+            <input id="adminSecret" maxlength="100" class="form-control input-sm" type="password"
+              [(ngModel)]="emailSettings.password" [disabled]="!emailSettings.enabled">
+          </div>
+        </div>
       </div>
     </div>
   </div>

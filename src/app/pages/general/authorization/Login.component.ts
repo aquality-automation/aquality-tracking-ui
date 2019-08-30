@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.appSettingsService.getAuthSettings().subscribe(res => {
+    this.appSettingsService.getGeneralSettings().subscribe(res => {
       this.appSettings = res;
       this.ldapLogin = this.appSettings.ldap_auth === 1;
     });
@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
 
   async tryAuth() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl']
-      || this.globaldata.returnURL
       || '/project';
     const encrypter = new JsEncryptModule.JSEncrypt();
     const token = await this.userService.getToken(this.userName);

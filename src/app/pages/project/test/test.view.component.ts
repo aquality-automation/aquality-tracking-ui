@@ -71,19 +71,19 @@ export class TestViewComponent implements OnInit {
     });
   }
 
-  saveManualDuration(event) {
+  async saveManualDuration(event) {
     const strings = event.target.value.split(':');
     const duration = ((+strings[0] * 3600) + (+strings[1] * 60) + (+strings[2])) * 1000;
     if (duration !== NaN) {
       this.test.manual_duration = duration;
-      this.testService.createTest(this.test).subscribe();
+      await this.testService.createTest(this.test);
     }
   }
 
-  setNewDeveloper($event: LocalPermissions) {
+  async setNewDeveloper($event: LocalPermissions) {
     this.test.developer = $event;
     this.test.developer_id = $event.user_id;
-    this.testService.createTest(this.test).subscribe();
+    await this.testService.createTest(this.test);
   }
 
   moveTestOpen() {
@@ -116,7 +116,7 @@ export class TestViewComponent implements OnInit {
     this.testService.handleSimpleError('Name is invalid', 'Test name can\'t be empty or less than 3 symbols!');
   }
 
-  testUpdate() {
-    this.testService.createTest(this.test).subscribe();
+  async testUpdate() {
+    await this.testService.createTest(this.test);
   }
 }

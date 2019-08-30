@@ -1,5 +1,5 @@
 import { by, element } from 'protractor';
-import { SmartTable } from '../../elements/smartTable.element';
+import { SmartTable } from '../../../elements/smartTable.element';
 
 export const baseUrl = '/administration/global/users';
 

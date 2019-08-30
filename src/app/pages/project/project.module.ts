@@ -50,6 +50,7 @@ import { TestrunMatrixComponent } from './testrun/testrun-matrix/testrun-matrix.
 import { PrintTestrunComponent } from './testrun/print-testrun/print-testrun.component';
 import { SafePipe } from '../../pipes/safe.pipe';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
+import { LoaderComponent } from '../../elements/loader/loader.component';
 
 @NgModule({
   imports: [
@@ -96,7 +97,7 @@ import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.compo
     UserService,
     ListToCsvService,
     ProjectGuard, CreateProjectGuard, TestRunGuard, CreateTestRunGuard,
-    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard, CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard],
+    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard, CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard]
 })
 
 export class ProjectModule { }

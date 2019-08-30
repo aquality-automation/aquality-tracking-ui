@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule,  } from '@angular/platform-browser';
+import { BrowserModule, } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, BrowserXhr } from '@angular/http';
@@ -26,6 +26,7 @@ import { UserSettingsComponent } from './pages/general/user-settings/user-settin
 import { CustomerModule } from './pages/customer/customer.module';
 import { CustomerService } from './services/customer.service';
 import { PendingChanges } from './shared/guards/can-deactivate-guard.service';
+import { LoaderComponent } from './elements/loader/loader.component';
 
 @NgModule({
   imports: [
@@ -63,6 +64,6 @@ import { PendingChanges } from './shared/guards/can-deactivate-guard.service';
     { provide: LocationStrategy, useClass: HashLocationStrategy },
     { provide: CookieOptions, useValue: {} }
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

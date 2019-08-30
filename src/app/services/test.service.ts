@@ -21,11 +21,11 @@ export class TestService extends SimpleRequester {
     return this.doGet('/test', params).map(res => res.json());
   }
 
-  createTest(test: Test) {
+  createTest(test: Test): Promise<Test> {
     return this.doPost('/test', test).map(res => {
       this.handleSuccess(`Test '${test.name}' was updated.`);
-      return res.headers.get('id');
-    });
+      return res.json();
+    }).toPromise();
   }
 
   bulkUpdate(tests: Test[]) {

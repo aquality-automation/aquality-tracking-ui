@@ -6,6 +6,8 @@ import { ListToCsvService } from '../../services/listToCsv.service';
 import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
 import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../services/transformations.service';
+import { Filter, FilterHelper } from './filter.helper';
+
 
 @Component({
   selector: 'table-filter',
@@ -87,27 +89,69 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   delay = 400;
   prevent = false;
   selectAll = false;
+  filterHelper: FilterHelper;
 
   constructor(
     private listTocsv: ListToCsvService,
     private route: ActivatedRoute,
     private router: Router,
     private transformationsService: TransformationsService
-  ) { }
+  ) {
+    this.filterHelper = new FilterHelper(this.transformationsService, this.route, this.router);
+  }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.activePage = +params['page'] || this.activePage;
-      this.rowsOnPage = +params['rows'] || this.rowsOnPage;
-      this.lastSelectedRow = +params['selectedRow'] || this.lastSelectedRow;
-      this.applyFilters();
-    });
+    if (this.queryParams) {
+      this.appliedFilters = this.filterHelper.readFilterParams(this.route.queryParams);
+      this.route.queryParams.subscribe(params => {
+        this.activePage = +params['page'] || this.activePage;
+        this.rowsOnPage = +params['rows'] || this.rowsOnPage;
+      });
+    }
+
+    this.applyFilters();
 
     if (this.allowDelete || this.allowCreate || this.allowBulkUpdate) {
       this.columns.push({ name: 'Action', property: 'action', type: 'button', editable: true });
     }
     if (this.allowBulkUpdate) {
       this.columns.unshift({ name: 'Selector', property: 'ft_select', type: 'selector', editable: true, class: 'fit' });
+    }
+  }
+
+  ngAfterViewInit() {
+    this.setNewPage(this.activePage, this.rowsOnPage);
+    if (this.defaultSortBy) {
+      this.sort(this.defaultSortBy);
+    }
+    if (this.datatable && this.queryParams) {
+      this.datatable.onPageChange.subscribe(x => {
+        this.router.navigate([], { queryParams: { page: x.activePage, rows: x.rowsOnPage }, queryParamsHandling: 'merge' });
+      });
+    }
+  }
+
+  ngOnChanges() {
+    this.filteredData = this.data;
+    this.applyFilters();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timerToken);
+  }
+
+  applyFilters() {
+    if (this.data) {
+      this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
+      this.sort(this.defaultSortBy);
+      this.shownData.emit(this.filteredData);
+    }
+  }
+
+  sort(sorter: { property: string, order: string }) {
+    if (sorter) {
+      this.defaultSortBy = sorter;
+      this.transformationsService.sort(this.filteredData, sorter);
     }
   }
 
@@ -123,8 +167,19 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }, this.delay);
   }
 
+  refreshAlways() {
+    clearTimeout(this.timer);
+    this.prevent = true;
+    this.animate = true;
+    this.timerToken = setInterval(() => this.refresh.emit(), 5000);
+  }
+
   toggleSelectAll(isSelected: boolean) {
     this.filteredData.forEach(entity => entity.ft_select = isSelected);
+  }
+
+  hasSelectedRows() {
+    return this.filteredData.find(entity => entity.ft_select === true || entity.ft_select === 1) !== undefined;
   }
 
   bulkUpdate() {
@@ -141,48 +196,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.bulkChangeEntity = {};
   }
 
-  hasSelectedRows() {
-    return this.filteredData.find(entity => entity.ft_select === true || entity.ft_select === 1) !== undefined;
-  }
-
-  refreshAlways() {
-    clearTimeout(this.timer);
-    this.prevent = true;
-    this.animate = true;
-    this.timerToken = setInterval(() => this.refresh.emit(), 5000);
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.timerToken);
-  }
-
-  ngAfterViewInit() {
-    this.setNewPage(this.activePage, this.rowsOnPage);
-    if (this.defaultSortBy) { this.sort(this.defaultSortBy); }
-    if (this.datatable && this.queryParams) {
-      this.datatable.onPageChange.subscribe(x => {
-        this.router.navigate([], { queryParams: { page: x.activePage, rows: x.rowsOnPage }, queryParamsHandling: 'merge' });
-      });
-    }
-  }
-
-  ngOnChanges() {
-    this.filteredData = this.data;
-    this.applyFilters();
-  }
-
-  sort(sorter: { property: string, order: string }) {
-    if (sorter) {
-      this.defaultSortBy = sorter;
-      this.transformationsService.sort(this.filteredData, sorter);
-    }
-  }
-
   manageColumns() {
     this.hideManageColumnsModal = false;
   }
 
-  isHidden(entity: any, proprty: string): boolean {
+  isPropertyShouldBeHidden(entity: any, proprty: string): boolean {
     if (this.hide) {
       const hide = this.hide(entity, proprty);
       return hide;
@@ -217,47 +235,69 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return color;
   }
 
-  handleRangeFilterChange(col, $event, type) {
-    let el;
-    if (this.appliedFilters.length > 0) {
-      el = this.appliedFilters.find(x => x.property === col.property);
-    }
-    if (!el) {
-      el = { property: col.property };
-      this.appliedFilters.push(el);
-    }
+  handleRangeFilterChange(col: any, value: string, type: string) {
+    const newFilter: Filter = this.filterHelper.getOrCreateFilter(col.property, this.appliedFilters);
     let ranges: any[] = [];
-    ranges = el.range && el.range !== '' ? el.range.split(',') : '0,100'.split(',');
+    ranges = newFilter.range ? newFilter.range.split(',') : [0, 100];
 
-    if (type === 'from') {
-      ranges[0] = this.validateRange($event);
+    switch (type) {
+      case 'from':
+        ranges[0] = this.fixIvalidRange(value);
+        break;
+      case 'to':
+        ranges[1] = this.fixIvalidRange(value);
+        break;
     }
-    if (type === 'to') {
-      ranges[1] = this.validateRange($event);
-    }
-    el.range = ranges.join(',');
-    this.setParams(el);
+
+    newFilter.range = ranges.join(',');
+    this.filterChange(newFilter);
   }
 
-  validateRange(range) {
+  handleLookupFilterChange(property: string, selectedArray: any[]) {
+    const options = [];
+    selectedArray.forEach(element => {
+      if (element && element.findEmpty) {
+        options.push('null');
+      } else if (element && element.id) {
+        options.push(`${element.id}`);
+      } else if (element && this.transformationsService.getPropertyValue(element, property).id) {
+        options.push(`${this.transformationsService.getPropertyValue(element, property).id}`);
+      }
+    });
+    const newFilter: Filter = { property, options: options.join(',') };
+    this.filterChange(newFilter);
+  }
+
+  handleDateFilterUpdate(filterData: any) {
+    let newFilter = this.appliedFilters.find(x => x.property === filterData.property);
+    if (!newFilter) {
+      newFilter = { property: filterData.property };
+      this.appliedFilters.push(newFilter);
+    }
+    if (filterData.hasOwnProperty('from')) {
+      newFilter.from = filterData.from ? new Date(new Date(filterData.from).setHours(0, 0, 0, 0)) : undefined;
+    } else if (filterData.hasOwnProperty('to')) {
+      newFilter.to = filterData.to ? new Date(new Date(filterData.to).setHours(23, 59, 59, 99)) : undefined;
+    }
+    this.filterChange(newFilter);
+  }
+
+  fixIvalidRange(range: string | number) {
     range = +range < 0 ? 0 : range;
     range = +range > 100 ? 100 : range;
     return range;
   }
 
-  invalidRange(col) {
-    let el;
-    if (this.appliedFilters.length > 0) {
-      el = this.appliedFilters.find(x => x.property === col.property);
-    }
-    if (el) {
-      const ranges = el.range.split(',');
+  isRangeInvalid(col: any) {
+    const filter = this.appliedFilters.find(x => x.property === col.property);
+    if (filter) {
+      const ranges = filter.range.split(',');
       return (+ranges[0] > +ranges[1]);
     }
     return false;
   }
 
-  rangeFilterData(property, type) {
+  rangeFilterData(property: string, type: string) {
     const filter = this.appliedFilters.find(x => x.property === property);
     if (filter && filter.range) {
       const ranges = filter.range.split(',');
@@ -270,53 +310,19 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  getFilterDate(property, value) {
-    if (this.appliedFilters.length > 0) {
-      const filter = this.appliedFilters.find(x => x.property === property);
-      return filter ? filter[value] : undefined;
-    }
+  getFilterDate(property: string, value: string) {
+    const filter = this.appliedFilters.find(x => x.property === property);
+    return filter ? filter[value] : undefined;
   }
 
-  msFilter(property, selectedArray: any[], idProperty?: string) {
-    let el;
-    if (this.appliedFilters.length > 0) {
-      el = this.appliedFilters.find(x => x.property === property);
-    }
-    if (!el) {
-      el = { property: property };
-      this.appliedFilters.push(el);
-    }
-    let options = '';
-    selectedArray.forEach(element => {
-      if (element && element.findEmpty) {
-        options += 'null,';
-      } else if (element && element.id) {
-        options += `${element.id},`;
-      } else if (element && this.transformationsService.getPropertyValue(element, property).id) {
-        options += `${this.transformationsService.getPropertyValue(element, property).id},`;
-      }
-    });
-    options = options.slice(0, -1);
-    el.options = options;
-    this.setParams(el);
-  }
-
-  rowClicked(entity, col, $event) {
-    const el: HTMLElement = $event.target;
-    if ((!col.editable || el.classList.contains('ft-cell')) && col.type !== 'link' && col.type !== 'long-text' && !col.link) {
-      const queryParam = {};
-      const val = this.transformationsService.getPropertyValue(entity, 'id');
-      queryParam['selectedRow'] = val;
-      this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' }).then(() => {
-        this.rowClick.emit(entity);
-      });
-    }
-  }
-
-  msFilterData(col) {
+  getLookupFilterValue(col: any) {
     const filter = this.appliedFilters.find(x => {
-      if (col['objectWithId']) { return x.property === col.objectWithId; }
-      if (col['entity']) { return x.property === col.entity; }
+      if (col.objectWithId) {
+        return x.property === col.objectWithId;
+      }
+      if (col.entity) {
+        return x.property === col.entity;
+      }
       return x.property === col.property;
     });
 
@@ -330,35 +336,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return selectedOpts;
   }
 
-  textFilterData(property) {
-    const filter = this.appliedFilters.find(x => x.property === property);
-    return filter ? filter.value : '';
-  }
-
-  lookupFilterData(property, entity) {
+  textFilterData(property: string) {
     const filter = this.appliedFilters.find(x => x.property === property);
     return filter ? filter.value : '';
   }
 
   toggleCreation() {
     this.showCreation = !this.showCreation;
-  }
-
-  dateFilterUpdate($event) {
-    let el;
-    if (this.appliedFilters.length > 0) {
-      el = this.appliedFilters.find(x => x.property === $event.property);
-    }
-    if (!el) {
-      el = { property: $event.property };
-      this.appliedFilters.push(el);
-    }
-    if ($event.hasOwnProperty('from')) {
-      el['from'] = $event.from ? new Date(new Date($event.from).setHours(0, 0, 0, 0)) : undefined;
-    } else if ($event.hasOwnProperty('to')) {
-      el['to'] = $event.to ? new Date(new Date($event.to).setHours(23, 59, 59, 99)) : undefined;
-    }
-    this.setParams(el);
   }
 
   setNewPage(activePage: number, rowsOnPage: number) {
@@ -504,204 +488,32 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.emptyFieldError;
   }
 
-
   handleFilterChange(col, $event) {
-    this.appliedFilters = this.appliedFilters.filter(x => x.property !== col.property);
-    const filter = { property: col.property, value: $event };
-    this.appliedFilters.push(filter);
-    this.setParams(filter);
+    const newFilter: Filter = { property: col.property, value: $event };
+    this.filterChange(newFilter);
   }
 
-  applyFilters() {
-    if (this.queryParams) {
-      this.readParams();
-      this.filteredData = this.data;
-      this.appliedFilters.forEach(element => {
-        this.filteredData = this.fitData(this.filteredData, element);
-      });
-    }
+  filterChange(newFilter: Filter) {
+    const result = this.filterHelper.applyNewFilter(
+      this.data,
+      this.appliedFilters,
+      newFilter,
+      this.queryParams);
+    this.filteredData = result.filteredData;
+    this.appliedFilters = result.newFilters;
     this.sort(this.defaultSortBy);
-    this.shownData.emit(this.filteredData);
   }
 
-  fitData(data: any[], filter) {
-    if (filter.property !== '' && filter.value !== '') {
-      if (filter.hasOwnProperty('value')) {
-        return data.filter(x => {
-          const val = this.transformationsService.getPropertyValue(x, filter.property);
-          if (val) {
-            if (val.hasOwnProperty('text')) {
-              return val.text.toString().toLowerCase().includes(filter.value.toLowerCase());
-            }
-            return val.toString().toLowerCase().includes(filter.value.toLowerCase());
-          }
-          return false;
-        });
-      } else if (filter.hasOwnProperty('from') || filter.hasOwnProperty('to')) {
-        return this.filterDate(data, filter);
-      } else if (filter.hasOwnProperty('options')) {
-        return this.filterMS(data, filter);
-      } else if (filter.hasOwnProperty('range')) {
-        return this.filterRange(data, filter);
-      } else {
-        return data;
-      }
-    } else { return data; }
-  }
-
-  filterMS(filteredData, filter) {
-    let data = filteredData;
-    if (filter.options) {
-      const selectedOpts: any[] = filter.options.split(',');
-      data = filteredData.filter(x => {
-        const propertyValue = this.transformationsService.getPropertyValue(x, filter.property);
-        if (propertyValue) {
-          return Array.isArray(propertyValue)
-            ? selectedOpts.some(y => propertyValue.find(z => z.id === +y))
-            : selectedOpts.every(y => propertyValue.id === +y);
-        }
-        return selectedOpts.some(y => y === 'null');
-      });
-    }
-
-    return data;
-  }
-
-  filterRange(filteredData, filter) {
-    let data = filteredData;
-    if (filter.range) {
-      const ranges = filter.range.split(',');
-      data = filteredData.filter(x => (ranges[0] ? +ranges[0] <= x[filter.property] : true)
-        && (ranges[1] ? x[filter.property] <= +ranges[1] : true));
-    }
-    return data;
-  }
-
-  rangeKeyDown($event) {
-    $event.target.value = this.validateRange($event.target.value);
+  rangeKeyUp($event) {
+    $event.target.value = this.fixIvalidRange($event.target.value);
   }
 
   removeRangeFilter(property) {
-    const filter = this.appliedFilters.find(x => x.property === property);
+    const filter: Filter = this.appliedFilters.find(x => x.property === property);
     if (filter) {
       filter.range = '';
-      this.setParams(filter);
+      this.filterChange(filter);
     }
-  }
-
-  filterDate(data: any[], filter) {
-    const from = filter.from;
-    const to = filter.to;
-    if (!from && !to) {
-      return data;
-    }
-
-    return data.filter(x => {
-      const val = this.transformationsService.getPropertyValue(x, filter.property);
-      if (val) {
-        if (from && to) {
-          return new Date(from) <= new Date(val) && new Date(val) <= new Date(to);
-        } else if (from) {
-          return new Date(from) <= new Date(val);
-        } else {
-          return new Date(val) <= new Date(to);
-        }
-      }
-      return false;
-    });
-  }
-
-  readParams() {
-    if (this.queryParams) {
-      this.route.queryParams.subscribe(params => {
-        const filterKeys = Object.keys(params);
-        this.appliedFilters = this.appliedFilters.filter(x => false);
-        filterKeys.forEach(param => {
-          if (param.startsWith('f_')) {
-            this.readParam(params, param);
-          }
-        });
-      });
-    }
-  }
-
-  readParam(params, param) {
-    if (param.endsWith('_from')) {
-      const newString = param;
-      const match = newString.match(/f_(.+)_from/)[1];
-      let filter = this.appliedFilters.find(x => x.property === match);
-      if (!filter) {
-        filter = { property: match };
-      }
-      filter['from'] = params[param];
-      this.appliedFilters.push(filter);
-    } else if (param.endsWith('_to')) {
-      const prop = param.match(/f_(.*)_to/)[1];
-      let filter = this.appliedFilters.find(x => x.property === prop);
-      if (!filter) {
-        filter = { property: prop };
-      }
-      filter['to'] = params[param];
-      this.appliedFilters.push(filter);
-    } else if (param.endsWith('_opt')) {
-      const prop = param.match(/f_(.*)_opt/)[1];
-      let filter = this.appliedFilters.find(x => x.property === prop);
-      if (!filter) {
-        filter = { property: prop };
-      }
-      filter['options'] = params[param];
-      this.appliedFilters.push(filter);
-    } else if (param.endsWith('_rng')) {
-      const prop = param.match(/f_(.*)_rng/)[1];
-      let filter = this.appliedFilters.find(x => x.property === prop);
-      if (!filter) {
-        filter = { property: prop };
-      }
-      filter['range'] = params[param];
-      this.appliedFilters.push(filter);
-    } else {
-      const prop = param.match(/f_(.*)/)[1];
-      this.appliedFilters.push({ property: prop, value: params[param] });
-    }
-  }
-
-  setParams(filter) {
-    if (this.queryParams) {
-      const queryParam = {};
-      if (filter.value) {
-        queryParam[`f_${filter.property}`] = filter.value;
-      } else if (filter.from || filter.to) {
-        filter.from
-          ? queryParam[`f_${filter.property}_from`] = new Date(filter.from).toISOString()
-          : queryParam[`f_${filter.property}_from`] = '';
-        filter.to
-          ? queryParam[`f_${filter.property}_to`] = new Date(filter.to).toISOString()
-          : queryParam[`f_${filter.property}_to`] = '';
-      } else if (filter.options) {
-        queryParam[`f_${filter.property}_opt`] = filter.options;
-      } else if (filter.range) {
-        queryParam[`f_${filter.property}_rng`] = filter.range;
-      } else {
-        this.route.queryParams.subscribe(params => {
-          const filterKeys = Object.keys(params);
-          filterKeys.forEach(key => {
-            if (!key.includes(filter.property)) {
-              queryParam[key] = params[key];
-            } else {
-              queryParam[key] = '';
-            }
-          });
-        });
-      }
-      this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' }).then(() => this.applyFilters());
-    }
-  }
-
-  isLastSelected(entity) {
-    if (this.redirect) {
-      return this.transformationsService.getPropertyValue(entity, this.redirect.property) === this.lastSelectedRow;
-    }
-    return false;
   }
 
   sendCustomEvent($event) {
@@ -761,5 +573,12 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       link = `#${link}`;
     }
     const win = window.open(link);
+  }
+
+  rowClicked(entity: any, col: any, $event: any) {
+    const el: HTMLElement = $event.target;
+    if ((!col.editable || el.classList.contains('ft-cell')) && col.type !== 'link' && col.type !== 'long-text' && !col.link) {
+      this.rowClick.emit(entity);
+    }
   }
 }

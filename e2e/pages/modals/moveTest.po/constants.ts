@@ -1,5 +1,5 @@
 import { by, element } from 'protractor';
-import { Autocomplete } from '../../elements/autocomplete.element';
+import { Autocomplete } from '../../../elements/autocomplete.element';
 
 export const elements = {
     uniqueElement: element(by.tagName('move-test-modal')),

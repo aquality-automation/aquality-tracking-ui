@@ -8,12 +8,18 @@
         "password": "newUser",
         "first_name": "New",
         "second_name": "User",
-        "email": "n.user@a1qa.com",
+        "email": "n.user@example.com",
         "admin":1,
         "manager":1,
         "auditor":1,
         "audit_admin":1,
         "unit_coordinator":1,
         "account_manager":1
+    },
+    "patternTest":{
+        "user_name": "test",
+        "first_name": "John",
+        "second_name": "Doe",
+        "email": "test@example.com"
     }
 }

@@ -28,5 +28,17 @@
         "customer": {
             "name": "-"
         }
+    },
+    "testRunResultSearcherProject": {
+        "name" : "TestRunResultSearcherProject",
+        "customer": {
+            "name": "-"
+        }
+    },
+    "apiTests": {
+        "name" : "ApiTests",
+        "customer": {
+            "name": "-"
+        }
     }
 }

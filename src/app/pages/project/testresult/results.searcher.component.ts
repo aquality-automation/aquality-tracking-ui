@@ -4,7 +4,6 @@ import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
 import { ResultResolution } from '../../../shared/models/result_resolution';
 import { ResultResolutionService } from '../../../services/result-resolution.service';
-import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../services/user.services';
 import { ListToCsvService } from '../../../services/listToCsv.service';
 import { FinalResult } from '../../../shared/models/final-result';
@@ -24,6 +23,7 @@ import { FinalResult } from '../../../shared/models/final-result';
     ]),
   ],
   templateUrl: './results.searcher.component.html',
+  styleUrls: ['./results.searcher.component.css'],
   providers: [
     SimpleRequester,
     TestResultService,
@@ -37,11 +37,13 @@ export class ResultSearcherComponent {
   testResults: TestResult[];
   toggledOn = 'out';
   failReasonSearch = '';
-  tbCols;
+  tbCols: any[];
+  isRegexSearch = false;
+  limit = 10;
+  pendingSearch = false;
 
   constructor(
     private testResultService: TestResultService,
-    private route: ActivatedRoute,
     public userService: UserService
   ) {
   }
@@ -50,7 +52,12 @@ export class ResultSearcherComponent {
     this.toggledOn = this.toggledOn === 'out' ? 'in' : 'out';
   }
 
+  toggleRegexpSearch() {
+    this.isRegexSearch = !this.isRegexSearch;
+  }
+
   async getResults() {
+    this.pendingSearch = true;
     this.tbCols = [
       { name: 'Started', property: 'start_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
       { name: 'Test Name', property: 'test.name', filter: true, sorting: true, type: 'text', editable: false },
@@ -92,10 +99,11 @@ export class ResultSearcherComponent {
     if (this.failReasonSearch.length > 150) {
       this.failReasonSearch = this.failReasonSearch.slice(0, 150);
     }
-    this.testResults = await this.testResultService.getTestResult({ fail_reason: this.failReasonSearch });
-  }
-
-  rowClicked($event) {
-    window.open(`#/project/${this.route.snapshot.params['projectId']}/testresult/${$event.id}`);
+    const testResultSearchTemplate: TestResult = { limit: this.limit };
+    this.isRegexSearch
+      ? testResultSearchTemplate.fail_reason_regex = this.failReasonSearch
+      : testResultSearchTemplate.fail_reason = this.failReasonSearch;
+    this.testResults = await this.testResultService.getTestResult(testResultSearchTemplate);
+    this.pendingSearch = false;
   }
 }
