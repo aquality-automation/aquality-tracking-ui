@@ -1,4 +1,4 @@
-import { browser } from 'protractor';
+import { browser, element } from 'protractor';
 import { baseUrl, elements, names, regexps, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { convertHoursTo24HourFormat, padYear } from './helpers';
@@ -48,6 +48,25 @@ export class TestRunView extends BasePage {
 
   async rightClickFailReason(failReason: string) {
     return elements.resultsTable.rightClickCell(columns.failReason, failReason, columns.failReason);
+  }
+
+  async clickResultPieChartSection(id: number) {
+    return browser.executeScript(`
+    (function clickChart(el, etype, active) {
+      if (el.fireEvent) {
+          el.fireEvent('on' + etype);
+      } else {
+          var evObj = document.createEvent('Events');
+          evObj.initEvent(etype, true, false);
+          evObj['active'] = active;
+          el.dispatchEvent(evObj);
+      }
+    })(arguments[0], 'chartClick', [{_index: arguments[1]}])
+    `, elements.resultsChart, 1);
+  }
+
+  async clickResolutionPieChartSection(id: number) {
+    
   }
 
   async getStartTime() {

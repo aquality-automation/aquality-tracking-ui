@@ -21,7 +21,9 @@ export const elements = {
     testSuiteLink: element(by.xpath(`//li[.//label[contains(text(), '${names.testSuiteLabel}')]]//a`)),
     startTimeLabel: element(by.xpath(`//li[.//label[contains(text(), '${names.startTimeLabel}')]]//p`)),
     resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
-    resultSearcher: new ResultSearcher(by.id('resultSearcher'))
+    resultSearcher: new ResultSearcher(by.id('resultSearcher')),
+    resultsChart: element(by.id('finalResultsChart')),
+    resolutionsChart: element(by.id('resultResolutionsChart')),
 };
 
 export const regexps = {
