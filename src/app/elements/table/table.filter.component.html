@@ -308,7 +308,7 @@
                             </div>
 
                             <div *ngIf="col.type === 'date' && !col.format" class="nowrap">
-                                {{transformationsService.getPropertyValue(entity, col.property) | date:'dd/MM/yy hh:mm:ss a'}}
+                                {{transformationsService.getPropertyValue(entity, col.property) | date:'MM/dd/yy hh:mm:ss a'}}
                             </div>
 
                             <div

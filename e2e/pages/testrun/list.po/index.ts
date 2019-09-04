@@ -1,4 +1,4 @@
-import { elements, names } from './constants';
+import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { waiter } from '../../../utils/wait.util';
 
@@ -8,15 +8,23 @@ export class TestRunList extends BasePage {
     }
 
     async clickTestRunRemoveButton(buildName: string) {
-        await elements.testRunsTable.clickAction(buildName, 'Build');
+        await elements.testRunsTable.clickAction(buildName, columns.build);
     }
 
     async isTestRunRowDisplayed(buildName: string) {
-        return elements.testRunsTable.isRowExists(buildName, 'Build');
+        return elements.testRunsTable.isRowExists(buildName, columns.build);
     }
 
     async openTestRun(buildName: string) {
-        return elements.testRunsTable.clickRow(buildName, 'Build');
+        return elements.testRunsTable.clickRow(buildName, columns.build);
+    }
+
+    async getTestRunsCount() {
+        return elements.testRunsTable.getShownRows();
+    }
+
+    async filterByBuildName(buildName: string) {
+        return elements.testRunsTable.setFilter(buildName, columns.build);
     }
 
     async waitForTestRun(buildName: string) {

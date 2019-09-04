@@ -104,6 +104,6 @@ describe('Test Run Result Searcher', () => {
     it('Can limit search results', async () => {
         await testRunView.resultSearcher.setLimit('1');
         await testRunView.resultSearcher.search('step was');
-        expect(testRunView.resultSearcher.getNumberOfResults()).toBe('1', 'Results Number is wrong!');
+        expect(testRunView.resultSearcher.getNumberOfResults()).toBe(1, 'Results Number is wrong!');
     });
 });

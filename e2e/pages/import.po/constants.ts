@@ -10,8 +10,9 @@ export const elements = {
     testSuiteNameLookup: new Autocomplete(by.id('suite')),
     selectImportTypeLookup: new Lookup(by.id('select-import-type')),
     fileUpload: element(by.id('file-upload')),
-    importFileBtn: element(by.id('import-file')),
+    importAll: element(by.id('import-all')),
     unitTestDescriptionSwitch: new UiSwitch(by.id('testDescription')),
+    lastTestRunSwitch: new UiSwitch(by.id('lastTestRunToggler')),
     importResultsTable: new SmartTable(by.id('datatable')),
     importResultOptionsForm: element(by.id('import-results-options'))
 };
@@ -26,4 +27,9 @@ export const importResultColumns = {
 
 export const names = {
     pageName: 'Import'
+};
+
+export const importTypes = {
+    cucumber: 'Cucumber (.json)',
+    msTest: 'MSTest (.trx)'
 };

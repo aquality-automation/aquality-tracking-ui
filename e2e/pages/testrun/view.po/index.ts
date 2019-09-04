@@ -15,26 +15,30 @@ export class TestRunView extends BasePage {
   }
 
   async getBuildName() {
-    return await elements.buildNameLink.getText();
+    return elements.buildNameLink.getText();
   }
 
   async getMilestone() {
-    return await elements.milestoneField.getAttribute('value');
+    return elements.milestoneField.getAttribute('value');
   }
 
   async getTestSuite() {
-    return await elements.testSuiteLink.getText();
+    return elements.testSuiteLink.getText();
+  }
+
+  getResultsCount(): any {
+    return elements.resultsTable.getTotalRows();
   }
 
   async setResolution(resolution: string, testName: string) {
-    return await elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
+    return elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
   }
 
   async getResolution(testName: string) {
     return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.resolution];
   }
 
-  async isResolutionPresent(resolutionName: string, testName: string){
+  async isResolutionPresent(resolutionName: string, testName: string) {
     const lookup = await elements.resultsTable.getCellLookup(columns.resolution, testName, columns.testName);
     return lookup.isOptionPresent(resolutionName);
   }

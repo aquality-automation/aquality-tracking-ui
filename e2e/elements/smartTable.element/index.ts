@@ -14,9 +14,11 @@ export class SmartTable extends BaseElement {
     }
 
     private creationRow = this.element.element(by.css('.ft-creation-row'));
+    private filterRow = this.element.element(by.css('.filter-header'));
     private creationToggler = this.element.element(by.css('.ft-create-toggler'));
     private creationError = this.element.element(by.css('.ft-create-error'));
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
+    private totalLabel = this.element.element(by.css('.ft-total-label'));
 
     private createRowElements = {
         confirmPassword: (columnIndex: number) =>
@@ -31,6 +33,13 @@ export class SmartTable extends BaseElement {
             new Lookup(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
     };
 
+    private filterRowElements = {
+        input: (columnIndex: number): Input =>
+            new Input(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/input`))),
+        coloredLookup: (columnIndex: number): Lookup =>
+            new Lookup(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
+    };
+
     private rowElements = {
         inlineEditor: (cell: ElementFinder) => new InlineEditor(cell.element(by.tagName('inline-editor'))),
         checkbox: (cell: ElementFinder) => new Checkbox(cell.element(by.xpath('.//input[@type="checkbox"]'))),
@@ -38,8 +47,13 @@ export class SmartTable extends BaseElement {
     };
 
     public async getTotalRows() {
-        const totalLabel = await this.element.element(by.css('.ft-total-label')).getText();
-        return totalLabel.match(/.*\((\d+)\)/)[1];
+        const totalLabel = await this.totalLabel.getText();
+        return +totalLabel.match(/.*\((\d+)\)/)[1];
+    }
+
+    public async getShownRows() {
+        const totalLabel = await this.totalLabel.getText();
+        return +totalLabel.match(/.*: (\d+) \(/)[1];
     }
 
     public async openCreation() {
@@ -61,6 +75,18 @@ export class SmartTable extends BaseElement {
             return this.creationError.getText();
         }
         return '';
+    }
+
+    public async setFilter(value: string | boolean | number, columnName: string) {
+        const columnIndex = await this.getColumnIndex(columnName);
+        if (await this.filterRow.isDisplayed()) {
+            if (await this.filterRowElements.input(columnIndex).element.isPresent()) {
+                return this.filterRowElements.input(columnIndex).typeText(value as string);
+            } if (await this.filterRowElements.coloredLookup(columnIndex).element.isPresent()) {
+                return this.filterRowElements.coloredLookup(columnIndex).select(value as string);
+            }
+        }
+        throw Error('Filter is not available for selected table');
     }
 
     public async fillCreation(value: string | boolean | number, columnName: string) {
