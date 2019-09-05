@@ -54,7 +54,7 @@ export class SimpleRequester extends Http {
     return this.intercept(super.delete(this.api + url, { headers, params }), false);
   }
 
-  public doPostFiles(url: string, fileList: File[]) {
+  public doPostFiles(url: string, fileList: File[], params: { [key: string]: any | any[]; }) {
     this.turnOnModal();
     const formData: FormData = new FormData();
     let i = 0;
@@ -64,16 +64,7 @@ export class SimpleRequester extends Http {
     }
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.post(this.api + url, formData, { headers: headers }), true);
-  }
-
-  public doPostFile(url: string, file: File) {
-    this.turnOnModal();
-    const formData: FormData = new FormData();
-    formData.append('uploadFile0', file, file.name);
-    const headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    return this.intercept(super.post(this.api + url, formData, { headers: headers }), true);
+    return this.intercept(super.post(this.api + url, formData, { headers: headers, params: params }), true);
   }
 
   public doGetWithoutAuthHeader(url: string) {
