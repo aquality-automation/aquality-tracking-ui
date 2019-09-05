@@ -108,20 +108,12 @@ export class SimpleRequester extends Http {
   }
 
   private turnOnModal() {
-    if (!this.showLoading) {
-      this.showLoading = true;
-      const element = document.getElementById('main-overlay');
-      element.style.display = 'block';
-    }
-    this.showLoading = true;
+    this.globaldata.setLoaderVisibility(true);
   }
 
   private turnOffModal() {
     if (this.globaldata.requestQuery === 0) {
-      if (this.showLoading) {
-        document.getElementById('main-overlay').style.display = 'none';
-      }
-      this.showLoading = false;
+      this.globaldata.setLoaderVisibility(false);
     }
   }
 

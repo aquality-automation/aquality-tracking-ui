@@ -1,32 +1,40 @@
 import { browser } from 'protractor';
-import { elements, baseUrl, importResultColumns, names } from './constants';
+import { elements, baseUrl, importResultColumns, names, importTypes } from './constants';
 import { BasePage } from '../base.po';
+import { waiter } from '../../utils/wait.util';
 
 export class Import extends BasePage {
-
   constructor() {
     super(elements.selectImportTypeLookup.element, names.pageName);
   }
+
+  importTypes = importTypes;
 
   navigateTo(id: number) {
     return browser.get(baseUrl(id));
   }
 
-  clickImport() {
-    return elements.importFileBtn.click();
+  clickImportAll() {
+    return elements.importAll.click();
   }
 
   getSelectedImportType() {
     return elements.selectImportTypeLookup.getSelectedValue();
   }
 
-  async getLatestImportedTestRunId(): Promise<number> {
-    const id = await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testRunId, 0);
-    return +id;
+  async getLatestImportedTestRunDate(): Promise<Date> {
+    let date: Date;
+    try {
+      date = new Date(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.started, 0));
+    } catch (error) {
+      date = new Date();
+      date.setDate(date.getDate() - 1);
+    }
+    return new Date(date);
   }
 
   async isLatestImportFinished(): Promise<boolean> {
-    const status = await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.finished, 0);
+    const status = await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.status, 0);
     return status === 'Finished';
   }
 
@@ -39,11 +47,11 @@ export class Import extends BasePage {
   }
 
   isImportFileBtnEnabled() {
-    return elements.importFileBtn.isEnabled();
+    return elements.importAll.isEnabled();
   }
 
   isImportFileBtnPresent() {
-    return elements.importFileBtn.isDisplayed();
+    return elements.importAll.isDisplayed();
   }
 
   isSelectImportType() {
@@ -62,6 +70,10 @@ export class Import extends BasePage {
     return elements.testSuiteNameLookup.select(testSuite);
   }
 
+  createAndSelectTestSuite(testSuite: string) {
+    return elements.testSuiteNameLookup.createAndSelect(testSuite);
+  }
+
   selectImportType(importType: string) {
     return elements.selectImportTypeLookup.select(importType);
   }
@@ -70,17 +82,28 @@ export class Import extends BasePage {
     return elements.unitTestDescriptionSwitch.switchOn();
   }
 
+  switchOnIntoLastTestRun() {
+    return elements.lastTestRunSwitch.switchOn();
+  }
+
   uploadFile(absolutePath: string) {
     return elements.fileUpload.sendKeys(absolutePath);
   }
 
-  async waitForImportResultsCountToBe(count: number) {
-    const oldLatestTestRunId: number = await this.getLatestImportedTestRunId();
-    return browser.wait(async () => {
+  async getTestRunIdFromImportRow(rowIndex: number) {
+    return +(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testRunId, rowIndex));
+  }
+
+  async waitForNewImportResult(lastTestRunDate: Date) {
+    return waiter.forTrue(async () => {
       await elements.importResultsTable.clickRefresh();
-      const actualLatestTestRunId = await this.getLatestImportedTestRunId();
-      const isFinished = await this.isLatestImportFinished();
-      return oldLatestTestRunId !== actualLatestTestRunId && isFinished;
-    }, browser.allScriptsTimeout).catch(() => false);
+      try {
+        const actualLatestTestRundate = await this.getLatestImportedTestRunDate();
+        const isFinished = await this.isLatestImportFinished();
+        return lastTestRunDate < actualLatestTestRundate && isFinished;
+      } catch (error) {
+        return false;
+      }
+    }, 5, 3000);
   }
 }

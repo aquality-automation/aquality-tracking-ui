@@ -1,5 +1,5 @@
 import { browser } from 'protractor';
-import { baseUrl, elements, names, regexps, columns } from './constants';
+import { baseUrl, elements, names, regexps, columns, pieChartClickSectionScript, results, resolutions } from './constants';
 import { BasePage } from '../../base.po';
 import { convertHoursTo24HourFormat, padYear } from './helpers';
 
@@ -9,32 +9,38 @@ export class TestRunView extends BasePage {
   }
 
   public resultSearcher = elements.resultSearcher;
+  public results = results;
+  public resolutions = resolutions;
 
   navigateTo(projectId: number, testRunId: number) {
     return browser.get(baseUrl(projectId, testRunId));
   }
 
   async getBuildName() {
-    return await elements.buildNameLink.getText();
+    return elements.buildNameLink.getText();
   }
 
   async getMilestone() {
-    return await elements.milestoneField.getAttribute('value');
+    return elements.milestoneField.getAttribute('value');
   }
 
   async getTestSuite() {
-    return await elements.testSuiteLink.getText();
+    return elements.testSuiteLink.getText();
+  }
+
+  getResultsCount(): any {
+    return elements.resultsTable.getTotalRows();
   }
 
   async setResolution(resolution: string, testName: string) {
-    return await elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
+    return elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
   }
 
   async getResolution(testName: string) {
     return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.resolution];
   }
 
-  async isResolutionPresent(resolutionName: string, testName: string){
+  async isResolutionPresent(resolutionName: string, testName: string) {
     const lookup = await elements.resultsTable.getCellLookup(columns.resolution, testName, columns.testName);
     return lookup.isOptionPresent(resolutionName);
   }
@@ -50,6 +56,14 @@ export class TestRunView extends BasePage {
     return elements.resultsTable.rightClickCell(columns.failReason, failReason, columns.failReason);
   }
 
+  async clickResultPieChartSection(id: number) {
+    return browser.executeScript(pieChartClickSectionScript, elements.resultsChart, id);
+  }
+
+  async clickResolutionPieChartSection(id: number) {
+    return browser.executeScript(pieChartClickSectionScript, elements.resolutionsChart, id);
+  }
+
   async getStartTime() {
     const startTimeValue = await elements.startTimeLabel.getText();
     const startDateRegex = new RegExp(regexps.startDateRegexp);
@@ -60,5 +74,23 @@ export class TestRunView extends BasePage {
     ['groups'].hours, startDateRegex.exec(startTimeValue)['groups'].period);
     const minutes = startDateRegex.exec(startTimeValue)['groups'].minutes;
     return new Date(year, month, day, hours, minutes);
+  }
+
+  setResultFilter(value: string) {
+    return elements.resultsTable.setFilter(value, columns.result);
+  }
+
+  async resultsAreFilteredByResult(result: string): Promise<boolean> {
+    return this.resultsAreFiltered(columns.result, result);
+  }
+
+  async resultsAreFilteredByResolution(resolution: string): Promise<boolean> {
+    return this.resultsAreFiltered(columns.resolution, resolution);
+  }
+
+  async resultsAreFiltered(column: string, value: string): Promise<boolean> {
+    const isSelected = await elements.resultsTable.isFilterSelected(column, value);
+    const isFiltered = await elements.resultsTable.isContainOnlyRowsWith(column, value);
+    return isSelected && isFiltered;
   }
 }

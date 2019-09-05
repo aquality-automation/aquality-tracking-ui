@@ -134,23 +134,27 @@ export class ImportComponent {
   }
 
   async uploadAll(event) {
-    const files = [...this.fileListArray];
-    for (let i = 0; i < files.length; i++) {
-      await this.upload(files[i], event);
-    }
+    return this.uploadFiles(this.fileListArray, event);
   }
 
   async upload(file: File, event) {
+    return this.uploadFiles([file], event);
+  }
+
+  async uploadFiles(files: File[], event) {
+    const filesToImport = [...files];
     const oldname = event.target.textContent;
     this.setButtonInProgress(event);
     this.loadingInProgress = true;
     try {
       this.buildParams();
-      await this.importServiceForUpload.upload(this.importParameters, [file]).toPromise();
-      const index = this.fileListArray.indexOf(file);
-      if (index > -1) {
-        this.uploadedArray.push(this.fileListArray[index]);
-        this.fileListArray.splice(index, 1);
+      await this.importServiceForUpload.upload(this.importParameters, filesToImport).toPromise();
+      for (let i = 0; i < filesToImport.length; i++) {
+        const index = this.fileListArray.indexOf(filesToImport[i]);
+        if (index > -1) {
+          this.uploadedArray.push(this.fileListArray[index]);
+          this.fileListArray.splice(index, 1);
+        }
       }
     } catch (error) {
       this.importService.handleError(error);

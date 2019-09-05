@@ -30,4 +30,9 @@ export class Autocomplete extends BaseElement implements WithSearch {
     public getValue() {
         return this.input.getValue();
     }
+
+    public async createAndSelect(value) {
+        await this.input.typeText(value);
+        await this.findOption('Add').click();
+    }
 }

@@ -35,6 +35,12 @@
             "name": "-"
         }
     },
+    "testrunChartsTest": {
+        "name" : "TestRunChartsTest",
+        "customer": {
+            "name": "-"
+        }
+    },
     "apiTests": {
         "name" : "ApiTests",
         "customer": {

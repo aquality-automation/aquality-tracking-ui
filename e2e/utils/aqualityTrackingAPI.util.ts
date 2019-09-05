@@ -4,12 +4,15 @@ import { TestRun } from '../../src/app/shared/models/testRun';
 import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Test } from '../../src/app/shared/models/test';
 import { TestResult } from '../../src/app/shared/models/test-result';
+import { logger } from './log.util';
 
 export class ImportParams {
     projectId: number;
     importToken: string;
     format: string;
     suite: string;
+    addToLastTestRun: boolean;
+    testNameKey?: string;
 }
 
 const createAuthHeaderValue = (token: string, projectId: number) => {
@@ -69,9 +72,14 @@ const sendPostWithfiles = (endpoint: string, params: object, filesAsString: stri
 
 const doImport = async (params: ImportParams, filesAsString: string[], fileNames: string[]): Promise<boolean> => {
     try {
+        logger.info(`Start API import with params: ${JSON.stringify(params)}`);
+        logger.info(`Files count: ${filesAsString.length}`);
+        logger.info(`File Names count: ${filesAsString.length}`);
         await sendPostWithfiles('/import', params, filesAsString, fileNames);
+        logger.info(`Import was finished Successfully`);
         return true;
     } catch (err) {
+        logger.error(`Import was failed: ${err.message}`);
         return false;
     }
 };
