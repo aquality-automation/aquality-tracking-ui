@@ -40,3 +40,25 @@ export const columns = {
     comment: 'Coment',
 };
 
+export const results = {
+    none: { chartId: -1, name: 'None' },
+    passed: { chartId: 1, name: 'Passed' }
+};
+
+export const resolutions = {
+    none: { chartId: -1, name: 'None' },
+    testIssue: { chartId: 3, name: 'Test Issue' }
+};
+
+export const pieChartClickSectionScript = `
+(function clickChart(el, etype, eventActiveProperty) {
+  if (el.fireEvent) {
+      el.fireEvent('on' + etype);
+  } else {
+      var evObj = document.createEvent('Events');
+      evObj.initEvent(etype, true, false);
+      evObj['active'] = eventActiveProperty;
+      el.dispatchEvent(evObj);
+  }
+})(arguments[0], 'chartClick', [{_index: arguments[1]}])
+`;

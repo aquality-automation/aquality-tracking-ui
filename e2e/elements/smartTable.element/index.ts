@@ -14,6 +14,7 @@ export class SmartTable extends BaseElement {
     }
 
     private creationRow = this.element.element(by.css('.ft-creation-row'));
+    private filterRow = this.element.element(by.css('.filter-header'));
     private creationToggler = this.element.element(by.css('.ft-create-toggler'));
     private creationError = this.element.element(by.css('.ft-create-error'));
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
@@ -29,6 +30,13 @@ export class SmartTable extends BaseElement {
             new Checkbox(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[@type="checkbox"]`))),
         coloredLookup: (columnIndex: number): Lookup =>
             new Lookup(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
+    };
+
+    private filterRowElements = {
+        input: (columnIndex: number): Input =>
+            new Input(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/input`))),
+        coloredLookup: (columnIndex: number): Lookup =>
+            new Lookup(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
     };
 
     private rowElements = {
@@ -61,6 +69,18 @@ export class SmartTable extends BaseElement {
             return this.creationError.getText();
         }
         return '';
+    }
+
+    public async setFilter(value: string | boolean | number, columnName: string) {
+        const columnIndex = await this.getColumnIndex(columnName);
+        if (await this.filterRow.isDisplayed()) {
+            if (await this.filterRowElements.input(columnIndex).element.isPresent()) {
+                return this.filterRowElements.input(columnIndex).typeText(value as string);
+            } if (await this.filterRowElements.coloredLookup(columnIndex).element.isPresent()) {
+                return this.filterRowElements.coloredLookup(columnIndex).select(value as string);
+            }
+        }
+        throw Error('Filter is not available for selected table');
     }
 
     public async fillCreation(value: string | boolean | number, columnName: string) {
@@ -219,10 +239,37 @@ export class SmartTable extends BaseElement {
         for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
             const cell: ElementFinder = await this.getCellFromRow(row, columnIndex);
-            values.push(await cell.getText());
+            try {
+                values.push(await cell.getText());
+            } catch (error) {
+                logger.warn('Cell was not found to get value. Possibly your table is empty!');
+            }
         }
 
         return values;
+    }
+
+    public async isContainOnlyRowsWith(column: string, value: string): Promise<boolean> {
+        const values = await this.getColumValues(column);
+        values.forEach(columnValue => {
+            if (value !== columnValue) {
+                return false;
+            }
+        });
+
+        return true;
+    }
+
+    public async isFilterSelected(columnName: string, value: string) {
+        const columnIndex = await this.getColumnIndex(columnName);
+        if (await this.filterRow.isDisplayed()) {
+            if (await this.filterRowElements.input(columnIndex).element.isPresent()) {
+                return value === await this.filterRowElements.input(columnIndex).getValue();
+            } if (await this.filterRowElements.coloredLookup(columnIndex).element.isPresent()) {
+                return value === await this.filterRowElements.coloredLookup(columnIndex).getSelectedValue();
+            }
+        }
+        throw Error('Filter is not available for selected table');
     }
 
     private async isCellContainsEditableElement(cell: ElementFinder) {
