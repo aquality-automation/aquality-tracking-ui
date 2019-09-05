@@ -102,14 +102,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   ngOnInit() {
     if (this.queryParams) {
-      this.appliedFilters = this.filterHelper.readFilterParams(this.route.queryParams);
       this.route.queryParams.subscribe(params => {
+        this.appliedFilters = this.filterHelper.readFilterParams(params);
+        this.applyFilters();
         this.activePage = +params['page'] || this.activePage;
         this.rowsOnPage = +params['rows'] || this.rowsOnPage;
       });
     }
-
-    this.applyFilters();
 
     if (this.allowDelete || this.allowCreate || this.allowBulkUpdate) {
       this.columns.push({ name: 'Action', property: 'action', type: 'button', editable: true });
