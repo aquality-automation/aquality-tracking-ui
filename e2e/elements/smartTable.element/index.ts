@@ -280,10 +280,10 @@ export class SmartTable extends BaseElement {
         throw Error('Filter is not available for selected table');
     }
 
-    public async GetCSV(): Promise<string> {
+    public async getCSV(): Promise<string> {
         await this.getCSVButton.click();
         await new Promise((resolve) => {
-            setTimeout(() => resolve(), 500);
+            setTimeout(() => resolve(), 1000);
         });
         await element(by.id('getSCV-Download')).click();
         await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), '.csv');

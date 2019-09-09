@@ -89,7 +89,7 @@ export class TestRunView extends BasePage {
   }
 
   async getResultsCSV() {
-    return elements.resultsTable.GetCSV();
+    return elements.resultsTable.getCSV();
   }
 
   async resultsAreFiltered(column: string, value: string): Promise<boolean> {
