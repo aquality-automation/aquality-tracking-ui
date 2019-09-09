@@ -45,6 +45,7 @@ exports.config = {
       behavior: 'allow',
       downloadPath: downloadsPath
     });
+    console.log(`Download Folder: ${downloadsPath}`)
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
     var AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());

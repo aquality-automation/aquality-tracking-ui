@@ -97,4 +97,7 @@ export class TestRunView extends BasePage {
     const isFiltered = await elements.resultsTable.isContainOnlyRowsWith(column, value);
     return isSelected && isFiltered;
   }
+  sortResultsByName() {
+    return elements.resultsTable.clickSorter(columns.testName);
+  }
 }

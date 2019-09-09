@@ -292,6 +292,13 @@ export class SmartTable extends BaseElement {
         return csvResult;
     }
 
+
+    public async clickSorter(columnName: string) {
+        const columns = await this.getColumns();
+        const columnIndex = await this.getColumnIndex(columnName);
+        return columns[columnIndex].click();
+    }
+
     private async isCellContainsEditableElement(cell: ElementFinder) {
         const inlineEditor = this.rowElements.inlineEditor(cell);
         const checkbox = this.rowElements.checkbox(cell);

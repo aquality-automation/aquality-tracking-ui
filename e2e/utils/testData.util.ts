@@ -94,7 +94,7 @@ class TestData {
      * @return {Array}               Result files with path string in an array
      */
     findFilesInDir = (pathFromDataFolder, filter: string): Array<string> => {
-        const startPath = `${dataPath}${pathFromDataFolder}`;
+        const startPath = this.getFullPath(`${pathFromDataFolder}`);
         let results = [];
 
         if (!fs.existsSync(startPath)) {

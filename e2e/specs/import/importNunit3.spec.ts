@@ -10,7 +10,7 @@ import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
-describe('Test Run Import: Nunit V3', () => {
+fdescribe('Test Run Import: Nunit V3', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
@@ -94,6 +94,7 @@ describe('Test Run Import: Nunit V3', () => {
 
     it('Results were correctly created during Feature: TestName import results via UI', async () => {
         await testRunList.openTestRun(featureName.buildName);
+        await testRunView.sortResultsByName();
         const actualResults = await testRunView.getResultsCSV();
         const expected = await testData.readAsString('/resultsTable/nunitV3FeatureName.csv');
         return expect(actualResults).toBe(expected);
@@ -119,6 +120,7 @@ describe('Test Run Import: Nunit V3', () => {
 
     it('Results were correctly created during Class Name import results via UI', async () => {
         await testRunList.openTestRun(className.buildName);
+        await testRunView.sortResultsByName();
         const actualResults = await testRunView.getResultsCSV();
         const expected = await testData.readAsString('/resultsTable/nunitV3ClassName.csv');
         return expect(actualResults).toBe(expected);
