@@ -12,8 +12,12 @@
                         <mfBootstrapPaginator class="pull-left"></mfBootstrapPaginator>
                         <p class="pull-left ft-total-label">Total Rows: {{filteredData?.length}} ({{data?.length}})</p>
                         <div class="btn-group pull-right" role="group">
-                            <button *ngIf="filteredData && allowExport" class="btn btn-sm btn-default"
-                                (click)="downloadCSV()">Export to CSV</button>
+                            <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-default" [matMenuTriggerFor]="appMenu"
+                                >Get CSV</button>
+                            <mat-menu #appMenu="matMenu" xPosition="before" >
+                                <button id="getSCV-Download" mat-menu-item (click)="downloadCSV()">Download</button>
+                                <button id="getSCV-Copy" mat-menu-item (click)="copyCSV()">Copy to Clipboard</button>
+                            </mat-menu>
                             <button *ngIf="columnManagement && !allowCreate"
                                 class="btn btn-sm btn-default ft-header-button" title="Manage Columns"
                                 (click)="manageColumns()"><span class="glyphicon glyphicon-th"></span></button>
@@ -80,7 +84,8 @@
                             (modelChange)="handleLookupFilterChange(col.objectWithId ? col.objectWithId : col.entity, [$event])">
                         </lookup-autocomplete>
 
-                        <div *ngIf="col.type === 'percent' && col.filter" [ngClass]="{ 'has-error': isRangeInvalid(col) }">
+                        <div *ngIf="col.type === 'percent' && col.filter"
+                            [ngClass]="{ 'has-error': isRangeInvalid(col) }">
                             <input placeholder="from" class="inline form-control input-sm ft-range-selector"
                                 (keyup)="rangeKeyUp($event)"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
@@ -96,7 +101,8 @@
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
                             [propertiesToShow]="col.propToShow" [array]="col.values" [model]="getLookupFilterValue(col)"
-                            (modelChange)="handleLookupFilterChange(col.property, $event)"></lookup-autocomplete-multiselect>
+                            (modelChange)="handleLookupFilterChange(col.property, $event)">
+                        </lookup-autocomplete-multiselect>
                     </td>
                 </tr>
             </thead>
@@ -230,8 +236,8 @@
                 'warning': rowColor(entity)=='warning'
                 }">
                     <td (click)="rowClicked(entity, col, $event)" *ngFor="let col of columns" class="vert-aligned"
-                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' }" 
-                        [customListener]="col.listeners" (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
+                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' }" [customListener]="col.listeners"
+                        (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
                         <div *ngIf="!isPropertyShouldBeHidden(entity, col.property)" class="ft-cell"
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"

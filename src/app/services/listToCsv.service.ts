@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { LocalPermissions } from '../shared/models/LocalPermissions';
 import { TestSuiteStat } from '../shared/models/testSuite';
 
-
-
 @Injectable()
 export class ListToCsvService {
   constructor() { }
@@ -11,18 +9,18 @@ export class ListToCsvService {
   generateTestCsvString(tests: TestSuiteStat[], users: LocalPermissions[]): string {
     let csv = 'Test Id,Test Name,Test Author,Total Runs,Passed,Failed,Application Issue,Autotest Issue,Bug Not Assigned\r\n';
     tests.forEach(test => {
-        const user = users.find(x => x.user.id === test.developer_id);
-        let newString = '';
-        newString += `${test.id},`;
-        newString += `"${test.name}",`;
-        newString += user === undefined ? '"not assigned",' : `"${user.user.first_name} ${user.user.second_name}",`;
-        newString += `${test.total_runs},`;
-        newString += `${test.passed},`;
-        newString += `${test.failed},`;
-        newString += `${test.app_issue},`;
-        newString += `${test.autotest_issue},`;
-        newString += `${test.resolution_na}\r\n`;
-        csv += newString;
+      const user = users.find(x => x.user.id === test.developer_id);
+      let newString = '';
+      newString += `${test.id},`;
+      newString += `"${test.name}",`;
+      newString += user === undefined ? '"not assigned",' : `"${user.user.first_name} ${user.user.second_name}",`;
+      newString += `${test.total_runs},`;
+      newString += `${test.passed},`;
+      newString += `${test.failed},`;
+      newString += `${test.app_issue},`;
+      newString += `${test.autotest_issue},`;
+      newString += `${test.resolution_na}\r\n`;
+      csv += newString;
     });
     return csv;
   }
@@ -30,24 +28,33 @@ export class ListToCsvService {
   generateCSVString(data: any[], columns) {
     let csv = '';
     columns.forEach((element, index) => {
-      if (index < columns.length - 1) { csv += `${element.name},`; }
-      if (index === columns.length - 1) { csv += `${element.name}\r\n`; }
+      if (element.name !== 'Selector' && element.name !== 'Action') {
+        if (index < columns.length - 1) { csv += `${element.name},`; }
+        if (index === columns.length - 1) { csv += `${element.name}\r\n`; }
+      } else {
+        if (index === columns.length - 1) { csv += `\r\n`; }
+      }
     });
     data.forEach(entity => {
       columns.forEach((element, index) => {
-        if (index < columns.length - 1) { csv += `"${this.emptyStrIfUndefined(this.getPropertyValue(entity, element))}",`; }
-        if (index === columns.length - 1) { csv += `"${this.emptyStrIfUndefined(this.getPropertyValue(entity, element))}"\r\n`; }
+        if (element.name !== 'Selector' && element.name !== 'Action') {
+          if (index < columns.length - 1) { csv += `"${this.correctValue(this.getPropertyValue(entity, element))}",`; }
+          if (index === columns.length - 1) { csv += `"${this.correctValue(this.getPropertyValue(entity, element))}"\r\n`; }
+        } else {
+          if (index === columns.length - 1) { csv += `\r\n`; }
+        }
       });
     });
 
     return csv;
   }
 
-  emptyStrIfUndefined(obj) {
-    if (obj === undefined) {
+  correctValue(object: any) {
+    if (object === undefined) {
       return '';
     }
-    return obj;
+    const stringValue: String = object.toString();
+    return stringValue.replace(/(\r\n|\r|\n)/g, ' ');
   }
 
   getPropertyValue(entity: any, column) {

@@ -10,7 +10,7 @@ import projects from '../../data/projects.json';
 import { prepareProject, executeCucumberImport } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
 
-fdescribe('Test Run View Charts', () => {
+describe('Test Run View Charts', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();

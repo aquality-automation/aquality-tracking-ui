@@ -243,9 +243,9 @@ export class ImportComponent {
       get selectedKey() {
         if (props === 0) { return ''; }
         if (props === 1) { return 'testName'; }
-        if (props === 2) { return 'featureNameTestName'; }
-        if (props === 3) { return 'className'; }
-        if (props === 4) { return 'descriptionNode'; }
+        if (props === 2) { return 'descriptionNode'; }
+        if (props === 3) { return 'featureNameTestName'; }
+        if (props === 4) { return 'className'; }
       }
     };
   }
