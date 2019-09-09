@@ -10,7 +10,7 @@ import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
-fdescribe('Import Test Run: Nunit V3', () => {
+describe('Import Test Run: Nunit V3', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
