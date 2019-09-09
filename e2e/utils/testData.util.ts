@@ -80,7 +80,8 @@ class TestData {
      */
     async waitUntilFileExists(pathFromDataFolder: string, filter: string): Promise<boolean> {
         return waiter.forTrue(() => {
-            const count = this.findFilesInDir(pathFromDataFolder, filter).length;
+            const files = this.findFilesInDir(pathFromDataFolder, filter);
+            const count = files ? 0 : files.length;
             logger.info(`Files in download folder: ${count}`);
             return count > 0;
         }, 10, 500);
