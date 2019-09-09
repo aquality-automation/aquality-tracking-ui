@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LocalPermissions } from '../shared/models/LocalPermissions';
 import { TestSuiteStat } from '../shared/models/testSuite';
+import { ElementFinder } from 'protractor';
 
 @Injectable()
 export class ListToCsvService {
@@ -26,27 +27,25 @@ export class ListToCsvService {
   }
 
   generateCSVString(data: any[], columns) {
-    let csv = '';
-    columns.forEach((element, index) => {
+    const columnsForCSV: string[] = [];
+    const rowsCSV: string[] = [];
+    columns.forEach((element: ElementFinder) => {
       if (element.name !== 'Selector' && element.name !== 'Action') {
-        if (index < columns.length - 1) { csv += `${element.name},`; }
-        if (index === columns.length - 1) { csv += `${element.name}\r\n`; }
-      } else {
-        if (index === columns.length - 1) { csv += `\r\n`; }
+        columnsForCSV.push(element.name);
       }
     });
     data.forEach(entity => {
-      columns.forEach((element, index) => {
+      const rowValues: string[] = [];
+      columns.forEach((element: ElementFinder) => {
         if (element.name !== 'Selector' && element.name !== 'Action') {
-          if (index < columns.length - 1) { csv += `"${this.correctValue(this.getPropertyValue(entity, element))}",`; }
-          if (index === columns.length - 1) { csv += `"${this.correctValue(this.getPropertyValue(entity, element))}"\r\n`; }
-        } else {
-          if (index === columns.length - 1) { csv += `\r\n`; }
+          rowValues.push(this.correctValue(this.getPropertyValue(entity, element)));
         }
       });
+      rowsCSV.push(rowValues.join(','));
     });
+    rowsCSV.unshift(columnsForCSV.join(','));
 
-    return csv;
+    return rowsCSV.join('\n');
   }
 
   correctValue(object: any) {
@@ -54,7 +53,7 @@ export class ListToCsvService {
       return '';
     }
     const stringValue: String = object.toString();
-    return stringValue.replace(/(\r\n|\r|\n)/g, ' ');
+    return `"${stringValue.replace(/(\r\n|\r|\n)/g, ' ')}"`;
   }
 
   getPropertyValue(entity: any, column) {
