@@ -15,7 +15,7 @@
             <li *ngIf="allowEmptyValue" class="selector-button btn-default" (mousedown)="select(emptyValue)">
                 None
             </li>
-            <li class="selector-button btn-default" *ngFor="let item of filteredArray" (mousedown)="select(item)">
+            <li class="selector-button btn-default" *ngFor="let item of filteredArray" [title]="textToShow(item)" (mousedown)="select(item)">
                 {{textToShow(item)}}
             </li>
         </ul>

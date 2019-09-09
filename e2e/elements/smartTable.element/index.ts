@@ -18,6 +18,7 @@ export class SmartTable extends BaseElement {
     private creationToggler = this.element.element(by.css('.ft-create-toggler'));
     private creationError = this.element.element(by.css('.ft-create-error'));
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
+    private totalLabel = this.element.element(by.css('.ft-total-label'));
 
     private createRowElements = {
         confirmPassword: (columnIndex: number) =>
@@ -46,8 +47,13 @@ export class SmartTable extends BaseElement {
     };
 
     public async getTotalRows() {
-        const totalLabel = await this.element.element(by.css('.ft-total-label')).getText();
-        return totalLabel.match(/.*\((\d+)\)/)[1];
+        const totalLabel = await this.totalLabel.getText();
+        return +totalLabel.match(/.*\((\d+)\)/)[1];
+    }
+
+    public async getShownRows() {
+        const totalLabel = await this.totalLabel.getText();
+        return +totalLabel.match(/.*: (\d+) \(/)[1];
     }
 
     public async openCreation() {

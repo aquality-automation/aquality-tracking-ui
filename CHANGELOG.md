@@ -5,6 +5,7 @@
 Bugfixes:
 
   - TestRun View: Click on charts not working -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/26)
+  - Import: Import to latest test Run not working when One Test run option selected -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/29)
 
 ## 0.3.1 (2019-08-30)
 

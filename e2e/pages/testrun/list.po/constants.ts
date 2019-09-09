@@ -9,3 +9,8 @@ export const elements = {
 export const names = {
     pageName: 'Test Run List Page'
 };
+
+export const columns = {
+    build: 'Build'
+};
+
