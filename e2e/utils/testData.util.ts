@@ -66,7 +66,6 @@ class TestData {
                         fs.unlinkSync(curPath);
                     }
                 });
-                fs.rmdirSync(downloadsPath);
                 resolve();
             }
         });
@@ -81,7 +80,7 @@ class TestData {
     async waitUntilFileExists(pathFromDataFolder: string, filter: string): Promise<boolean> {
         return waiter.forTrue(() => {
             const files = this.findFilesInDir(pathFromDataFolder, filter);
-            const count = files ? 0 : files.length;
+            const count = files ? files.length : 0;
             logger.info(`Files in download folder: ${count}`);
             return count > 0;
         }, 10, 500);

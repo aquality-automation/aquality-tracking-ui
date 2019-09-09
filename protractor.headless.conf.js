@@ -34,12 +34,16 @@ exports.config = {
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 100000,
-    allScriptsTimeout: 30000,
+    allScriptsTimeout: 60000,
     print: function () { }
   },
   onPrepare() {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
+    });
+    browser.driver.sendChromiumCommand('Page.setDownloadBehavior', {
+      behavior: 'allow',
+      downloadPath: downloadsPath
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
     var AllureReporter = require('jasmine-allure-reporter');
