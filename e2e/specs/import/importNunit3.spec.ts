@@ -9,6 +9,7 @@ import { TestRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
+import { compareCSVStrings } from '../../utils/csv.util';
 
 describe('Import Test Run: Nunit V3', () => {
     const logIn = new LogIn();
@@ -49,6 +50,7 @@ describe('Import Test Run: Nunit V3', () => {
         await projectView.menuBar.import();
         await importPage.selectImportType(importPage.importTypes.nunitV3);
         await importPage.uploadFile(testData.getFullPath(importFiles.nunitV3));
+        return expect(importPage.isFileUploaded(importFiles.nunitV3)).toBe(true, 'File was not added!');
     });
 
     it('Only Feature: TestName and Class name options available for Test name Key', async () => {
@@ -97,7 +99,11 @@ describe('Import Test Run: Nunit V3', () => {
         await testRunView.sortResultsByName();
         const actualResults = await testRunView.getResultsCSV();
         const expected = await testData.readAsString('/resultsTable/nunitV3FeatureName.csv');
-        return expect(actualResults).toBe(expected);
+        const comparisonResult = compareCSVStrings(actualResults, expected);
+        expect(comparisonResult.missedFromActual.length)
+            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+        expect(comparisonResult.missedFromActual.length)
+            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
     });
 
     it('You can import Nunit v3 with Class Name names', async () => {
@@ -123,6 +129,10 @@ describe('Import Test Run: Nunit V3', () => {
         await testRunView.sortResultsByName();
         const actualResults = await testRunView.getResultsCSV();
         const expected = await testData.readAsString('/resultsTable/nunitV3ClassName.csv');
-        return expect(actualResults).toBe(expected);
+        const comparisonResult = compareCSVStrings(actualResults, expected);
+        expect(comparisonResult.missedFromActual.length)
+            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+        expect(comparisonResult.missedFromActual.length)
+            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
     });
 });

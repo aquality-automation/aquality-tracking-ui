@@ -118,7 +118,7 @@
   </div>
   <div *ngIf="fileListArray?.length > 0" class="col-md-12 panel panel-default no-padding import-results-panel clearfix">
     <div class="table table-hover">
-      <tbody>
+      <tbody id="filesToImport">
         <tr *ngFor="let file of fileListArray">
           <td class="vert-aligned">{{file.name}}</td>
           <td class="fit vert-aligned">{{(file.size/1024).toFixed(2)}} KB</td>

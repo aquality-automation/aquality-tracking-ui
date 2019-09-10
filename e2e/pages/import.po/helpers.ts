@@ -12,6 +12,8 @@ class ImportHelper {
                 return elements.testDescriptionSwitch;
             case testNameTypes.testName:
                 return elements.testNameSwitch;
+            default:
+                throw new Error(`The ${testNameType} test name type is not described in getTestNameSwitcher()`);
         }
     }
 }

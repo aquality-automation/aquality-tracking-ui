@@ -20,7 +20,8 @@ export const elements = {
     classNameSwitch: new UiSwitch(by.id('testClassName')),
     testNameSwitch: new UiSwitch(by.id('testName')),
     testDescriptionSwitch: new UiSwitch(by.id('testDescription')),
-    buildName: new Input(by.id('build'))
+    buildName: new Input(by.id('build')),
+    uploadedFile: (filename: string) => element(by.xpath(`//tbody[@id='filesToImport']//td[text()='${filename}']`))
 };
 
 export const testNameTypes = {

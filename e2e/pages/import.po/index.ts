@@ -1,4 +1,4 @@
-import { browser } from 'protractor';
+import { browser, element } from 'protractor';
 import { elements, baseUrl, importResultColumns, names, importTypes, testNameTypes } from './constants';
 import { BasePage } from '../base.po';
 import { waiter } from '../../utils/wait.util';
@@ -110,6 +110,11 @@ export class Import extends BasePage {
 
   async getTestRunIdFromImportRow(rowIndex: number) {
     return +(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testRunId, rowIndex));
+  }
+
+  async isFileUploaded(filePath: string) {
+    const filename = filePath.split('/').pop();
+    return elements.uploadedFile(filename).isDisplayed();
   }
 
   async waitForNewImportResult(lastTestRunDate: Date) {

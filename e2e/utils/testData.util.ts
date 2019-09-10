@@ -72,7 +72,7 @@ class TestData {
     }
 
     /**
-     * Check if file exists
+     * Wait for file exists
      * @param pathFromDataFolder path starting from folder where test data is stored e.g. import/cucumber.json
      * @param filter Extension name, e.g: '.html'
      * @return {Promise<boolean>} promise resolving into true is file exists

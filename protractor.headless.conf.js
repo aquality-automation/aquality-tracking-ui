@@ -2,8 +2,6 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
-const path = require('path');
-const downloadsPath = path.resolve(__dirname, './e2e/data/downloads/');
 
 exports.config = {
   specs: [
@@ -20,12 +18,6 @@ exports.config = {
         '--window-size=1366,768',
         '--disable-web-security'
       ],
-      prefs: {
-        'download': {
-          'prompt_for_download': false,
-          'default_directory': downloadsPath,
-        }
-      }
     },
   },
   directConnect: true,
@@ -41,11 +33,6 @@ exports.config = {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
     });
-    browser.driver.sendChromiumCommand('Page.setDownloadBehavior', {
-      behavior: 'allow',
-      downloadPath: downloadsPath
-    });
-    console.log(`Download Folder: ${downloadsPath}`)
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
     var AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());

@@ -281,15 +281,22 @@ export class SmartTable extends BaseElement {
     }
 
     public async getCSV(): Promise<string> {
+        const csvExtension = '.csv';
         await this.getCSVButton.click();
         await new Promise((resolve) => {
-            setTimeout(() => resolve(), 1000);
+            setTimeout(() => resolve(), 500);
         });
         await element(by.id('getSCV-Download')).click();
-        await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), '.csv');
-        const csvResult = await testData.readAsStringFromRoot(testData.findFilesInDir(testData.getSimpleDownloadsFolderPath(), '.csv')[0]);
-        await testData.cleanUpDownloadsData();
-        return csvResult;
+        await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), csvExtension);
+        const files = testData.findFilesInDir(testData.getSimpleDownloadsFolderPath(), csvExtension);
+
+        if (files && files.length > 0) {
+            const csvResult = await testData.readAsStringFromRoot(files[0]);
+            await testData.cleanUpDownloadsData();
+            return csvResult;
+        }
+
+        throw new Error('Table CSV file was not downloaded!');
     }
 
 
