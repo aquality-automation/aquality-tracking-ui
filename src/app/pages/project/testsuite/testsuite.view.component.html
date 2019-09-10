@@ -8,7 +8,7 @@
   <div class="row">
     <div class="col-sm-4">
       <h2 class="pull-left" id="suite-view">Test Suite:</h2>
-      <lookup-autocomplete id="page-label-lookup" *ngIf="selectedTestSuite" class="pull-left page-label-lookup"
+      <lookup-autocomplete id="page-label-lookup" class="pull-left page-label-lookup"
         [allowEmptyValue]="true" [propertiesToShow]="['name']" [array]="testSuites" [model]="selectedTestSuite"
         [disabled]="false" placeholder="All Tests" (modelChange)="suiteChange($event)"></lookup-autocomplete>
     </div>

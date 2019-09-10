@@ -17,7 +17,8 @@ exports.config = {
         '--disable-gpu',
         '--window-size=1366,768',
         '--disable-web-security'
-    ]}
+      ],
+    },
   },
   directConnect: true,
   baseUrl: 'http://localhost:8080/',
@@ -25,7 +26,7 @@ exports.config = {
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 100000,
-    allScriptsTimeout: 30000,
+    allScriptsTimeout: 60000,
     print: function () { }
   },
   onPrepare() {

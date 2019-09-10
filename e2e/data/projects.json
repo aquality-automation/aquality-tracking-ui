@@ -35,6 +35,12 @@
             "name": "-"
         }
     },
+    "nunit3Import": {
+        "name" : "nunit3Import",
+        "customer": {
+            "name": "-"
+        }
+    },
     "testrunChartsTest": {
         "name" : "TestRunChartsTest",
         "customer": {

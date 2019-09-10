@@ -1,5 +1,5 @@
-import { element, ElementFinder, browser, protractor, Locator } from 'protractor';
-const EC = protractor.ExpectedConditions;
+import { element, ElementFinder, Locator } from 'protractor';
+import { waiter } from '../utils/wait.util';
 
 export class BaseElement {
     public element: ElementFinder;
@@ -12,6 +12,6 @@ export class BaseElement {
     }
 
     async isVisible() {
-        return browser.wait(EC.presenceOf(this.element), 5000, 'Notification does not appear!');
+        return waiter.forTrue(() => this.element.isPresent(), 2, 500);
     }
 }

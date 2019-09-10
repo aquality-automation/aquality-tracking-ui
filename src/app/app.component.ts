@@ -24,6 +24,7 @@ const { version: appVersion } = require('../../package.json');
   ]
 })
 export class AppComponent {
+  showLoader = false;
   projectId: number;
   currentProject: Project;
   isLogged: boolean;
@@ -53,6 +54,9 @@ export class AppComponent {
     public settingsService: ApplicationSettingsService
   ) {
     this.appVersion = appVersion;
+    this.globaldata.showLoader.subscribe(value => {
+      this.showLoader = value;
+    });
   }
 
   async changeOfRoutes() {

@@ -6,11 +6,11 @@ import { Import } from '../../pages/import.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, executeCucumberImport, executeImport } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
-import { testData } from '../../utils/file.util';
+import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
-describe('Test Run Import', () => {
+describe('Import Test Run: Add to Last Testrun', () => {
     const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();

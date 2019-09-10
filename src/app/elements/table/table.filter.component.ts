@@ -7,7 +7,8 @@ import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
 import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
-
+import { NotificationsService } from 'angular2-notifications';
+import { copyToClipboard } from '../../shared/utils/clipboard.util';
 
 @Component({
   selector: 'table-filter',
@@ -53,7 +54,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     locale: enLocale,
     minYear: new Date().getFullYear(),
     allowEmpty: true,
-    displayFormat: 'DD/MM/YY',
+    displayFormat: 'MM/DD/YY',
     barTitleFormat: 'MMMM YYYY',
     firstCalendarDay: 1,
     displayIfEmpty: 'From Any'
@@ -63,7 +64,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     locale: enLocale,
     minYear: new Date().getFullYear(),
     allowEmpty: true,
-    displayFormat: 'DD/MM/YY',
+    displayFormat: 'MM/DD/YY',
     barTitleFormat: 'MMMM YYYY',
     firstCalendarDay: 1,
     displayIfEmpty: 'To Any'
@@ -95,6 +96,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     private listTocsv: ListToCsvService,
     private route: ActivatedRoute,
     private router: Router,
+    private notificationsService: NotificationsService,
     private transformationsService: TransformationsService
   ) {
     this.filterHelper = new FilterHelper(this.transformationsService, this.route, this.router);
@@ -520,8 +522,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   downloadCSV() {
-    let data, filename, link;
-    let csv = this.listTocsv.generateCSVString(this.filteredData, this.columns);
+    let data: string, filename: string, link: HTMLAnchorElement;
+    let csv = this.getCSV();
     if (csv === null) { return; }
 
     filename = `export${Date.now()}.csv`;
@@ -537,6 +539,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     link.setAttribute('href', data);
     link.setAttribute('download', filename);
     link.click();
+  }
+
+  async copyCSV() {
+    const csv = this.getCSV();
+    copyToClipboard(csv);
+    this.notificationsService.success('Copied!');
+  }
+
+  getCSV() {
+    return this.listTocsv.generateCSVString(this.filteredData, this.columns);
   }
 
   setDuration(entity, property, $event, update = false) {

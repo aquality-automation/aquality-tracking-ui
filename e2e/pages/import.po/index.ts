@@ -1,7 +1,8 @@
-import { browser } from 'protractor';
-import { elements, baseUrl, importResultColumns, names, importTypes } from './constants';
+import { browser, element } from 'protractor';
+import { elements, baseUrl, importResultColumns, names, importTypes, testNameTypes } from './constants';
 import { BasePage } from '../base.po';
 import { waiter } from '../../utils/wait.util';
+import { importHelper } from './helpers';
 
 export class Import extends BasePage {
   constructor() {
@@ -9,6 +10,7 @@ export class Import extends BasePage {
   }
 
   importTypes = importTypes;
+  testNameTypes = testNameTypes;
 
   navigateTo(id: number) {
     return browser.get(baseUrl(id));
@@ -90,8 +92,29 @@ export class Import extends BasePage {
     return elements.fileUpload.sendKeys(absolutePath);
   }
 
+  selectTestNameType(testNameType: string) {
+    return importHelper.getTestNameSwitcher(testNameType).switchOn();
+  }
+
+  isTestNameTypeSelected(testNameType: string) {
+    return importHelper.getTestNameSwitcher(testNameType).isOn();
+  }
+
+  isTestNameTypeVisible(testNameType: string) {
+    return importHelper.getTestNameSwitcher(testNameType).isVisible();
+  }
+
+  setBuilName(value: string) {
+    return elements.buildName.typeText(value);
+  }
+
   async getTestRunIdFromImportRow(rowIndex: number) {
     return +(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testRunId, rowIndex));
+  }
+
+  async isFileUploaded(filePath: string) {
+    const filename = filePath.split('/').pop();
+    return elements.uploadedFile(filename).isDisplayed();
   }
 
   async waitForNewImportResult(lastTestRunDate: Date) {
