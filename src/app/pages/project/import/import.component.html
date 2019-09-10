@@ -19,7 +19,7 @@
         <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">Remove
           All</button>
       </div>
-      <input [disabled]="format=='' || format==undefined" id="file-upload" type="file" (change)="fileChange($event)"
+      <input [disabled]="!format" id="file-upload" type="file" (change)="fileChange($event)"
         multiple accept=".xml, .trx, .json" />
     </div>
   </div>
