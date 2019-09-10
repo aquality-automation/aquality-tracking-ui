@@ -5,7 +5,8 @@
 Features:
 
   - Report an issue now redirecting to Github -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/28)
-
+  - Import: NUnit V3 add possibility to import with fullname test name  -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/27)
+  
 Bugfixes:
 
   - TestRun View: Click on charts not working -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/26)

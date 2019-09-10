@@ -1,10 +1,11 @@
-import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder } from 'protractor';
+import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element } from 'protractor';
 import { BaseElement } from '../base.element';
 import { logger } from '../../utils/log.util';
 import { Checkbox } from '../checkbox.element';
 import { InlineEditor } from '../inlineEditor.element';
 import { Lookup } from '../lookup.element';
 import { Input } from '../input.element';
+import { testData } from '../../utils/testData.util';
 
 const EC = protractor.ExpectedConditions;
 
@@ -19,6 +20,7 @@ export class SmartTable extends BaseElement {
     private creationError = this.element.element(by.css('.ft-create-error'));
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
     private totalLabel = this.element.element(by.css('.ft-total-label'));
+    private getCSVButton = this.element.element(by.id('getSCV'));
 
     private createRowElements = {
         confirmPassword: (columnIndex: number) =>
@@ -276,6 +278,32 @@ export class SmartTable extends BaseElement {
             }
         }
         throw Error('Filter is not available for selected table');
+    }
+
+    public async getCSV(): Promise<string> {
+        const csvExtension = '.csv';
+        await this.getCSVButton.click();
+        await new Promise((resolve) => {
+            setTimeout(() => resolve(), 500);
+        });
+        await element(by.id('getSCV-Download')).click();
+        await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), csvExtension);
+        const files = testData.findFilesInDir(testData.getSimpleDownloadsFolderPath(), csvExtension);
+
+        if (files && files.length > 0) {
+            const csvResult = await testData.readAsStringFromRoot(files[0]);
+            await testData.cleanUpDownloadsData();
+            return csvResult;
+        }
+
+        throw new Error('Table CSV file was not downloaded!');
+    }
+
+
+    public async clickSorter(columnName: string) {
+        const columns = await this.getColumns();
+        const columnIndex = await this.getColumnIndex(columnName);
+        return columns[columnIndex].click();
     }
 
     private async isCellContainsEditableElement(cell: ElementFinder) {

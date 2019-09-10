@@ -54,7 +54,7 @@ export class SimpleRequester extends Http {
     return this.intercept(super.delete(this.api + url, { headers, params }), false);
   }
 
-  public doPostFiles(url: string, fileList: File[]) {
+  public doPostFiles(url: string, fileList: File[], params: { [key: string]: any | any[]; }) {
     this.turnOnModal();
     const formData: FormData = new FormData();
     let i = 0;
@@ -64,16 +64,7 @@ export class SimpleRequester extends Http {
     }
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.post(this.api + url, formData, { headers: headers }), true);
-  }
-
-  public doPostFile(url: string, file: File) {
-    this.turnOnModal();
-    const formData: FormData = new FormData();
-    formData.append('uploadFile0', file, file.name);
-    const headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    return this.intercept(super.post(this.api + url, formData, { headers: headers }), true);
+    return this.intercept(super.post(this.api + url, formData, { headers: headers, params: params }), true);
   }
 
   public doGetWithoutAuthHeader(url: string) {
@@ -117,20 +108,12 @@ export class SimpleRequester extends Http {
   }
 
   private turnOnModal() {
-    if (!this.showLoading) {
-      this.showLoading = true;
-      const element = document.getElementById('main-overlay');
-      element.style.display = 'block';
-    }
-    this.showLoading = true;
+    this.globaldata.setLoaderVisibility(true);
   }
 
   private turnOffModal() {
     if (this.globaldata.requestQuery === 0) {
-      if (this.showLoading) {
-        document.getElementById('main-overlay').style.display = 'none';
-      }
-      this.showLoading = false;
+      this.globaldata.setLoaderVisibility(false);
     }
   }
 

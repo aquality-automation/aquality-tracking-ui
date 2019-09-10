@@ -37,6 +37,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { InputTrimModule } from 'ng2-trim-directive';
 import { LoaderComponent } from '../elements/loader/loader.component';
+import { MatMenuModule } from '@angular/material';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { LoaderComponent } from '../elements/loader/loader.component';
     HttpClientModule,
     ChartsModule,
     HttpModule,
-    InputTrimModule
+    InputTrimModule,
+    MatMenuModule
   ],
   declarations: [
     ClickableLinks,
@@ -118,7 +120,8 @@ import { LoaderComponent } from '../elements/loader/loader.component';
     ChartsModule,
     HttpModule,
     InputTrimModule,
-    LoaderComponent
+    LoaderComponent,
+    MatMenuModule
   ]
 })
 export class SharedModule {}

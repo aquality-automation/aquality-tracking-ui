@@ -2,13 +2,23 @@
 // https://github.com/angular/protractor/blob/master/lib/config.ts
 
 const { SpecReporter } = require('jasmine-spec-reporter');
+const path = require('path');
+const downloadsPath = path.resolve(__dirname, './e2e/data/downloads/');
 
 exports.config = {
   specs: [
     './e2e/**/*.spec.ts'
   ],
   capabilities: {
-    browserName: 'chrome'
+    browserName: 'chrome',
+    chromeOptions: {
+      prefs: {
+        'download': {
+          'prompt_for_download': false,
+          'default_directory': downloadsPath,
+        }
+      }
+    }
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',

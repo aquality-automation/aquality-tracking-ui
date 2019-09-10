@@ -88,9 +88,17 @@ export class TestRunView extends BasePage {
     return this.resultsAreFiltered(columns.resolution, resolution);
   }
 
+  async getResultsCSV() {
+    return elements.resultsTable.getCSV();
+  }
+
   async resultsAreFiltered(column: string, value: string): Promise<boolean> {
     const isSelected = await elements.resultsTable.isFilterSelected(column, value);
     const isFiltered = await elements.resultsTable.isContainOnlyRowsWith(column, value);
     return isSelected && isFiltered;
+  }
+
+  sortResultsByName() {
+    return elements.resultsTable.clickSorter(columns.testName);
   }
 }

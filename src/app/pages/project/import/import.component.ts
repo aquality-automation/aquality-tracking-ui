@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImportBodyPattern } from '../../../shared/models/project';
 import { ProjectService } from '../../../services/project.service';
-import { ImportService } from '../../../services/import.service';
+import { ImportService, ImportParameters, importTypes } from '../../../services/import.service';
 import { TransformationsService } from '../../../services/transformations.service';
 import { TestSuite } from '../../../shared/models/testSuite';
 import { TestSuiteService } from '../../../services/testSuite.service';
@@ -22,9 +22,15 @@ import { Import } from '../../../shared/models/import';
   ]
 })
 export class ImportComponent {
-  testName = false;
-  testClassName = false;
-  testDescription = false;
+  testNameOptions:
+    {
+      testName: boolean;
+      testDescription: boolean;
+      featureTest: boolean;
+      testClassName: boolean;
+      selectedKey?: '' | 'testName' | 'featureNameTestName' | 'className' | 'descriptionNode';
+    };
+  importParameters: ImportParameters = new ImportParameters();
   suites: TestSuite[];
   suite: TestSuite;
   testRuns: TestRun[] = [];
@@ -33,23 +39,9 @@ export class ImportComponent {
   fileStatusArray: {}[] = [];
   uploadedArray: {}[] = [];
   loadingInProgress: boolean;
-  environment = '';
   pattern: ImportBodyPattern;
   bodyPatterns: ImportBodyPattern[];
-  format: string;
-  ci_build: string;
-  executor = '';
-  buildName = '';
-  singleTestRun = false;
-  lastTestRun = false;
-  placeholder = 'Select Import Type';
-  imports: string[] = ['MSTest (.trx)',
-    'Robot (.xml)',
-    'TestNG (.xml)',
-    'Cucumber (.json)',
-    'PHP Codeception (.xml)',
-    'NUnit v2 (.xml)',
-    'NUnit v3 (.xml)'];
+  format: { name: string, key: string };
   importResults: Import[];
   resultsColumnsToShow: any[];
   timerToken: any;
@@ -61,6 +53,15 @@ export class ImportComponent {
     color: 2
   }];
   sortBy = { order: 'asc', property: 'started' };
+  imports: { name: string, key: string }[] = [
+    { name: 'MSTest (.trx)', key: importTypes.MSTest },
+    { name: 'Robot (.xml)', key: importTypes.Robot },
+    { name: 'TestNG (.xml)', key: importTypes.TestNG },
+    { name: 'Cucumber (.json)', key: importTypes.Cucumber },
+    { name: 'PHP Codeception (.xml)', key: importTypes.PHPCodeception },
+    { name: 'NUnit v2 (.xml)', key: importTypes.NUnit_v2 },
+    { name: 'NUnit v3 (.xml)', key: importTypes.NUnit_v3 }
+  ];
 
   constructor(
     private importService: ImportService,
@@ -70,10 +71,11 @@ export class ImportComponent {
     private testrunService: TestRunService,
     private route: ActivatedRoute
   ) {
-    this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params['projectId'] }).subscribe(res => {
+    this.testNameOptions = this.testNameTypes();
+    this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId }).subscribe(res => {
       this.bodyPatterns = res;
     });
-    this.suiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
+    this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId }).then(res => {
       this.suites = res;
     });
 
@@ -81,7 +83,7 @@ export class ImportComponent {
   }
 
   private getImportResults() {
-    this.importService.importResults(this.route.snapshot.params['projectId']).subscribe(res => {
+    this.importService.importResults(this.route.snapshot.params.projectId).subscribe(res => {
       this.importResults = res;
       this.importResults.forEach(result => {
         result['status'] = result.is_finished === 1
@@ -131,41 +133,35 @@ export class ImportComponent {
     }
   }
 
-  uploadAll(event) {
-    const oldname = event.target.textContent;
-    this.setButtonInProgress(event);
-    this.loadingInProgress = true;
-    this.importServiceForUpload.uploadAll(this.buildParams(), this.fileListArray).subscribe(result => {
-      this.uploadedArray = this.uploadedArray.concat(this.fileListArray);
-      this.fileListArray.splice(0, this.fileListArray.length);
-    }, () => {
-      this.loadingInProgress = false;
-      this.setButtonImport(event, oldname);
-    },
-      () => {
-        this.loadingInProgress = false;
-        this.setButtonImport(event, oldname);
-      });
+  async uploadAll(event) {
+    return this.uploadFiles(this.fileListArray, event);
   }
 
-  upload(file: File, event) {
+  async upload(file: File, event) {
+    return this.uploadFiles([file], event);
+  }
+
+  async uploadFiles(files: File[], event) {
+    const filesToImport = [...files];
     const oldname = event.target.textContent;
     this.setButtonInProgress(event);
     this.loadingInProgress = true;
-    this.importServiceForUpload.upload(this.buildParams(), file).subscribe(result => {
-      const index = this.fileListArray.indexOf(file);
-      if (index > -1) {
-        this.uploadedArray.push(this.fileListArray[index]);
-        this.fileListArray.splice(index, 1);
+    try {
+      this.buildParams();
+      await this.importServiceForUpload.upload(this.importParameters, filesToImport).toPromise();
+      for (let i = 0; i < filesToImport.length; i++) {
+        const index = this.fileListArray.indexOf(filesToImport[i]);
+        if (index > -1) {
+          this.uploadedArray.push(this.fileListArray[index]);
+          this.fileListArray.splice(index, 1);
+        }
       }
-    }, () => {
+    } catch (error) {
+      this.importService.handleError(error);
+    } finally {
       this.loadingInProgress = false;
       this.setButtonImport(event, oldname);
-    },
-      () => {
-        this.loadingInProgress = false;
-        this.setButtonImport(event, oldname);
-      });
+    }
   }
 
   setButtonInProgress(event) {
@@ -180,52 +176,19 @@ export class ImportComponent {
     event.target.textContent = name;
   }
 
-  buildParams(): string {
-    let params = '?';
-    params += `projectId=${this.route.snapshot.params['projectId']}`;
-    params += this.testName || this.testClassName || this.testDescription
-      ? `&testNameKey=${this.testDescription
-        ? 'descriptionNode'
-        : this.testClassName
-          ? 'className'
-          : 'testName'}`
-      : '';
-    params += this.environment ? `&environment=${encodeURIComponent(this.environment)}` : '';
-    params += this.pattern ? `&pattern=${encodeURIComponent(this.pattern.name)}` : '';
-    params += this.format ? `&format=${this.getFormatParam()}` : '';
-    params += this.suite ? `&suite=${encodeURIComponent(this.suite.name)}` : '';
-    params += this.singleTestRun ? `&singleTestRun=${this.singleTestRun}` : '';
-    params += this.executor ? `&author=${this.executor}` : '';
-    params += this.buildName && !this.lastTestRun ? `&buildName=${this.buildName}` : '';
-    params += this.testRun ? `&testRunId=${this.testRun.id}` : '';
-    params += this.ci_build ? `&cilink=${this.ci_build}` : '';
-    params += this.lastTestRun ? `&addToLastTestRun=${this.lastTestRun}` : '';
-
-    return params;
-  }
-
-  getFormatParam() {
-    switch (this.format) {
-      case 'MSTest (.trx)':
-        return 'MSTest';
-      case 'Robot (.xml)':
-        return 'Robot';
-      case 'TestNG (.xml)':
-        return 'TestNG';
-      case 'Cucumber (.json)':
-        return 'Cucumber';
-      case 'PHP Codeception (.xml)':
-        return 'PHPCodeception';
-      case 'NUnit v2 (.xml)':
-        return 'NUnit_v2';
-      case 'NUnit v3 (.xml)':
-        return 'NUnit_v3';
+  buildParams() {
+    this.importParameters.projectId = this.route.snapshot.params.projectId;
+    this.importParameters.testNameKey = this.testNameOptions.selectedKey;
+    this.importParameters.format = this.format.key;
+    this.importParameters.suite = this.suite.name;
+    if (this.testRun) {
+      this.importParameters.testRunId = this.testRun.id;
     }
   }
 
   createBodyPattern($event) {
-    this.projectService.createImportBodyPattern({ name: $event, project_id: this.route.snapshot.params['projectId'] }).subscribe(() => {
-      this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params['projectId'] }).subscribe(patterns => {
+    this.projectService.createImportBodyPattern({ name: $event, project_id: this.route.snapshot.params.projectId }).subscribe(() => {
+      this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId }).subscribe(patterns => {
         this.bodyPatterns = patterns;
         this.pattern = this.bodyPatterns.find(x => x.name === $event);
       });
@@ -233,60 +196,57 @@ export class ImportComponent {
   }
 
   async createTestSuite($event) {
-    await this.suiteService.createTestSuite({ name: $event, project_id: this.route.snapshot.params['projectId'] });
-    this.suites = await this.suiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
+    await this.suiteService.createTestSuite({ name: $event, project_id: this.route.snapshot.params.projectId });
+    this.suites = await this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
     this.suite = this.suites.find(x => x.name === $event);
   }
 
   reqMark(field: string) {
     switch (field) {
       case 'suite':
-        return this.format === 'MSTest (.trx)'
-          || this.format === 'Cucumber (.json)'
-          || this.format === 'NUnit v3 (.xml)'
-          || this.singleTestRun;
+        return true;
       case 'executor':
       case 'buildName':
-        return this.singleTestRun;
+        return this.importParameters.singleTestRun;
     }
   }
 
   IsTestNameValid() {
-    if (this.format === 'MSTest (.trx)') {
-      return this.testClassName || this.testName || this.testDescription;
-    } else if (this.format === 'TestNG (.xml)') {
-      return this.testClassName || this.testName;
+    if (this.format.key === importTypes.MSTest) {
+      return this.testNameOptions.testClassName || this.testNameOptions.testName || this.testNameOptions.testDescription;
+    } else if (this.format.key === importTypes.TestNG) {
+      return this.testNameOptions.testClassName || this.testNameOptions.testName;
+    } else if (this.format.key === importTypes.NUnit_v3) {
+      return this.testNameOptions.testClassName || this.testNameOptions.featureTest;
     } else {
       return true;
-    }
-  }
-
-  testNameChange($event) {
-    this.testName = $event;
-    if ($event) {
-      this.testDescription = false;
-      this.testClassName = false;
-    }
-  }
-
-  testClassNameChange($event) {
-    this.testClassName = $event;
-    if ($event) {
-      this.testDescription = false;
-      this.testName = false;
-    }
-  }
-
-  testDescriptionChange($event) {
-    this.testDescription = $event;
-    if ($event) {
-      this.testClassName = false;
-      this.testName = false;
     }
   }
 
   async setSuite($event) {
     this.suite = $event;
     this.testRuns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
+  }
+
+  testNameTypes() {
+    let props = 0;
+
+    return {
+      get testName() { return props === 1; },
+      set testName(val) { if (val) { props = 1; } },
+      get testDescription() { return props === 2; },
+      set testDescription(val) { if (val) { props = 2; } },
+      get featureTest() { return props === 3; },
+      set featureTest(val) { if (val) { props = 3; } },
+      get testClassName() { return props === 4; },
+      set testClassName(val) { if (val) { props = 4; } },
+      get selectedKey() {
+        if (props === 0) { return ''; }
+        if (props === 1) { return 'testName'; }
+        if (props === 2) { return 'descriptionNode'; }
+        if (props === 3) { return 'featureNameTestName'; }
+        if (props === 4) { return 'className'; }
+      }
+    };
   }
 }
