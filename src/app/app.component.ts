@@ -24,6 +24,7 @@ const { version: appVersion } = require('../../package.json');
   ]
 })
 export class AppComponent {
+  showLoader = false;
   projectId: number;
   currentProject: Project;
   isLogged: boolean;
@@ -53,6 +54,9 @@ export class AppComponent {
     public settingsService: ApplicationSettingsService
   ) {
     this.appVersion = appVersion;
+    this.globaldata.showLoader.subscribe(value => {
+      this.showLoader = value;
+    });
   }
 
   async changeOfRoutes() {
@@ -185,7 +189,7 @@ export class AppComponent {
           || this.userService.IsLocalManager()
         }, {
           name: 'Report an Issue',
-          href: `mailto:reportingportal.help@jira.itransition.com?body=${this.issueEmailBody}`,
+          href: `https://github.com/aquality-automation/aquality-tracking/issues`,
           show: true
         }]
       }];

@@ -6,12 +6,8 @@ import { SimpleRequester } from './simple-requester';
 @Injectable()
 export class ImportService extends SimpleRequester {
 
-  upload(buildParams: string, file: File) {
-    return this.doPostFile(`/import${buildParams}`, file).map(res => res);
-  }
-
-  uploadAll(buildParams: string, fileListArray: File[]) {
-    return this.doPostFiles(`/import${buildParams}`, fileListArray)
+  upload(importParameters: ImportParameters, fileListArray: File[]) {
+    return this.doPostFiles(`/import`, fileListArray, importParameters)
       .map(res => res);
   }
 
@@ -19,4 +15,29 @@ export class ImportService extends SimpleRequester {
     return this.doGet(`/import/results?projectId=${projectId}`)
       .map(res => res.json());
   }
+}
+
+export const importTypes = {
+  MSTest: 'MSTest',
+  Robot: 'Robot',
+  TestNG: 'TestNG',
+  Cucumber: 'Cucumber',
+  PHPCodeception: 'PHPCodeception',
+  NUnit_v2: 'NUnit_v2',
+  NUnit_v3: 'NUnit_v3'
+};
+
+export class ImportParameters {
+  projectId: number;
+  testNameKey: string;
+  environment: string;
+  pattern: string;
+  format: string;
+  suite: string;
+  singleTestRun: boolean;
+  author: string;
+  buildName: string;
+  testRunId: number;
+  cilink: string;
+  addToLastTestRun: boolean;
 }

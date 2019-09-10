@@ -7,8 +7,7 @@ import { Project } from '../../../src/app/shared/models/project';
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
-import { doImport } from '../../utils/aqualityTrackingAPI.util';
-import { prepareProject } from '../project.hooks';
+import { prepareProject, executeCucumberImport } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
 
 describe('Test Run Result Searcher', () => {
@@ -22,24 +21,12 @@ describe('Test Run Result Searcher', () => {
     let projectId: number;
     const builds = { build_1: 'Build_1', build_2: 'Build_2' };
 
-    const executeCucumberImport = async () => {
-        const result = await doImport({
-            projectId,
-            importToken,
-            format: 'Cucumber',
-            suite: 'Test Suite'
-        }, [JSON.stringify(cucumberImport), JSON.stringify(cucumberImport)], [`${builds.build_1}.json`, `${builds.build_2}.json`]);
-        if (!result) {
-            throw Error('Import Failed!');
-        }
-        return result;
-    };
-
     beforeAll(async () => {
         await logIn.logIn(users.admin.user_name, users.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
-        await executeCucumberImport();
+        await executeCucumberImport(projectId, 'Test Suite', importToken,
+            [JSON.stringify(cucumberImport), JSON.stringify(cucumberImport)], [`${builds.build_1}.json`, `${builds.build_2}.json`]);
         await projectView.menuBar.testRuns();
         const isTestRunAppear = await testRunList.waitForTestRun(builds.build_2);
         expect(isTestRunAppear).toBe(true, 'Import was not finished!');
@@ -104,6 +91,6 @@ describe('Test Run Result Searcher', () => {
     it('Can limit search results', async () => {
         await testRunView.resultSearcher.setLimit('1');
         await testRunView.resultSearcher.search('step was');
-        expect(testRunView.resultSearcher.getNumberOfResults()).toBe('1', 'Results Number is wrong!');
+        expect(testRunView.resultSearcher.getNumberOfResults()).toBe(1, 'Results Number is wrong!');
     });
 });

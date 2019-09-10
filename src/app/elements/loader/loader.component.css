@@ -1,11 +1,18 @@
 .loader {
-    position: absolute;
+    position: fixed;
     top: 45;
     bottom: 20;
     right: 0;
     left: 0;
     background: #06050557;
     z-index: 1000;
+}
+
+.full-screen {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
 }
 
 .loader-spinner {

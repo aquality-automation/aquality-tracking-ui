@@ -27,11 +27,11 @@
         <ul>
             <li *ngIf="filteredArray.length === 0 && !allowEmptyValue && (!allowCreation || inList())"
                 class="selector-button btn-default">No items</li>
-            <li tabindex="0" *ngIf="allowCreation && !inList() " class="selector-button btn-default default-option"
+            <li tabindex="0" title="Add" *ngIf="allowCreation && !inList() " class="selector-button btn-default default-option"
                 (keyup.enter)="sendSearchText()" (mousedown)="sendSearchText()">Add</li>
-            <li tabindex="0" *ngIf="allowEmptyValue" class="selector-button btn-default default-option"
+            <li tabindex="0" [title]="placeholder" *ngIf="allowEmptyValue" class="selector-button btn-default default-option"
                 (keyup.enter)="select(emptyValue)" (mousedown)="select(emptyValue)">{{placeholder}}</li>
-            <li tabindex="0" *ngIf="emptyForFilter" class="selector-button btn-default default-option"
+            <li tabindex="0" title="Not Assigned" *ngIf="emptyForFilter" class="selector-button btn-default default-option"
                 (keyup.enter)="select(emptyValueForFilter)" (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
             <li tabindex="0" [title]="textToShow(item)" class="selector-button btn-default wrap-text"
                 *ngFor="let item of filteredArray" (keyup.enter)="select(item)" (mousedown)="select(item)">

@@ -165,12 +165,10 @@ export class FilterHelper {
   readFilterParams(queryParams): Filter[] {
     let filters: Filter[] = [];
     if (queryParams) {
-      this.route.queryParams.subscribe(params => {
-        const filterKeys = Object.keys(params);
+        const filterKeys = Object.keys(queryParams);
         filterKeys.forEach(param => {
-            filters = this.readFilterParam(params, param, filters);
+            filters = this.readFilterParam(queryParams, param, filters);
         });
-      });
     }
 
     return filters;
