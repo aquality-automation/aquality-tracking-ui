@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 
-import { ProjectService } from '../../services/project.service';
-import { UserService } from '../../services/user.services';
 import { SharedModule } from '../../shared/shared.module';
 import { auditRouting } from './audit.routing';
-import { AuditComponent } from './audit.component';
+import { AuditComponent } from './audit-list/audit.component';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { AuditCreateComponent } from './audit.create.component';
-import { AuditInfoComponent } from './audit.info.component';
-import { AuditProjectComponent } from './audit.project.component';
-import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard } from '../../shared/guards/can-activate-audits';
+import { AuditCreateComponent } from './audit-create/audit.create.component';
+import { AuditInfoComponent } from './audit-view/audit.info.component';
+import { AuditProjectComponent } from './audit-project-list/audit.project.component';
+import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard } from '../../shared/guards/audit-guard.service';
 
 @NgModule({
   imports: [
