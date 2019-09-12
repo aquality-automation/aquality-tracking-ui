@@ -2,13 +2,13 @@ import { LogIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { UserAdministration } from '../../pages/administration/users.po';
+import { prepareProject, setProjectPermissions } from '../project.hooks';
+import { PermissionsAdministration } from '../../pages/administration/permissions.po';
+import { NotFound } from '../../pages/notFound.po';
 
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
-import { prepareProject, setProjectPermissions } from '../project.hooks';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
-import { NotFound } from '../../pages/notFound.po';
 
 const editorExamples = {
     admin: usersTestData.admin,
