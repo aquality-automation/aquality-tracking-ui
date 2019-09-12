@@ -1,0 +1,4 @@
+Test Name,1369 | Auto | 09/11/19,1364 | Auto | 09/11/19,1365 | Auto | 09/11/19,1366 | Auto | 09/11/19,1367 | Auto | 09/11/19,1368 | Auto | 09/11/19
+"Test Feature with all results: All passed","Passed","Passed","Passed","Passed","Passed","Passed"
+"Test Feature with all results: step failed","Failed","Failed","Failed","Failed","Failed","Failed"
+"Test Feature with all results: Step skipped","Pending","Pending","Pending","Pending","Pending","Pending"

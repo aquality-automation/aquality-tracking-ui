@@ -7,24 +7,28 @@ export class TestRunList extends BasePage {
         super(elements.uniqueElement, names.pageName);
     }
 
-    async clickTestRunRemoveButton(buildName: string) {
-        await elements.testRunsTable.clickAction(buildName, columns.build);
+    clickTestRunRemoveButton(buildName: string) {
+        return elements.testRunsTable.clickAction(buildName, columns.build);
     }
 
-    async isTestRunRowDisplayed(buildName: string) {
+    isTestRunRowDisplayed(buildName: string) {
         return elements.testRunsTable.isRowExists(buildName, columns.build);
     }
 
-    async openTestRun(buildName: string) {
+    openTestRun(buildName: string) {
         return elements.testRunsTable.clickRow(buildName, columns.build);
     }
 
-    async getTestRunsCount() {
+    getTestRunsCount() {
         return elements.testRunsTable.getShownRows();
     }
 
-    async filterByBuildName(buildName: string) {
+    filterByBuildName(buildName: string) {
         return elements.testRunsTable.setFilter(buildName, columns.build);
+    }
+
+    clickSuiteMatrix() {
+        return elements.matrixButton.click();
     }
 
     async waitForTestRun(buildName: string) {
