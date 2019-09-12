@@ -21,7 +21,7 @@ const notEditorExamples = {
     localEngineer: usersTestData.localEngineer,
 };
 
-fdescribe('Administartion:', () => {
+describe('Administartion:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
     const userAdministration: UserAdministration = new UserAdministration();
