@@ -38,5 +38,18 @@ export const executeCucumberImport = async (
   importToken: string,
   files: string[],
   fileNames: string[]) => {
-    return executeImport({projectId, suite: suiteName, importToken, format: 'Cucumber', addToLastTestRun: false}, files, fileNames);
+  return executeImport({ projectId, suite: suiteName, importToken, format: 'Cucumber', addToLastTestRun: false }, files, fileNames);
+};
+
+export const generateBuilds = (count: number): { names: any, filenames: string[] } => {
+  const names = {};
+  const filenames: string[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const name = `build_${i + 1}`;
+    names[name] = name;
+    filenames.push(`${name}.json`);
+  }
+
+  return { names, filenames };
 };

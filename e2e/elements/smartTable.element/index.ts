@@ -6,6 +6,7 @@ import { InlineEditor } from '../inlineEditor.element';
 import { Lookup } from '../lookup.element';
 import { Input } from '../input.element';
 import { testData } from '../../utils/testData.util';
+import { rightClick } from '../../utils/click.util';
 
 const EC = protractor.ExpectedConditions;
 
@@ -171,7 +172,7 @@ export class SmartTable extends BaseElement {
 
     public async rightClickCell(columnToClick: string, searchValue: string, searchColumn: string) {
         const cell = await this.getCell(columnToClick, searchValue, searchColumn);
-        return browser.actions().click(cell, protractor.Button.RIGHT).perform();
+        return rightClick(cell);
     }
 
     public async editRow(value: string | boolean, column: string, searchValue: string, searchColumn: string) {
@@ -304,6 +305,17 @@ export class SmartTable extends BaseElement {
         const columns = await this.getColumns();
         const columnIndex = await this.getColumnIndex(columnName);
         return columns[columnIndex].click();
+    }
+
+    public async rightClickSorter(columnName: string) {
+        const columns = await this.getColumns();
+        const columnIndex = await this.getColumnIndex(columnName);
+        return rightClick(columns[columnIndex]);
+    }
+
+    public async getColumnName(index: number) {
+        const columns = await this.getColumns();
+        return columns[index].getText();
     }
 
     private async isCellContainsEditableElement(cell: ElementFinder) {

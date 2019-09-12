@@ -1,6 +1,15 @@
-export const compareCSVStrings = (actualCsv: string, expectedCsv: string) => {
-    const actualCsvRows = actualCsv.split(/\r?\n/);
-    const expectedCsvRows = expectedCsv.split(/\r?\n/);
+const removeHeaders = (rows: string[]) => {
+    rows.shift();
+    return rows;
+};
+
+const splitRows = (value: string): string[] => {
+    return value.split(/\r?\n/);
+};
+
+export const compareCSVStrings = (actualCsv: string, expectedCsv: string, skipHeaders: boolean = false) => {
+    const actualCsvRows = skipHeaders ? removeHeaders(splitRows(actualCsv)) : splitRows(actualCsv);
+    const expectedCsvRows = skipHeaders ? removeHeaders(splitRows(expectedCsv)) : splitRows(expectedCsv);
     const missedFromActual: string[] = [];
     let missedFromExpected: string[] = expectedCsvRows.slice();
     actualCsvRows.forEach(row => {

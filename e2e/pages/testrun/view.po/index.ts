@@ -101,4 +101,10 @@ export class TestRunView extends BasePage {
   sortResultsByName() {
     return elements.resultsTable.clickSorter(columns.testName);
   }
+
+  async getId(): Promise<number> {
+    const url = `${await browser.getCurrentUrl()}/`;
+    const regexp = /\/testrun\/(\d+)/;
+    return +(url.match(regexp)[1]);
+  }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { TestRun } from '../shared/models/testRun';
+import { TestRun, TestRunLabel } from '../shared/models/testRun';
 import { User } from '../shared/models/user';
 import { TestRunStat } from '../shared/models/testrunStats';
 
@@ -30,7 +30,7 @@ export class TestRunService extends SimpleRequester {
   }
 
   removeTestRun(testRun: TestRun): Promise<void> {
-    return this.doDelete(`/testrun`, {id: testRun.id, projectId: testRun.project_id})
+    return this.doDelete(`/testrun`, { id: testRun.id, projectId: testRun.project_id })
       .map(() => this.handleSuccess(`Test run '${testRun.build_name}/${testRun.start_time}' was deleted.`)).toPromise();
   }
 
@@ -39,9 +39,12 @@ export class TestRunService extends SimpleRequester {
     return this.doGet('/stats/testrun', testRun, overlay).map(res => res.json()).toPromise<TestRunStat[]>();
   }
 
-  getTestsRunLabels(id: number) {
-    const limitid = id === 0 ? '' : `?id=${id}`;
-    return this.doGet(`/testrun/labels${limitid}`).map(res => res.json());
+  getTestsRunLabels(id?: number) {
+    const params: TestRunLabel = {};
+    if (id) {
+      params.id = id;
+    }
+    return this.doGet(`/testrun/labels`, params).map(res => res.json());
   }
 
   sendReport(testRun: TestRun, users: User[]) {

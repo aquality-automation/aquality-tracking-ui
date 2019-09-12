@@ -6,9 +6,9 @@
       <testrun-result-timeline *ngIf="testRunStatsFiltered" [testRunsStat]="testRunStatsFiltered"></testrun-result-timeline>
       <br>
       <div class="pull-right btn-group right-actions">
-        <button class="btn btn-primary" (click)="uploadResults()">Results As CSV</button>
-        <button class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/matrix">Suite Matrix</button>
-        <button class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/compare">Compare Test Runs</button>
+        <button id="resultAsCSV" class="btn btn-primary" (click)="uploadResults()">Results As CSV</button>
+        <button id="suiteMatrix" class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/matrix">Suite Matrix</button>
+        <button id="compareTestRuns" class="btn btn-primary" routerLink="/project/{{testRun.project_id}}/testrun/compare">Compare Test Runs</button>
       </div>
       <br>
       <br>

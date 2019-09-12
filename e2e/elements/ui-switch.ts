@@ -17,4 +17,10 @@ export class UiSwitch extends BaseElement {
         const elementClass = await this.element.element(by.tagName('span')).getAttribute('class');
         return elementClass.includes('checked');
     }
+
+    async switchOff() {
+        if ((await this.isOn())) {
+            return this.element.click();
+        }
+    }
 }

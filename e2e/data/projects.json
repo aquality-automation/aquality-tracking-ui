@@ -52,5 +52,10 @@
         "customer": {
             "name": "-"
         }
+    },
+    "customerOnly": {
+        "customer": {
+            "name": "-"
+        }
     }
 }
