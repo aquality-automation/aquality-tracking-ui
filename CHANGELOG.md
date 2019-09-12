@@ -4,6 +4,7 @@
 
 Bugfixes:
   - Suite Matrix does not work -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/18)
+  - Local Manager can see Local Permissions page -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/22)
 
 ## 0.3.2 (2019-09-10)
 

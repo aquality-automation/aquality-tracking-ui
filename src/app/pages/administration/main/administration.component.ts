@@ -20,8 +20,7 @@ export class AdministrationComponent {
   constructor(
     private projectService: ProjectService,
     public userService: UserService,
-    private router: Router,
-    private route: ActivatedRoute
+    private router: Router
   ) {
     this.projectService.getProjects(this.project).subscribe(result => {
       this.projects = result;
@@ -31,10 +30,6 @@ export class AdministrationComponent {
 
   IsAdmin(): boolean {
     return this.userService.IsAdmin();
-  }
-
-  IsLocalAdmin(): boolean {
-    return this.userService.AnyLocalAdmin();
   }
 
   redirect() {

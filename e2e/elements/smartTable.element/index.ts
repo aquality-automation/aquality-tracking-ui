@@ -7,6 +7,7 @@ import { Lookup } from '../lookup.element';
 import { Input } from '../input.element';
 import { testData } from '../../utils/testData.util';
 import { rightClick } from '../../utils/click.util';
+import { Autocomplete } from '../autocomplete.element';
 
 const EC = protractor.ExpectedConditions;
 
@@ -34,6 +35,8 @@ export class SmartTable extends BaseElement {
             new Checkbox(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[@type="checkbox"]`))),
         coloredLookup: (columnIndex: number): Lookup =>
             new Lookup(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
+        autocomplete: (columnIndex: number): Autocomplete =>
+            new Autocomplete(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-autocomplete`))),
     };
 
     private filterRowElements = {
@@ -98,9 +101,11 @@ export class SmartTable extends BaseElement {
             if (await this.createRowElements.input(columnIndex).element.isPresent()) {
                 return this.createRowElements.input(columnIndex).typeText(value as string);
             } if (await this.createRowElements.checkbox(columnIndex).element.isPresent()) {
-                return this.createRowElements.checkbox(columnIndex).setState(value as boolean);
+                return this.createRowElements.checkbox(columnIndex).setState(!!value as boolean);
             } if (await this.createRowElements.coloredLookup(columnIndex).element.isPresent()) {
                 return this.createRowElements.coloredLookup(columnIndex).select(value as string);
+            } if (await this.createRowElements.autocomplete(columnIndex).element.isPresent()) {
+                return this.createRowElements.autocomplete(columnIndex).select(value as string);
             }
         }
         throw Error('Creation Row is not opened');
@@ -374,7 +379,7 @@ export class SmartTable extends BaseElement {
 
     private async getRows(value: string | number, columnName: string) {
         const columnIndex = await this.getColumnIndex(columnName);
-        const locator = `.//tbody/tr[td[${columnIndex + 1}]//*[contains(text(),'${value}')]]`;
+        const locator = `.//tbody/tr[contains(@class,'ft-row') and td[${columnIndex + 1}]//*[contains(text(),'${value}')]]`;
         logger.info(`Looking for rows using ${locator} xpath`);
         return this.element.all(by.xpath(locator));
     }

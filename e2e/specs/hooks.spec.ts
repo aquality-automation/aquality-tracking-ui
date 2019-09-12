@@ -1,22 +1,38 @@
 import { browser } from 'protractor';
-import chai from 'chai';
 import { environment } from '../../src/environments/environment';
-import chaiHttp = require('chai-http');
 import { waiter } from '../utils/wait.util';
+import { LogIn } from '../pages/login.po';
+import { ProjectList } from '../pages/project/list.po';
+import { UserAdministration } from '../pages/administration/users.po';
 import path from 'path';
+import chai from 'chai';
+import chaiHttp = require('chai-http');
+import usersTestData from '../data/users.json';
 
 chai.use(chaiHttp);
 const downloadsPath = path.resolve(__dirname, '..', './data/downloads/');
+const logInPage: LogIn = new LogIn();
+const projectsList: ProjectList = new ProjectList();
+const userAdministration: UserAdministration = new UserAdministration();
 
 beforeAll(async () => {
     const isBackendAvailable = waiter.forTrue(async () => {
-        const result = await chai.request(environment.host).get('/authInfo');
+        const result = await chai.request(environment.host).get('/settings');
         return result.status === 200;
     }, 5, 1000);
     await browser.manage().window().maximize();
     if (!isBackendAvailable) {
         throw new Error(`Backend is unavailable ${environment.host}`);
     }
+    await logInPage.navigateTo();
+    await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+    await (await projectsList.menuBar.user()).administration();
+    await userAdministration.create(usersTestData.localAdmin);
+    await userAdministration.create(usersTestData.localManager);
+    await userAdministration.create(usersTestData.localEngineer);
+    await userAdministration.create(usersTestData.manager);
+    await userAdministration.create(usersTestData.projectTemp);
+    await userAdministration.menuBar.clickLogOut();
 });
 
 beforeEach(async () => {
@@ -24,4 +40,15 @@ beforeEach(async () => {
         behavior: 'allow',
         downloadPath: downloadsPath
       });
+});
+
+afterAll(async () => {
+    await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+    await (await projectsList.menuBar.user()).administration();
+    await userAdministration.remove(usersTestData.localAdmin.user_name);
+    await userAdministration.remove(usersTestData.localManager.user_name);
+    await userAdministration.remove(usersTestData.localEngineer.user_name);
+    await userAdministration.remove(usersTestData.manager.user_name);
+    await userAdministration.remove(usersTestData.projectTemp.user_name);
+    await userAdministration.menuBar.clickLogOut();
 });
