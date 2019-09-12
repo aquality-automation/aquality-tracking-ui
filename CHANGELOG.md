@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## 0.3.2 (unreleased)
+## 0.3.3 (unreleased)
+
+Bugfixes:
+  - Suite Matrix does not work -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/18)
+
+## 0.3.2 (2019-09-10)
 
 Features:
 
