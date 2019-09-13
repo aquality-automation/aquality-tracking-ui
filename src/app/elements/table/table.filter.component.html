@@ -330,7 +330,7 @@
                                 (blur)="sendUpdate(entity)" />
 
                             <div
-                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
+                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
                         </div>
 
