@@ -165,10 +165,10 @@
                 </tr>
                 <tr class="ft-create-toggler" *ngIf="allowCreate">
                     <td (click)="toggleCreation()" class="text-center clickable-element"
-                        [attr.colspan]="columns.length">
+                        [attr.colspan]="columns.length">Add new
                         <span class="glyphicon" aria-hidden="true" [ngClass]="{
-                            'glyphicon-plus':!showCreation,
-                            'glyphicon-minus':showCreation
+                            'glyphicon-menu-down':!showCreation,
+                            'glyphicon-menu-up':showCreation
                         }"></span>
                     </td>
                 </tr>

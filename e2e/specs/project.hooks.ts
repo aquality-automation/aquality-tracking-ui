@@ -1,12 +1,25 @@
 import { ProjectList } from '../pages/project/list.po';
 import { ProjectCreate } from '../pages/project/create.po';
+import { PermissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
 import { ImportTokenAdministration } from '../pages/administration/importToken.po';
 import { doImport, ImportParams } from '../utils/aqualityTrackingAPI.util';
+import { User } from '../../src/app/shared/models/user';
+import { logger } from '../utils/log.util';
 
 const projectList: ProjectList = new ProjectList();
 const projectCreate: ProjectCreate = new ProjectCreate();
 const importTokenAdministration: ImportTokenAdministration = new ImportTokenAdministration();
+const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
+
+export const userPermissionTypeKeys = {
+  admin: 'admin',
+  localAdmin: 'localAdmin',
+  localManager: 'localManager',
+  localEngineer: 'localEngineer',
+  manager: 'manager',
+  projectTemp: 'projectTemp'
+};
 
 export const prepareProject = async (project: Project): Promise<string> => {
   await projectList.clickCreateProjectButton();
@@ -52,4 +65,29 @@ export const generateBuilds = (count: number): { names: any, filenames: string[]
   }
 
   return { names, filenames };
+};
+
+export const setProjectPermissions = async (project: Project, users: any) => {
+  await permissionsAdministration.selectProject(project.name);
+  const keys = Object.keys(users);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const user: User = users[key];
+    switch (key) {
+      case userPermissionTypeKeys.localAdmin:
+        await permissionsAdministration.create({ user, admin: 1, manager: 0, engineer: 0 });
+        break;
+      case userPermissionTypeKeys.localEngineer:
+        await permissionsAdministration.create({ user, admin: 0, manager: 0, engineer: 1 });
+        break;
+      case userPermissionTypeKeys.localManager:
+        await permissionsAdministration.create({ user, admin: 0, manager: 1, engineer: 0 });
+        break;
+      case userPermissionTypeKeys.projectTemp:
+        await permissionsAdministration.create({ user, admin: 0, manager: 0, engineer: 0 });
+        break;
+      default:
+        logger.info(`Local Permissions for ${key} are not required`);
+    }
+  }
 };

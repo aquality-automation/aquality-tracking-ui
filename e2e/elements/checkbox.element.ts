@@ -1,4 +1,4 @@
-import { Locator, ElementFinder } from 'protractor';
+import { Locator, ElementFinder, browser } from 'protractor';
 import { BaseElement } from './base.element';
 import { scrollIntoView } from '../utils/js.util';
 
