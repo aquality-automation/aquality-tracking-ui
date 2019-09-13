@@ -61,7 +61,7 @@ export class TestViewComponent implements OnInit {
             this.users = res;
             this.selectedDeveloper = this.test.developer;
           });
-        this.testSuiteService.getTestSuite({id: this.test.test_suite_id}).then(res => {
+        this.testSuiteService.getTestSuite({ id: this.test.test_suite_id }).then(res => {
           this.suite = res[0];
         });
         this.test = result[0];

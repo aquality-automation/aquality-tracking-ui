@@ -1,6 +1,6 @@
 import { browser } from 'protractor';
 import { BasePage } from '../../base.po';
-import { elements, baseUrl, names } from './constants';
+import { elements, baseUrl, names, columns } from './constants';
 import { MoveTest } from '../../modals/moveTest.po';
 
 export class SuiteView extends BasePage {
@@ -36,5 +36,9 @@ export class SuiteView extends BasePage {
 
   async clickMoveTest() {
       return elements.moveTestBtn.click();
+  }
+
+  openTest(testName: string) {
+      return elements.testsTable.clickRow(testName, columns.name);
   }
 }
