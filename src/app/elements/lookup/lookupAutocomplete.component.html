@@ -2,7 +2,7 @@
     {{selectedItemText}}
 </div>
 <div *ngIf="array && !disabled" class="selector-container form-group" (clickOutside)="onClickedOutside($event)"
-    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mouseup'" [ngClass]="{
+    (keyup.esc)="toggleOff()" [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'" [ngClass]="{
     'has-error': lookupField.invalid && lookupField.touched,
     'has-success': lookupField.valid && lookupField.touched
   }">
@@ -27,12 +27,15 @@
         <ul>
             <li *ngIf="filteredArray.length === 0 && !allowEmptyValue && (!allowCreation || inList())"
                 class="selector-button btn-default">No items</li>
-            <li tabindex="0" title="Add" *ngIf="allowCreation && !inList() " class="selector-button btn-default default-option"
-                (keyup.enter)="sendSearchText()" (mousedown)="sendSearchText()">Add</li>
-            <li tabindex="0" [title]="placeholder" *ngIf="allowEmptyValue" class="selector-button btn-default default-option"
-                (keyup.enter)="select(emptyValue)" (mousedown)="select(emptyValue)">{{placeholder}}</li>
-            <li tabindex="0" title="Not Assigned" *ngIf="emptyForFilter" class="selector-button btn-default default-option"
-                (keyup.enter)="select(emptyValueForFilter)" (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
+            <li tabindex="0" title="Add" *ngIf="allowCreation && !inList() "
+                class="selector-button btn-default default-option" (keyup.enter)="sendSearchText()"
+                (mousedown)="sendSearchText()">Add</li>
+            <li tabindex="0" [title]="placeholder" *ngIf="allowEmptyValue"
+                class="selector-button btn-default default-option" (keyup.enter)="select(emptyValue)"
+                (mousedown)="select(emptyValue)">{{placeholder}}</li>
+            <li tabindex="0" title="Not Assigned" *ngIf="emptyForFilter"
+                class="selector-button btn-default default-option" (keyup.enter)="select(emptyValueForFilter)"
+                (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
             <li tabindex="0" [title]="textToShow(item)" class="selector-button btn-default wrap-text"
                 *ngFor="let item of filteredArray" (keyup.enter)="select(item)" (mousedown)="select(item)">
                 {{textToShow(item)}}

@@ -89,6 +89,7 @@ export class UserAdministration extends AdministrationBase {
   isUserDisplayed(user_name: string): any {
     return elements.usersTable.isRowExists(user_name, columns.userName);
   }
+
   clickRemoveUserButton(user_name: string) {
     return elements.usersTable.clickAction(user_name, columns.userName);
   }
@@ -99,5 +100,27 @@ export class UserAdministration extends AdministrationBase {
 
   clickResetPassword(user_name: string) {
     return elements.usersTable.clickCellLink(columns.password, user_name, columns.userName);
+  }
+
+  async create(user: User) {
+    await this.openCreation();
+    await this.fillFirstName(user.first_name);
+    await this.fillLastName(user.second_name);
+    await this.fillUserName(user.user_name);
+    await this.fillEmail(user.email);
+    await this.fillPassword(user.password);
+    await this.fillConfirmPassword(user.password);
+    await this.setUnitCoordinator(user.unit_coordinator);
+    await this.setAccountManager(user.account_manager);
+    await this.setAdmin(user.admin);
+    await this.setCoordinator(user.manager);
+    await this.setAuditor(user.auditor);
+    await this.setAuditAdmin(user.audit_admin);
+    return this.clickCreate();
+  }
+
+  async remove(user_name: string) {
+    await this.clickRemoveUserButton(user_name);
+    await this.modal.clickActionBtn('yes');
   }
 }

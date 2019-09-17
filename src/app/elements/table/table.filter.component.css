@@ -87,3 +87,12 @@
   margin: 7px;
   font-weight: bold;
 }
+
+.ft-create-toggler span {
+  margin-top: -3px;
+}
+
+.ft-create-toggler:hover {
+  transition: all ease-in 0.2s ;
+  font-weight: bold;
+}

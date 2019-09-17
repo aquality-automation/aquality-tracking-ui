@@ -14,7 +14,7 @@
         <div class="sidebar-header">
             <span class="sidebar-header">Project</span>
         </div>
-        <div id='permissions-administration' *ngIf="IsLocalAdmin() || IsAdmin()" routerLink="project/permissions" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
+        <div id='permissions-administration' routerLink="project/permissions" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
             <span class="sidebar-option">Permissions</span>
         </div>
         <div id='resolutions-administration' routerLink="project/resolutions" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">

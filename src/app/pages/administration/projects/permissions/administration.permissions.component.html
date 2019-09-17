@@ -4,12 +4,12 @@
     <div *ngIf="projects" class="col-md-12 vert-aligned">
         <label class="col-md-2 label-inline control-label">Select Project:</label>
         <div class="col-sm-3">
-            <lookup-autocomplete placeholder="Select Project" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects"
+            <lookup-autocomplete id="project-selector" placeholder="Select Project" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects"
                 [model]="selectedProject" (modelChange)="onProjectChange($event)"></lookup-autocomplete>
         </div>
     </div>
     <div class="col-md-12 top-padding-md">
-        <table-filter *ngIf="externalUsers" [data]="users" [columns]="tbCols" [allowCreate]="true" [allowDelete]="true" (dataChange)="updateUser($event)"
+        <table-filter id="permissions-table" *ngIf="externalUsers" [data]="users" [columns]="tbCols" [allowCreate]="true" [allowDelete]="true" (dataChange)="updateUser($event)"
             (action)="handleAction($event)" [queryParams]="true">
         </table-filter>
     </div>

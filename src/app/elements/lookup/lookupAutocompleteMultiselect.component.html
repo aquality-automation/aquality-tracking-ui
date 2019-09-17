@@ -1,8 +1,8 @@
 <div *ngIf="disabled" class="disabled-lookup">
     {{disabledText()}}
 </div>
-<div *ngIf="array && !disabled" class="selector-container" (clickOutside)="onClickedOutside($event)"
-    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mouseup'">
+<div *ngIf="array && !disabled" class="selector-container" (keyup.esc)="toggleOff()" (clickOutside)="onClickedOutside($event)"
+    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'">
     <div>
         <div tabindex="0" (click)="toggleOn()" class="form-control ms-main-selector">
             <div class="ms-placeholder" *ngIf="!model || model.length === 0" [ngClass]="{'lookup-selector-sm': small}">
