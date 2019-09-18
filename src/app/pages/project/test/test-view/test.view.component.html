@@ -1,18 +1,20 @@
 <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [testMoveFrom]="test" (testMovedTo)="movedTo($event)"
-  [tests]="tests" [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)" (closed)="wasClosed($event)"></move-test-modal>
-<div class="panel-heading page result-search-margin">
+  [tests]="tests" [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
+  (closed)="wasClosed($event)"></move-test-modal>
+<div id="test-page" class="panel-heading page result-search-margin">
   <div class="row clearfix">
     <div class="col-sm-10 page-title">
       <h2 class="pull-left inline-page-label">Test: </h2>
       <div class="name-field clearfix">
-        <inline-editor [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
-        maxLength="500" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur" [(ngModel)]="test.name"
-        (onSave)="testUpdate()" [required]="true"></inline-editor>
+        <inline-editor
+          [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+          maxLength="500" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur"
+          [(ngModel)]="test.name" (onSave)="testUpdate()" [required]="true"></inline-editor>
       </div>
     </div>
     <div class="col-sm-2 btn-group pull-right">
-      <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()" class="btn btn-primary pull-right"
-        (click)="moveTestOpen()">Move Test</button>
+      <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+        class="btn btn-primary pull-right" (click)="moveTestOpen()">Move Test</button>
     </div>
   </div>
 </div>
@@ -24,24 +26,29 @@
         <label class="label-inline pull-left margin-right-10" for="manualDuration">Manual Duration: </label>
       </div>
       <div class="pull-left">
-        <input id="manualDuration" class="form-control input-sm ft-duration-input" name="manualDuration" type="text" [textMask]="{mask:durationMask}"
-          [ngModel]="transformation.calculateDuration(test.manual_duration)" (blur)="saveManualDuration($event)" [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
-        />
+        <input id="manualDuration" class="form-control input-sm ft-duration-input" name="manualDuration" type="text"
+          [textMask]="{mask:durationMask}" [ngModel]="transformation.calculateDuration(test.manual_duration)"
+          (blur)="saveManualDuration($event)"
+          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()" />
       </div>
     </div>
-    <div *ngIf="selectedDeveloper || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()" class="col-sm-4 clearfix">
+    <div
+      *ngIf="selectedDeveloper || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+      class="col-sm-4 clearfix">
       <div class="pull-left margin-right-10">
         <label class="label-inline pull-left" for="selectedDeveloper">Developer: </label>
       </div>
       <div class="pull-left">
-        <lookup-autocomplete id="selectedDeveloper" [small]="true" [propertiesToShow]="['user.first_name', 'user.second_name']" [array]="users"
-          [model]="selectedDeveloper" [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+        <lookup-autocomplete id="selectedDeveloper" [small]="true"
+          [propertiesToShow]="['user.first_name', 'user.second_name']" [array]="users" [model]="selectedDeveloper"
+          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
           (modelChange)="setNewDeveloper($event)"></lookup-autocomplete>
       </div>
     </div>
     <div *ngIf="test.suites" class="col-sm-4 margin-bottom-10 clearfix">
       <label class="label-inline pull-left margin-right-10">Test Suites:</label>
-      <a *ngFor="let suite of test.suites" class="label-inline pull-left suite-links" routerLink="/project/{{test.project_id}}/testsuite/{{suite.id}}">{{suite.name}}</a>
+      <a *ngFor="let suite of test.suites" class="label-inline pull-left suite-links"
+        routerLink="/project/{{test.project_id}}/tests" [queryParams]="{suite:suite.id}">{{suite.name}}</a>
     </div>
   </div>
 
@@ -55,12 +62,14 @@
   </div>
   <div class="co-sm-12">
     <div *ngIf="test.body" class="description-text">
-      <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()" title="Double click to show\hide full text">{{test.body}}</pre>
+      <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()"
+        title="Double click to show\hide full text">{{test.body}}</pre>
     </div>
   </div>
 </div>
 <div class="panel-body">
   <div class="row">
-    <results-grid *ngIf="testResultTempalte" [testResults]="testResults" [showOnly]="columns" [sortBy]="{ property: 'start_date', order: 'asc' }">Loading...</results-grid>
+    <results-grid *ngIf="testResultTempalte" [testResults]="testResults" [showOnly]="columns"
+      [sortBy]="{ property: 'start_date', order: 'asc' }">Loading...</results-grid>
   </div>
 </div>
