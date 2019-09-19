@@ -97,7 +97,7 @@ describe('API Token:', () => {
                 return projectsList.openProject(project.name);
             });
 
-            it('I can not Open PAPI Token page using Menu Bar', async () => {
+            it('I can not Open API Token page using Menu Bar', async () => {
                 return expect((await projectsList.menuBar.user()).isAdministrationExists())
                     .toBe(false, `Administartion should not be visible for ${description}`);
             });
