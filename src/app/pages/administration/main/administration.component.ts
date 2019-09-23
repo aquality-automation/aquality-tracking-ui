@@ -3,10 +3,11 @@ import { Project } from '../../../shared/models/project';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { ProjectService } from '../../../services/project.service';
 import { UserService } from '../../../services/user.services';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: './administration.component.html',
+  styleUrls: ['administration.component.css'],
   providers: [
     ProjectService,
     SimpleRequester,

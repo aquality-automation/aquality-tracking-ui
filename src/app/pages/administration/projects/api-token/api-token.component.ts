@@ -2,22 +2,24 @@ import { Component } from '@angular/core';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { ProjectService } from '../../../../services/project.service';
 import { Project } from '../../../../shared/models/project';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
-  templateUrl: 'import-token.component.html',
-  styleUrls: ['import-token.component.css'],
+  templateUrl: 'api-token.component.html',
   providers: [
     ProjectService,
     SimpleRequester
   ]
 })
-export class ImportTokenComponent {
+export class APITokenComponent {
   hideModal = true;
   removeModalTitle: string;
   removeModalMessage: string;
   projects: Project[];
   token: string;
   public selectedProject: Project;
+
+  public hostUrl: string = environment.host;
 
   constructor(
     private projectService: ProjectService
@@ -42,8 +44,8 @@ export class ImportTokenComponent {
   }
 
   generateToken() {
-    this.projectService.createImportToken(this.selectedProject).subscribe(res => {
-      this.token = res.import_token;
+    this.projectService.createAPIToken(this.selectedProject).subscribe(res => {
+      this.token = res.api_token;
     });
   }
 

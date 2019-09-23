@@ -1,0 +1,22 @@
+span.sidebar-header {
+    color: #bf3a3a;
+    font-size: 18px;
+}
+
+div.sidebar-header {
+    padding: 10px;
+    border-bottom: 1px solid lightgrey;
+}
+
+div.sidebar {
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    margin-bottom: 10px;
+}
+
+.active {
+    background: #deaeae !important;
+}

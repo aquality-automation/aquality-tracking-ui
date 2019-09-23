@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { AdministrationBase } from '../base.po';
 
-export class ImportTokenAdministration extends AdministrationBase {
+export class APITokenAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
@@ -21,6 +21,18 @@ export class ImportTokenAdministration extends AdministrationBase {
 
   getTokenValue() {
     return elements.tokenValue.getText();
+  }
+
+  isTokenValueExists() {
+    return elements.tokenValue.isPresent();
+  }
+
+  isModalOpened() {
+    return this.modal.isVisible();
+  }
+
+  acceptModal() {
+    return this.modal.clickActionBtn('yes');
   }
 
   async generateToken(projectName: string): Promise<string> {

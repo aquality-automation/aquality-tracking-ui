@@ -8,13 +8,11 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { SharedModule } from '../../../shared/shared.module';
 import { ImportBodyPatternsComponent } from '../projects/importBodyPatterns/ImportBodyPatterns.component';
 import { AppSettingsComponent } from '../global/app-settings/app-settings.component';
-import { ImportTokenComponent } from '../projects/import-token/import-token.component';
+import { APITokenComponent } from '../projects/api-token/api-token.component';
 import { AdministrationPermissionsComponent } from '../projects/permissions/administration.permissions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationGlobalGuard, AdministrationProjectGuard } from '../../../shared/guards/administration-guard.service';
-
-
 
 @NgModule({
   imports: [
@@ -30,7 +28,7 @@ import { AdministrationGlobalGuard, AdministrationProjectGuard } from '../../../
     AdministrationUsersComponent,
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
-    ImportTokenComponent
+    APITokenComponent
   ],
   providers: [
     ProjectService,

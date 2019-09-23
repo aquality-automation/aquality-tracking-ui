@@ -43,7 +43,7 @@ export class ProjectService extends SimpleRequester {
       .map(() => this.handleSuccess(`Unique Body Pattern '${bodyPattern.name}' successfully removed.`));
   }
 
-  createImportToken(project: Project) {
-    return this.doGet(`/project/importToken`, {id: project.id}).map(res => res.json());
+  createAPIToken(project: Project) {
+    return this.doGet(`/project/apiToken`, {id: project.id}).map(res => res.json());
   }
 }
