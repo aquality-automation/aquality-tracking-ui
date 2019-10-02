@@ -51,7 +51,7 @@ export class AuditInfoComponent {
     public auditService: AuditService
   ) {
     this.URL = `/audit/attachment?audit_id=${this.route.snapshot.params['auditId']}`;
-    this.userService.getUsers({auditor: 1}).subscribe(users => {
+    this.userService.getUsers({ auditor: 1 }).subscribe(users => {
       this.auditors = users;
       this.auditService.getServices().subscribe(services => this.services = services);
       this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(audits => {
@@ -147,19 +147,39 @@ export class AuditInfoComponent {
     return resultString.slice(0, -2);
   }
 
-  updateResult() {
-    this.auditService.createOrUpdateAudit({ id: this.audit.id, result: this.audit.result, project: this.audit.project }).subscribe();
+  async updateResult() {
+    try {
+      await this.auditService.createOrUpdateAudit({
+        id: this.audit.id,
+        result: this.audit.result,
+        project: this.audit.project
+      }).toPromise();
+      this.auditService.handleSuccess('Audit Result updated.');
+    } catch (error) {
+      this.auditService.handleError(error);
+    }
   }
 
-  updateService() {
-    this.auditService.createOrUpdateAudit({ id: this.audit.id, service: this.audit.service, project: this.audit.project }).subscribe();
+  async updateService() {
+    try {
+      await this.auditService.createOrUpdateAudit({
+        id: this.audit.id,
+        service: this.audit.service,
+        project: this.audit.project
+      }).toPromise();
+      this.auditService.handleSuccess('Audit Service updated.');
+    } catch (error) {
+      this.auditService.handleError(error);
+    }
   }
 
   update() {
-    this.auditService.createOrUpdateAudit(this.audit).subscribe(res => {
+    this.auditService.createOrUpdateAudit(this.audit).subscribe(() => {
       this.getAudit();
+      this.auditService.handleSuccess('Audit was saved.');
     });
   }
+
   getAudit() {
     this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(res => {
       this.audit = res[0];

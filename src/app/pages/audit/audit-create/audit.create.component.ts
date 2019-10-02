@@ -29,7 +29,7 @@ export class AuditCreateComponent implements OnInit {
   options: DatepickerOptions = {
     locale: enLocale,
     minYear: new Date().getFullYear(),
-    displayFormat: 'DD/MM/YY',
+    displayFormat: 'MM/DD/YY',
     barTitleFormat: 'MMMM YYYY',
     firstCalendarDay: 1,
     minDate: new Date(new Date().setDate(new Date().getDate() - 1))

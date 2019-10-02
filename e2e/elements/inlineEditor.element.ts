@@ -10,7 +10,8 @@ export class InlineEditor extends BaseElement {
 
     private inlineForm: ElementFinder = this.element.element(by.css('.inlineEditForm'));
     private inlineFormSave: ElementFinder = this.element.element(by.css('#inline-editor-button-save'));
-    private inlineInput: Input = new Input(this.element.element(by.css('inline-editor-text > input')));
+    private inlineInput: Input = new Input(this.element.element(by.css('input')));
+    private link: ElementFinder = this.element.element(by.css('a'));
 
     public async openEditor() {
         if (!(await this.inlineForm.isDisplayed())) {
@@ -34,5 +35,9 @@ export class InlineEditor extends BaseElement {
         await this.openEditor();
         await this.typeText(value);
         return this.accept();
+    }
+
+    public async getValue() {
+        return this.link.getText();
     }
 }

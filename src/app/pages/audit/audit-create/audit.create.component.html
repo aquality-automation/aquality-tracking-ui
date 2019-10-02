@@ -1,4 +1,4 @@
-<div *ngIf="project" class="panel-heading">
+<div id="audit-create-page" *ngIf="project" class="panel-heading">
   <div class="row">
     <div class="col-sm-6">
       <h2>Create Audit - {{project.name}}</h2>
@@ -25,7 +25,7 @@
       <label for="auditors" class="label-inline">Auditors*:</label>
     </div>
     <div class="col-sm-3">
-      <lookup-autocomplete-multiselect *ngIf="auditors" placeholder="Select Auditor" [propertiesToShow]="['first_name','second_name']"
+      <lookup-autocomplete-multiselect id="auditors" *ngIf="auditors" placeholder="Select Auditor" [propertiesToShow]="['first_name','second_name']"
         [array]="auditors" [(model)]="audit.auditors"></lookup-autocomplete-multiselect>
     </div>
   </form>
@@ -39,5 +39,5 @@
   </div>
 </div>
 <div class="form-group col-sm-12">
-  <button [disabled]="validate()" type="submit" class="btn btn-primary" (click)="createAudit()">Create</button>
+  <button id="create" [disabled]="validate()" type="submit" class="btn btn-primary" (click)="createAudit()">Create</button>
 </div>
