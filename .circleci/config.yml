@@ -51,8 +51,7 @@ jobs:
             node --version
             sudo mkdir allure-results
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
-            echo ${TESTRUNID}
-            TESTRUNID = "$(echo "${TESTRUNID}")"
+            TESTRUNID="$(echo "${TESTRUNID}")"
             echo "${TOKEN}
             echo ${TESTRUNID}
             docker build --build-arg TOKEN="${TOKEN}" --build-arg TESTRUNID="${TESTRUNID}" . -t tests 
