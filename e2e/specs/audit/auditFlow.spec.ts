@@ -22,7 +22,7 @@ const assignedAuditor = editorExamples.assignedAuditor;
 
 const attachName = 'attach.docx';
 
-fdescribe('Audit:', () => {
+describe('Audit:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
     const projectAudits: ProjectAudits = new ProjectAudits();

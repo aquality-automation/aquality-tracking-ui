@@ -43,21 +43,31 @@ jobs:
               appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
+          name: Start Aquality Test Run
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"
+
+      - run:
           name: Run tests
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm --version
-            node --version
             sudo mkdir allure-results
-            TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
-            TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"
-            echo "${TOKEN}"
-            echo "${TESTRUNID}"
             docker build --build-arg TOKEN="${TOKEN}" --build-arg TESTRUNID="${TESTRUNID}" . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
-      
+
+      - run:
+          when: always
+          name: Finish Aquality Test Run
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
+
       - run:
           when: always
           name: Generate allure

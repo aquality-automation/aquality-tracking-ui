@@ -37,8 +37,6 @@ exports.config = {
     const AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());
     const AqualityReporter = require('@aquality-automation/aquality-tracking-reporter-jasmine');
-    console.log(`Token => ${process.env.AT_TOKEN}`)
-    console.log(`Test run => ${process.env.AT_TESTRUNID}`)
     jasmine.getEnv().addReporter(new AqualityReporter({
             token: process.env.AT_TOKEN,
             api_url: 'http://46.243.183.199:8888/api',
