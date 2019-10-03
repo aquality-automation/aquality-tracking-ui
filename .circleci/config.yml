@@ -11,10 +11,9 @@ jobs:
       - checkout
 
       - run:
-          name: Install node@v10.15.3
           shell: "/bin/bash -eo pipefail"
+          name: Install node@v10.15.3
           command: |
-            echo 'export MY_ENV_VAR="FOO"' >> $BASH_ENV
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install v10.15.3
@@ -35,10 +34,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
-          shell: "/bin/bash -eo pipefail"
           name: Start docker-compose
           command:  |
-            echo ${MY_ENV_VAR}
             cd api
             set -x
             docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
@@ -60,7 +57,6 @@ jobs:
           name: Run tests
           command: |
             echo ${TESTRUNID}
-            echo test
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
