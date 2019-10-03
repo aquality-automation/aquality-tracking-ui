@@ -3,9 +3,7 @@ version: 2
 jobs:
   build:
     machine:
-      image: circleci/classic:latest
-    environment:
-      TESTRUNID: "-1"
+      image: circleci/classic:latest 
 
     working_directory: ~/repo
 
@@ -14,10 +12,9 @@ jobs:
 
       - run:
           name: Install node@v10.15.3
+          shell: "/bin/bash -eo pipefail"
           command: |
-            echo "test"
-            echo $TESTRUNID
-            TESTRUNID="-10" 
+            echo 'export MY_ENV_VAR="FOO"' >> $BASH_ENV
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install v10.15.3
@@ -38,10 +35,10 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
+          shell: "/bin/bash -eo pipefail"
           name: Start docker-compose
           command:  |
-            echo "test"
-            echo $TESTRUNID
+            echo ${MY_ENV_VAR}
             cd api
             set -x
             docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
@@ -50,16 +47,20 @@ jobs:
               appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
+          shell: "/bin/bash -eo pipefail"
           name: Start Aquality Test Run
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            echo 'export TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"' >> $BASH_ENV
 
       - run:
+          shell: "/bin/bash -eo pipefail"
           name: Run tests
           command: |
             echo ${TESTRUNID}
+            echo test
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
@@ -68,6 +69,7 @@ jobs:
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
 
       - run:
+          shell: "/bin/bash -eo pipefail"
           when: always
           name: Finish Aquality Test Run
           command: |
