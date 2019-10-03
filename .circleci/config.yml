@@ -32,15 +32,15 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run:
-          name: Start docker-compose
-          command:  |
-            cd api
-            set -x
-            docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
-            docker-compose up -d
-            docker run --network container:api_tomcat_1 \
-              appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
+      # - run:
+      #     name: Start docker-compose
+      #     command:  |
+      #       cd api
+      #       set -x
+      #       docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
+      #       docker-compose up -d
+      #       docker run --network container:api_tomcat_1 \
+      #         appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
           name: Run tests
@@ -51,6 +51,7 @@ jobs:
             node --version
             sudo mkdir allure-results
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            echo "${TESTRUNID}"
             docker build --build-arg TOKEN=${TOKEN} --build-arg TESTRUNID=${TESTRUNID} . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
