@@ -3,7 +3,9 @@ version: 2
 jobs:
   build:
     machine:
-      image: circleci/classic:latest 
+      image: circleci/classic:latest
+    environment:
+      TESTRUNID: "-1"
 
     working_directory: ~/repo
 
@@ -13,7 +15,9 @@ jobs:
       - run:
           name: Install node@v10.15.3
           command: |
-            echo 'export MY_ENV_VAR="FOO"' >> $BASH_ENV
+            echo "test"
+            echo $TESTRUNID
+            TESTRUNID="-10" 
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install v10.15.3
@@ -36,7 +40,8 @@ jobs:
       - run:
           name: Start docker-compose
           command:  |
-            echo ${MY_ENV_VAR}
+            echo "test"
+            echo $TESTRUNID
             cd api
             set -x
             docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
@@ -50,13 +55,11 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
-            echo 'export TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"' >> $BASH_ENV
 
       - run:
           name: Run tests
           command: |
             echo ${TESTRUNID}
-            echo test
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
