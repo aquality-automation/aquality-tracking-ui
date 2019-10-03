@@ -36,6 +36,8 @@ jobs:
       - run:
           name: Run tests
           command: |
+            npm --version
+            node --version
             sudo mkdir allure-results
             npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM}
             docker build . -t tests --build-arg TOKEN=${TOKEN} --build-arg TESTRUNID=${TESTRUNID}
