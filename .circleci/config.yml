@@ -51,7 +51,7 @@ jobs:
             node --version
             sudo mkdir allure-results
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
-            docker build . -t tests --build-arg TOKEN=${TOKEN} --build-arg TESTRUNID=${TESTRUNID}
+            docker build --build-arg TOKEN=${TOKEN} --build-arg TESTRUNID=${TESTRUNID} . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
       
