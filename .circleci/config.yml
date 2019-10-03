@@ -10,6 +10,17 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Install node@v10.15.3
+          command: |
+            ./load-nvm.sh
+            nvm install v10.15.3
+            nvm alias default v10.15.3
+
+      - run: |
+          ./load-nvm.sh
+          npm version
+
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
