@@ -2,16 +2,27 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names, statuses } from './constants';
 import { BasePage } from '../../base.po';
 import { User } from '../../../../src/app/shared/models/user';
+import { ProjectList } from '../../project/list.po';
+import { ProjectAudits } from '../project.list.po';
 
 export class AuditInfo extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
+    private projectsList: ProjectList = new ProjectList();
+    private projectAudits: ProjectAudits = new ProjectAudits();
 
     statuses = statuses;
 
     navigateTo(projectId: number, id: number) {
         return browser.get(baseUrl(projectId, id));
+    }
+
+    async open(projectName: string, status: string) {
+        await this.menuBar.clickLogo();
+        await this.projectsList.openProject(projectName);
+        await(await this.projectsList.menuBar.audits()).project();
+        return this.projectAudits.openAudit(status);
     }
 
     selectService(name: string) {
@@ -56,5 +67,33 @@ export class AuditInfo extends BasePage {
 
     clickSaveSummary() {
         return elements.summarySave.click();
+    }
+
+    isAttachUploaded(attachName: string) {
+        return elements.uploadedAttachment(attachName).isPresent();
+    }
+
+    uploadAttachment(attachName: string) {
+        return elements.attachments.upload(attachName);
+    }
+
+    isAttachAdded(attachName: string) {
+        return elements.attachments.isAdded(attachName);
+    }
+
+    attachDocument(path: string) {
+        return elements.attachments.add(path);
+    }
+
+    finishAudit() {
+        return elements.finishProgress.click();
+    }
+
+    submitAudit() {
+        return elements.submit.click();
+    }
+
+    isSubmitButtonPresent(): any {
+        return elements.submit.isPresent();
     }
 }

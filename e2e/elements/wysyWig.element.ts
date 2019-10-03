@@ -1,4 +1,4 @@
-import { by, element, Locator, browser } from 'protractor';
+import { by, Locator, browser, Key } from 'protractor';
 import { BaseElement } from './base.element';
 
 export class WysyWig extends BaseElement {
@@ -14,7 +14,7 @@ export class WysyWig extends BaseElement {
     setText(summary: string) {
         return browser.actions()
             .click(this.editor)
-            .sendKeys(summary)
+            .sendKeys(Key.chord(Key.CONTROL, 'a'), summary)
             .perform();
     }
 }

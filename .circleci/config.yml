@@ -37,10 +37,10 @@ jobs:
           name: Run tests
           command: |
             sudo mkdir allure-results
-            docker build . -t tests
+            TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            docker build . -t tests --build-arg TOKEN=${TOKEN} --build-arg TESTRUNID=${TESTRUNID}
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
-            cd allure-results
-            ls
+            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
       
       - run:
           when: always

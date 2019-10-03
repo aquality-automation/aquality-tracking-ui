@@ -140,7 +140,7 @@
       <div class="panel-heading">Attachments</div>
       <div class="panel-body no-padding">
         <div>
-          <table *ngIf="attachments && attachments.length > 0" class="table">
+          <table id="uploaded-attachments" *ngIf="attachments && attachments.length > 0" class="table">
             <tbody>
               <tr *ngFor="let attach of attachments">
                 <td>

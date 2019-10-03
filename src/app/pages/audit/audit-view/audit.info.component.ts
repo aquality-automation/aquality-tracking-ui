@@ -36,7 +36,7 @@ export class AuditInfoComponent {
   DateOpts: DatepickerOptions = {
     locale: enLocale,
     minYear: new Date().getFullYear(),
-    displayFormat: 'DD/MM/YY',
+    displayFormat: 'MM/DD/YY',
     barTitleFormat: 'MMMM YYYY',
     firstCalendarDay: 1,
   };

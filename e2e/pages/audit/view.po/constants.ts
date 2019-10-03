@@ -26,7 +26,9 @@ export const elements = {
     summarySave: element(by.id('save-summary')),
     attachments: new Attachments(by.id('attachments')),
     comments: new Comments(by.id('comments')),
-    status: element(by.id('status'))
+    status: element(by.id('status')),
+    uploadedAttachment: (attachmentName: string) => element(
+        by.xpath(`//*[@id="uploaded-attachments"]//tr[.//a[text()='${attachmentName}']]`))
 };
 
 export const names = {
@@ -35,5 +37,7 @@ export const names = {
 
 export const statuses = {
     open: 'Open',
-    inProgress: 'In Progress'
+    inProgress: 'In Progress',
+    inReview: 'In Review',
+    submitted: 'Submitted'
 };
