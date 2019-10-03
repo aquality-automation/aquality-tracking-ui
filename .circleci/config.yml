@@ -48,11 +48,12 @@ jobs:
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
-            TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"
+            echo 'export TESTRUNID="$(echo "${TESTRUNID##*$'\n'}")"' >> $BASH_ENV
 
       - run:
           name: Run tests
           command: |
+            echo ${TESTRUNID}
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
@@ -64,6 +65,7 @@ jobs:
           when: always
           name: Finish Aquality Test Run
           command: |
+            echo ${TESTRUNID}
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
