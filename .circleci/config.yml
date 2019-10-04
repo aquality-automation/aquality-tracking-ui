@@ -11,7 +11,6 @@ jobs:
       - checkout
 
       - run:
-          shell: "/bin/bash -eo pipefail"
           name: Install node@v10.15.3
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
@@ -34,16 +33,15 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # - run:
-      #     shell: "/bin/bash -eo pipefail"
-      #     name: Start docker-compose
-      #     command:  |
-      #       cd api
-      #       set -x
-      #       docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
-      #       docker-compose up -d
-      #       docker run --network container:api_tomcat_1 \
-      #         appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
+      - run:
+          name: Start docker-compose
+          command:  |
+            cd api
+            set -x
+            docker-compose build --build-arg BRANCH=${CIRCLE_BRANCH} update
+            docker-compose up -d
+            docker run --network container:api_tomcat_1 \
+              appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
           shell: "/bin/bash -eo pipefail"
@@ -55,14 +53,11 @@ jobs:
             export TESTRUNID=${TESTRUNID##*$'\n'}
             echo $TESTRUNID
             echo "export TESTRUNID=$TESTRUNID" >> $BASH_ENV
-            echo 'export TEST="sss"' >> $BASH_ENV
 
       - run:
           shell: "/bin/bash -eo pipefail"
           name: Run tests
           command: |
-            echo ${TESTRUNID}
-            echo ${TEST}
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
@@ -81,7 +76,6 @@ jobs:
             npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
 
       - run:
-          shell: "/bin/bash -eo pipefail"
           when: always
           name: Generate allure
           command: npm run allure
