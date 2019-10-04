@@ -6,7 +6,15 @@ export class Modal extends BaseElement {
         super(by.tagName('simple-popup'));
     }
 
-    async clickActionBtn(buttonName: string) {
+    private _keys = {
+        yes: 'yes'
+    };
+
+    private async _clickActionBtn(buttonName: string) {
         return this.element.element(by.xpath(`.//button[text()="${buttonName}"]`)).click();
+    }
+
+    async clickYes() {
+        this._clickActionBtn(this._keys.yes);
     }
 }

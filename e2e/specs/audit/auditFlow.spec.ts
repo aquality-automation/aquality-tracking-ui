@@ -71,7 +71,7 @@ describe('Audit:', () => {
                 it('Can start Audit', async () => {
                     await audit.startAudit();
                     await expect(audit.modal.isVisible()).toBe(true, 'No Confirmation modal for start Audit action!');
-                    await audit.modal.clickActionBtn('yes');
+                    await audit.modal.clickYes();
                     await expect(audit.getStatus()).toBe(audit.statuses.inProgress, 'Audit is not In Progress status!');
                     await expect(audit.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
                     await expect(audit.notification.isSuccess()).toBe(true, 'Success message is not shown!');
@@ -118,7 +118,7 @@ describe('Audit:', () => {
                 it('Can finish progress when all data is passed', async () => {
                     await audit.finishAudit();
                     await expect(audit.modal.isVisible()).toBe(true, 'No Confirmation modal for Finish Audit action!');
-                    await audit.modal.clickActionBtn('yes');
+                    await audit.modal.clickYes();
                     await expect(audit.getStatus()).toBe(audit.statuses.inReview, 'Audit is not In Review status!');
                     await expect(audit.notification.isSuccess()).toBe(true, 'Success message is not shown!');
                     await audit.notification.close();
@@ -147,7 +147,7 @@ describe('Audit:', () => {
                     }
                     await audit.submitAudit();
                     await expect(audit.modal.isVisible()).toBe(true, 'No Confirmation modal for Submit Audit action!');
-                    await audit.modal.clickActionBtn('yes');
+                    await audit.modal.clickYes();
                     await expect(audit.getStatus()).toBe(audit.statuses.submitted, 'Audit is not Submitted status!');
                     await expect(audit.notification.isSuccess()).toBe(true, 'Success message is not shown!');
                     await audit.notification.close();

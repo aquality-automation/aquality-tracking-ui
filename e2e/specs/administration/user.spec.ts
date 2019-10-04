@@ -191,7 +191,7 @@ describe('Full Admin Administartion User Flow', () => {
             await userAdministration.clickRemoveUserButton(userToCreate.user_name);
             await expect(userAdministration.modal.isVisible()).toBe(true, 'Remove User modal is not opened');
 
-            await userAdministration.modal.clickActionBtn('yes');
+            await userAdministration.modal.clickYes();
             await userAdministration.refresh();
             await expect(userAdministration.isUserDisplayed(userToCreate.user_name)).toBe(false,
                 `User ${userToCreate.user_name} is still displayed`);

@@ -112,7 +112,7 @@ describe('Administartion:', () => {
 
             it('I can remove Permission', async () => {
                 await permissionsAdministration.clickRemoveUserButton(tempUser.user_name);
-                await permissionsAdministration.modal.clickActionBtn('yes');
+                await permissionsAdministration.modal.clickYes();
                 await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on create!');
                 await expect(permissionsAdministration.notification.getContent())
                     .toBe(`Permissions for '${tempUser.first_name} ${tempUser.second_name}' were deleted.`, 'Success meessage is wrong!');

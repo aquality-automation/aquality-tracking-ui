@@ -33,7 +33,7 @@ describe('Full Admin Test Suite List', () => {
   afterAll(async () => {
     await projectList.navigateTo();
     await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickActionBtn('yes');
+    await projectList.modal.clickYes();
     if (await projectList.menuBar.isLogged()) {
       return projectList.menuBar.clickLogOut();
     }
@@ -91,7 +91,7 @@ describe('Full Admin Test Suite List', () => {
     await (await testSuiteView.menuBar.tests()).suites();
     await testSuiteList.clickRemoveSuiteButton(suite.name);
     await expect(testSuiteList.modal.isVisible()).toBe(true, 'Remove Test Run modal is not opened');
-    await testSuiteList.modal.clickActionBtn('yes');
+    await testSuiteList.modal.clickYes();
     await testSuiteList.refresh();
     await expect(testSuiteList.isTestSuitePresent(suite.name)).toBe(false,
       `Suite ${suite.name} is still displayed`);

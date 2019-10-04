@@ -81,7 +81,7 @@ describe('Full Admin Project', () => {
       await projectView.menuBar.clickLogo();
       await projectList.clickRemoveProjectButton(project.name);
       await expect(projectList.modal.isVisible()).toEqual(true);
-      await projectList.modal.clickActionBtn('yes');
+      await projectList.modal.clickYes();
       await expect(projectList.notification.isSuccess()).toEqual(true);
       await expect(projectList.notification.getContent()).toEqual(`Project '${project.name}' was deleted.`);
       return expect(projectList.isProjectInList(project.name)).toEqual(false);

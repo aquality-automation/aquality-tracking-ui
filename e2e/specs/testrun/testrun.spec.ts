@@ -98,7 +98,7 @@ describe('Full Admin Test Run', () => {
         await testRunList.clickTestRunRemoveButton(testruns.build2.build_name);
         await expect(testRunList.modal.isVisible()).toBe(true, 'Remove Test Run modal is not opened');
 
-        await testRunList.modal.clickActionBtn('yes');
+        await testRunList.modal.clickYes();
         await testRunList.refresh();
         await expect(testRunList.isTestRunRowDisplayed(testruns.build2.build_name)).toBe(false,
             `Test Run ${testruns.build2.build_name} is still displayed`);
