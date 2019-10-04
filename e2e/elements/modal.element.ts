@@ -10,11 +10,11 @@ export class Modal extends BaseElement {
         yes: 'yes'
     };
 
-    private async _clickActionBtn(buttonName: string) {
+    private _clickActionBtn(buttonName: string) {
         return this.element.element(by.xpath(`.//button[text()="${buttonName}"]`)).click();
     }
 
-    async clickYes() {
-        this._clickActionBtn(this._keys.yes);
+    clickYes() {
+        return this._clickActionBtn(this._keys.yes);
     }
 }
