@@ -1,32 +1,39 @@
 <div class="col-sm-2 sidebar">
-    <div *ngIf="IsAdmin()" class="sidebar-group">
+    <mat-nav-list>
         <div class="sidebar-header">
             <span class="sidebar-header">Global</span>
         </div>
-        <div id='app-settings-administration' routerLink="global/appSettings" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Application Settings</span>
-        </div>
-        <div id='users-administration' routerLink="global/users" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Users</span>
-        </div>
-    </div>
-    <div class="sidebar-group">
+        <mat-list-item id='app-settings-administration' routerLink="global/appSettings"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Application Settings
+        </mat-list-item>
+        <mat-list-item id='users-administration' routerLink="global/users" [routerLinkActiveOptions]="{ exact: false }"
+            routerLinkActive="active">
+            Users
+        </mat-list-item>
+    </mat-nav-list>
+
+    <mat-nav-list>
         <div class="sidebar-header">
             <span class="sidebar-header">Project</span>
         </div>
-        <div id='permissions-administration' routerLink="project/permissions" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Permissions</span>
-        </div>
-        <div id='resolutions-administration' routerLink="project/resolutions" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Resolutions</span>
-        </div>
-        <div id='body-pattern-administration' routerLink="project/importBodyPatterns" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Unique Body Patterns</span>
-        </div>
-        <div id='import-token-administration' routerLink="project/importToken" [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active" class="sidebar-option">
-            <span class="sidebar-option">Import Token</span>
-        </div>
-    </div>
+        <mat-list-item id='permissions-administration' routerLink="project/permissions"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Permissions
+        </mat-list-item>
+        <mat-list-item id='resolutions-administration' routerLink="project/resolutions"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Resolutions
+        </mat-list-item>
+        <mat-list-item id='body-pattern-administration' routerLink="project/importBodyPatterns"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Unique Body Patterns
+        </mat-list-item>
+        <mat-list-item id='api-token-administration' routerLink="project/apiToken"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            API Token
+        </mat-list-item>
+    </mat-nav-list>
 </div>
 <div class="col-sm-10">
     <br>

@@ -2,14 +2,14 @@ import { ProjectList } from '../pages/project/list.po';
 import { ProjectCreate } from '../pages/project/create.po';
 import { PermissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
-import { ImportTokenAdministration } from '../pages/administration/importToken.po';
+import { APITokenAdministration } from '../pages/administration/apiToken.po';
 import { doImport, ImportParams } from '../utils/aqualityTrackingAPI.util';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
 
 const projectList: ProjectList = new ProjectList();
 const projectCreate: ProjectCreate = new ProjectCreate();
-const importTokenAdministration: ImportTokenAdministration = new ImportTokenAdministration();
+const importTokenAdministration: APITokenAdministration = new APITokenAdministration();
 const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
 
 export const userPermissionTypeKeys = {
@@ -21,13 +21,17 @@ export const userPermissionTypeKeys = {
   projectTemp: 'projectTemp'
 };
 
-export const prepareProject = async (project: Project): Promise<string> => {
+export const createProject = async (project: Project): Promise<void> => {
   await projectList.clickCreateProjectButton();
   await projectCreate.fillProjectNameField(project.name);
   await projectCreate.selectCustomer(project.customer.name);
-  await projectCreate.clickCreateButton();
+  return projectCreate.clickCreateButton();
+};
+
+export const prepareProject = async (project: Project): Promise<string> => {
+  await createProject(project);
   await (await projectList.menuBar.user()).administration();
-  await importTokenAdministration.sidebar.importToken();
+  await importTokenAdministration.sidebar.apiToken();
   const token = await importTokenAdministration.generateToken(project.name);
   await importTokenAdministration.menuBar.clickLogo();
   await projectList.openProject(project.name);

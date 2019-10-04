@@ -6,7 +6,7 @@ export const elements = {
     permissions: element(by.css('#permissions-administration')),
     resolutions: element(by.css('#resolutions-administration')),
     bodyPattern: element(by.css('#body-pattern-administration')),
-    importToken: element(by.css('#import-token-administration')),
+    apiToken: element(by.css('#api-token-administration')),
 
 };
 

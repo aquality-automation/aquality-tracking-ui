@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { ImportBodyPatternsComponent } from '../projects/importBodyPatterns/ImportBodyPatterns.component';
 import { AppSettingsComponent } from '../global/app-settings/app-settings.component';
-import { ImportTokenComponent } from '../projects/import-token/import-token.component';
+import { APITokenComponent } from '../projects/api-token/api-token.component';
 import { AdministrationPermissionsComponent } from '../projects/permissions/administration.permissions.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
@@ -16,7 +16,7 @@ const administrationChildsRoutes: Routes = [
       { path: 'permissions', component: AdministrationPermissionsComponent },
       { path: 'resolutions', component: AdministrationResolutionsComponent },
       { path: 'importBodyPatterns', component: ImportBodyPatternsComponent },
-      { path: 'importToken', component: ImportTokenComponent }
+      { path: 'apiToken', component: APITokenComponent }
     ]
   }, {
     path: 'global', canActivate: [AdministrationGlobalGuard],
