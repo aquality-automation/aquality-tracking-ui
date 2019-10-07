@@ -32,7 +32,7 @@ export class APITokenAdministration extends AdministrationBase {
   }
 
   acceptModal() {
-    return this.modal.clickActionBtn('yes');
+    return this.modal.clickYes();
   }
 
   async generateToken(projectName: string): Promise<string> {
