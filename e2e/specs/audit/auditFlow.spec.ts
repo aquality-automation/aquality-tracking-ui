@@ -134,7 +134,7 @@ describe('Audit:', () => {
 
                 it('Submit button is available for only Audit Admin', async () => {
                     expect(await audit.isSubmitButtonPresent())
-                        .toBe(user.user_name === auditAdmin.user_name, `Submit button availabilty is wrong for ${user.user_name}`)
+                        .toBe(user.user_name === auditAdmin.user_name, `Submit button availabilty is wrong for ${user.user_name}`);
                 });
             });
 

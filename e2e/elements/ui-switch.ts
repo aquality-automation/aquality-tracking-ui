@@ -1,4 +1,4 @@
-import { by, element, Locator } from 'protractor';
+import { by, Locator } from 'protractor';
 import { BaseElement } from './base.element';
 
 export class UiSwitch extends BaseElement {

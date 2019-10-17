@@ -50,6 +50,8 @@ import { TestrunMatrixComponent } from './testrun/testrun-matrix/testrun-matrix.
 import { PrintTestrunComponent } from './testrun/print-testrun/print-testrun.component';
 import { SafePipe } from '../../pipes/safe.pipe';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
+import { StepsListComponent } from './steps/steps-list/steps-list.component';
+import { StepsService } from '../../services/steps.service';
 
 @NgModule({
   imports: [
@@ -89,9 +91,12 @@ import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.compo
     TestrunMatrixComponent,
     PrintTestrunComponent,
     SuiteDashboardComponent,
+    StepsListComponent,
     SafePipe
   ],
-  providers: [ProjectService,
+  providers: [
+    ProjectService,
+    StepsService,
     DatePipe,
     UserService,
     ListToCsvService,

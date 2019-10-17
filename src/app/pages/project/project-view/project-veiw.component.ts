@@ -162,4 +162,8 @@ export class ProjectViewComponent implements OnInit {
     const difference_ms = Math.abs(date1_ms - date2_ms);
     return Math.round(difference_ms / ONEDAY);
   }
+
+  save() {
+    this.projectService.createProjects({id: this.project.id, steps: +this.project.steps });
+  }
 }
