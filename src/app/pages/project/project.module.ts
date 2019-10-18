@@ -52,6 +52,7 @@ import { SafePipe } from '../../pipes/safe.pipe';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { StepsService } from '../../services/steps.service';
+import { StepsContainerComponent } from './test/steps-container/steps-container.component';
 
 @NgModule({
   imports: [
@@ -92,6 +93,7 @@ import { StepsService } from '../../services/steps.service';
     PrintTestrunComponent,
     SuiteDashboardComponent,
     StepsListComponent,
+    StepsContainerComponent,
     SafePipe
   ],
   providers: [

@@ -60,11 +60,16 @@
       <test-duration-chart [testResults]="testResults">Loading...</test-duration-chart>
     </div>
   </div>
-  <div class="co-sm-12">
+  <div class="col-sm-12">
     <div *ngIf="test.body" class="description-text">
       <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()"
         title="Double click to show\hide full text">{{test.body}}</pre>
     </div>
+  </div>
+  <div class="col-sm-12">
+    <steps-container>
+      
+    </steps-container>
   </div>
 </div>
 <div class="panel-body">

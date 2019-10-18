@@ -99,9 +99,9 @@ export class AppComponent {
           link: `/project/${this.projectId}/testsuite`,
           show: true
         }, {
-          name: 'Test Steps',
+          name: 'Steps',
           link: `/project/${this.projectId}/steps`,
-          show: true
+          show: this.currentProject && !!this.currentProject.steps
         }, {
           name: 'Dashboard',
           link: `/project/${this.projectId}/testsuite/dashboard`,
