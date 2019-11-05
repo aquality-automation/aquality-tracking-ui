@@ -8,14 +8,12 @@ import { Input } from '../input.element';
 import { testData } from '../../utils/testData.util';
 import { rightClick } from '../../utils/click.util';
 import { Autocomplete } from '../autocomplete.element';
+import { Paginator } from './paginator.element';
 
 const EC = protractor.ExpectedConditions;
 
 export class SmartTable extends BaseElement {
-    constructor(locator: Locator) {
-        super(locator);
-    }
-
+    private paginator: Paginator;
     private creationRow = this.element.element(by.css('.ft-creation-row'));
     private filterRow = this.element.element(by.css('.filter-header'));
     private creationToggler = this.element.element(by.css('.ft-create-toggler'));
@@ -23,6 +21,11 @@ export class SmartTable extends BaseElement {
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
     private totalLabel = this.element.element(by.css('.ft-total-label'));
     private getCSVButton = this.element.element(by.id('getSCV'));
+
+    constructor(locator: Locator) {
+        super(locator);
+        this.paginator = new Paginator(locator);
+    }
 
     private createRowElements = {
         confirmPassword: (columnIndex: number) =>
@@ -50,6 +53,8 @@ export class SmartTable extends BaseElement {
         inlineEditor: (cell: ElementFinder) => new InlineEditor(cell.element(by.tagName('inline-editor'))),
         checkbox: (cell: ElementFinder) => new Checkbox(cell.element(by.xpath('.//input[@type="checkbox"]'))),
         lookup: (cell: ElementFinder) => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
+        autocomplete: (cell: ElementFinder): Autocomplete =>
+            new Autocomplete(cell.element(by.xpath(`.//lookup-autocomplete`))),
     };
 
     public async getTotalRows() {
@@ -191,8 +196,11 @@ export class SmartTable extends BaseElement {
         if (await this.rowElements.lookup(cell).element.isPresent()) {
             return this.rowElements.lookup(cell).select(value as string);
         }
+        if (await this.rowElements.autocomplete(cell).element.isPresent()) {
+            return this.rowElements.autocomplete(cell).select(value as string);
+        }
 
-        throw new Error('You are trying to edit not editable column!');
+        throw new Error(`You are trying to edit not editable ${column} column!`);
     }
 
     public async clickCellLink(columnWithLink: string, searchValue: string, searchColumn: string) {
@@ -220,19 +228,14 @@ export class SmartTable extends BaseElement {
         return this.rowElements.lookup(cell);
     }
 
-    public async isRowEditable(searchValue: string, searchColumn: string) {
+    public async isRowEditableByValue(searchValue: string, searchColumn: string) {
         const row = await this.getRow(searchValue, searchColumn);
-        const columns: ElementFinder[] = await this.getColumns();
-        for (let i = 0; i < columns.length; i++) {
-            const cell = await this.getCellFromRow(row, i);
-            const result = await this.isCellContainsEditableElement(cell);
-            if (result) {
-                logger.info(`Row editable by ${await columns[i].getText()}`);
-                return true;
-            }
-        }
+        return this.isRowEditable(row);
+    }
 
-        return false;
+    public async isRowEditableByIndex(index: number) {
+        const row = await this.getRowByIndex(index);
+        return this.isRowEditable(row);
     }
 
     public async clickRefresh() {
@@ -306,21 +309,40 @@ export class SmartTable extends BaseElement {
     }
 
 
-    public async clickSorter(columnName: string) {
+    public async clickSorter(columnName: string): Promise<void> {
         const columns = await this.getColumns();
         const columnIndex = await this.getColumnIndex(columnName);
         return columns[columnIndex].click();
     }
 
-    public async rightClickSorter(columnName: string) {
+    public async rightClickSorter(columnName: string): Promise<void> {
         const columns = await this.getColumns();
         const columnIndex = await this.getColumnIndex(columnName);
         return rightClick(columns[columnIndex]);
     }
 
-    public async getColumnName(index: number) {
+    public async getColumnName(index: number): Promise<string> {
         const columns = await this.getColumns();
         return columns[index].getText();
+    }
+
+    public async isColumnExist(columnName: string): Promise<boolean> {
+        const index = await this.getColumnIndex(columnName);
+        return index >= 0;
+    }
+
+    private async isRowEditable(row: ElementFinder) {
+        const columns: ElementFinder[] = await this.getColumns();
+        for (let i = 0; i < columns.length; i++) {
+            const cell = await this.getCellFromRow(row, i);
+            const result = await this.isCellContainsEditableElement(cell);
+            if (result) {
+                logger.info(`Row editable by ${await columns[i].getText()}`);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private async isCellContainsEditableElement(cell: ElementFinder) {
@@ -391,6 +413,12 @@ export class SmartTable extends BaseElement {
     private async getRow(value: string | number, columnName: string): Promise<ElementFinder> {
         const rows = await this.getRows(value, columnName);
         if (rows.length < 1) {
+            const isPaginatorPresent = await this.paginator.isPresent();
+            const isOnLastPage = !(await this.paginator.isNextExist());
+            if (isPaginatorPresent && !isOnLastPage) {
+                this.paginator.next();
+                return this.getRow(value, columnName);
+            }
             throw new Error(`No rows were found by '${value}' value in '${columnName}' column`);
         }
 

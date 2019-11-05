@@ -17,6 +17,10 @@
         <div class="sidebar-header">
             <span class="sidebar-header">Project</span>
         </div>
+        <mat-list-item id='projectSettings-administration' routerLink="project/projectSettings"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Settings
+        </mat-list-item>
         <mat-list-item id='permissions-administration' routerLink="project/permissions"
             [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
             Permissions

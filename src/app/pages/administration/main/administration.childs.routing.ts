@@ -6,6 +6,7 @@ import { AdministrationPermissionsComponent } from '../projects/permissions/admi
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
 import { AdministrationProjectGuard, AdministrationGlobalGuard } from '../../../shared/guards/administration-guard.service';
+import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
 
 
 const administrationChildsRoutes: Routes = [
@@ -16,7 +17,8 @@ const administrationChildsRoutes: Routes = [
       { path: 'permissions', component: AdministrationPermissionsComponent },
       { path: 'resolutions', component: AdministrationResolutionsComponent },
       { path: 'importBodyPatterns', component: ImportBodyPatternsComponent },
-      { path: 'apiToken', component: APITokenComponent }
+      { path: 'apiToken', component: APITokenComponent },
+      { path: 'projectSettings', component: AdministrationProjectSettingsComponent}
     ]
   }, {
     path: 'global', canActivate: [AdministrationGlobalGuard],

@@ -6,8 +6,9 @@
 <div class="panel-heading clearfix">
   <h2 class="col-sm-10 no-padding" id="test-result-view">Test Result: {{currentState?.id}}</h2>
   <div class="col-sm-2 no-padding">
-    <button id="save-test-result" *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
-      (click)="Update()" class="btn btn-success pull-right">Save</button>
+    <button id="save-test-result"
+      *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()" (click)="Update()"
+      class="btn btn-success pull-right">Save</button>
   </div>
 </div>
 
@@ -63,6 +64,12 @@
       </div>
     </div>
 
+    <div *ngIf="currentState.steps && currentState.steps.length > 0" id="tr-steps-line" class="row line">
+      <table-filter id="steps-grid" *ngIf="tbCols" [allowExport]="true" [data]="currentState.steps"
+        [rowsOnPage]="1000" [columns]="tbCols" [hideFilter]="true" [hidePageStets]="true"
+        [allowBulkUpdate]="true" (bulkChanges)="bulkUpdateStepResults($event)"
+        (dataChange)="stepResultUpdate($event)" (action)="handleAction($event)" (bulkChanges)="bulkResultUpdate($event)"></table-filter>
+    </div>
 
     <div id="commentBox" class="row panel-padding">
       <div class="col-sm-12 padding-0">

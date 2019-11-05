@@ -1,15 +1,17 @@
 <div *ngIf="disabled" class="disabled-lookup">
     {{disabledText()}}
 </div>
-<div *ngIf="array && !disabled" class="selector-container" (keyup.esc)="toggleOff()" (clickOutside)="onClickedOutside($event)"
-    [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'">
+<div *ngIf="array && !disabled" class="selector-container" (keyup.esc)="toggleOff()"
+    (clickOutside)="onClickedOutside($event)" [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'">
     <div>
         <div tabindex="0" (click)="toggleOn()" class="form-control ms-main-selector">
             <div class="ms-placeholder" *ngIf="!model || model.length === 0" [ngClass]="{'lookup-selector-sm': small}">
                 {{placeholder}} </div>
             <div class="ms-box" [title]="textToShow(item)" *ngFor="let item of model">
-                <div class="ms-box-text">{{textToShow(item)}}</div> <span
-                    class="glyphicon glyphicon-remove remove-ms-box" (click)="removeFromSelected(item)"></span>
+                <div class="ms-box-text">{{textToShow(item)}}</div>
+                <div class="remove-ms-box pull-right">
+                    <fa-icon [icon]="faMinus" (click)="removeFromSelected(item)"></fa-icon>
+                </div>
             </div>
         </div>
     </div>
@@ -18,8 +20,8 @@
     }">
         <ul>
             <li class="default-option">
-                <input (keyup)="onKey()" maxlength="100" (keyup.backspace)="onKey()" class="form-control input-sm ms-search"
-                    [(ngModel)]="searchText" placeholder="Search">
+                <input (keyup)="onKey()" maxlength="100" (keyup.backspace)="onKey()"
+                    class="form-control input-sm ms-search" [(ngModel)]="searchText" placeholder="Search">
             </li>
             <li *ngIf="notSelectedArray.lenght === 0">
                 Nothing to select

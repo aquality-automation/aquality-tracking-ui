@@ -13,6 +13,7 @@ import { AdministrationPermissionsComponent } from '../projects/permissions/admi
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationGlobalGuard, AdministrationProjectGuard } from '../../../shared/guards/administration-guard.service';
+import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import { AdministrationGlobalGuard, AdministrationProjectGuard } from '../../../
     AdministrationUsersComponent,
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
-    APITokenComponent
+    APITokenComponent,
+    AdministrationProjectSettingsComponent
   ],
   providers: [
     ProjectService,

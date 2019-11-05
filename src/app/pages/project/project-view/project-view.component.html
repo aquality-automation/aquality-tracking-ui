@@ -2,8 +2,6 @@
     <div class="row">
       <div class="col-sm-8 text-capitalize">
         <h2>{{project.name}}</h2>
-        <ui-switch class="pull-right" size="small" [(ngModel)]="project.steps"></ui-switch>
-        <button type="button" class="btn btn-success" (click)="save()">Save</button>
       </div>
       <div *ngIf="notification && globaldata.auditModule" class="col-sm-4 alert" [ngClass]="{
         'alert-success': notification.type === 'success',

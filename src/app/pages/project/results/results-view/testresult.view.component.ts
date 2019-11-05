@@ -11,6 +11,9 @@ import { UserService } from '../../../../services/user.services';
 import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { NotificationsService } from 'angular2-notifications';
+import { StepsService } from '../../../../services/steps.service';
+import { StepType, StepResult } from '../../../../shared/models/steps';
+import { $ } from 'protractor';
 
 @Component({
   templateUrl: './testresult.view.component.html',
@@ -33,6 +36,9 @@ export class TestResultViewComponent implements OnInit {
   savedState: TestResult = {};
   hideModal = true;
   canClose: Promise<boolean>;
+  canEdit: boolean;
+  public types: StepType[];
+  public tbCols: any[];
 
   constructor(
     private route: ActivatedRoute,
@@ -40,23 +46,19 @@ export class TestResultViewComponent implements OnInit {
     private notificationsService: NotificationsService,
     private resultResolutionService: ResultResolutionService,
     private finalResultService: FinalResultService,
-    private testResultService: TestResultService
+    private testResultService: TestResultService,
+    private stepService: StepsService
   ) { }
 
   async ngOnInit() {
-    await this.resultResolutionService.getResolution().subscribe(result => {
-      this.listOfResolutions = result;
-    }, error => console.log(error));
+    this.projectId = this.route.snapshot.params.projectId;
+    this.listOfResolutions = await this.resultResolutionService.getResolution().toPromise();
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
-    await this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(res => {
-      this.users = res.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
-    });
-
-    this.projectId = this.route.snapshot.params['projectId'];
-    const testResultTemplate: TestResult = { id: this.route.snapshot.params['testresultId'] };
-    const testResult = await this.testResultService.getTestResult(testResultTemplate);
-    this.currentState = testResult[0];
-    Object.assign(this.savedState, this.currentState);
+    this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
+    this.users = this.users.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
+    this.types = await this.stepService.getStepTypes({});
+    this.canEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    await this.refreshResult();
   }
 
   calculateDuration(): string {
@@ -130,9 +132,90 @@ export class TestResultViewComponent implements OnInit {
       assignee: this.currentState.assignee
     };
     await this.testResultService.createTestResult(testResultUpdateTemplate);
+    await this.refreshResult();
     this.notificationsService.success(
       `Successful`,
       'Result was updated.'
     );
+  }
+
+  stepResultUpdate($event: StepResult) {
+    $event.project_id = this.projectId;
+    $event.final_result_id = $event.final_result.id;
+    return this.stepService.updateStepResult($event);
+  }
+
+  bulkUpdateStepResults($event: StepResult[]) {
+    const updates = [];
+    $event.forEach(result => updates.push(this.stepResultUpdate(result)));
+    return Promise.all(updates);
+  }
+
+  private fillStepResults(steps: StepResult[]): StepResult[] {
+    steps.forEach(step => step = this.fillStepResult(step));
+    return steps;
+  }
+
+  private fillStepResult(step: StepResult): StepResult {
+    step.type = this.types.find(type => type.id === step.type_id);
+    step.final_result = this.listOfFinalResults.find(finalResult => finalResult.id === step.final_result_id);
+    return step;
+  }
+
+  private async refreshResult() {
+    const results = await this.testResultService.getTestResult({ id: this.route.snapshot.params.testresultId });
+    this.currentState = results[0];
+    if (this.currentState.steps) {
+      this.fillStepResults(this.currentState.steps);
+      this.createColumns();
+    }
+    Object.assign(this.savedState, this.currentState);
+  }
+
+  private createColumns() {
+    this.tbCols = [
+      { name: 'Type', property: 'type.name', filter: false, sorting: false, type: 'text', editable: false, class: 'fit' },
+      { name: 'Step', property: 'name', filter: false, sorting: false, type: 'text', editable: false },
+      {
+        name: 'Fail Reason',
+        property: 'log',
+        filter: false,
+        sorting: false,
+        type: 'long-text',
+        editable: false,
+        class: 'ft-width-250'
+      },
+      {
+        name: 'Result',
+        property: 'final_result.name',
+        filter: false,
+        sorting: false,
+        type: 'lookup-colored',
+        entity: 'final_result',
+        values: this.listOfFinalResults,
+        editable: true,
+        bulkEdit: true,
+        class: 'fit'
+      },
+      {
+        name: 'Comment',
+        property: 'comment',
+        filter: false,
+        sorting: false,
+        type: 'textarea',
+        editable: this.canEdit,
+        bulkEdit: true,
+        class: 'ft-width-250'
+      },
+      {
+        name: 'Attachment',
+        property: 'attachment',
+        filter: false,
+        sorting: false,
+        type: 'file',
+        editable: this.canEdit,
+        class: 'fit'
+      }
+    ];
   }
 }

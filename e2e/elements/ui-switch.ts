@@ -6,7 +6,6 @@ export class UiSwitch extends BaseElement {
         super(locator);
     }
 
-
     async switchOn() {
         if (!(await this.isOn())) {
             return this.element.click();
@@ -20,6 +19,12 @@ export class UiSwitch extends BaseElement {
 
     async switchOff() {
         if ((await this.isOn())) {
+            return this.element.click();
+        }
+    }
+
+    async setState(state: boolean) {
+        if ((await this.isOn()) !== state) {
             return this.element.click();
         }
     }

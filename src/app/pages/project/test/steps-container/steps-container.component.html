@@ -1,23 +1,38 @@
 <div class="no-padding clearfix me-drop-parent">
-  <ul class="col-sm-12 no-padding me-droppable mc-can-be-empty" [dragula]="'cols-bag'" [dragulaModel]='steps'>
-    <li class="me-draggable" *ngFor="let step of testSteps"><b>{{step.type.name}}</b> {{step.name}}
-      <button type="button" class="btn btn-danger btn-sm pull-right" (click)="removeStep()">
-        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></li>
-    <li class="me-draggable clearfix">
-      <div class="col-sm-1 no-padding">
-        <lookup-autocomplete [cutLongText]="true" [small]="true" placeholder="Step Type" [allowEmptyValue]="false"
+  <ul class="col-sm-12 no-padding me-droppable steps-can-be-empty" [dragula]="'steps-bag'"
+    [dragulaModel]='newStepsOrder'>
+    <li class="step-row" *ngFor="let step of newStepsOrder; let i = index" [ngClass]="{'me-draggable': editable}">
+      <fa-icon *ngIf="editable" class="icon-remove" [icon]="faMinus" (click)="removeStep(i)"></fa-icon>
+      <b>{{step.type.name}}</b>
+      {{step.name}}
+    </li>
+  </ul>
+  <ul class="col-sm-12 no-padding">
+    <li *ngIf="editable" class="clearfix step-row">
+      <div class="col-sm-1 add-step-cell">
+        <lookup-autocomplete [cutLongText]="true" [small]="true" placeholder="Step Type" [allowEmptyValue]="true"
           [propertiesToShow]="['name']" [array]="types" [model]="newStepType" (modelChange)="setNewStepType($event)">
         </lookup-autocomplete>
       </div>
-      <div class="col-sm-10 no-padding">
+      <div class="col-sm-10 add-step-cell">
         <lookup-autocomplete [cutLongText]="true" [small]="true" placeholder="Step" [allowEmptyValue]="false"
           [propertiesToShow]="['name']" [array]="filteredSteps" [(model)]="newStep" [disabled]="!newStepType"
           [allowCreation]="true" (searchText)="createStep($event)">
         </lookup-autocomplete>
       </div>
-      <button type="button" class="btn btn-success btn-sm col-sm-1" (click)="addStep()">
+      <button *ngIf="newStepType && newStep" type="button" class="btn btn-success btn-sm col-sm-1" (click)="addStep()">
         <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
       </button>
+    </li>
+    <li *ngIf="isOrderChanged()" class="clearfix step-row">
+      <div class="col-sm-12 no-padding">
+        <button type="button" class="btn btn-danger btn-sm pull-right discard-btn" (click)="discardOrderChanges()">
+          Discard
+        </button>
+        <button type="button" class="btn btn-success btn-sm pull-right discard-btn" (click)="saveNewOrder()">
+          Save
+        </button>
+      </div>
     </li>
   </ul>
 </div>

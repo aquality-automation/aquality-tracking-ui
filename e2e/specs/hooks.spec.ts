@@ -25,32 +25,34 @@ beforeAll(async () => {
         throw new Error(`Backend is unavailable ${environment.host}`);
     }
     await logInPage.navigateTo();
-    await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-    await (await projectsList.menuBar.user()).administration();
-    await userAdministration.create(usersTestData.localAdmin);
-    await userAdministration.create(usersTestData.auditAdmin);
-    await userAdministration.create(usersTestData.assignedAuditor);
-    await userAdministration.create(usersTestData.localManager);
-    await userAdministration.create(usersTestData.localEngineer);
-    await userAdministration.create(usersTestData.manager);
-    await userAdministration.create(usersTestData.projectTemp);
-    await userAdministration.menuBar.clickLogOut();
+    // await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+    // await (await projectsList.menuBar.user()).administration();
+    // await userAdministration.create(usersTestData.localAdmin);
+    // await userAdministration.create(usersTestData.auditAdmin);
+    // await userAdministration.create(usersTestData.assignedAuditor);
+    // await userAdministration.create(usersTestData.localManager);
+    // await userAdministration.create(usersTestData.localEngineer);
+    // await userAdministration.create(usersTestData.manager);
+    // await userAdministration.create(usersTestData.projectTemp);
+    // await userAdministration.create(usersTestData.viewer);
+    // await userAdministration.menuBar.clickLogOut();
 });
 
 beforeEach(async () => {
     browser.driver.sendChromiumCommand('Page.setDownloadBehavior', {
         behavior: 'allow',
         downloadPath: downloadsPath
-      });
+    });
 });
 
 afterAll(async () => {
-    await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-    await (await projectsList.menuBar.user()).administration();
-    await userAdministration.remove(usersTestData.localAdmin.user_name);
-    await userAdministration.remove(usersTestData.localManager.user_name);
-    await userAdministration.remove(usersTestData.localEngineer.user_name);
-    await userAdministration.remove(usersTestData.manager.user_name);
-    await userAdministration.remove(usersTestData.projectTemp.user_name);
-    await userAdministration.menuBar.clickLogOut();
+    // await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+    // await (await projectsList.menuBar.user()).administration();
+    // await userAdministration.remove(usersTestData.localAdmin.user_name);
+    // await userAdministration.remove(usersTestData.localManager.user_name);
+    // await userAdministration.remove(usersTestData.localEngineer.user_name);
+    // await userAdministration.remove(usersTestData.manager.user_name);
+    // await userAdministration.remove(usersTestData.projectTemp.user_name);
+    // await userAdministration.remove(usersTestData.viewer.user_name);
+    // await userAdministration.menuBar.clickLogOut();
 });

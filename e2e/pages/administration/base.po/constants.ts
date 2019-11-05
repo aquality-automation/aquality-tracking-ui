@@ -7,7 +7,7 @@ export const elements = {
     resolutions: element(by.css('#resolutions-administration')),
     bodyPattern: element(by.css('#body-pattern-administration')),
     apiToken: element(by.css('#api-token-administration')),
-
+    settings: element(by.css('#projectSettings-administration')),
 };
 
 

@@ -53,6 +53,7 @@ import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.compo
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { StepsService } from '../../services/steps.service';
 import { StepsContainerComponent } from './test/steps-container/steps-container.component';
+import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
 
 @NgModule({
   imports: [
@@ -103,7 +104,8 @@ import { StepsContainerComponent } from './test/steps-container/steps-container.
     UserService,
     ListToCsvService,
     ProjectGuard, CreateProjectGuard, TestRunGuard, CreateTestRunGuard,
-    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard, CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard]
+    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard,
+    CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard, TestViewCanDeactivate]
 })
 
 export class ProjectModule { }

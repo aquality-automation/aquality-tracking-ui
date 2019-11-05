@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { StepsService } from '../../../../services/steps.service';
 import { Step, StepType } from '../../../../shared/models/steps';
 import { ActivatedRoute } from '@angular/router';
+import { UserService } from '../../../../services/user.services';
 
 @Component({
   selector: 'app-steps-list',
@@ -12,13 +13,14 @@ export class StepsListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private stepService: StepsService
+    private stepService: StepsService,
+    private userService: UserService
   ) { }
 
   public steps: Step[];
   public stepTypes: StepType[];
-  public allowDelete = true;
-  public allowCreate = true;
+  public allowDelete = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+  public allowCreate = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
   public columns: any[];
 
   async ngOnInit() {
@@ -70,7 +72,7 @@ export class StepsListComponent implements OnInit {
         propToShow: ['name'],
         entity: 'type',
         values: this.stepTypes,
-        editable: true,
+        editable: this.allowCreate,
         class: 'fit'
       },
       {
@@ -79,7 +81,7 @@ export class StepsListComponent implements OnInit {
         filter: true,
         sorting: true,
         type: 'text',
-        editable: true,
+        editable: this.allowCreate,
         creationLength: '500'
       },
     ];

@@ -18,7 +18,8 @@ export const userPermissionTypeKeys = {
   localManager: 'localManager',
   localEngineer: 'localEngineer',
   manager: 'manager',
-  projectTemp: 'projectTemp'
+  projectTemp: 'projectTemp',
+  viewer: 'viewer'
 };
 
 export const createProject = async (project: Project): Promise<void> => {
@@ -88,6 +89,9 @@ export const setProjectPermissions = async (project: Project, users: any) => {
         await permissionsAdministration.create({ user, admin: 0, manager: 1, engineer: 0 });
         break;
       case userPermissionTypeKeys.projectTemp:
+        await permissionsAdministration.create({ user, admin: 0, manager: 0, engineer: 0 });
+        break;
+      case userPermissionTypeKeys.viewer:
         await permissionsAdministration.create({ user, admin: 0, manager: 0, engineer: 0 });
         break;
       default:

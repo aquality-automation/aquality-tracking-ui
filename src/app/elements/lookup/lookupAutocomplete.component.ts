@@ -34,6 +34,7 @@ export class LookupAutocompleteComponent extends BaseLookupComponent implements 
 
   sendSearchText() {
     this.searchText.emit(this.selectedItemText);
+    this.toggleOff();
   }
 
   inList(): boolean {

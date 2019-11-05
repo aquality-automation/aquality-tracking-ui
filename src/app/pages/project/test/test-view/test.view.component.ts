@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestService } from '../../../../services/test.service';
@@ -10,6 +10,11 @@ import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { TestSuite } from '../../../../shared/models/testSuite';
+import { StepsContainerComponent } from '../steps-container/steps-container.component';
+import { copyToClipboard } from '../../../../shared/utils/clipboard.util';
+import { GlobalDataService } from '../../../../services/globaldata.service';
+// tslint:disable-next-line: import-blacklist
+import { Subscription } from 'rxjs';
 
 @Component({
   templateUrl: './test.view.component.html',
@@ -18,13 +23,15 @@ import { TestSuite } from '../../../../shared/models/testSuite';
     TestService,
     TestResultService,
     TransformationsService,
-    TestSuiteService
+    TestSuiteService,
   ],
   styleUrls: ['./test.view.component.css']
 })
 export class TestViewComponent implements OnInit {
+  @ViewChild('steps') steps: StepsContainerComponent;
   descriptionHeight = 40;
   hideMoveModal = true;
+  hideLeavePageModal = true;
   MoveModalTitle = 'Move Test';
   suite: TestSuite;
   test: Test;
@@ -38,12 +45,16 @@ export class TestViewComponent implements OnInit {
   durationMask = [/\d/, /\d/, ':', /\d/, /\d/, ':', /\d/, /\d/];
   public tests: Test[];
   public testMovedTo: Test;
+  canleavePage: Promise<boolean>;
+  showSteps: boolean;
+  projectSubscription: Subscription;
 
   constructor(
     private testSuiteService: TestSuiteService,
     private route: ActivatedRoute,
     private router: Router,
     private testService: TestService,
+    private globalData: GlobalDataService,
     public userService: UserService,
     public transformation: TransformationsService
   ) { }
@@ -68,6 +79,9 @@ export class TestViewComponent implements OnInit {
         this.testResultTempalte = { test_id: this.test.id };
         this.testResults = this.test.results;
       }, error => console.log(error));
+    });
+    this.projectSubscription = this.globalData.currentProject$.subscribe(project => {
+      this.showSteps = project ? !!project.steps : false;
     });
   }
 
@@ -97,15 +111,23 @@ export class TestViewComponent implements OnInit {
     this.testMovedTo = $event;
   }
 
-  async execute($event) {
+  async execute($event: Promise<boolean>) {
     if (await $event) {
       this.router.navigate([`/project/${this.test.project_id}/test/${this.testMovedTo.id}`]);
       this.testMovedTo = undefined;
     }
   }
 
-  wasClosed($event) {
+  leavePage($event: Promise<boolean>) {
+    this.canleavePage = $event;
+  }
+
+  wasClosed() {
     this.hideMoveModal = true;
+  }
+
+  leavePageWasClosed() {
+    this.hideLeavePageModal = true;
   }
 
   descriptionClicked() {
@@ -118,5 +140,22 @@ export class TestViewComponent implements OnInit {
 
   async testUpdate() {
     await this.testService.createTest(this.test);
+  }
+
+  copyScenario() {
+    copyToClipboard(`Scenario: ${this.test.name}\n${this.steps.getGherkinTestCase()}`);
+    this.testService.handleSuccess(`'${this.test.name}' scenario was copied!`);
+  }
+
+  async canDeactivate() {
+    if (!this.showSteps) {
+      return true;
+    }
+    if (this.steps.isOrderChanged()) {
+      this.hideLeavePageModal = false;
+      await new Promise(resolve => setTimeout(resolve, 0));
+      return this.canleavePage;
+    }
+    return true;
   }
 }

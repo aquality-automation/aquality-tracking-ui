@@ -1,6 +1,10 @@
 <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [testMoveFrom]="test" (testMovedTo)="movedTo($event)"
   [tests]="tests" [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
-  (closed)="wasClosed($event)"></move-test-modal>
+  (closed)="wasClosed()"></move-test-modal>
+<simple-popup *ngIf="!hideLeavePageModal && showSteps" title="Are you sure you want to leave?"
+  message="You have unsaved changes. Are you sure want to leave this page?" [type]="'warning'"
+  [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="leavePage($event)"
+  (closed)="leavePageWasClosed()"></simple-popup>
 <div id="test-page" class="panel-heading page result-search-margin">
   <div class="row clearfix">
     <div class="col-sm-10 page-title">
@@ -12,9 +16,12 @@
           [(ngModel)]="test.name" (onSave)="testUpdate()" [required]="true"></inline-editor>
       </div>
     </div>
-    <div class="col-sm-2 btn-group pull-right">
-      <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
-        class="btn btn-primary pull-right" (click)="moveTestOpen()">Move Test</button>
+    <div class="col-sm-2">
+      <div class="btn-group pull-right">
+        <button *ngIf="showSteps" class="btn btn-primary" (click)="copyScenario()">Copy Scenario</button>
+        <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+          class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
+      </div>
     </div>
   </div>
 </div>
@@ -52,6 +59,14 @@
     </div>
   </div>
 
+  <hr *ngIf="showSteps" class="col-sm-12 no-padding">
+
+  <div *ngIf="showSteps" class="col-sm-12 no-padding">
+    <steps-container #steps [editable]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"></steps-container>
+  </div>
+
+  <hr class="col-sm-12 no-padding">
+
   <div class="col-sm-12 no-padding">
     <div *ngIf="testResults?.length >1" class="col-sm-6 margin-bottom-10">
       <result-timeline [testResults]="testResults">Loading...</result-timeline>
@@ -65,11 +80,6 @@
       <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()"
         title="Double click to show\hide full text">{{test.body}}</pre>
     </div>
-  </div>
-  <div class="col-sm-12">
-    <steps-container>
-      
-    </steps-container>
   </div>
 </div>
 <div class="panel-body">

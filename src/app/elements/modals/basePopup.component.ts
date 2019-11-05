@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
   selector: 'simple-popup',
@@ -6,7 +6,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   providers: [
   ]
 })
-export class BasePopupComponent {
+export class BasePopupComponent implements OnInit {
   @Input() isHidden: boolean;
   @Input() title: string;
   @Input() message: string;
@@ -14,6 +14,15 @@ export class BasePopupComponent {
   @Input() buttons: { name: String, execute: String | boolean }[];
   @Output() closed = new EventEmitter();
   @Output() execute = new EventEmitter();
+  answer: Promise<String | boolean>;
+  private _resolve: any;
+
+  ngOnInit(): void {
+    this.answer =  new Promise<String | boolean>(resolve => {
+      this._resolve = resolve;
+    });
+    this.execute.emit(this.answer);
+  }
 
   hideModal() {
     this.isHidden = true;
@@ -21,12 +30,8 @@ export class BasePopupComponent {
   }
 
   onClick(event: boolean) {
-    this.handleAnswer(event);
-  }
-
-  async handleAnswer(value: String | boolean) {
+    this._resolve(event);
     this.hideModal();
-    this.execute.emit(value);
   }
 }
 

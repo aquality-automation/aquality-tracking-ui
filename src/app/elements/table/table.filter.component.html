@@ -42,14 +42,14 @@
                             'percent':col.type === 'percent'
                         }">
                         <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
-                        <a *ngIf="col.headerlink" class="pull-left" (contextmenu)="openlink(col.headerlink)"
+                        <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;" (contextmenu)="openlink(col.headerlink)"
                             title="Right click to open">{{col?.name}}</a>
                         <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
                             [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
                             (ngModelChange)="toggleSelectAll($event)" />
                     </th>
                 </tr>
-                <tr class="filter-header vert-aligned">
+                <tr *ngIf="!hideFilter" class="filter-header vert-aligned">
                     <td *ngFor="let col of columns" class="tf-column" [setClass]="col.class">
                         <input
                             *ngIf="(col.type === 'text' || col.type === 'textarea' || col.type=='long-text' || col.type=='email') && col.filter"
@@ -308,7 +308,7 @@
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 (modelChange)="setPropertyValue(entity, col.entity, $event)">
                             </lookup-autocomplete-multiselect>
-
+                            
                             <div *ngIf="col.type === 'date' && col.format" class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:col.format}}
                             </div>
@@ -332,6 +332,8 @@
                             <div
                                 *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
+                            <attachment-inline *ngIf="col.type === 'file'" [name]="col.property + rowNum" [model]="transformationsService.getPropertyValue(entity, col.property)"
+                            (modelChange)="setPropertyValue(entity, col.property, $event)"></attachment-inline>
                         </div>
 
                         <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow"
@@ -341,10 +343,10 @@
                     </td>
                 </tr>
             </tbody>
-            <tfoot>
+            <tfoot *ngIf="!hidePageStets">
                 <tr>
                     <td [attr.colspan]="columns.length">
-                        <mfBootstrapPaginator [rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator>
+                        <mfBootstrapPaginator class="paginator-bottom" [rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator>
                     </td>
                 </tr>
             </tfoot>

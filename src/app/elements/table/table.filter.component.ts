@@ -20,7 +20,8 @@ import { copyToClipboard } from '../../shared/utils/clipboard.util';
   ]
 })
 export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-
+  @Input() hidePageStets = false;
+  @Input() hideFilter = false;
   @Input() data: any[];
   @Input() columnManagement = true;
   @Input() columns: any[];
@@ -392,7 +393,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.newEntity[props[0]] = $event;
   }
 
-  setPropertyValue(entity: any, property: string, value, creation?: boolean, update: boolean = true) {
+  setPropertyValue(entity: any, property: string, value: any, creation?: boolean, update: boolean = true) {
     if (typeof value === 'boolean') {
       value = value ? 1 : 0;
     }

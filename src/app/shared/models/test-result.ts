@@ -2,6 +2,7 @@ import { ResultResolution } from './result_resolution';
 import { FinalResult } from './final-result';
 import { LocalPermissions } from './LocalPermissions';
 import { Test } from './test';
+import { StepResult } from './steps';
 
 export class TestResult {
   id?: number;
@@ -25,6 +26,7 @@ export class TestResult {
   assignee?: number;
   fail_reason_regex?: string;
   limit?: number;
+  steps?: StepResult[];
 }
 
 export class TestResultStat {
