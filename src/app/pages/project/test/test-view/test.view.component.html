@@ -18,7 +18,7 @@
     </div>
     <div class="col-sm-2">
       <div class="btn-group pull-right">
-        <button *ngIf="showSteps" class="btn btn-primary" (click)="copyScenario()">Copy Scenario</button>
+        <button *ngIf="showSteps" id="copy-scenario" class="btn btn-primary" (click)="copyScenario()">Copy Scenario</button>
         <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
           class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
       </div>

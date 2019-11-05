@@ -5,6 +5,7 @@ import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Test } from '../../src/app/shared/models/test';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { logger } from './log.util';
+import { Step, StepToTest } from '../../src/app/shared/models/steps';
 
 export class ImportParams {
     projectId: number;
@@ -55,7 +56,7 @@ const sendPost = async (endpoint: string, params: object, body: any, token: stri
             .set('Accept', 'application/json');
         return resp.body;
     } catch (error) {
-        throw new Error(`Was not able to create ${endpoint}`);
+        throw new Error(`Was not able to create ${endpoint}. \n ${error}`);
     }
 };
 
@@ -108,5 +109,28 @@ const postTest = (test: Test, token: string, projectId: number): Promise<Test> =
     return sendPost('/test', undefined, test, token, projectId);
 };
 
+const postSuite = (suite: TestSuite, token: string, projectId: number): Promise<Test> => {
+    return sendPost('/suite', undefined, suite, token, projectId);
+};
 
-export { doImport, createTestRun, getSuites, getTests, getResults, postResult, postTest };
+const postStep = (step: Step, token: string, projectId: number): Promise<Test> => {
+    return sendPost('/steps', undefined, step, token, projectId);
+};
+
+const postStepToTest = (stepToTest: StepToTest, token: string, projectId: number): Promise<Test> => {
+    return sendPost('/test/steps', undefined, stepToTest, token, projectId);
+};
+
+
+export {
+    doImport,
+    createTestRun,
+    getSuites,
+    getTests,
+    getResults,
+    postResult,
+    postTest,
+    postSuite,
+    postStep,
+    postStepToTest
+};

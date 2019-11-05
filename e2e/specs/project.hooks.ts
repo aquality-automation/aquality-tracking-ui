@@ -3,9 +3,12 @@ import { ProjectCreate } from '../pages/project/create.po';
 import { PermissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
 import { APITokenAdministration } from '../pages/administration/apiToken.po';
-import { doImport, ImportParams } from '../utils/aqualityTrackingAPI.util';
+import { doImport, ImportParams, postSuite, postTest, postStep, postStepToTest } from '../utils/aqualityTrackingAPI.util';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
+import { Test } from '../../src/app/shared/models/test';
+import { TestSuite } from '../../src/app/shared/models/testSuite';
+import { Step, StepToTest } from '../../src/app/shared/models/steps';
 
 const projectList: ProjectList = new ProjectList();
 const projectCreate: ProjectCreate = new ProjectCreate();
@@ -98,4 +101,24 @@ export const setProjectPermissions = async (project: Project, users: any) => {
         logger.info(`Local Permissions for ${key} are not required`);
     }
   }
+};
+
+export const prepareSuite = async (suite: TestSuite, token: string, projectId: number): Promise<TestSuite> => {
+  suite.project_id = projectId;
+  return postSuite(suite, token, projectId);
+};
+
+export const prepareTest = async (test: Test, token: string, projectId: number): Promise<Test> => {
+  test.project_id = projectId;
+  return postTest(test, token, projectId);
+};
+
+export const prepareStep = async (step: Step, token: string, projectId: number): Promise<Step> => {
+  step.project_id = projectId;
+  return postStep(step, token, projectId);
+};
+
+export const addStepToTest = (stepToTest: StepToTest, token: string, projectId: number): Promise<Step> => {
+  stepToTest.project_id = projectId;
+  return postStepToTest(stepToTest, token, projectId);
 };
