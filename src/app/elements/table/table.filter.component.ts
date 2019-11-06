@@ -20,7 +20,7 @@ import { copyToClipboard } from '../../shared/utils/clipboard.util';
   ]
 })
 export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-  @Input() hidePageStets = false;
+  @Input() hidePageSets = false;
   @Input() hideFilter = false;
   @Input() data: any[];
   @Input() columnManagement = true;

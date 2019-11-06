@@ -85,7 +85,7 @@ const doImport = async (params: ImportParams, filesAsString: string[], fileNames
     }
 };
 
-const createTestRun = async (testRun: TestRun, token: string, projectId: number) => {
+const postTestRun = async (testRun: TestRun, token: string, projectId: number) => {
     return sendPost('/testrun', undefined, testRun, token, projectId);
 };
 
@@ -121,10 +121,18 @@ const postStepToTest = (stepToTest: StepToTest, token: string, projectId: number
     return sendPost('/test/steps', undefined, stepToTest, token, projectId);
 };
 
+const postTestToSuite = (testId: number, suiteId: number, token: string, projectId: number) => {
+    return sendPost(`/testToSuite`,
+    {
+        testId,
+        suiteId,
+        projectId
+    },  {}, token, projectId);
+};
+
 
 export {
     doImport,
-    createTestRun,
     getSuites,
     getTests,
     getResults,
@@ -132,5 +140,7 @@ export {
     postTest,
     postSuite,
     postStep,
-    postStepToTest
+    postStepToTest,
+    postTestToSuite,
+    postTestRun
 };

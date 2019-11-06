@@ -3,12 +3,22 @@ import { ProjectCreate } from '../pages/project/create.po';
 import { PermissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
 import { APITokenAdministration } from '../pages/administration/apiToken.po';
-import { doImport, ImportParams, postSuite, postTest, postStep, postStepToTest } from '../utils/aqualityTrackingAPI.util';
+import {
+  doImport,
+  ImportParams,
+  postSuite,
+  postTest,
+  postStep,
+  postStepToTest,
+  postTestToSuite,
+  postTestRun
+} from '../utils/aqualityTrackingAPI.util';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
 import { Test } from '../../src/app/shared/models/test';
 import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
+import { TestRun } from '../../src/app/shared/models/testRun';
 
 const projectList: ProjectList = new ProjectList();
 const projectCreate: ProjectCreate = new ProjectCreate();
@@ -122,3 +132,12 @@ export const addStepToTest = (stepToTest: StepToTest, token: string, projectId: 
   stepToTest.project_id = projectId;
   return postStepToTest(stepToTest, token, projectId);
 };
+
+export const addTestToSuite = (testId: number, suiteId: number, token: string, projectId: number) => {
+  return postTestToSuite(testId, suiteId, token, projectId);
+};
+
+export const prepareTestRun = (testrun: TestRun, token: string, projectId: number) => {
+  testrun.project_id = projectId;
+  return postTestRun(testrun, token, projectId);
+}

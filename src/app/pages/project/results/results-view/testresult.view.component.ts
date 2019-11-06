@@ -193,7 +193,7 @@ export class TestResultViewComponent implements OnInit {
         type: 'lookup-colored',
         entity: 'final_result',
         values: this.listOfFinalResults,
-        editable: true,
+        editable: this.canEdit,
         bulkEdit: true,
         class: 'fit'
       },

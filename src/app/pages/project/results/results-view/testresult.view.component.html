@@ -66,8 +66,8 @@
 
     <div *ngIf="currentState.steps && currentState.steps.length > 0" id="tr-steps-line" class="row line">
       <table-filter id="steps-grid" *ngIf="tbCols" [allowExport]="true" [data]="currentState.steps"
-        [rowsOnPage]="1000" [columns]="tbCols" [hideFilter]="true" [hidePageStets]="true"
-        [allowBulkUpdate]="true" (bulkChanges)="bulkUpdateStepResults($event)"
+        [rowsOnPage]="1000" [columns]="tbCols" [hideFilter]="true" [hidePageSets]="true"
+        [allowBulkUpdate]="canEdit" (bulkChanges)="bulkUpdateStepResults($event)"
         (dataChange)="stepResultUpdate($event)" (action)="handleAction($event)" (bulkChanges)="bulkResultUpdate($event)"></table-filter>
     </div>
 
