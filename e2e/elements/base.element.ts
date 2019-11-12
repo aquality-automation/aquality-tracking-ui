@@ -11,7 +11,7 @@ export class BaseElement {
         }
     }
 
-    async isVisible() {
+    async isVisible(): Promise<boolean> {
         return waiter.forTrue(() => this.element.isPresent(), 2, 500);
     }
 }

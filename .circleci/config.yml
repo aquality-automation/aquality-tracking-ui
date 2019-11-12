@@ -10,11 +10,21 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Install node@v10.15.3
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v10.15.3
+            nvm alias default v10.15.3
+            npm version
+
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             
       - run:
+          shell: "/bin/bash -eo pipefail"
           name: Install Dependencies
           command: npm i --quiet
           
@@ -34,14 +44,37 @@ jobs:
               appropriate/curl -4 --retry 10 --retry-delay 20 --retry-connrefused http://localhost:8080/api/authInfo
 
       - run:
+          shell: "/bin/bash -eo pipefail"
+          name: Start Aquality Test Run
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            export TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            export TESTRUNID=${TESTRUNID##*$'\n'}
+            echo $TESTRUNID
+            echo "export TESTRUNID=$TESTRUNID" >> $BASH_ENV
+
+      - run:
+          shell: "/bin/bash -eo pipefail"
           name: Run tests
           command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
-            docker build . -t tests
+            docker build --build-arg TOKEN="${TOKEN}" --build-arg TESTRUNID="${TESTRUNID}" . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
-            cd allure-results
-            ls
-      
+            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
+
+      - run:
+          shell: "/bin/bash -eo pipefail"
+          when: always
+          name: Finish Aquality Test Run
+          command: |
+            echo ${TESTRUNID}
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
+
       - run:
           when: always
           name: Generate allure

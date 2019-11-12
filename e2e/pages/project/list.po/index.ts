@@ -34,6 +34,6 @@ export class ProjectList extends BasePage {
     async removeProject(projectName: string) {
         await this.navigateTo();
         await this.clickRemoveProjectButton(projectName);
-        return this.modal.clickActionBtn('yes');
+        return this.modal.clickYes();
     }
 }

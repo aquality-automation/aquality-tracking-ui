@@ -86,5 +86,31 @@
         "audit_admin":0,
         "unit_coordinator":0,
         "account_manager":0
+    },
+    "auditAdmin":{
+        "user_name": "auto.auditAdmin",
+        "password": "123456",
+        "first_name": "auto",
+        "second_name": "auditAdmin",
+        "email": "auditAdmin@example.com",
+        "admin":0,
+        "manager":0,
+        "auditor":0,
+        "audit_admin":1,
+        "unit_coordinator":0,
+        "account_manager":0
+    },
+    "assignedAuditor":{
+        "user_name": "auto.assignedAuditor",
+        "password": "123456",
+        "first_name": "auto",
+        "second_name": "assignedAuditor",
+        "email": "assignedAuditor@example.com",
+        "admin":0,
+        "manager":0,
+        "auditor":1,
+        "audit_admin":0,
+        "unit_coordinator":0,
+        "account_manager":0
     }
 }

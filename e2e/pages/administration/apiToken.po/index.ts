@@ -32,13 +32,13 @@ export class APITokenAdministration extends AdministrationBase {
   }
 
   acceptModal() {
-    return this.modal.clickActionBtn('yes');
+    return this.modal.clickYes();
   }
 
   async generateToken(projectName: string): Promise<string> {
     await this.selectProject(projectName);
     await this.clickGenerateToken();
-    await this.modal.clickActionBtn('yes');
+    await this.modal.clickYes();
     await this.getTokenValue();
     return await elements.tokenValue.getText();
   }

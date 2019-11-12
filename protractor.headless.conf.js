@@ -34,8 +34,15 @@ exports.config = {
       project: 'e2e/tsconfig.e2e.json'
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
-    var AllureReporter = require('jasmine-allure-reporter');
+    const AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());
+    const AqualityReporter = require('@aquality-automation/aquality-tracking-reporter-jasmine');
+    jasmine.getEnv().addReporter(new AqualityReporter({
+            token: process.env.AT_TOKEN,
+            api_url: 'http://46.243.183.199:8888/api',
+            project_id: 1,
+            testrun_id: process.env.AT_TESTRUNID
+        }));
     jasmine.getEnv().afterEach(function (done) {
       browser.takeScreenshot().then(function (png) {
         allure.createAttachment('Screenshot', function () {

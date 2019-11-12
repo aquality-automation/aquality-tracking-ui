@@ -138,7 +138,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
             await resolutionAdministration.clickRemoveResolution(resolution.name);
             await expect(resolutionAdministration.modal.isVisible()).toBe(true, 'Remove Resolution modal is not opened');
 
-            await resolutionAdministration.modal.clickActionBtn('yes');
+            await resolutionAdministration.modal.clickYes();
             await resolutionAdministration.refresh();
             await resolutionAdministration.sidebar.resolutions();
             await resolutionAdministration.selectProject(projects.resolutionProject.name);

@@ -121,6 +121,6 @@ export class UserAdministration extends AdministrationBase {
 
   async remove(user_name: string) {
     await this.clickRemoveUserButton(user_name);
-    await this.modal.clickActionBtn('yes');
+    await this.modal.clickYes();
   }
 }

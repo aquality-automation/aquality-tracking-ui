@@ -1,4 +1,4 @@
-<div *ngIf="audit" class="panel-heading">
+<div id="audit-info-page" *ngIf="audit" class="panel-heading">
   <simple-popup [(isHidden)]="hideModal" [title]="ModalTitle" [message]="ModalMessage" [type]="'warning'" [buttons]="buttons"
     (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
   <div class="row">
@@ -7,13 +7,13 @@
     </div>
     <div *ngIf="canEdit" class="col-md-3 no-padding">
       <div class="btn-group pull-right no-padding">
-        <button *ngIf="(audit.status.id === 1 || audit.status.id === 2) && userService.IsAuditAdmin()" class="btn btn-danger btn-secondary"
+        <button id="audit-cancel" *ngIf="(audit.status.id === 1 || audit.status.id === 2) && userService.IsAuditAdmin()" class="btn btn-danger btn-secondary"
           (click)="cancelAudit()">Cancel Audit</button>
-        <button *ngIf="audit.status.id === 1 && canEdit" [disabled]="!audit.due_date || audit.auditors.length < 1" class="btn btn-warning btn-secondary"
+        <button id="audit-start" *ngIf="audit.status.id === 1 && canEdit" [disabled]="!audit.due_date || audit.auditors.length < 1" class="btn btn-warning btn-secondary"
           (click)="startProgress()">Start Progress</button>
-        <button *ngIf="audit.status.id === 2 && canEdit" [disabled]="!this.audit.result || this.audit.summary === null || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
+        <button id="audit-finish" *ngIf="audit.status.id === 2 && canEdit" [disabled]="!this.audit.result || this.audit.summary === null || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
           class="btn btn-warning btn-secondary" (click)="finishProgress()">Finish Progress</button>
-        <button *ngIf="audit.status.id === 3 && userService.IsAuditAdmin()" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length < 1"
+        <button id="audit-submit" *ngIf="audit.status.id === 3 && userService.IsAuditAdmin()" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length < 1"
           class="btn btn-success btn-secondary" (click)="submitAudit()">Submit</button>
       </div>
     </div>
@@ -23,7 +23,7 @@
   <div>
     <div class="inline info-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Audit
-        <span class="label lb-md pull-right" [ngClass]="{
+        <span id="status" class="label lb-md pull-right" [ngClass]="{
           'label-success': audit.status.color === 5,
           'label-warning': audit.status.color === 2,
           'label-primary': audit.status.color === 3
@@ -95,7 +95,7 @@
             }">Auditors:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <lookup-autocomplete-multiselect *ngIf="userService.IsAuditAdmin() && audit.status.id !== 4" placeholder="Select Auditor"
+            <lookup-autocomplete-multiselect id="auditors" *ngIf="userService.IsAuditAdmin() && audit.status.id !== 4" placeholder="Select Auditor"
               [propertiesToShow]="['first_name','second_name']" [array]="auditors" [model]="audit.auditors" (onClosed)="auditorsChange($event)"></lookup-autocomplete-multiselect>
             <div *ngIf="!userService.IsAuditAdmin() || audit.status.id === 4">
               {{getAuditorsString()}}
@@ -118,10 +118,10 @@
     </div>
     <div *ngIf="audit.status.id !== 1 && (audit.summary || canEdit)" class="inline summary-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Summary
-        <button *ngIf="canEdit" class="btn btn-heading btn-success pull-right" (click)="update()">Save</button>
+        <button id="save-summary" *ngIf="canEdit" class="btn btn-heading btn-success pull-right" (click)="update()">Save</button>
       </div>
       <div class="panel-body no-padding" fit-editor-into-parent>
-        <app-ngx-editor clickableLinks *ngIf="canEdit" [config]="editorConfig" [showToolbar]="canEdit" [height]="150" [(ngModel)]="audit.summary"></app-ngx-editor>
+        <app-ngx-editor id="summary-editor" clickableLinks *ngIf="canEdit" [config]="editorConfig" [showToolbar]="canEdit" [height]="150" [(ngModel)]="audit.summary"></app-ngx-editor>
         <div *ngIf="audit.summary && !canEdit" class="summaryShow" [showHtml]="audit.summary"></div>
       </div>
     </div>
@@ -133,14 +133,14 @@
     <div class="inline comments-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Comments</div>
       <div class="panel-body no-padding">
-        <comments-block [comments]="audit.comments" height="280px" (addComment)="addComment($event)" [disabled]="disableComments"></comments-block>
+        <comments-block id="comments" [comments]="audit.comments" height="280px" (addComment)="addComment($event)" [disabled]="disableComments"></comments-block>
       </div>
     </div>
     <div *ngIf="canEdit || (attachments && attachments.length > 0)" class="inline attachments-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Attachments</div>
       <div class="panel-body no-padding">
         <div>
-          <table *ngIf="attachments && attachments.length > 0" class="table">
+          <table id="uploaded-attachments" *ngIf="attachments && attachments.length > 0" class="table">
             <tbody>
               <tr *ngFor="let attach of attachments">
                 <td>
@@ -155,7 +155,7 @@
             </tbody>
           </table>
         </div>
-        <file-uploader *ngIf="URL && canEdit" [URL]="URL" (uploaded)="getAttachments()"></file-uploader>
+        <file-uploader id="attachments" *ngIf="URL && canEdit" [URL]="URL" (uploaded)="getAttachments()"></file-uploader>
       </div>
     </div>
   </div>

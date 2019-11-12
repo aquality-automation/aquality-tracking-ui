@@ -28,6 +28,8 @@ beforeAll(async () => {
     await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
     await (await projectsList.menuBar.user()).administration();
     await userAdministration.create(usersTestData.localAdmin);
+    await userAdministration.create(usersTestData.auditAdmin);
+    await userAdministration.create(usersTestData.assignedAuditor);
     await userAdministration.create(usersTestData.localManager);
     await userAdministration.create(usersTestData.localEngineer);
     await userAdministration.create(usersTestData.manager);
