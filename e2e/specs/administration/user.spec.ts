@@ -55,14 +55,12 @@ describe('Full Admin Administartion User Flow', () => {
         });
 
         it('No errors after everything was fixed', async () => {
-            await Promise.all([
-                userAdministration.fillFirstName(userToCreate.first_name),
-                userAdministration.fillLastName(userToCreate.second_name),
-                userAdministration.fillUserName(userToCreate.user_name),
-                userAdministration.fillEmail(userToCreate.email),
-                userAdministration.fillPassword(userToCreate.password),
-                userAdministration.fillConfirmPassword(userToCreate.password)
-            ]);
+            await userAdministration.fillFirstName(userToCreate.first_name);
+            await userAdministration.fillLastName(userToCreate.second_name);
+            await userAdministration.fillUserName(userToCreate.user_name);
+            await userAdministration.fillEmail(userToCreate.email);
+            await userAdministration.fillPassword(userToCreate.password);
+            await userAdministration.fillConfirmPassword(userToCreate.password);
             await expect(userAdministration.getCreationError()).toEqual('');
         });
 
@@ -79,21 +77,17 @@ describe('Full Admin Administartion User Flow', () => {
         });
 
         it('I can see all errors when passwords are not match, email is not correct and not all required fields filled', async () => {
-            await Promise.all([
-                userAdministration.fillPassword('1'),
-                userAdministration.fillFirstName('')
-            ]);
+            await userAdministration.fillPassword('1');
+            await userAdministration.fillFirstName('');
             await expect(userAdministration.getCreationError())
                 // tslint:disable-next-line: max-line-length
                 .toEqual(`Fill all required fields, Email should be equal to this pattern: example@domain.com, Password does not match the Confirm Password.`);
         });
 
         it('No errors after everything was fixed', async () => {
-            await Promise.all([
-                userAdministration.fillPassword(userToCreate.password),
-                userAdministration.fillFirstName(userToCreate.first_name),
-                userAdministration.fillEmail(userToCreate.email)
-            ]);
+            await userAdministration.fillPassword(userToCreate.password);
+            await userAdministration.fillFirstName(userToCreate.first_name);
+            await userAdministration.fillEmail(userToCreate.email);
             await expect(userAdministration.getCreationError()).toEqual('');
         });
 

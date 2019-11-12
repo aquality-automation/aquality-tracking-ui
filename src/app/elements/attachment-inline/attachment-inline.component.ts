@@ -12,6 +12,7 @@ import { SimpleRequester } from '../../services/simple-requester';
 export class AttachmentInlineComponent {
   @Input() name: string;
   @Input() model: string | ArrayBuffer;
+  @Input() editable: boolean;
 
   @Output() modelChange = new EventEmitter();
 

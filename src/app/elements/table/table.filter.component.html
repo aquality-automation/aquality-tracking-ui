@@ -12,9 +12,9 @@
                         <mfBootstrapPaginator class="pull-left"></mfBootstrapPaginator>
                         <p class="pull-left ft-total-label">Total Rows: {{filteredData?.length}} ({{data?.length}})</p>
                         <div class="btn-group pull-right" role="group">
-                            <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-default" [matMenuTriggerFor]="appMenu"
-                                >Get CSV</button>
-                            <mat-menu #appMenu="matMenu" xPosition="before" >
+                            <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-default"
+                                [matMenuTriggerFor]="appMenu">Get CSV</button>
+                            <mat-menu #appMenu="matMenu" xPosition="before">
                                 <button id="getSCV-Download" mat-menu-item (click)="downloadCSV()">Download</button>
                                 <button id="getSCV-Copy" mat-menu-item (click)="copyCSV()">Copy to Clipboard</button>
                             </mat-menu>
@@ -42,8 +42,8 @@
                             'percent':col.type === 'percent'
                         }">
                         <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
-                        <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;" (contextmenu)="openlink(col.headerlink)"
-                            title="Right click to open">{{col?.name}}</a>
+                        <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;"
+                            (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}</a>
                         <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
                             [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
                             (ngModelChange)="toggleSelectAll($event)" />
@@ -51,7 +51,7 @@
                 </tr>
                 <tr *ngIf="!hideFilter" class="filter-header vert-aligned">
                     <td *ngFor="let col of columns" class="tf-column" [setClass]="col.class">
-                        <input
+                        <input type="text"
                             *ngIf="(col.type === 'text' || col.type === 'textarea' || col.type=='long-text' || col.type=='email') && col.filter"
                             [ngModel]="textFilterData(col.property)" class="form-control input-sm"
                             placeholder="{{col?.name}} Filter" maxlength="100"
@@ -172,7 +172,7 @@
                         }"></span>
                     </td>
                 </tr>
-                <tr *ngIf="allowBulkUpdate && hasSelectedRows()">
+                <tr *ngIf="allowBulkUpdate && hasSelectedRows()" class="ft-bulk-edit-row">
                     <td *ngFor="let col of columns" class="vert-aligned" [setClass]="col.class">
 
                         <div *ngIf="col.editable && col.bulkEdit" class="ft-cell">
@@ -308,7 +308,7 @@
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 (modelChange)="setPropertyValue(entity, col.entity, $event)">
                             </lookup-autocomplete-multiselect>
-                            
+
                             <div *ngIf="col.type === 'date' && col.format" class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:col.format}}
                             </div>
@@ -332,8 +332,10 @@
                             <div
                                 *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
-                            <attachment-inline *ngIf="col.type === 'file'" [name]="col.property + rowNum" [model]="transformationsService.getPropertyValue(entity, col.property)"
-                            (modelChange)="setPropertyValue(entity, col.property, $event)"></attachment-inline>
+                            <attachment-inline *ngIf="col.type === 'file'" [name]="col.property + rowNum"
+                                [model]="transformationsService.getPropertyValue(entity, col.property)"
+                                (modelChange)="setPropertyValue(entity, col.property, $event)"
+                                [editable]="col.editable"></attachment-inline>
                         </div>
 
                         <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow"
@@ -346,7 +348,8 @@
             <tfoot *ngIf="!hidePageStets">
                 <tr>
                     <td [attr.colspan]="columns.length">
-                        <mfBootstrapPaginator class="paginator-bottom" [rowsOnPageSet]="rowsOnPageSet"></mfBootstrapPaginator>
+                        <mfBootstrapPaginator class="paginator-bottom" [rowsOnPageSet]="rowsOnPageSet">
+                        </mfBootstrapPaginator>
                     </td>
                 </tr>
             </tfoot>

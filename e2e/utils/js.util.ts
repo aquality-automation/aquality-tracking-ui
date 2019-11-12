@@ -1,5 +1,6 @@
 import { browser, WebElement, element } from 'protractor';
 import { By, Key } from 'selenium-webdriver';
+import { logger } from './log.util';
 
 const scrollIntoView = (webElement: WebElement) => {
     return browser.executeScript('arguments[0].scrollIntoView();', webElement);
@@ -22,6 +23,7 @@ const getClipboardText = async () => {
         el.parentNode.removeChild(el);
         })()`
     );
+    logger.info(`Context text:\n${result}`);
 
     return result;
 };

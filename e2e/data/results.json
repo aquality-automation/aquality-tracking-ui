@@ -1,0 +1,22 @@
+{
+    "notExecuted":{
+        "name": "Not Executed",
+        "color": "Primary"
+    },
+    "failed":{
+        "name": "Failed",
+        "color": "Danger"
+    },
+    "inProgress":{
+        "name": "In Progress",
+        "color": "Warning"
+    },
+    "passed":{
+        "name": "Passed",
+        "color": "Success"
+    },
+    "pending":{
+        "name": "Pending",
+        "color": "Info"
+    }
+}

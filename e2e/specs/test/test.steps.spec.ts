@@ -120,7 +120,7 @@ describe('Test Steps:', () => {
                 await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on copy Scenario!');
                 await expect(testView.notification.getContent()).toBe(`'${customTest.name}' scenario was copied!`);
                 await testView.notification.close();
-                return expect(await getClipboardText()).toBe(fullScenario(description));
+                return expect(getClipboardText()).toBe(fullScenario(description));
             });
 
             it('I notified about not saved changes when leaving the page', async () => {
@@ -147,7 +147,7 @@ describe('Test Steps:', () => {
                 await testView.steps.discardChages();
                 await testView.copyScenario();
                 await testView.notification.close();
-                return expect(await getClipboardText()).toBe(fullScenario(description));
+                return expect(getClipboardText()).toBe(fullScenario(description));
             });
 
             it('I not notified about not saved changes after discarding changes', async () => {
@@ -194,7 +194,7 @@ describe('Test Steps:', () => {
                 await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on copy Scenario!');
                 await expect(testView.notification.getContent()).toBe(`'${customTest.name}' scenario was copied!`);
                 await testView.notification.close();
-                return expect(await getClipboardText()).toBe(viewerScenario(description));
+                return expect(getClipboardText()).toBe(viewerScenario(description));
             });
         });
     });
