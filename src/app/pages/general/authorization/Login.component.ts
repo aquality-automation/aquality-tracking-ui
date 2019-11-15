@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
   }
 
   async tryAuth() {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl']
+    this.returnUrl = this.route.snapshot.queryParams.returnUrl
       || '/project';
     const encrypter = new JsEncryptModule.JSEncrypt();
     const token = await this.userService.getToken(this.userName);
