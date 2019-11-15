@@ -1,7 +1,3 @@
-.selector-container {
-    margin-bottom: 5px;
-}
-
 .ms-main-selector {
     min-width: 135px !important;
     width: 100% !important;
@@ -15,15 +11,14 @@
 .ms-box {
     width: max-content !important;
     width: -moz-fit-content !important;
-    display: inline-table;
-    padding: 2px;
+    display: inline-block;
+    padding: 0 4px;
     height: -moz-fit-content;
     height: max-content;
     margin: 2px;
     font-size: 13px;
-    border-collapse: separate;
-    border: 1px solid #999999;
-    border-radius: 5px;
+    border: 1px solid var(--main-border-color);
+    border-radius: 4px;
 }
 
 .ms-box-text {
@@ -32,13 +27,15 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-right: 3px;
 }
 
 .ms-placeholder {
     padding: 4px;
-    color: #999999;
+    color: var(--main-border-color);
 }
 
 .remove-ms-box {
     cursor: pointer;
+    padding: 2px 0;
 }

@@ -1,5 +1,5 @@
 <div id="audit-info-page" *ngIf="audit" class="panel-heading">
-  <simple-popup [(isHidden)]="hideModal" [title]="ModalTitle" [message]="ModalMessage" [type]="'warning'" [buttons]="buttons"
+  <simple-popup *ngIf="!hideModal" [title]="modalTitle" [message]="modalMessage" [type]="'warning'" [buttons]="buttons"
     (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
   <div class="row">
     <div class="col-md-9">
@@ -11,7 +11,7 @@
           (click)="cancelAudit()">Cancel Audit</button>
         <button id="audit-start" *ngIf="audit.status.id === 1 && canEdit" [disabled]="!audit.due_date || audit.auditors.length < 1" class="btn btn-warning btn-secondary"
           (click)="startProgress()">Start Progress</button>
-        <button id="audit-finish" *ngIf="audit.status.id === 2 && canEdit" [disabled]="!this.audit.result || this.audit.summary === null || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
+        <button id="audit-finish" *ngIf="audit.status.id === 2 && canEdit" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
           class="btn btn-warning btn-secondary" (click)="finishProgress()">Finish Progress</button>
         <button id="audit-submit" *ngIf="audit.status.id === 3 && userService.IsAuditAdmin()" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length < 1"
           class="btn btn-success btn-secondary" (click)="submitAudit()">Submit</button>

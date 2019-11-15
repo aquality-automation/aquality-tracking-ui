@@ -7,18 +7,24 @@ export class Modal extends BaseElement {
     }
 
     private _keys = {
-        yes: 'yes'
+        yes: 'yes',
+        no: 'no'
     };
 
-    private _clickActionBtn(buttonName: string) {
-        return this.element.element(by.xpath(`.//button[text()="${buttonName}"]`)).click();
-    }
-
-    async clickYes() {
+    private async _clickActionBtn(buttonName: string) {
         const isVisible = await this.isVisible();
         if (!isVisible) {
             throw new Error('You are trying to click button on the modal but the modal does not exists');
         }
+
+        return this.element.element(by.xpath(`.//button[text()="${buttonName}"]`)).click();
+    }
+
+    clickYes() {
         return this._clickActionBtn(this._keys.yes);
+    }
+
+    clickNo() {
+        return this._clickActionBtn(this._keys.no);
     }
 }

@@ -10,7 +10,7 @@ export class InlineEditor extends BaseElement {
 
     private inlineForm: ElementFinder = this.element.element(by.css('.inlineEditForm'));
     private inlineFormSave: ElementFinder = this.element.element(by.css('#inline-editor-button-save'));
-    private inlineInput: Input = new Input(this.element.element(by.css('input')));
+    private inlineInput: Input = new Input(this.element.element(by.css('input, textarea')));
     private link: ElementFinder = this.element.element(by.css('a'));
 
     public async openEditor() {

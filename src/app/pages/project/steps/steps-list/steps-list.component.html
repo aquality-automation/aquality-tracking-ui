@@ -1,0 +1,19 @@
+<div id="steps-list" class="panel-heading page">
+  <div class="row clearfix">
+    <div class="col-sm-10 page-title">
+      <h2 class="pull-left inline-page-label">Steps</h2>
+    </div>
+  </div>
+</div>
+
+<table-filter *ngIf="steps" id="steps-table" #table
+[rowsOnPageSet]="[5,10,20]"
+[rowsOnPage]="20"
+[queryParams]="true"
+[data]="steps" 
+[columns]="columns"
+[defaultSortBy]="{ property: 'name', order: 'desc' }" 
+[allowDelete]="allowDelete"
+[allowCreate]="allowCreate"
+(dataChange)="createOrUpdateStep($event)" 
+(action)="handleAction($event)"></table-filter>

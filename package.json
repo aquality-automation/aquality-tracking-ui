@@ -13,7 +13,8 @@
     "e2e:headless": "ng e2e --no-progress --config protractor.headless.conf.js",
     "allure": "allure generate --clean",
     "aquality:start": "aqualityReporter start http://46.243.183.199:8888/api 1",
-    "aquality:finish": "aqualityReporter finish http://46.243.183.199:8888/api 1"
+    "aquality:finish": "aqualityReporter finish http://46.243.183.199:8888/api 1",
+    "wm-update": "webdriver-manager update --versions.chrome=78"
   },
   "private": true,
   "dependencies": {
@@ -28,6 +29,9 @@
     "@angular/platform-browser": "^5.0.2",
     "@angular/platform-browser-dynamic": "^5.0.2",
     "@angular/router": "^5.0.2",
+    "@fortawesome/angular-fontawesome": "^0.1.1",
+    "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@qontu/ngx-inline-editor": "^0.2.0-alpha.12",
     "@swimlane/ngx-charts": "^7.0.1",
     "angular2-cookie": "^1.2.6",
@@ -45,6 +49,7 @@
     "jsencrypt": "^3.0.0-rc.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^2.3.5",
+    "mime-types": "^2.1.24",
     "ng-click-outside": "^3.3.0",
     "ng2-charts": "^1.6.0",
     "ng2-dragula": "^1.5.0",
@@ -61,11 +66,11 @@
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
-    "@aquality-automation/aquality-tracking-reporter-jasmine": "^1.0.2",
     "@angular-devkit/core": "0.0.28",
     "@angular/cli": "^1.7.3",
     "@angular/compiler-cli": "^5.0.2",
     "@angular/language-service": "^5.0.2",
+    "@aquality-automation/aquality-tracking-reporter-jasmine": "^1.0.2",
     "@types/chai": "^4.1.7",
     "@types/jasmine": "^2.8.16",
     "@types/jasmine-data-provider": "^2.2.1",
@@ -80,13 +85,13 @@
     "jasmine-core": "~2.8.0",
     "jasmine-data-provider": "^2.2.0",
     "jasmine-spec-reporter": "~4.2.1",
+    "moment": "^2.24.0",
     "node-jsencrypt": "^1.0.0",
     "protractor": "~5.4.2",
     "request": "^2.88.0",
     "superagent": "^5.1.0",
     "ts-node": "~3.3.0",
     "tslint": "~5.8.0",
-    "typescript": "3.1.6",
-    "moment": "^2.24.0"
+    "typescript": "3.1.6"
   }
 }

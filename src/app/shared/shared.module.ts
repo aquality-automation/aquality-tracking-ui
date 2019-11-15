@@ -38,6 +38,9 @@ import { ChartsModule } from 'ng2-charts';
 import { InputTrimModule } from 'ng2-trim-directive';
 import { LoaderComponent } from '../elements/loader/loader.component';
 import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@angular/material';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch.component';
+import { AttachmentInlineComponent } from '../elements/attachment-inline/attachment-inline.component';
 
 @NgModule({
   imports: [
@@ -60,7 +63,8 @@ import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@a
     MatMenuModule,
     MatIconModule,
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    FontAwesomeModule
   ],
   declarations: [
     ClickableLinks,
@@ -84,7 +88,9 @@ import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@a
     MaxLength,
     ManageColumnsModalComponent,
     OverflowDirective,
-    LoaderComponent
+    LoaderComponent,
+    LabeledSwitchComponent,
+    AttachmentInlineComponent
   ],
   exports: [
     ClickableLinks,
@@ -127,7 +133,10 @@ import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@a
     MatMenuModule,
     MatIconModule,
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    FontAwesomeModule,
+    LabeledSwitchComponent,
+    AttachmentInlineComponent
   ]
 })
 export class SharedModule {}

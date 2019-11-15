@@ -74,6 +74,19 @@
         "unit_coordinator":0,
         "account_manager":0
     },
+    "viewer":{
+        "user_name": "auto.viewer",
+        "password": "123456",
+        "first_name": "auto",
+        "second_name": "viewer",
+        "email": "viewer@example.com",
+        "admin":0,
+        "manager":0,
+        "auditor":0,
+        "audit_admin":0,
+        "unit_coordinator":0,
+        "account_manager":0
+    },
     "projectTemp":{
         "user_name": "auto.projectTemp",
         "password": "123456",

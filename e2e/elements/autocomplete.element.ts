@@ -9,6 +9,7 @@ export class Autocomplete extends BaseElement implements WithSearch {
     }
 
     private input = new Input(this.element.element(by.tagName('input')));
+    private disabledElement = this.element.element(by.css('.disabled-lookup'));
 
     public enterValue(value: string) {
         return this.input.typeText(value);
@@ -34,5 +35,9 @@ export class Autocomplete extends BaseElement implements WithSearch {
     public async createAndSelect(value) {
         await this.input.typeText(value);
         await this.findOption('Add').click();
+    }
+
+    async isEditable() {
+        return !(await this.disabledElement.isPresent());
     }
 }

@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
 import { BaseLookupComponent } from './baseLookup';
+import { faMinus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'lookup-autocomplete-multiselect',
@@ -13,6 +14,7 @@ export class LookupAutocompleteMultiselectComponent extends BaseLookupComponent 
   @Output() onClosed = new EventEmitter();
   notSelectedArray: any[];
   searchText = '';
+  faMinus = faMinus;
 
   ngOnInit() {
     this.filteredArray = this.notSelectedArray;

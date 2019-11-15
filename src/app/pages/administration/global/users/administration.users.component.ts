@@ -174,7 +174,7 @@ export class AdministrationUsersComponent implements OnInit {
         this.hideModal = false;
     }
 
-    async execute($event) {
+    async execute($event: Promise<boolean>) {
         if (await $event) {
             this.userService.removeUser(this.userToRemove).subscribe(() => {
                 this.userService.getUsers({}).subscribe(users => {

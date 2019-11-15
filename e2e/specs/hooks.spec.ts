@@ -34,6 +34,7 @@ beforeAll(async () => {
     await userAdministration.create(usersTestData.localEngineer);
     await userAdministration.create(usersTestData.manager);
     await userAdministration.create(usersTestData.projectTemp);
+    await userAdministration.create(usersTestData.viewer);
     await userAdministration.menuBar.clickLogOut();
 });
 
@@ -41,7 +42,7 @@ beforeEach(async () => {
     browser.driver.sendChromiumCommand('Page.setDownloadBehavior', {
         behavior: 'allow',
         downloadPath: downloadsPath
-      });
+    });
 });
 
 afterAll(async () => {
@@ -52,5 +53,6 @@ afterAll(async () => {
     await userAdministration.remove(usersTestData.localEngineer.user_name);
     await userAdministration.remove(usersTestData.manager.user_name);
     await userAdministration.remove(usersTestData.projectTemp.user_name);
+    await userAdministration.remove(usersTestData.viewer.user_name);
     await userAdministration.menuBar.clickLogOut();
 });

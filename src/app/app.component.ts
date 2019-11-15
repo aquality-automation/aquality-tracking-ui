@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CookieService } from 'angular2-cookie/core';
 import { User } from './shared/models/user';
@@ -44,6 +44,7 @@ export class AppComponent {
   };
   navigations: Navigation[];
   rightNavigations: Navigation[];
+  isLoaded: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -98,6 +99,10 @@ export class AppComponent {
           name: 'Suites',
           link: `/project/${this.projectId}/testsuite`,
           show: true
+        }, {
+          name: 'Steps',
+          link: `/project/${this.projectId}/steps`,
+          show: this.currentProject && !!this.currentProject.steps
         }, {
           name: 'Dashboard',
           link: `/project/${this.projectId}/testsuite/dashboard`,
@@ -165,9 +170,9 @@ export class AppComponent {
         link: '/customer',
         show: this.isLogged
           && (this.userService.IsHead()
-          || this.userService.IsUnitCoordinator()
-          || this.userService.IsAccountManager()
-          || this.globaldata.teamMember),
+            || this.userService.IsUnitCoordinator()
+            || this.userService.IsAccountManager()
+            || this.globaldata.teamMember),
         routerOptions: { exact: false }
       }
     ];
@@ -184,9 +189,9 @@ export class AppComponent {
           name: 'Administration',
           link: `/administration`,
           show: this.userService.IsAdmin()
-          || this.userService.IsManager()
-          || this.userService.IsLocalAdmin()
-          || this.userService.IsLocalManager()
+            || this.userService.IsManager()
+            || this.userService.IsLocalAdmin()
+            || this.userService.IsLocalManager()
         }, {
           name: 'Report an Issue',
           href: `https://github.com/aquality-automation/aquality-tracking/issues`,
@@ -220,7 +225,10 @@ export class AppComponent {
       this.globaldata.localPermissions = this.globaldata.anyLocalPermissions.find(x => x.project_id === this.projectId);
     } else {
       this.currentProject = undefined;
+      this.globaldata.localPermissions = undefined;
     }
+
+    this.globaldata.announceCurrentProject(this.currentProject);
   }
 
   async Logout() {

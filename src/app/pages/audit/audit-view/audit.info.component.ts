@@ -29,8 +29,8 @@ export class AuditInfoComponent {
 
   removingInProgress = false;
   hideModal = true;
-  ModalTitle: string;
-  ModalMessage: string;
+  modalTitle: string;
+  modalMessage: string;
   disableComments: boolean;
   buttons: { execute: string, name: string }[] = [];
   DateOpts: DatepickerOptions = {
@@ -193,8 +193,8 @@ export class AuditInfoComponent {
 
   startProgress() {
     this.buttons = [{ name: 'yes', execute: this.events.start }, { name: 'no', execute: 'false' }];
-    this.ModalTitle = `Start Audit for the ${this.audit.project.name} project`;
-    this.ModalMessage =
+    this.modalTitle = `Start Audit for the ${this.audit.project.name} project`;
+    this.modalMessage =
       `Are you sure that you want to move current Audit to 'In Progress' status? Please note that the action cannot be undone.`;
     this.hideModal = false;
   }
@@ -209,8 +209,8 @@ export class AuditInfoComponent {
 
   finishProgress() {
     this.buttons = [{ name: 'yes', execute: this.events.finish }, { name: 'no', execute: 'false' }];
-    this.ModalTitle = `Finish Audit for the ${this.audit.project.name} project`;
-    this.ModalMessage =
+    this.modalTitle = `Finish Audit for the ${this.audit.project.name} project`;
+    this.modalMessage =
       `Are you sure that you want to move current Audit to 'In Review' status? Please note that the action cannot be undone.`;
     this.hideModal = false;
   }
@@ -225,8 +225,8 @@ export class AuditInfoComponent {
 
   submitAudit() {
     this.buttons = [{ name: 'yes', execute: this.events.submit }, { name: 'no', execute: 'false' }];
-    this.ModalTitle = `Submit Audit for the ${this.audit.project.name} project`;
-    this.ModalMessage =
+    this.modalTitle = `Submit Audit for the ${this.audit.project.name} project`;
+    this.modalMessage =
       `Are you sure that you want to move current Audit to 'Submitted' status? Please note that the action cannot be undone.`;
     this.hideModal = false;
   }
@@ -241,15 +241,15 @@ export class AuditInfoComponent {
 
   cancelAudit() {
     this.buttons = [{ name: 'yes', execute: this.events.remove }, { name: 'no', execute: 'false' }];
-    this.ModalTitle = `Remove Audit for the ${this.audit.project.name} project`;
-    this.ModalMessage =
+    this.modalTitle = `Remove Audit for the ${this.audit.project.name} project`;
+    this.modalMessage =
       `Are you sure that you want to cancel current Audit?
       This will permanently delete all data assosiated with this audit. Please note that the action cannot be undone.`;
     this.hideModal = false;
   }
 
-  execute(value: String | boolean) {
-    this.changeAuditStatus(value);
+  async execute(value: Promise<String | boolean>) {
+    this.changeAuditStatus(await value);
     this.hideModal = true;
   }
 

@@ -25,7 +25,7 @@ import { CalcHeightsDirective } from './derectives/bodyHeight.derective';
 import { UserSettingsComponent } from './pages/general/user-settings/user-settings.component';
 import { CustomerModule } from './pages/customer/customer.module';
 import { CustomerService } from './services/customer.service';
-import { PendingChanges } from './shared/guards/can-deactivate-guard.service';
+import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.service';
 
 @NgModule({
   imports: [
@@ -50,7 +50,7 @@ import { PendingChanges } from './shared/guards/can-deactivate-guard.service';
     CalcHeightsDirective
   ],
   providers: [
-    PendingChanges,
+    ResultViewCanDeactivate,
     AuthGuard,
     CookieService,
     LoginGuard,

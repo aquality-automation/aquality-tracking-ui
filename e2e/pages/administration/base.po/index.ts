@@ -13,6 +13,7 @@ export class AdministrationBase extends BasePage {
     apiToken: () => elements.apiToken.click(),
     permissions: () => elements.permissions.click(),
     resolutions: () => elements.resolutions.click(),
-    users: () => elements.users.click()
+    users: () => elements.users.click(),
+    projectSettings: () => elements.settings.click()
   };
 }

@@ -1,8 +1,7 @@
 import {
   Directive, ElementRef, AfterViewChecked,
-  Input, Output, HostListener, Renderer2, EventEmitter
+  Input, Output, Renderer2, EventEmitter
 } from '@angular/core';
-import { forEach } from '@angular/router/src/utils/collection';
 
 @Directive({
   selector: '[customListener]'
@@ -26,8 +25,11 @@ export class CustomEventListener implements AfterViewChecked {
   createListener(element: HTMLElement) {
     if (!element.classList.contains('custom-listener')) {
       this.customListener.forEach(listener => {
+        if (listener === 'contextmenu') {
+            element.oncontextmenu = () => false;
+          }
         element.addEventListener(listener, () => this.emitChange(listener, element.innerText));
-      });
+        });
       element.classList.add('custom-listener');
     }
   }

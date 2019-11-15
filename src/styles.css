@@ -6,6 +6,12 @@ body [class^='mat-'], body [class*=' mat-'] {
   font-variant: normal;
 }
 
+:root {
+  --main-border-color: #ccc;
+  --main-hover-color: #f5f5f5;
+  --main-hover-text-color: #bbb;
+}
+
 body .material-icons {
   font-family: 'Material Icons';
 }

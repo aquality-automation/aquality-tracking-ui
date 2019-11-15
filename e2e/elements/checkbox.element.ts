@@ -1,4 +1,4 @@
-import { Locator, ElementFinder } from 'protractor';
+import { Locator, ElementFinder, promise } from 'protractor';
 import { BaseElement } from './base.element';
 import { scrollIntoView } from '../utils/js.util';
 
@@ -20,5 +20,9 @@ export class Checkbox extends BaseElement {
         if ((await this.element.isSelected()) !== state) {
             return this.element.click();
         }
+    }
+
+    isSelected(): promise.Promise<boolean> {
+        return this.element.isSelected();
     }
 }
