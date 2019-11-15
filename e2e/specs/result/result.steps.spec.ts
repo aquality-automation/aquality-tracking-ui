@@ -137,12 +137,12 @@ describe('Result Steps:', () => {
                 await testResultView.setBulkStepResult(results.pending.name);
                 await testResultView.setBulkStepComment(comment);
                 await testResultView.acceptBulkStepEdit();
+                await testResultView.notification.close();
+                await testResultView.notification.close();
                 await expect(testResultView.getStepResult(step2.name)).toBe(results.pending.name, 'Step result is wrong after bulk update');
                 await expect(testResultView.getStepResult(step3.name)).toBe(results.pending.name, 'Step result is wrong after bulk update');
                 await expect(testResultView.getStepComment(step2.name)).toBe(comment, 'Step comment is wrong after bulk update');
-                await expect(testResultView.getStepComment(step3.name)).toBe(comment, 'Step comment is wrong after bulk update');
-                await testResultView.notification.close();
-                return testResultView.notification.close();
+                return expect(testResultView.getStepComment(step3.name)).toBe(comment, 'Step comment is wrong after bulk update');
             });
 
             it('I can add image attachmet to the step', async () => {
