@@ -1,7 +1,7 @@
 import { LogIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testRun/view.po';
+import { TestRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import {
     prepareProject,
