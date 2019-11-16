@@ -34,8 +34,7 @@ export class AdministrationProjectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.
-    .then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     await this.userService.AnyLocalPermissions();
