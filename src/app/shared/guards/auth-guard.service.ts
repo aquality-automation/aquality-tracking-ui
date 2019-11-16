@@ -13,8 +13,6 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     const isLogged = await this.userService.handleIsLogged();
-    console.log(isLogged);
-    console.log(state.url);
     if (!isLogged) {
       this.userService.redirectToLogin(state.url);
     }
