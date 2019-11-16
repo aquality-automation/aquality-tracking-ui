@@ -3,7 +3,7 @@ import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
-import { createTestRun, getSuites, getTests, getResults, postResult, postTest } from '../../utils/aqualityTrackingAPI.util';
+import { postTestRun, getSuites, getTests, getResults, postResult, postTest } from '../../utils/aqualityTrackingAPI.util';
 
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
@@ -48,14 +48,14 @@ describe('Public API tests', () => {
   afterAll(async () => {
     await projectList.navigateTo();
     await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickActionBtn('yes');
+    await projectList.modal.clickYes();
     if (await projectList.menuBar.isLogged()) {
       return projectList.menuBar.clickLogOut();
     }
   });
 
   it('Test Run can be created via API', async () => {
-    testrun = await createTestRun({
+    testrun = await postTestRun({
       start_time: new Date(),
       build_name: 'Build_2',
       project_id: projectId,

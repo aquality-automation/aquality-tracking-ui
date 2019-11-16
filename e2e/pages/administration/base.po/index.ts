@@ -10,9 +10,10 @@ export class AdministrationBase extends BasePage {
   public sidebar = {
     appSettings: () => elements.appSettings.click(),
     bodyPattern: () => elements.bodyPattern.click(),
-    importToken: () => elements.importToken.click(),
+    apiToken: () => elements.apiToken.click(),
     permissions: () => elements.permissions.click(),
     resolutions: () => elements.resolutions.click(),
-    users: () => elements.users.click()
+    users: () => elements.users.click(),
+    projectSettings: () => elements.settings.click()
   };
 }

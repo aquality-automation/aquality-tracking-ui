@@ -15,7 +15,7 @@ export class CustomerDashboardGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (!this.userService.IsHead()
@@ -40,7 +40,7 @@ export class CustomerCreateGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (!this.userService.IsHead() && !this.userService.IsUnitCoordinator()) {

@@ -9,10 +9,10 @@ import { appRouting } from './app.routing';
 import { AuthGuard } from './shared/guards/auth-guard.service';
 import { AppComponent } from './app.component';
 import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
-import { AdministrationModule } from './pages/administration/administration.module';
+import { AdministrationModule } from './pages/administration/main/administration.module';
 import { NotFoundComponent } from './pages/general/not-found/not-found.component';
 import { LoginComponent } from './pages/general/authorization/Login.component';
-import { LoginGuard } from './pages/general/authorization/Login.guard';
+import { LoginGuard } from './shared/guards/login-guard.service';
 import { GlobalDataService } from './services/globaldata.service';
 import { SimpleRequester } from './services/simple-requester';
 import { UserService } from './services/user.services';
@@ -25,8 +25,7 @@ import { CalcHeightsDirective } from './derectives/bodyHeight.derective';
 import { UserSettingsComponent } from './pages/general/user-settings/user-settings.component';
 import { CustomerModule } from './pages/customer/customer.module';
 import { CustomerService } from './services/customer.service';
-import { PendingChanges } from './shared/guards/can-deactivate-guard.service';
-import { LoaderComponent } from './elements/loader/loader.component';
+import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.service';
 
 @NgModule({
   imports: [
@@ -51,7 +50,7 @@ import { LoaderComponent } from './elements/loader/loader.component';
     CalcHeightsDirective
   ],
   providers: [
-    PendingChanges,
+    ResultViewCanDeactivate,
     AuthGuard,
     CookieService,
     LoginGuard,

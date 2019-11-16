@@ -1,13 +1,31 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
-
-body,
-html {
-  padding-top: 0 !important;
-  height: 100vh;
+body [class^='mat-'], body [class*=' mat-'] {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
 }
 
-html,
-header {
+:root {
+  --main-border-color: #ccc;
+  --main-hover-color: #f5f5f5;
+  --main-hover-text-color: #bbb;
+}
+
+body .material-icons {
+  font-family: 'Material Icons';
+}
+
+body, html {
+  padding-top: 0 !important;
+  height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-variant: normal;
+}
+
+html, header {
   min-width: 1024px;
 }
 
@@ -20,8 +38,7 @@ a {
   text-decoration: underline;
 }
 
-a.btn,
-.header a {
+a.btn, .header a {
   text-decoration: none;
 }
 
@@ -41,8 +58,7 @@ ng-component>.panel-heading {
   min-width: 200px;
 }
 
-h2,
-h3 {
+h2, h3 {
   margin: 0 !important;
 }
 
@@ -84,8 +100,7 @@ ul {
   padding-bottom: 2px !important;
 }
 
-.table td.fit,
-.table th.fit {
+.table td.fit, .table th.fit {
   white-space: nowrap;
   width: 1%;
 }
@@ -125,8 +140,7 @@ div.c-inline-editor:not([hidden]) {
   display: inline;
 }
 
-#inlineEditWrapper,
-inline-editor>div {
+#inlineEditWrapper, inline-editor>div {
   max-width: 200px;
   display: inline;
 }
@@ -143,7 +157,6 @@ a.editable-empty {
 a.c-inline-editor:not(.editable-empty) {
   color: black !important;
   text-decoration: none !important;
-
 }
 
 .full-width-label {
@@ -161,8 +174,7 @@ a.c-inline-editor:not(.editable-empty) {
   right: 0 !important;
 }
 
-select,
-.selector-main-button {
+select, .selector-main-button {
   border: 1px solid #ddd !important;
 }
 
@@ -255,43 +267,9 @@ table {
   font-size: 12px;
 }
 
-.table td.fit,
-.table th.fit {
+.table td.fit, .table th.fit {
   white-space: nowrap !important;
   width: 1% !important;
-}
-
-span.sidebar-header {
-  color: #bf3a3a;
-  font-size: 18px;
-}
-
-div.sidebar-option {
-  padding: 10px;
-  padding-left: 15px;
-  cursor: pointer;
-}
-
-div.sidebar-option:hover {
-  background-color: lightgray;
-}
-
-div.sidebar-header {
-  padding: 10px;
-  border-bottom: 1px solid lightgrey;
-}
-
-div.sidebar {
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-left: 1px solid lightgrey;
-  border-right: 1px solid lightgrey;
-  border-bottom: 1px solid lightgrey;
-  margin-bottom: 10px;
-}
-
-div.sidebar-option.active {
-  background: #deaeae;
 }
 
 .label-inline {
@@ -465,7 +443,6 @@ ul.spinner>li {
     top: 0px;
     left: -40px;
   }
-
   100% {
     top: 0px;
     left: -40px;
@@ -477,7 +454,6 @@ ul.spinner>li {
     top: -40px;
     left: -40px;
   }
-
   100% {
     top: -40px;
     left: -40px;
@@ -489,7 +465,6 @@ ul.spinner>li {
     top: -40px;
     left: 0px;
   }
-
   100% {
     top: -40px;
     left: 0px;
@@ -501,7 +476,6 @@ ul.spinner>li {
     top: 40px;
     left: -40px;
   }
-
   100% {
     top: 40px;
     left: -40px;
@@ -513,7 +487,6 @@ ul.spinner>li {
     top: -40px;
     left: 40px;
   }
-
   100% {
     top: -40px;
     left: 40px;
@@ -525,7 +498,6 @@ ul.spinner>li {
     top: 40px;
     left: 0px;
   }
-
   100% {
     top: 40px;
     left: 0px;
@@ -537,7 +509,6 @@ ul.spinner>li {
     top: 40px;
     left: 40px;
   }
-
   100% {
     top: 40px;
     left: 40px;
@@ -549,7 +520,6 @@ ul.spinner>li {
     top: 0px;
     left: 40px;
   }
-
   100% {
     top: 0px;
     left: 40px;
@@ -723,8 +693,7 @@ tr:hover>td>.row-action-button {
   color: gray;
 }
 
-thead,
-tfoot {
+thead, tfoot {
   background-color: whitesmoke;
 }
 
@@ -965,13 +934,11 @@ comments-block .ngx-toolbar-set {
   margin-top: 5px;
 }
 
-div.comments-block+.comment-editor .ngx-toolbar,
-div.row-button+.comment-editor .ngx-toolbar {
+div.comments-block+.comment-editor .ngx-toolbar, div.row-button+.comment-editor .ngx-toolbar {
   border-top: 1px solid #ddd !important;
 }
 
-div.comments-block+.comment-editor .ngx-editor-textarea,
-div.row-button+.comment-editor .ngx-editor-textarea {
+div.comments-block+.comment-editor .ngx-editor-textarea, div.row-button+.comment-editor .ngx-editor-textarea {
   border-top: 1px solid #ddd !important;
   border-bottom: 0 !important;
 }
@@ -1070,7 +1037,6 @@ textarea.form-control {
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
-
   to {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
@@ -1081,7 +1047,6 @@ textarea.form-control {
   from {
     transform: scale(1) rotate(0deg);
   }
-
   to {
     transform: scale(1) rotate(360deg);
   }

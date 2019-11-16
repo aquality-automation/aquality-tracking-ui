@@ -2,8 +2,8 @@
     {{selectedItemText}}
 </div>
 <div *ngIf="array && !disabled" class="selector-container">
-    <button type="button" class="form-control lookup-field selector-main-button" (click)="toggle()" (blur)="toggleOff()"
-        [disabled]="disabled" [ngClass]="{
+    <button type="button" class="form-control lookup-field selector-main-button" (keyup.esc)="toggleOff()"
+        (click)="toggle()" (blur)="toggleOff()" [disabled]="disabled" [ngClass]="{
       'lookup-selector-sm': small,
       'inner-text-placeholder' : selectedItemText === placeholder
     }">{{selectedItemText}}<span class="caret caret-custom"></span></button>
@@ -15,7 +15,8 @@
             <li *ngIf="allowEmptyValue" class="selector-button btn-default" (mousedown)="select(emptyValue)">
                 None
             </li>
-            <li class="selector-button btn-default" *ngFor="let item of filteredArray" [title]="textToShow(item)" (mousedown)="select(item)">
+            <li class="selector-button btn-default" *ngFor="let item of filteredArray" [title]="textToShow(item)"
+                (mousedown)="select(item)">
                 {{textToShow(item)}}
             </li>
         </ul>

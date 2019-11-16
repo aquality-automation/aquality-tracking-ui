@@ -51,7 +51,7 @@
   </div>
 </div>
 <div class="panel-body">
-  <table-filter *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20"
+  <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20"
     [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
     [defaultSortBy]="{ property: 'name', order: 'desc' }"
     [allowDelete]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"

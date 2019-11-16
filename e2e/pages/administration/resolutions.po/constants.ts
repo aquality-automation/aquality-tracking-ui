@@ -2,7 +2,7 @@ import { by, element } from 'protractor';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 import { SmartTable } from '../../../elements/smartTable.element';
 
-export const baseUrl = '/administration/global/users';
+export const baseUrl = '#/administration/global/users';
 
 export const elements = {
     uniqueElement: element(by.css('#resolutions-administration.active')),

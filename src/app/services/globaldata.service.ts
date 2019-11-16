@@ -6,17 +6,18 @@ import { Subject } from 'rxjs/Subject';
 
 @Injectable()
 export class GlobalDataService {
+  private currentProjectSource = new Subject<Project>();
   currentUser: User;
   auditModule: boolean;
   localPermissions: LocalPermissions;
   loading = false;
   anyLocalPermissions: LocalPermissions[];
-  currentProject: Project;
   public requestQuery = 0;
   public returnURL: string;
   public teamMember: boolean;
   public isLoaderShown: boolean;
   public showLoader: Subject<boolean> = new Subject<boolean>();
+  currentProject$ = this.currentProjectSource.asObservable();
 
   constructor()  {
     this.showLoader.subscribe((value) => {
@@ -28,13 +29,16 @@ export class GlobalDataService {
     this.showLoader.next(value);
   }
 
+  announceCurrentProject(project: Project) {
+    this.currentProjectSource.next(project);
+  }
+
   Clear() {
     this.currentUser = undefined;
     this.auditModule = undefined;
     this.localPermissions = undefined;
     this.loading = false;
     this.anyLocalPermissions = undefined;
-    this.currentProject = undefined;
     this.requestQuery = 0;
     this.returnURL = undefined;
     this.teamMember = undefined;

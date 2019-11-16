@@ -30,7 +30,11 @@ export class BasePage {
     }
 
     async refresh() {
-        await browser.refresh();
+        return browser.refresh();
+    }
+
+    async back() {
+        return browser.navigate().back();
     }
 
     async getCurrentProjectId(): Promise<number> {

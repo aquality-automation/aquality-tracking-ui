@@ -1,0 +1,13 @@
+<div>
+    <label *ngIf="!isModelExists() && editable" class="add_btn" [for]="name">Add</label>
+    <label *ngIf="isModelExists() && isModelImage()" class="show_btn" (click)="toggleShow()">Show | </label>
+    <label *ngIf="isModelExists() && !isModelImage()" class="download_btn" (click)="download()">Download | </label>
+    <label *ngIf="isModelExists() && editable" class="change_btn" [for]="name">Change | </label>
+    <label *ngIf="isModelExists() && editable" class="remove_btn" (click)="remove()">Remove</label>
+    <input class="file" type="file" [id]="name" (change)="handleFileInput($event.target.files)" accept=".jpg, .jpeg, .png">
+</div>
+
+<div [hidden]="!showPreview || !isModelExists()" class="overlay img-modal-overlay viwer" (click)="toggleShow()">
+    <fa-icon class="close" [icon]="faTimes"></fa-icon>
+    <img class="modal-content" [src]="model">
+</div>

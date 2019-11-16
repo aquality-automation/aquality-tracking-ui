@@ -8,6 +8,8 @@ export class Project {
   coordinator?: User;
   customer_id?: number;
   customer?: Customer;
+  steps?: boolean | number;
+  compare_result_pattern?: string;
 }
 
 export class ImportBodyPattern {

@@ -2,6 +2,7 @@ import { by, element } from 'protractor';
 import { CreateOptions } from './create.options';
 import { TestsOptions } from './tests.options';
 import { UserOptions } from './user.options';
+import { AuditsOptions } from './audits.options';
 
 export class MenuBar {
     clickLogo() {
@@ -24,6 +25,11 @@ export class MenuBar {
 
     import() {
         return element(by.id('Import')).click();
+    }
+
+    async audits() {
+        await element(by.css('#Audits > a')).click();
+        return new AuditsOptions();
     }
 
     async create() {

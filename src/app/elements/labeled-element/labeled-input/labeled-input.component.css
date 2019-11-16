@@ -1,0 +1,21 @@
+.label-element {
+    width: 100%;
+    display: block;
+    margin-right: 5px; 
+}
+
+.label-element label{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.input-element {
+    width: 100%;
+    display: inline-block;
+}
+
+.container-element {
+    padding: 5px;
+    width: 100%;
+}

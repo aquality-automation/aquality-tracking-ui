@@ -1,52 +1,62 @@
 import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element } from 'protractor';
 import { BaseElement } from '../base.element';
 import { logger } from '../../utils/log.util';
-import { Checkbox } from '../checkbox.element';
-import { InlineEditor } from '../inlineEditor.element';
 import { Lookup } from '../lookup.element';
-import { Input } from '../input.element';
 import { testData } from '../../utils/testData.util';
+import { rightClick } from '../../utils/click.util';
+import { Paginator } from './paginator.element';
+import { Row, CellElements } from './row.element';
 
 const EC = protractor.ExpectedConditions;
 
 export class SmartTable extends BaseElement {
-    constructor(locator: Locator) {
-        super(locator);
-    }
-
-    private creationRow = this.element.element(by.css('.ft-creation-row'));
-    private filterRow = this.element.element(by.css('.filter-header'));
+    private paginator: Paginator;
+    private creationRow = new Row(this.element.element(by.css('.ft-creation-row')));
+    private bulkEditRow = new Row(this.element.element(by.css('.ft-bulk-edit-row')));
+    private filterRow = new Row(this.element.element(by.css('.filter-header')));
     private creationToggler = this.element.element(by.css('.ft-create-toggler'));
     private creationError = this.element.element(by.css('.ft-create-error'));
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
     private totalLabel = this.element.element(by.css('.ft-total-label'));
     private getCSVButton = this.element.element(by.id('getSCV'));
 
-    private createRowElements = {
-        confirmPassword: (columnIndex: number) =>
-            new Input(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[contains(@class,'ft-confirm-password')]`))),
-        password: (columnIndex: number): Input =>
-            new Input(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[contains(@class,'ft-password')]`))),
-        input: (columnIndex: number): Input =>
-            new Input(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[@type="text"]`))),
-        checkbox: (columnIndex: number): Checkbox =>
-            new Checkbox(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input[@type="checkbox"]`))),
-        coloredLookup: (columnIndex: number): Lookup =>
-            new Lookup(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
-    };
+    constructor(locator: Locator) {
+        super(locator);
+        this.paginator = new Paginator(locator);
+    }
 
-    private filterRowElements = {
-        input: (columnIndex: number): Input =>
-            new Input(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/input`))),
-        coloredLookup: (columnIndex: number): Lookup =>
-            new Lookup(this.filterRow.element(by.xpath(`./td[${columnIndex + 1}]/lookup-colored`))),
-    };
+    public async getRow(value: string | number, columnName: string): Promise<Row> {
+        const rows = await this.getRows(value, columnName);
+        if (rows.length < 1) {
+            const isPaginatorPresent = await this.paginator.isPresent();
+            const isOnLastPage = !(await this.paginator.isNextExist());
+            if (isPaginatorPresent && !isOnLastPage) {
+                await this.paginator.next();
+                return new Row((await this.getRow(value, columnName)).element);
+            }
+            throw new Error(`No rows were found by '${value}' value in '${columnName}' column`);
+        }
 
-    private rowElements = {
-        inlineEditor: (cell: ElementFinder) => new InlineEditor(cell.element(by.tagName('inline-editor'))),
-        checkbox: (cell: ElementFinder) => new Checkbox(cell.element(by.xpath('.//input[@type="checkbox"]'))),
-        lookup: (cell: ElementFinder) => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
-    };
+        if (rows.length > 1) {
+            logger.warn(`Multiple rows were found by '${value}' value in '${columnName}' column, the first will be used`);
+        }
+        return new Row(rows[0]);
+    }
+
+    public async getElementsForCell(columnName: string, searchValue: string | number, searchName: string): Promise<CellElements> {
+        const columnIndex = await this.getColumnIndex(columnName);
+        return (await this.getRow(searchValue, searchName)).getRowElements(columnIndex);
+    }
+
+    public async getRowByIndex(index: number): Promise<Row> {
+        const rows = await this.getAllRows();
+        return new Row(rows[index]);
+    }
+
+    public async selectRow(value: string, columnName: string) {
+        const row = await this.getRow(value, columnName);
+        return row.editRowCellValueByColumnIndex(true, 0);
+    }
 
     public async getTotalRows() {
         const totalLabel = await this.totalLabel.getText();
@@ -61,14 +71,14 @@ export class SmartTable extends BaseElement {
     public async openCreation() {
         if (!(await this.isCreationOpened())) {
             await this.creationToggler.click();
-            return browser.wait(EC.visibilityOf(this.creationRow), 2000, 'Table Creation row was not opened');
+            return browser.wait(EC.visibilityOf(this.creationRow.element), 2000, 'Table Creation row was not opened');
         }
     }
 
     public async closeCreation() {
         if (await this.isCreationOpened()) {
             await this.creationToggler.click();
-            return browser.wait(EC.invisibilityOf(this.creationRow), 2000, 'Table Creation row was not closed');
+            return browser.wait(EC.invisibilityOf(this.creationRow.element), 2000, 'Table Creation row was not closed');
         }
     }
 
@@ -80,79 +90,74 @@ export class SmartTable extends BaseElement {
     }
 
     public async setFilter(value: string | boolean | number, columnName: string) {
-        const columnIndex = await this.getColumnIndex(columnName);
-        if (await this.filterRow.isDisplayed()) {
-            if (await this.filterRowElements.input(columnIndex).element.isPresent()) {
-                return this.filterRowElements.input(columnIndex).typeText(value as string);
-            } if (await this.filterRowElements.coloredLookup(columnIndex).element.isPresent()) {
-                return this.filterRowElements.coloredLookup(columnIndex).select(value as string);
-            }
+        if (await this.filterRow.isVisible()) {
+            const columnIndex = await this.getColumnIndex(columnName);
+            return this.filterRow.editRowCellValueByColumnIndex(value, columnIndex);
         }
         throw Error('Filter is not available for selected table');
     }
 
     public async fillCreation(value: string | boolean | number, columnName: string) {
         const columnIndex = await this.getColumnIndex(columnName);
-        if (await this.isCreationOpened()) {
-            if (await this.createRowElements.input(columnIndex).element.isPresent()) {
-                return this.createRowElements.input(columnIndex).typeText(value as string);
-            } if (await this.createRowElements.checkbox(columnIndex).element.isPresent()) {
-                return this.createRowElements.checkbox(columnIndex).setState(value as boolean);
-            } if (await this.createRowElements.coloredLookup(columnIndex).element.isPresent()) {
-                return this.createRowElements.coloredLookup(columnIndex).select(value as string);
-            }
+        return this.creationRow.editRowCellValueByColumnIndex(value, columnIndex);
+    }
+
+    public async fillBulkRow(value: string | boolean | number, columnName: string) {
+        if (await this.isBulkEditOpened()) {
+            const columnIndex = await this.getColumnIndex(columnName);
+            return this.bulkEditRow.editRowCellValueByColumnIndex(value, columnIndex);
         }
-        throw Error('Creation Row is not opened');
+        throw Error('Bulk edit row is not opened');
     }
 
     public async fillCreationPassword(value: string | boolean | number, columnName: string) {
-        const columnIndex = await this.getColumnIndex(columnName);
         if (await this.isCreationOpened()) {
-            return this.createRowElements.password(columnIndex).typeText(value as string);
+            const columnIndex = await this.getColumnIndex(columnName);
+            return (await this.creationRow.getRowElements(columnIndex))
+                .password().typeText(value as string);
         }
         throw Error('Creation Row is not opened');
     }
 
     public async fillCreationConfirmPassword(value: string | boolean | number, columnName: string) {
-        const columnIndex = await this.getColumnIndex(columnName);
         if (await this.isCreationOpened()) {
-            return this.createRowElements.confirmPassword(columnIndex).typeText(value as string);
+            const columnIndex = await this.getColumnIndex(columnName);
+            return (await this.creationRow.getRowElements(columnIndex))
+                .confirmPassword().typeText(value as string);
         }
         throw Error('Creation Row is not opened');
     }
 
     public async clickCreateAction() {
-        return this.creationRow.element(by.css('.row-action-button')).click();
+        return this.creationRow.clickAction();
+    }
+
+    public async clickBulkAction() {
+        return this.bulkEditRow.clickAction();
     }
 
     public async getCreationTextFieldValue(columnName: string) {
         const columnIndex = await this.getColumnIndex(columnName);
         if (await this.isCreationOpened()) {
-            return new Input(this.creationRow.element(by.xpath(`./td[${columnIndex + 1}]/input`))).getValue();
+            return this.creationRow.getRowCellValue(columnIndex);
         }
 
         throw Error('Creation Row is not opened');
     }
 
     public async getRowValues(value: string, columnName: string) {
-        const result: any = {};
-        const row = await this.getRow(value, columnName);
         const columns = await this.getColumns();
+        const row = await this.getRow(value, columnName);
+        const result = await row.getRowValues();
         for (let i = 0; i < columns.length; i++) {
-            const cell = await this.getCellFromRow(row, i);
-            const checkbox = cell.element(by.xpath('.//input[@type="checkbox"]'));
-            if (await checkbox.isPresent()) {
-                result[await columns[i].getText()] = await checkbox.isSelected();
-            } else {
-                result[await columns[i].getText()] = await cell.getText();
-            }
+            result[await columns[i].getText()] = result[`${i}`];
         }
         return result;
     }
 
     public async clickAction(value: string, columnName: string) {
-        const row: ElementFinder = await this.getRow(value, columnName);
-        return row.element(by.css('.row-action-button')).click();
+        const row = await this.getRow(value, columnName);
+        return row.clickAction();
     }
 
     public async isRowExists(value: string, columnName: string) {
@@ -161,7 +166,7 @@ export class SmartTable extends BaseElement {
     }
 
     public async clickRow(value: string, columnName: string) {
-        return (await this.getRow(value, columnName)).click();
+        return (await this.getRow(value, columnName)).element.click();
     }
 
     public async clickCell(columnToClick: string, searchValue: string, searchColumn: string) {
@@ -171,22 +176,13 @@ export class SmartTable extends BaseElement {
 
     public async rightClickCell(columnToClick: string, searchValue: string, searchColumn: string) {
         const cell = await this.getCell(columnToClick, searchValue, searchColumn);
-        return browser.actions().click(cell, protractor.Button.RIGHT).perform();
+        return rightClick(cell);
     }
 
     public async editRow(value: string | boolean, column: string, searchValue: string, searchColumn: string) {
-        const cell = await this.getCell(column, searchValue, searchColumn);
-        if (await this.rowElements.inlineEditor(cell).element.isPresent()) {
-            return this.rowElements.inlineEditor(cell).changeAndSetValue(value as string);
-        }
-        if (await this.rowElements.checkbox(cell).element.isPresent()) {
-            return this.rowElements.checkbox(cell).setState(value as boolean);
-        }
-        if (await this.rowElements.lookup(cell).element.isPresent()) {
-            return this.rowElements.lookup(cell).select(value as string);
-        }
-
-        throw new Error('You are trying to edit not editable column!');
+        const row = await this.getRow(searchValue, searchColumn);
+        const columnIndex = await this.getColumnIndex(column);
+        return row.editRowCellValueByColumnIndex(value, columnIndex);
     }
 
     public async clickCellLink(columnWithLink: string, searchValue: string, searchColumn: string) {
@@ -210,23 +206,20 @@ export class SmartTable extends BaseElement {
     }
 
     public async getCellLookup(column: string, searchValue: string, searchColumn: string): Promise<Lookup> {
-        const cell = await this.getCell(column, searchValue, searchColumn);
-        return this.rowElements.lookup(cell);
+        const columnIndex = await this.getColumnIndex(column);
+        const row = await this.getRow(searchValue, searchColumn);
+        const rowElements = await row.getRowElements(columnIndex);
+        return rowElements.lookup();
     }
 
-    public async isRowEditable(searchValue: string, searchColumn: string) {
+    public async isRowEditableByValue(searchValue: string, searchColumn: string) {
         const row = await this.getRow(searchValue, searchColumn);
-        const columns: ElementFinder[] = await this.getColumns();
-        for (let i = 0; i < columns.length; i++) {
-            const cell = await this.getCellFromRow(row, i);
-            const result = await this.isCellContainsEditableElement(cell);
-            if (result) {
-                logger.info(`Row editable by ${await columns[i].getText()}`);
-                return true;
-            }
-        }
+        return row.isRowEditable();
+    }
 
-        return false;
+    public async isRowEditableByIndex(index: number) {
+        const row = await this.getRowByIndex(index);
+        return row.isRowEditable();
     }
 
     public async clickRefresh() {
@@ -269,13 +262,9 @@ export class SmartTable extends BaseElement {
     }
 
     public async isFilterSelected(columnName: string, value: string) {
-        const columnIndex = await this.getColumnIndex(columnName);
-        if (await this.filterRow.isDisplayed()) {
-            if (await this.filterRowElements.input(columnIndex).element.isPresent()) {
-                return value === await this.filterRowElements.input(columnIndex).getValue();
-            } if (await this.filterRowElements.coloredLookup(columnIndex).element.isPresent()) {
-                return value === await this.filterRowElements.coloredLookup(columnIndex).getSelectedValue();
-            }
+        if (await this.filterRow.element.isDisplayed()) {
+            const columnIndex = await this.getColumnIndex(columnName);
+            return value === await this.filterRow.getRowCellValue(columnIndex);
         }
         throw Error('Filter is not available for selected table');
     }
@@ -300,30 +289,34 @@ export class SmartTable extends BaseElement {
     }
 
 
-    public async clickSorter(columnName: string) {
+    public async clickSorter(columnName: string): Promise<void> {
         const columns = await this.getColumns();
         const columnIndex = await this.getColumnIndex(columnName);
         return columns[columnIndex].click();
     }
 
-    private async isCellContainsEditableElement(cell: ElementFinder) {
-        const inlineEditor = this.rowElements.inlineEditor(cell);
-        const checkbox = this.rowElements.checkbox(cell);
-        const lookup = this.rowElements.lookup(cell);
-        if (await inlineEditor.element.isPresent()) {
-            return true;
-        }
-        if (await checkbox.element.isPresent()) {
-            return checkbox.element.isEnabled();
-        }
-        if (await lookup.element.isPresent()) {
-            return lookup.isEnabled();
-        }
-        return false;
+    public async rightClickSorter(columnName: string): Promise<void> {
+        const columns = await this.getColumns();
+        const columnIndex = await this.getColumnIndex(columnName);
+        return rightClick(columns[columnIndex]);
+    }
+
+    public async getColumnName(index: number): Promise<string> {
+        const columns = await this.getColumns();
+        return columns[index].getText();
+    }
+
+    public async isColumnExist(columnName: string): Promise<boolean> {
+        const index = await this.getColumnIndex(columnName);
+        return index >= 0;
     }
 
     private isCreationOpened() {
         return this.creationRow.isPresent();
+    }
+
+    private isBulkEditOpened() {
+        return this.bulkEditRow.isPresent();
     }
 
     private getColumns(): ElementArrayFinder {
@@ -351,40 +344,23 @@ export class SmartTable extends BaseElement {
     private async getCell(column: string, searchValue: string | number, searchColumn: string): Promise<ElementFinder> {
         const row = await this.getRow(searchValue, searchColumn);
         const columnIndex = await this.getColumnIndex(column);
-        return this.getCellFromRow(row, columnIndex);
+        return row.getCellFromRow(columnIndex);
     }
 
     private async getCellUsingRowIndex(column: string, index: number): Promise<ElementFinder> {
         const row = await this.getRowByIndex(index);
         const columnIndex = await this.getColumnIndex(column);
-        return this.getCellFromRow(row, columnIndex);
+        return row.getCellFromRow(columnIndex);
     }
 
     private async getRows(value: string | number, columnName: string) {
         const columnIndex = await this.getColumnIndex(columnName);
-        const locator = `.//tbody/tr[td[${columnIndex + 1}]//*[contains(text(),'${value}')]]`;
+        const locator = `.//tbody/tr[contains(@class,'ft-row') and td[${columnIndex + 1}]//*[contains(text(),'${value}')]]`;
         logger.info(`Looking for rows using ${locator} xpath`);
         return this.element.all(by.xpath(locator));
     }
 
     private async getAllRows() {
         return this.element.all(by.xpath(`.//tbody/tr`));
-    }
-
-    private async getRow(value: string | number, columnName: string): Promise<ElementFinder> {
-        const rows = await this.getRows(value, columnName);
-        if (rows.length < 1) {
-            throw new Error(`No rows were found by '${value}' value in '${columnName}' column`);
-        }
-
-        if (rows.length > 1) {
-            logger.warn(`Multiple rows were found by '${value}' value in '${columnName}' column, the first will be used`);
-        }
-        return rows[0];
-    }
-
-    private async getRowByIndex(index: number): Promise<ElementFinder> {
-        const rows = await this.getAllRows();
-        return rows[index];
     }
 }

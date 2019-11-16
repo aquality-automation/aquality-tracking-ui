@@ -1,0 +1,45 @@
+<div class="col-sm-2 sidebar">
+    <mat-nav-list>
+        <div class="sidebar-header">
+            <span class="sidebar-header">Global</span>
+        </div>
+        <mat-list-item id='app-settings-administration' routerLink="global/appSettings"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Application Settings
+        </mat-list-item>
+        <mat-list-item id='users-administration' routerLink="global/users" [routerLinkActiveOptions]="{ exact: false }"
+            routerLinkActive="active">
+            Users
+        </mat-list-item>
+    </mat-nav-list>
+
+    <mat-nav-list>
+        <div class="sidebar-header">
+            <span class="sidebar-header">Project</span>
+        </div>
+        <mat-list-item id='projectSettings-administration' routerLink="project/projectSettings"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Settings
+        </mat-list-item>
+        <mat-list-item id='permissions-administration' routerLink="project/permissions"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Permissions
+        </mat-list-item>
+        <mat-list-item id='resolutions-administration' routerLink="project/resolutions"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Resolutions
+        </mat-list-item>
+        <mat-list-item id='body-pattern-administration' routerLink="project/importBodyPatterns"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            Unique Body Patterns
+        </mat-list-item>
+        <mat-list-item id='api-token-administration' routerLink="project/apiToken"
+            [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
+            API Token
+        </mat-list-item>
+    </mat-nav-list>
+</div>
+<div class="col-sm-10">
+    <br>
+    <router-outlet></router-outlet>
+</div>

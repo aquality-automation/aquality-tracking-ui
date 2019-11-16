@@ -40,6 +40,14 @@ export class TestRunView extends BasePage {
     return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.resolution];
   }
 
+  async getComment(testName: string): Promise<string> {
+    return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.comment];
+  }
+
+  setComment(comment: string, testName: string) {
+    return elements.resultsTable.editRow(comment, columns.comment, testName, columns.testName);
+  }
+
   async isResolutionPresent(resolutionName: string, testName: string) {
     const lookup = await elements.resultsTable.getCellLookup(columns.resolution, testName, columns.testName);
     return lookup.isOptionPresent(resolutionName);
@@ -100,5 +108,11 @@ export class TestRunView extends BasePage {
 
   sortResultsByName() {
     return elements.resultsTable.clickSorter(columns.testName);
+  }
+
+  async getId(): Promise<number> {
+    const url = `${await browser.getCurrentUrl()}/`;
+    const regexp = /\/testrun\/(\d+)/;
+    return +(url.match(regexp)[1]);
   }
 }

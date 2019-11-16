@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { CustomerComponent } from './customer.component';
+import { CustomerComponent } from './customer-list/customer.component';
 import { SharedModule } from '../../shared/shared.module';
 import { CustomerDashboardGuard, CustomerCreateGuard } from '../../shared/guards/can-activate-customers';
 import { customerRouting } from './customer.routing';

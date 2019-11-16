@@ -56,6 +56,6 @@ export class ResolutionAdministration extends AdministrationBase {
   }
 
   isResolutionEditable(name: string): Promise<boolean> {
-    return elements.resolutionsTable.isRowEditable(name, columns.name);
+    return elements.resolutionsTable.isRowEditableByValue(name, columns.name);
   }
 }

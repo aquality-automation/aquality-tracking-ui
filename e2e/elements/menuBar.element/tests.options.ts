@@ -1,15 +1,21 @@
 import { by, element } from 'protractor';
 
 export class TestsOptions {
+    private _optionLocator = (optionName: string) => by.xpath(`//*[@id="Tests"]//a[text()="${optionName}"]`);
+
     async all() {
-        return element(by.xpath('//*[@id="Tests"]//a[text()="All"]')).click();
+        return element(this._optionLocator('All')).click();
     }
 
     async suites() {
-        return element(by.xpath('//*[@id="Tests"]//a[text()="Suites"]')).click();
+        return element(this._optionLocator('Suites')).click();
     }
 
     async dashboard() {
-        return element(by.xpath('//*[@id="Tests"]//a[text()="Dashboard"]')).click();
+        return element(this._optionLocator('Dashboard')).click();
+    }
+
+    async steps() {
+        return element(this._optionLocator('Steps')).click();
     }
 }

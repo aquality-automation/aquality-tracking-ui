@@ -36,7 +36,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     const testResultView = new TestResultView();
     const resolutionAdministration: ResolutionAdministration = new ResolutionAdministration();
     const resolution: ResultResolution = resolutions.flowTest;
-    const globalResolutions: ResultResolution[] = resolutions.global;
+    const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 
     const createTestProject = async (project: Project) => {
         await projectList.clickCreateProjectButton();
@@ -138,7 +138,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
             await resolutionAdministration.clickRemoveResolution(resolution.name);
             await expect(resolutionAdministration.modal.isVisible()).toBe(true, 'Remove Resolution modal is not opened');
 
-            await resolutionAdministration.modal.clickActionBtn('yes');
+            await resolutionAdministration.modal.clickYes();
             await resolutionAdministration.refresh();
             await resolutionAdministration.sidebar.resolutions();
             await resolutionAdministration.selectProject(projects.resolutionProject.name);

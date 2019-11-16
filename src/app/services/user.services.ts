@@ -26,11 +26,22 @@ export class UserService extends SimpleRequester {
     }).toPromise();
   }
 
-  private isAuthorized(handleError: boolean = true) {
-    return this.doGet('/users/isAuthorized', undefined, false, handleError).map(res => {
-      this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
-      return res.json();
-    }).toPromise();
+  private isAuthorized(handleError: boolean = true): Promise<User> {
+    const result = new Promise(async (resolve, reject) => {
+      if (this.isAuthHeaderExists()) {
+        try {
+          const checkHeaderPromise = await this.doGet('/users/isAuthorized', undefined, false, handleError).map(res => {
+            this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
+            return res.json();
+          }).toPromise();
+          resolve(checkHeaderPromise);
+        } catch (err) {
+          reject();
+        }
+      }
+      reject();
+    });
+    return result;
   }
 
   getPermissionsForProject(projectId: number) {
@@ -90,16 +101,15 @@ export class UserService extends SimpleRequester {
     });
   }
 
-  async redirectToLogin() {
-    if (!(await this.router.navigate(['/']))) {
-      await this.router.navigate(['/']);
+  async redirectToLogin(returnUrl?: string) {
+    if (!(await this.router.navigate(['/'], { queryParams: { returnUrl } }))) {
+      await this.router.navigate(['/'], { queryParams: { returnUrl } });
     }
   }
 
-  async handleIsLogged(returnUrl?: string, handleError: boolean = true): Promise<boolean> {
+  async handleIsLogged(handleError: boolean = true): Promise<boolean> {
     const isLogged = await this.checkAuth(handleError);
     if (!isLogged) {
-      this.globaldata.returnURL = returnUrl || this.router.url;
       this.cookieService.remove('iio78');
     }
     return isLogged;

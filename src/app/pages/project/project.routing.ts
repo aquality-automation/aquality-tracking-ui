@@ -1,18 +1,18 @@
 import { Routes, RouterModule } from '@angular/router';
-import { ProjectComponent } from './project.component';
-import { CreateProjectComponent } from './create-project.component';
-import { ProjectViewComponent } from './project-veiw.component';
-import { TestRunsComponent } from './testrun/testruns.component';
-import { TestRunViewComponent } from './testrun/testrun.view.component';
+import { ProjectComponent } from './project-list/project.component';
+import { CreateProjectComponent } from './project-create/create-project.component';
+import { ProjectViewComponent } from './project-view/project-veiw.component';
+import { TestRunsComponent } from './testrun/testrun-list/testruns.component';
+import { TestRunViewComponent } from './testrun/testrun-view/testrun.view.component';
 import { CreateMilestoneComponent } from './milestone/create-milestone.component';
-import { CreateTestRunComponent } from './testrun/create-testrun.component';
+import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.component';
 import { CreateTestSuiteComponent } from './testsuite/create-testsuite.component';
-import { CreateTestComponent } from './test/create-test.component';
+import { CreateTestComponent } from './test/test-create/create-test.component';
 import { TestSuiteComponent } from './testsuite/testsuite.component';
 import { TestSuiteViewComponent } from './testsuite/testsuite-view.component';
-import { TestViewComponent } from './test/test.view.component';
+import { TestViewComponent } from './test/test-view/test.view.component';
 import { ImportComponent } from './import/import.component';
-import { TestResultViewComponent } from './testresult/testresult.view.component';
+import { TestResultViewComponent } from './results/results-view/testresult.view.component';
 import {
   AuthGuard,
   CreateProjectGuard,
@@ -30,7 +30,8 @@ import {
 import { TestrunCompareComponent } from './testrun/testrun-compare/testrun-compare.component';
 import { TestrunMatrixComponent } from './testrun/testrun-matrix/testrun-matrix.component';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
-import { PendingChanges } from '../../shared/guards/can-deactivate-guard.service';
+import { ResultViewCanDeactivate, TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
+import { StepsListComponent } from './steps/steps-list/steps-list.component';
 
 
 const projectRoutes: Routes = [
@@ -58,10 +59,11 @@ const projectRoutes: Routes = [
             ]
           },
           { path: 'tests', component: TestSuiteViewComponent, canActivate: [TestSuiteGuard] },
+          { path: 'steps', component: StepsListComponent, canActivate: [TestSuiteGuard] },
           { path: 'import', component: ImportComponent, canActivate: [ProjectImportGuard] },
-          { path: 'test/:testId', component: TestViewComponent, canActivate: [TestGuard] },
+          { path: 'test/:testId', component: TestViewComponent, canActivate: [TestGuard], canDeactivate: [TestViewCanDeactivate] },
           { path: 'testresult/:testresultId', component: TestResultViewComponent,
-            canActivate: [TestResultGuard], canDeactivate: [PendingChanges] },
+            canActivate: [TestResultGuard], canDeactivate: [ResultViewCanDeactivate] },
           { path: 'create/milestone', component: CreateMilestoneComponent, canActivate: [CreateMilestoneGuard] },
           { path: 'create/testrun', component: CreateTestRunComponent, canActivate: [CreateTestRunGuard] },
           { path: 'create/testsuite', component: CreateTestSuiteComponent, canActivate: [CreateTestSuiteGuard] },

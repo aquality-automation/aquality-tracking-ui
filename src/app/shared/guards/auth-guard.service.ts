@@ -12,9 +12,11 @@ export class AuthGuard implements CanActivate {
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const isLogged = await this.userService.handleIsLogged(state.url);
+    const isLogged = await this.userService.handleIsLogged();
+    console.log(isLogged);
+    console.log(state.url);
     if (!isLogged) {
-      this.userService.redirectToLogin();
+      this.userService.redirectToLogin(state.url);
     }
     return isLogged;
   }
@@ -29,7 +31,7 @@ export class ProjectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     const manager = this.userService.IsManager() || this.userService.IsAuditor() || this.userService.IsAuditAdmin();
@@ -52,7 +54,7 @@ export class CreateProjectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (this.userService.IsManager()
@@ -75,7 +77,7 @@ export class TestRunGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (this.userService.IsManager() || this.userService.IsAuditAdmin() || this.userService.IsAuditor()
@@ -97,7 +99,7 @@ export class CreateTestRunGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     let hasLocalPerm: boolean;
@@ -122,7 +124,7 @@ export class CreateMilestoneGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     let hasLocalPerm: boolean;
@@ -147,7 +149,7 @@ export class TestSuiteGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (this.userService.IsManager() || this.userService.IsAuditAdmin() || this.userService.IsAuditor()
@@ -169,7 +171,7 @@ export class CreateTestSuiteGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     let hasLocalPerm: boolean;
@@ -194,7 +196,7 @@ export class CreateTestGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     let hasLocalPerm: boolean;
@@ -219,7 +221,7 @@ export class TestGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (this.userService.IsManager() || this.userService.IsAuditAdmin() || this.userService.IsAuditor()
@@ -241,80 +243,11 @@ export class TestResultGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (this.userService.IsManager() || this.userService.IsAuditAdmin() || this.userService.IsAuditor()
       || this.userService.HaveAnyLocalPermissions(+state.url.split('/')[2])) {
-      return true;
-    }
-    this.router.navigate(['**']);
-    return false;
-  }
-}
-
-@Injectable()
-export class AdministrationGlobalGuard implements CanActivate {
-
-  constructor(
-    private router: Router,
-    public userService: UserService
-  ) { }
-
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    if (this.userService.IsAdmin()) {
-      return true;
-    }
-    this.router.navigate(['/administration/project/permissions']);
-    return false;
-  }
-}
-
-@Injectable()
-export class AdministrationProjectGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    public userService: UserService
-  ) { }
-
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    await this.userService.AnyLocalPermissions();
-    if (this.userService.IsManager()
-      || this.userService.IsAdmin()
-      || this.userService.AnyLocalAdmin()
-      || this.userService.AnyLocalManager()) {
-      return true;
-    }
-    this.router.navigate(['**']);
-    return false;
-  }
-}
-
-@Injectable()
-export class AdministrationGuard implements CanActivate {
-  constructor(
-    private router: Router,
-    public userService: UserService
-  ) { }
-
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    await this.userService.AnyLocalPermissions();
-    if (this.userService.IsAdmin()
-      || this.userService.IsManager()
-      || this.userService.AnyLocalAdmin()
-      || this.userService.AnyLocalManager()) {
       return true;
     }
     this.router.navigate(['**']);
@@ -331,7 +264,7 @@ export class ProjectImportGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     let hasLocalPerm: boolean;

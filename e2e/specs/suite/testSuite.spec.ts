@@ -34,7 +34,7 @@ describe('Full Admin Test Suite', () => {
   afterAll(async () => {
     await projectList.navigateTo();
     await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickActionBtn('yes');
+    await projectList.modal.clickYes();
     if (await projectList.menuBar.isLogged()) {
       return projectList.menuBar.clickLogOut();
     }

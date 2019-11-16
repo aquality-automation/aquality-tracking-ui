@@ -22,7 +22,7 @@ export class LogIn extends BasePage {
   }
 
   async logIn(userName: string, password: string) {
-    await this.navigateTo();
+    await this.menuBar.clickLogo();
     if (await this.menuBar.isLogged()) {
       await this.menuBar.clickLogOut();
     }

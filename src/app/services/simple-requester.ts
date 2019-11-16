@@ -26,6 +26,10 @@ export class SimpleRequester extends Http {
     super(backend, defaultOptions);
   }
 
+  isAuthHeaderExists() {
+    return !!this.cookieService.get('iio78');
+  }
+
   createAuthorizationHeader(headers: Headers) {
     if (this.cookieService.get('iio78')) {
       headers.append('Authorization', 'Basic ' + this.cookieService.get('iio78'));

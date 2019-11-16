@@ -19,27 +19,27 @@ import {
 import { ProjectService } from '../../services/project.service';
 import { projectRouting } from './project.routing';
 import { UserService } from '../../services/user.services';
-import { ProjectComponent } from './project.component';
-import { CreateProjectComponent } from './create-project.component';
-import { ProjectViewComponent } from './project-veiw.component';
-import { TestRunsComponent } from './testrun/testruns.component';
-import { TestRunViewComponent } from './testrun/testrun.view.component';
+import { ProjectComponent } from './project-list/project.component';
+import { CreateProjectComponent } from './project-create/create-project.component';
+import { ProjectViewComponent } from './project-view/project-veiw.component';
+import { TestRunsComponent } from './testrun/testrun-list/testruns.component';
+import { TestRunViewComponent } from './testrun/testrun-view/testrun.view.component';
 import { CreateMilestoneComponent } from './milestone/create-milestone.component';
-import { CreateTestRunComponent } from './testrun/create-testrun.component';
+import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.component';
 import { CreateTestSuiteComponent } from './testsuite/create-testsuite.component';
-import { CreateTestComponent } from './test/create-test.component';
+import { CreateTestComponent } from './test/test-create/create-test.component';
 import { TestSuiteComponent } from './testsuite/testsuite.component';
 import { TestSuiteViewComponent } from './testsuite/testsuite-view.component';
-import { TestViewComponent } from './test/test.view.component';
-import { ResultGridComponent } from './testresult/results.grid.component';
-import { TestResultViewComponent } from './testresult/testresult.view.component';
+import { TestViewComponent } from './test/test-view/test.view.component';
+import { ResultGridComponent } from './results/results-grid/results.grid.component';
+import { TestResultViewComponent } from './results/results-view/testresult.view.component';
 import { ImportComponent } from './import/import.component';
 import { FinalResultChartsComponent } from '../../elements/charts/finalResults/finalResults.charts.component';
 import { ResultResolutionsChartsComponent } from '../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { FinalResultsTimelineComponent } from '../../elements/charts/finalResulsTimeline/finalResult.timeline.chart.component';
 import { TestRunsResultsTimelineComponent } from '../../elements/charts/testRunsResultsGraph/testRun.results.chart';
 import { TestDurationComponent } from '../../elements/charts/testDuration/testDuration.component';
-import { ResultSearcherComponent } from './testresult/results.searcher.component';
+import { ResultSearcherComponent } from './results/results-searcher/results.searcher.component';
 import { ListToCsvService } from '../../services/listToCsv.service';
 import { ExecuteRateChartComponent } from '../../elements/charts/projectCharts/executedRate.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -50,7 +50,10 @@ import { TestrunMatrixComponent } from './testrun/testrun-matrix/testrun-matrix.
 import { PrintTestrunComponent } from './testrun/print-testrun/print-testrun.component';
 import { SafePipe } from '../../pipes/safe.pipe';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
-import { LoaderComponent } from '../../elements/loader/loader.component';
+import { StepsListComponent } from './steps/steps-list/steps-list.component';
+import { StepsService } from '../../services/steps.service';
+import { StepsContainerComponent } from './test/steps-container/steps-container.component';
+import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
 
 @NgModule({
   imports: [
@@ -90,14 +93,19 @@ import { LoaderComponent } from '../../elements/loader/loader.component';
     TestrunMatrixComponent,
     PrintTestrunComponent,
     SuiteDashboardComponent,
+    StepsListComponent,
+    StepsContainerComponent,
     SafePipe
   ],
-  providers: [ProjectService,
+  providers: [
+    ProjectService,
+    StepsService,
     DatePipe,
     UserService,
     ListToCsvService,
     ProjectGuard, CreateProjectGuard, TestRunGuard, CreateTestRunGuard,
-    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard, CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard]
+    CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard,
+    CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard, TestViewCanDeactivate]
 })
 
 export class ProjectModule { }

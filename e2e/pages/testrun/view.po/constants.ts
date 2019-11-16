@@ -3,7 +3,7 @@ import { SmartTable } from '../../../elements/smartTable.element';
 import { ResultSearcher } from '../../../elements/searcher';
 
 export const baseUrl = function (projectId, testRunId) {
-    return `/project/${projectId}/testrun/${testRunId}`;
+    return `#/project/${projectId}/testrun/${testRunId}`;
 };
 
 export const names = {
@@ -37,7 +37,7 @@ export const columns = {
     result: 'Result',
     resolution: 'Resolution',
     assignee: 'Assignee',
-    comment: 'Coment',
+    comment: 'Comment',
 };
 
 export const results = {
