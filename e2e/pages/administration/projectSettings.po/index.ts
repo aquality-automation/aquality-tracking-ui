@@ -24,6 +24,10 @@ export class ProjectSettingsAdministration extends AdministrationBase {
     return elements.saveFeatures.click();
   }
 
+  setImportCompareResultsPattern(pattern: string) {
+    return elements.importCompareResultsPattern.typeText(pattern);
+  }
+
   async setStepsForProject(project: Project, settings: ProjectSettings) {
     await this.selectProject(project.name);
     await this.setSteps(settings.stepsState);

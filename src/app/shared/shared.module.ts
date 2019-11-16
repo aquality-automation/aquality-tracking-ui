@@ -39,8 +39,9 @@ import { InputTrimModule } from 'ng2-trim-directive';
 import { LoaderComponent } from '../elements/loader/loader.component';
 import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch.component';
+import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch/labeled-switch.component';
 import { AttachmentInlineComponent } from '../elements/attachment-inline/attachment-inline.component';
+import { LabeledInputComponent } from '../elements/labeled-element/labeled-input/labeled-input.component';
 
 @NgModule({
   imports: [
@@ -90,7 +91,8 @@ import { AttachmentInlineComponent } from '../elements/attachment-inline/attachm
     OverflowDirective,
     LoaderComponent,
     LabeledSwitchComponent,
-    AttachmentInlineComponent
+    AttachmentInlineComponent,
+    LabeledInputComponent
   ],
   exports: [
     ClickableLinks,
@@ -136,7 +138,8 @@ import { AttachmentInlineComponent } from '../elements/attachment-inline/attachm
     MatButtonModule,
     FontAwesomeModule,
     LabeledSwitchComponent,
-    AttachmentInlineComponent
+    AttachmentInlineComponent,
+    LabeledInputComponent
   ]
 })
 export class SharedModule {}
