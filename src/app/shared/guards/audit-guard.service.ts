@@ -13,7 +13,7 @@ export class AuditCreateGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if ((!this.userService.handleIsLogged() || !this.userService.IsAuditAdmin())) {
@@ -35,7 +35,7 @@ export class AuditDashboardGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (!this.userService.IsAuditor() && !this.userService.IsManager() && !this.userService.IsAuditAdmin()) {
@@ -57,7 +57,7 @@ export class AuditProjectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     let islogged = false;
-    await this.userService.handleIsLogged(state.url).then(res => islogged = res);
+    await this.userService.handleIsLogged().then(res => islogged = res);
     if (!islogged) { return false; }
 
     if (isNaN(+route.params['projectId'])) {
