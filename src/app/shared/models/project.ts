@@ -9,6 +9,7 @@ export class Project {
   customer_id?: number;
   customer?: Customer;
   steps?: boolean | number;
+  compare_result_pattern?: string;
 }
 
 export class ImportBodyPattern {

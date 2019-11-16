@@ -1,5 +1,5 @@
 .label-element {
-    width: 75px;
+    width: 100%;
     display: block;
     margin-right: 5px; 
 }
@@ -10,13 +10,12 @@
     overflow: hidden;
 }
 
-.switch-element {
-    width: 60px;
-    height: 25px;
+.input-element {
+    width: 100%;
     display: inline-block;
 }
 
 .container-element {
     padding: 5px;
-    width: 150px;
+    width: 100%;
 }

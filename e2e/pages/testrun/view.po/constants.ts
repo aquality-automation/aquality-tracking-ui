@@ -37,7 +37,7 @@ export const columns = {
     result: 'Result',
     resolution: 'Resolution',
     assignee: 'Assignee',
-    comment: 'Coment',
+    comment: 'Comment',
 };
 
 export const results = {
