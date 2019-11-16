@@ -1,15 +1,17 @@
 # CHANGELOG
 
-## 0.3.3 (unreleased)
+## 0.3.3 (2019-11-16)
 
 Features:
   - Rename Import Token to API Token -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/23)
   - Steps Feature -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/46)
+  - Regex Search by Errors for Import -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/17)
 
 Bugfixes:
   - Suite Matrix does not work -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/18)
   - Local Manager can see Local Permissions page -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/22)
   - Test View: Suite link leads to 404 page -> [View Issue](https://github.com/aquality-automation/aquality-tracking-ui/issues/39)
+  - Redirection was wrong when token expired
 
 ## 0.3.2 (2019-09-10)
 
