@@ -36,7 +36,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     const testResultView = new TestResultView();
     const resolutionAdministration: ResolutionAdministration = new ResolutionAdministration();
     const resolution: ResultResolution = resolutions.flowTest;
-    const globalResolutions: ResultResolution[] = resolutions.global;
+    const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 
     const createTestProject = async (project: Project) => {
         await projectList.clickCreateProjectButton();

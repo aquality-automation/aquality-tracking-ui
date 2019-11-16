@@ -91,19 +91,19 @@ describe('Administartion: Project Settings:', () => {
             await projectsList.openProject(project.name);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_1);
-            await testRunView.setResolution(resolutions.global[2].name, testFailed);
+            await testRunView.setResolution(resolutions.global.appIssue.name, testFailed);
             await testRunView.setComment(commentRegex, testFailed);
-            await testRunView.setResolution(resolutions.global[3].name, testPending);
+            await testRunView.setResolution(resolutions.global.environmentIssue.name, testPending);
             await testRunView.setComment(commentFulText, testPending);
             await executeCucumberImport(projectId, 'Regex', importToken, [importFiles.sameError], [`${builds.build_2}.json`]);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_2);
             expect(await testRunView.getResolution(testFailed))
-                .toBe(resolutions.global[2].name, 'Resolution was not autofilled!');
+                .toBe(resolutions.global.appIssue.name, 'Resolution was not autofilled!');
             expect(await testRunView.getComment(testFailed))
                 .toBe(commentRegex, 'Comment was not autofilled!');
             expect(await testRunView.getResolution(testPending))
-                .toBe(resolutions.global[3].name, 'Resolution was not autofilled!');
+                .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
             expect(await testRunView.getComment(testPending))
                 .toBe(commentFulText, 'Comment was not autofilled!');
         });
@@ -113,11 +113,11 @@ describe('Administartion: Project Settings:', () => {
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_3);
             expect(await testRunView.getResolution(testFailed))
-                .toBe(resolutions.global[1].name, 'Resolution was autofilled!');
+                .toBe(resolutions.global.notAssigned.name, 'Resolution was autofilled!');
             expect(await testRunView.getComment(testFailed))
                 .toBe('Add...', 'Comment was autofilled!');
             expect(await testRunView.getResolution(testPending))
-                .toBe(resolutions.global[3].name, 'Resolution was not autofilled!');
+                .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
             expect(await testRunView.getComment(testPending))
                 .toBe(commentFulText, 'Comment was not autofilled!');
         });
