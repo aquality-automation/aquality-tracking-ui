@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
 import { ValueAccessorBase } from '../ValueAccessorBase';
 
 @Component({
+  template: '',
   providers: [
     {provide: NG_VALUE_ACCESSOR, useExisting: LabeledBaseComponent, multi: true}
   ],

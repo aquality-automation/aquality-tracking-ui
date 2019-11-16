@@ -42,6 +42,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch/labeled-switch.component';
 import { AttachmentInlineComponent } from '../elements/attachment-inline/attachment-inline.component';
 import { LabeledInputComponent } from '../elements/labeled-element/labeled-input/labeled-input.component';
+import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 
 @NgModule({
   imports: [
@@ -92,7 +93,8 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
     LoaderComponent,
     LabeledSwitchComponent,
     AttachmentInlineComponent,
-    LabeledInputComponent
+    LabeledInputComponent,
+    LabeledBaseComponent
   ],
   exports: [
     ClickableLinks,
@@ -139,7 +141,8 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
     FontAwesomeModule,
     LabeledSwitchComponent,
     AttachmentInlineComponent,
-    LabeledInputComponent
+    LabeledInputComponent,
+    LabeledBaseComponent
   ]
 })
 export class SharedModule {}
