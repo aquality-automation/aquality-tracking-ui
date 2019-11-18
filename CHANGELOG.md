@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.3.4 (unreleased)
+
+Features:
+  - Remove Customers Feature -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/25)
+
+Bugfixes:
+  - It should not be possible to delete Customer that assigned to the projects -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/9)
+
 ## 0.3.3 (2019-11-16)
 
 Features:
