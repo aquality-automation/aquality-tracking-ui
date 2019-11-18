@@ -31,8 +31,6 @@ describe('Full Admin Administartion User Flow', () => {
             `${userAdministration.columns.coordinator} is not correct`);
         expect(data[userAdministration.columns.admin]).toBe(!!userToCreate.admin,
             `${userAdministration.columns.admin} is not correct`);
-        expect(data[userAdministration.columns.accountManager]).toBe(!!userToCreate.account_manager,
-            `${userAdministration.columns.accountManager} is not correct`);
         expect(data[userAdministration.columns.unitCoordinator]).toBe(!!userToCreate.unit_coordinator,
             `${userAdministration.columns.unitCoordinator} is not correct`);
     };
@@ -93,7 +91,6 @@ describe('Full Admin Administartion User Flow', () => {
 
         it('I can create user with all permissions', async () => {
             await userAdministration.setUnitCoordinator(userToCreate.unit_coordinator);
-            await userAdministration.setAccountManager(userToCreate.account_manager);
             await userAdministration.setAdmin(userToCreate.admin);
             await userAdministration.setCoordinator(userToCreate.manager);
             await userAdministration.setAuditor(userToCreate.auditor);
@@ -140,14 +137,11 @@ describe('Full Admin Administartion User Flow', () => {
 
         it('I can remove all user permissions', async () => {
             userToCreate.unit_coordinator = 0;
-            userToCreate.account_manager = 0;
             userToCreate.admin = 0;
             userToCreate.manager = 0;
             userToCreate.auditor = 0;
             userToCreate.audit_admin = 0;
             await userAdministration.updateUser(!!userToCreate.unit_coordinator, userAdministration.columns.unitCoordinator,
-                userToCreate.user_name, userAdministration.columns.userName);
-            await userAdministration.updateUser(!!userToCreate.account_manager, userAdministration.columns.accountManager,
                 userToCreate.user_name, userAdministration.columns.userName);
             await userAdministration.updateUser(!!userToCreate.admin, userAdministration.columns.admin,
                 userToCreate.user_name, userAdministration.columns.userName);

@@ -36,26 +36,14 @@ export class CustomerCreateComponent implements OnInit {
     }
 
     processCustomerCreation() {
-        this.customer.accounting = +this.customer.accounting;
-        if (this.customer.accounting === 0) {
-            this.customer.account_manager = undefined;
-            this.customer.account_team = [];
-        }
         this.customerService.createOrUpdateCustomer(this.customer).subscribe(res => {
             const customerId = res.id;
-            if (this.customer.account_team) {
-                this.customerService.updateAccountMembers(customerId, this.customer.account_team).subscribe(() => {});
-            }
             this.router.navigate([`/customer/${customerId}`]);
             this.customerService.handleSuccess(`'${this.customer.name}' customer is created!`);
         });
     }
 
     IsFormValid() {
-        return this.customer.coordinator && (this.customer.accounting ? this.customer.account_manager : true);
-    }
-
-    updateAccountTeam($event) {
-        this.customer.account_team = $event;
+        return this.customer.coordinator;
     }
 }
