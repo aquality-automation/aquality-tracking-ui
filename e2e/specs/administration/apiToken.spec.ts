@@ -21,7 +21,7 @@ const notEditorExamples = {
     localEngineer: usersTestData.localEngineer,
 };
 
-fdescribe('API Token:', () => {
+describe('API Token:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
     const userAdministration: UserAdministration = new UserAdministration();
