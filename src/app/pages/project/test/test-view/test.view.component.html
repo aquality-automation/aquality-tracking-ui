@@ -62,6 +62,9 @@
   <hr *ngIf="showSteps" class="col-sm-12 no-padding">
 
   <div *ngIf="showSteps" class="col-sm-12 no-padding">
+    <div class="col-sm-12">
+        <label class="label-inline pull-left">Steps:</label>
+    </div>
     <steps-container #steps [editable]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"></steps-container>
   </div>
 

@@ -4,6 +4,7 @@
 
 Features:
   - Remove Customers Feature -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/25)
+  - Add 'Steps' label into Test page -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/31)
 
 Bugfixes:
   - It should not be possible to delete Customer that assigned to the projects -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/9)
