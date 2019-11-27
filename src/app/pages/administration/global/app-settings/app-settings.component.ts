@@ -3,8 +3,8 @@ import { GeneralAppSettings, LDAPSettings, EmailSettings } from '../../../../sha
 import { ApplicationSettingsService } from '../../../../services/applicationSettings.service';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
-import { environment } from '../../../../../environments/environment';
 import { Constants } from './app-settings.constants';
+import { GlobalDataService } from '../../../../services/globaldata.service';
 
 @Component({
     templateUrl: 'app-settings.component.html',
@@ -20,13 +20,13 @@ export class AppSettingsComponent implements OnInit {
     public generalSettings: GeneralAppSettings;
     public ldapSettings: LDAPSettings;
     public emailSettings: EmailSettings;
-    public apiHost: string;
     public emailHelpText = Constants.emailPatternHelpText;
     public emailHelpTextHint = Constants.emailHelpTextHint;
 
     constructor(
         private appSettingService: ApplicationSettingsService,
-        private emailSettingsService: EmailSettingsService
+        private emailSettingsService: EmailSettingsService,
+        private globaldata: GlobalDataService
     ) { }
 
     async ngOnInit() {
@@ -39,14 +39,13 @@ export class AppSettingsComponent implements OnInit {
         this.emailSettings = await this.emailSettingsService.getEmailSettings();
     }
 
-    saveGeneral() {
-        this.appSettingService.updateGeneralSettings({
+    async saveGeneral() {
+        await this.appSettingService.updateGeneralSettings({
             id: this.generalSettings.id,
             ldap_auth: +this.generalSettings.ldap_auth,
             base_auth: +this.generalSettings.base_auth,
             audits: +this.generalSettings.audits
-        }).subscribe();
-        environment.host = this.apiHost;
+        });
     }
 
     setLdap($event) {

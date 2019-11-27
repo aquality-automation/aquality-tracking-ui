@@ -30,4 +30,16 @@ export class AppSettings extends AdministrationBase {
   toggleHint() {
     return elements.defaultEmailPatternhint.toggle();
   }
+
+  saveGeneralSettings() {
+    return elements.saveGeneralSettings.click();
+  }
+
+  disableAuditModule() {
+    return elements.auditsModuleSwitch.switchOff();
+  }
+
+  enableAuditModule() {
+    return elements.auditsModuleSwitch.switchOn();
+  }
 }

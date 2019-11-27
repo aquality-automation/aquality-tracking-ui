@@ -9,6 +9,7 @@ Bugfixes:
   - It should not be possible to delete Customer that assigned to the projects -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/9)
   - Link "View on Aquality Tracking" in report email is broken -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/30)
   - Link from the audit email notification is invalid -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/13)
+  - Audits feature is visible when disabled -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/24)
 
 ## 0.3.3 (2019-11-16)
 
