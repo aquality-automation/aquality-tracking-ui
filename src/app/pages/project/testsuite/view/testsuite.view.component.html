@@ -54,7 +54,7 @@
   <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20"
     [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
     [defaultSortBy]="{ property: 'name', order: 'desc' }"
-    [allowDelete]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
-    [allowBulkUpdate]="true" (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)"
+    [allowDelete]="allowEdit"
+    [allowBulkUpdate]="allowEdit" (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)"
     (action)="handleAction($event)" (bulkChanges)="bulkUpdate($event)"></table-filter>
 </div>
