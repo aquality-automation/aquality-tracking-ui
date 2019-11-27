@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestSuite } from '../../../shared/models/testSuite';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestSuiteService } from '../../../services/testSuite.service';
+import { TestSuite } from '../../../../shared/models/testSuite';
+import { SimpleRequester } from '../../../../services/simple-requester';
+import { TestSuiteService } from '../../../../services/testSuite.service';
 
 @Component({
   templateUrl: './create-testsuite.component.html',

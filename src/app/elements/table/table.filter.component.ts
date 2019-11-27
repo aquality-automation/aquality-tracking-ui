@@ -430,21 +430,23 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   isNewEntityValid() {
     let messages: string[] = [];
-    this.columns.forEach(element => {
-      switch (element.type) {
-        case 'text':
-          messages.push(this.isTextValid(element.property));
-          break;
-        case 'lookup-autocomplete':
-        case 'lookup-colored':
-          messages.push(this.isLookupValid(element.property));
-          break;
-        case 'email':
-          messages.push(this.isEmailValid(element.property));
-          break;
-        case 'password':
-          messages.push(this.isPasswordValid(element.property));
-          break;
+    this.columns.forEach(column => {
+      if (!column.excludeCreation) {
+        switch (column.type) {
+          case 'text':
+            messages.push(this.isTextValid(column.property));
+            break;
+          case 'lookup-autocomplete':
+          case 'lookup-colored':
+            messages.push(this.isLookupValid(column.property));
+            break;
+          case 'email':
+            messages.push(this.isEmailValid(column.property));
+            break;
+          case 'password':
+            messages.push(this.isPasswordValid(column.property));
+            break;
+        }
       }
     });
     messages = messages.filter((v, i, a) => v !== '' && a.indexOf(v) === i);
