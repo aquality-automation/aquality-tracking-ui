@@ -48,6 +48,7 @@ describe('Full Admin Administartion User Flow', () => {
 
     describe('Default Email Pattern', () => {
         it('I can see closed Email Pattern Hint', async () => {
+            await (await projectList.menuBar.user()).administration();
             await userAdministration.sidebar.appSettings();
             return expect(appSettings.getHintText()).toEqual(Constants.emailHelpTextHint);
         });
