@@ -1,4 +1,4 @@
-import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element } from 'protractor';
+import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element, promise } from 'protractor';
 import { BaseElement } from '../base.element';
 import { logger } from '../../utils/log.util';
 import { Lookup } from '../lookup.element';
@@ -200,6 +200,12 @@ export class SmartTable extends BaseElement {
         return cell.getText();
     }
 
+    public async getCellValue(column: string, searchValue: string | number, searchColumn: string): Promise<string|string[]> {
+        const columnIndex = await this.getColumnIndex(column);
+        const row = await this.getRow(searchValue, searchColumn);
+        return row.getRowCellValue(columnIndex);
+    }
+
     public async getCellTextUsingRowIndex(columnWithText: string, rowIndex: number): Promise<string> {
         const cell = await this.getCellUsingRowIndex(columnWithText, rowIndex);
         return cell.getText();
@@ -309,6 +315,18 @@ export class SmartTable extends BaseElement {
     public async isColumnExist(columnName: string): Promise<boolean> {
         const index = await this.getColumnIndex(columnName);
         return index >= 0;
+    }
+
+    public async addValueFromMultiselect(value: string, column: string, searchValue: string, searchColumn: string) {
+        const index = await this.getColumnIndex(column);
+        const row = await this.getRow(searchValue, searchColumn);
+        return row.addMultiselectValueByColumnIndex(value, index);
+    }
+
+    public async removeValueFromMultiselect(value: string, column: string, searchValue: string, searchColumn: string) {
+        const index = await this.getColumnIndex(column);
+        const row = await this.getRow(searchValue, searchColumn);
+        return row.removeMultiselectValueByColumnIndex(value, index);
     }
 
     private isCreationOpened() {
