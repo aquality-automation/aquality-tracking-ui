@@ -37,6 +37,7 @@ export class AppSettingsComponent implements OnInit {
             this.ldapSettings = res;
         });
         this.emailSettings = await this.emailSettingsService.getEmailSettings();
+        this.setBaseURL();
     }
 
     async saveGeneral() {
@@ -69,6 +70,12 @@ export class AppSettingsComponent implements OnInit {
         } else {
             this.emailSettingsService.handleSimpleError(Constants.emailPatternErrorMessageHeader,
                 Constants.emailPatternErrorMessage);
+        }
+    }
+
+    setBaseURL() {
+        if (!this.emailSettings.base_url) {
+            this.emailSettings.base_url = location.origin;
         }
     }
 

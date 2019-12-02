@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestSuite, TestSuiteStat } from '../../../shared/models/testSuite';
-import { Test } from '../../../shared/models/test';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestService } from '../../../services/test.service';
-import { TestSuiteService } from '../../../services/testSuite.service';
-import { TestRunService } from '../../../services/testRun.service';
-import { TestRun } from '../../../shared/models/testRun';
-import { UserService } from '../../../services/user.services';
-import { LocalPermissions } from '../../../shared/models/LocalPermissions';
-import { ListToCsvService } from '../../../services/listToCsv.service';
-import { TransformationsService } from '../../../services/transformations.service';
-import { TableFilterComponent } from '../../../elements/table/table.filter.component';
+import { TestSuite, TestSuiteStat } from '../../../../shared/models/testSuite';
+import { Test } from '../../../../shared/models/test';
+import { SimpleRequester } from '../../../../services/simple-requester';
+import { TestService } from '../../../../services/test.service';
+import { TestSuiteService } from '../../../../services/testSuite.service';
+import { TestRunService } from '../../../../services/testRun.service';
+import { TestRun } from '../../../../shared/models/testRun';
+import { UserService } from '../../../../services/user.services';
+import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
+import { ListToCsvService } from '../../../../services/listToCsv.service';
+import { TransformationsService } from '../../../../services/transformations.service';
+import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 
 
 @Component({
@@ -40,6 +40,7 @@ export class TestSuiteViewComponent implements OnInit {
   totalManualDuration: string;
   users: LocalPermissions[];
   tbCols: any[];
+  allowEdit: boolean;
 
   constructor(
     private testRunService: TestRunService,
@@ -57,11 +58,13 @@ export class TestSuiteViewComponent implements OnInit {
 
   async ngOnInit() {
     const suiteId: number = +this.route.snapshot.queryParams.suite;
-    this.testSuites =  await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
+    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
     this.getTestsInfo(suiteId);
     if (suiteId) {
       this.selectedTestSuite = this.testSuites.find(x => x.id === suiteId);
     }
+
+    this.allowEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
 
     this.userService.getProjectUsers(this.route.snapshot.params['projectId'])
       .subscribe(res => {
@@ -73,7 +76,7 @@ export class TestSuiteViewComponent implements OnInit {
             filter: true,
             sorting: true,
             type: 'text',
-            editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
+            editable: this.allowEdit,
             creationLength: '500'
           },
           {
@@ -88,7 +91,7 @@ export class TestSuiteViewComponent implements OnInit {
             allowEmpty: true,
             values: this.users,
             nullFilter: true,
-            editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
+            editable: this.allowEdit,
             bulkEdit: true,
             class: 'fit'
           },
@@ -101,7 +104,7 @@ export class TestSuiteViewComponent implements OnInit {
             type: 'multiselect',
             propToShow: ['name'],
             values: this.testSuites,
-            editable: true,
+            editable: this.allowEdit,
             bulkEdit: true,
             class: 'ft-width-250'
           },
@@ -111,7 +114,7 @@ export class TestSuiteViewComponent implements OnInit {
             filter: false,
             sorting: true,
             type: 'time',
-            editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
+            editable: this.allowEdit,
             bulkEdit: true,
             class: 'fit'
           }
@@ -124,29 +127,24 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   suiteChange(selectedSuite: TestSuite) {
-    const url = `/project/${this.route.snapshot.params['projectId']}/tests`;
-    this.router.navigate([url], { queryParams: { suite: selectedSuite ? selectedSuite.id : undefined} });
+    const url = `/project/${this.route.snapshot.params.projectId}/tests`;
+    this.router.navigate([url], { queryParams: { suite: selectedSuite ? selectedSuite.id : undefined } });
     this.getTestsInfo(selectedSuite ? selectedSuite.id : undefined);
   }
 
-  getTestsInfo(id: number) {
-    if (id) {
-      this.testSuiteService.getTestSuiteWithChilds({ id: id }).then(testSuites => {
-        this.testSuite = testSuites[0];
-        this.calculateManualDuration();
-        this.testRun = {
-          test_suite: { id: this.testSuite.id }
-        };
-        this.testRunService.getTestRun(this.testRun).then(testRuns => {
-          this.testRuns = testRuns;
-        });
-      });
+  async getTestsInfo(suiteId: number) {
+    if (suiteId) {
+      const testSuites = await this.testSuiteService.getTestSuiteWithChilds({ id: suiteId });
+      this.testSuite = testSuites[0];
+      this.calculateManualDuration();
+      this.testRun = {
+        test_suite: { id: this.testSuite.id }
+      };
+      this.testRuns = await this.testRunService.getTestRun(this.testRun);
     } else {
-      this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] }).subscribe(res => {
-        this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
-        this.testSuite.tests = res;
-        this.calculateManualDuration();
-      });
+      this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
+      this.testSuite.tests = await this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] }).toPromise();
+      this.calculateManualDuration();
     }
   }
 
@@ -218,8 +216,11 @@ export class TestSuiteViewComponent implements OnInit {
     if ($event.developer) {
       $event.developer_id = $event.developer.user_id;
     }
-    await this.testService.createTest($event);
-    this.testService.getTest({ test_suite_id: this.testSuite.id }).subscribe(res => this.testSuite.tests = res);
+    try {
+      await this.testService.createTest($event);
+    } catch (e) {
+      await this.getTestsInfo(this.testSuite.id);
+    }
   }
 
   bulkUpdate(tests: Test[]) {
