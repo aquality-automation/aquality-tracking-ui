@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestSuite } from '../../../shared/models/testSuite';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestSuiteService } from '../../../services/testSuite.service';
-import { UserService } from '../../../services/user.services';
+import { TestSuite } from '../../../../shared/models/testSuite';
+import { SimpleRequester } from '../../../../services/simple-requester';
+import { TestSuiteService } from '../../../../services/testSuite.service';
+import { UserService } from '../../../../services/user.services';
 
 @Component({
   templateUrl: './testSuite.component.html',
@@ -32,15 +32,25 @@ export class TestSuiteComponent implements OnInit {
     this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
     await this.updateSuites();
 
-    this.tbCols = [{
-      name: 'Name',
-      property: 'name',
-      filter: true,
-      sorting: true,
-      type: 'text',
-      editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
-      creationLength: '500'
-    }];
+    this.tbCols = [
+      {
+        name: 'Id',
+        property: 'id',
+        filter: false,
+        sorting: true,
+        type: 'text',
+        editable: false,
+        class: 'fit',
+        excludeCreation: true
+      }, {
+        name: 'Name',
+        property: 'name',
+        filter: true,
+        sorting: true,
+        type: 'text',
+        editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
+        creationLength: '500'
+      }];
   }
 
   async updateSuites() {
@@ -90,7 +100,7 @@ export class TestSuiteComponent implements OnInit {
   }
 
   async suiteUpdate(suite: TestSuite) {
-    await  this.testSuiteService.createTestSuite(suite);
+    await this.testSuiteService.createTestSuite(suite);
     await this.updateSuites();
     this.testSuiteService.handleSuccess(`Suite '${suite.name}' was updated!`);
   }
