@@ -111,7 +111,6 @@ export class UserAdministration extends AdministrationBase {
     await this.fillPassword(user.password);
     await this.fillConfirmPassword(user.password);
     await this.setUnitCoordinator(user.unit_coordinator);
-    await this.setAccountManager(user.account_manager);
     await this.setAdmin(user.admin);
     await this.setCoordinator(user.manager);
     await this.setAuditor(user.auditor);

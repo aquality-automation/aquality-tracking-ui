@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestSuite, TestSuiteStat } from '../../../shared/models/testSuite';
-import { Test } from '../../../shared/models/test';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestService } from '../../../services/test.service';
-import { TestSuiteService } from '../../../services/testSuite.service';
-import { TestRunService } from '../../../services/testRun.service';
-import { TestRun } from '../../../shared/models/testRun';
-import { UserService } from '../../../services/user.services';
-import { LocalPermissions } from '../../../shared/models/LocalPermissions';
-import { ListToCsvService } from '../../../services/listToCsv.service';
-import { TransformationsService } from '../../../services/transformations.service';
-import { TableFilterComponent } from '../../../elements/table/table.filter.component';
+import { TestSuite, TestSuiteStat } from '../../../../shared/models/testSuite';
+import { Test } from '../../../../shared/models/test';
+import { SimpleRequester } from '../../../../services/simple-requester';
+import { TestService } from '../../../../services/test.service';
+import { TestSuiteService } from '../../../../services/testSuite.service';
+import { TestRunService } from '../../../../services/testRun.service';
+import { TestRun } from '../../../../shared/models/testRun';
+import { UserService } from '../../../../services/user.services';
+import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
+import { ListToCsvService } from '../../../../services/listToCsv.service';
+import { TransformationsService } from '../../../../services/transformations.service';
+import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 
 
 @Component({

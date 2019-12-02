@@ -57,31 +57,7 @@ export class CustomerComponent implements OnInit {
                         type: 'percent',
                         editable: false,
                         class: 'fit'
-                    },
-                    { name: 'Accounting', property: 'accounting', filter: false, sorting: true, type: 'checkbox', editable: false },
-                    {
-                        name: 'Account Manager',
-                        property: 'account_manager',
-                        entity: 'account_manager',
-                        filter: true,
-                        sorting: false,
-                        type: 'lookup-autocomplete',
-                        propToShow: ['first_name', 'second_name'],
-                        values: this.accountManagers,
-                        editable: false,
-                        class: 'ft-width-150'
-                    },
-                    {
-                        name: 'Account Team',
-                        property: 'account_team',
-                        filter: true,
-                        sorting: false,
-                        type: 'multiselect',
-                        propToShow: ['first_name', 'second_name'],
-                        values: this.users,
-                        editable: false,
-                        class: 'ft-width-250'
-                    },
+                    }
                 ];
             });
         });
