@@ -74,7 +74,6 @@ export class AdministrationUsersComponent implements OnInit {
         },
         { name: 'Password', property: 'password', filter: false, type: 'password', listeners: ['click'], editable: false },
         { name: 'Unit Coordinator', property: 'unit_coordinator', filter: false, sorting: true, type: 'checkbox', editable: true },
-        { name: 'Account Manager', property: 'account_manager', filter: false, sorting: true, type: 'checkbox', editable: true },
         { name: 'Admin', property: 'admin', filter: false, sorting: true, type: 'checkbox', editable: true },
         { name: 'Coordinator', property: 'manager', filter: false, sorting: true, type: 'checkbox', editable: true },
         { name: 'Auditor', property: 'auditor', filter: false, sorting: true, type: 'checkbox', editable: true },
