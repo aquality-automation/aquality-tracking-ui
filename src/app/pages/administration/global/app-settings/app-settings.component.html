@@ -1,15 +1,14 @@
 <div *ngIf="generalSettings" class="panel panel-default">
-  <div class="panel-heading">General Settings <button class="btn btn-success btn-sm pull-right panel-button"
-      (click)="saveGeneral()">Save</button></div>
+  <div class="panel-heading">General Settings
+    <button id="save-general"class="btn btn-success btn-sm pull-right panel-button" (click)="saveGeneral()">Save</button>
+  </div>
   <div class="panel-body">
     <div class="col-sm-4">
       <div class="col-sm-2 margin-y-sm">
-        <ui-switch class="pull-right" size="small" [(ngModel)]="generalSettings.audits"></ui-switch>
+        <ui-switch id="audits-module" class="pull-right" size="small" [(ngModel)]="generalSettings.audits"></ui-switch>
       </div>
       <div class="col-sm-10 no-padding margin-top-6px">
-        <label class="pull-left" [ngClass]="{
-                  'greyout':!generalSettings.audits
-              }">Audits Module</label>
+        <label class="pull-left" [ngClass]="{'greyout':!generalSettings.audits}">Audits Module</label>
       </div>
     </div>
     <div class="col-sm-4">

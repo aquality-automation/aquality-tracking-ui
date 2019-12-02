@@ -1,10 +1,12 @@
-import { by, element } from 'protractor';
+import { by, element, promise } from 'protractor';
 import { CreateOptions } from './create.options';
 import { TestsOptions } from './tests.options';
 import { UserOptions } from './user.options';
 import { AuditsOptions } from './audits.options';
 
 export class MenuBar {
+    private auditsButton = element(by.css('#Audits > a'));
+
     clickLogo() {
         return element(by.css('.navbar-brand')).click();
     }
@@ -28,7 +30,7 @@ export class MenuBar {
     }
 
     async audits() {
-        await element(by.css('#Audits > a')).click();
+        await this.auditsButton.click();
         return new AuditsOptions();
     }
 
@@ -53,5 +55,9 @@ export class MenuBar {
     async user() {
         await element(by.id('user-mb')).click();
         return new UserOptions();
+    }
+
+    isAuditTabExists(): promise.Promise<boolean> {
+        return this.auditsButton.isPresent();
     }
 }
