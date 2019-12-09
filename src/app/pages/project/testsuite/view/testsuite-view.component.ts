@@ -294,4 +294,8 @@ export class TestSuiteViewComponent implements OnInit {
   moveToWasClosed($event) {
     this.hideMoveModal = true;
   }
+
+  syncSuite() {
+    this.testSuiteService.syncSuite(this.testSuite, 5, true);
+  }
 }

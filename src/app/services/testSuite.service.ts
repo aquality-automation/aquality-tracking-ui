@@ -50,4 +50,8 @@ export class TestSuiteService extends SimpleRequester {
   createSuiteDashboard(suiteDashboard: SuiteDashboard): Promise<SuiteDashboard> {
     return this.doPost(`/suite/dashboard`, suiteDashboard).map(res => res.json()).toPromise();
   }
+
+  syncSuite(testSuite: TestSuite, notExecutedFor: number, removeNotExecutedResults: boolean) {
+    return this.doGet(`/suite/sync`, {id: testSuite.id, notExecutedFor, removeNotExecutedResults}).map(res => res).toPromise();
+  }
 }
