@@ -71,7 +71,7 @@ export class ProjectViewComponent implements OnInit {
 
   getNumberOfFails(id: number) {
     const stats: TestRunStat = this.testRunStats.filter(x => x.id === id)[0];
-    return stats ? ((stats.passed / stats.total) * 100).toFixed(2) : 0;
+    return this.testrunService.getPassRate(stats);
   }
 
   openTestRun(testRunId: number) {

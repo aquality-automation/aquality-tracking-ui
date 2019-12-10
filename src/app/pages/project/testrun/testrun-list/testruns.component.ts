@@ -66,7 +66,7 @@ export class TestRunsComponent implements OnInit {
         run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
         run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
         run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
-        run['passrate'] = this.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
+        run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
       }
     });
     this.tbCols = [
@@ -185,10 +185,6 @@ export class TestRunsComponent implements OnInit {
 
   wasClosed($event) {
     this.hideModal = $event;
-  }
-
-  getPassRate(stat: TestRunStat) {
-    return stat ? ((stat.passed / stat.total) * 100).toFixed(2) : 0;
   }
 
   uploadResults() {
