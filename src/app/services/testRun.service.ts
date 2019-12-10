@@ -60,4 +60,8 @@ export class TestRunService extends SimpleRequester {
     const seconds = duration - (hours * 3600 + minutes * 60);
     return hours + 'h:' + minutes + 'm:' + seconds + 's';
   }
+
+  getPassRate(stat: TestRunStat): string | number {
+    return stat ? ((stat.passed / stat.total) * 100).toFixed(2) : 0;
+  }
 }

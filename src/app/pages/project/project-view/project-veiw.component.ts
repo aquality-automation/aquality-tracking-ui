@@ -64,14 +64,14 @@ export class ProjectViewComponent implements OnInit {
         { name: 'Execution Environment', property: 'execution_environment', type: 'text' },
         { name: 'Start Time', property: 'start_time', type: 'date', class: 'fit' },
         { name: 'Finish Time', property: 'finish_time', type: 'date', class: 'fit' },
-        { name: 'Failed Tests, %', property: 'failed', type: 'text', class: 'fit' },
+        { name: 'Pass Rate, %', property: 'failed', type: 'text', class: 'fit' },
       ];
     });
   }
 
   getNumberOfFails(id: number) {
     const stats: TestRunStat = this.testRunStats.filter(x => x.id === id)[0];
-    return stats ? (stats.failed / stats.total * 100).toFixed(2) : 0;
+    return this.testrunService.getPassRate(stats);
   }
 
   openTestRun(testRunId: number) {

@@ -7,13 +7,18 @@ Features:
   - Add 'Steps' label into Test page -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/31)
   - Add ID column to Suites List -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/18)
   - Add possibility to sync testsuites according to Not Executed results -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/32)
+  - Add Executor and Pass Rate column to Test Run List table -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/41)
 
 Bugfixes:
   - It should not be possible to delete Customer that assigned to the projects -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/9)
   - Link "View on Aquality Tracking" in report email is broken -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/30)
   - Link from the audit email notification is invalid -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/13)
   - Audits feature is visible when disabled -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/24)
-  - All available test are shown in tests list after updating Suite for some test -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/27) 
+  - All available test are shown in tests list after updating Suite for some test -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/27)
+  - There is no scrolling in dashboard configuration -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/14)
+  - Empty line on dashboard if suite have no data -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/15)
+  - Suites Dashboard: Data refresh working wrong with empty cards -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/40)
+  - Suites Dashboard: Data is not updated for empty cards -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/39)
 
 ## 0.3.3 (2019-11-16)
 

@@ -88,12 +88,20 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
       ? this.generateDetailedData(new_suite_stats)
       : this.generateData(new_suite_stats);
 
+    const charts = this.charts.toArray();
     this.suite_stats.forEach((suite, i) => {
       const new_suite = new_suite_stats.find(new_suite_stat => new_suite_stat.id === suite.id);
-      suite.chartData = new_suite.chartData;
-      suite.chartLabels = new_suite.chartLabels;
-
-      this.charts.toArray()[i].chart.config.data.labels = suite.chartLabels;
+      const currentChart = charts.find(chart => chart.options.id === new_suite.id);
+      if (currentChart) {
+        suite.chartData = new_suite.chartData;
+        suite.chartLabels = new_suite.chartLabels;
+        currentChart.chart.config.data.labels = suite.chartLabels;
+      } else {
+        if (new_suite.chartData) {
+          const index = this.suite_stats.findIndex(suiteStat => suiteStat.id === new_suite.id);
+          this.suite_stats[index] = new_suite;
+        }
+      }
     });
   }
 
@@ -112,6 +120,9 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
           `Test Issues | ${suite.stat.warning + suite.stat.not_assigned + suite.stat.other}`,
           `Total | ${suite.stat.total}`
         ];
+        const options = JSON.parse(JSON.stringify(this.chartOptions));
+        options.id = suite.id;
+        suite['options'] = options;
       }
     }
     return suites;
