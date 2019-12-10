@@ -26,6 +26,7 @@ import { TableFilterComponent } from '../../../../elements/table/table.filter.co
 })
 export class TestSuiteViewComponent implements OnInit {
   hideMoveModal = true;
+  syncTestsModal = false;
   MoveModalTitle = 'Move Test';
   hideModal = true;
   removeModalTitle: string;
@@ -254,8 +255,8 @@ export class TestSuiteViewComponent implements OnInit {
     this.hideModal = false;
   }
 
-  execute($event: any) {
-    if ($event) {
+  async execute(answer: any) {
+    if (await answer) {
       this.testService.removeTest(this.testToRemove).subscribe();
       this.testSuite.tests = this.testSuite.tests.filter(x => x !== this.testToRemove);
     }
@@ -270,8 +271,8 @@ export class TestSuiteViewComponent implements OnInit {
     this.hideMoveModal = false;
   }
 
-  moveToExecute($event) {
-    if ($event) {
+  moveToExecute(answer) {
+    if (answer) {
       this.testSuiteService.getTestSuiteWithChilds({ id: this.route.snapshot.params['testsuiteId'] }).then(testSuites => {
         this.testSuite = testSuites[0];
         this.child.data = this.testSuite.tests;
@@ -295,7 +296,16 @@ export class TestSuiteViewComponent implements OnInit {
     this.hideMoveModal = true;
   }
 
+  syncSuiteClosed() {
+    this.syncTestsModal = false;
+  }
+
   syncSuite() {
-    this.testSuiteService.syncSuite(this.testSuite, 5, true);
+    this.syncTestsModal = true;
+  }
+
+  async syncTests(answer) {
+    await answer;
+    this.syncSuiteClosed();
   }
 }

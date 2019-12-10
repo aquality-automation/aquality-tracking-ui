@@ -5,6 +5,8 @@
   <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [tests]="testSuite.tests"
     [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="moveToExecute($event)"
     (closed)="moveToWasClosed($event)"></move-test-modal>
+  <sync-suite-modal *ngIf="syncTestsModal" [suites]="testSuites" (execute)="syncTests($event)"
+    (closed)="syncSuiteClosed($event)" [suite]="selectedTestSuite"></sync-suite-modal>
   <div class="row">
     <div class="col-sm-4">
       <h2 class="pull-left" id="suite-view">Test Suite:</h2>

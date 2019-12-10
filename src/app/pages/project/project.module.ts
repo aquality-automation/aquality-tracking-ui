@@ -54,6 +54,7 @@ import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { StepsService } from '../../services/steps.service';
 import { StepsContainerComponent } from './test/steps-container/steps-container.component';
 import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
+import { SyncSuiteModalComponent } from './testsuite/sync-suite-modal/sync-suite-modal.component';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.
     SuiteDashboardComponent,
     StepsListComponent,
     StepsContainerComponent,
-    SafePipe
+    SafePipe,
+    SyncSuiteModalComponent
   ],
   providers: [
     ProjectService,

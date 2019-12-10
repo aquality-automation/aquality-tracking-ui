@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
 import { TestSuite, SuiteDashboard } from '../shared/models/testSuite';
+import { Test } from '../shared/models/test';
 
 
 @Injectable()
@@ -51,7 +52,11 @@ export class TestSuiteService extends SimpleRequester {
     return this.doPost(`/suite/dashboard`, suiteDashboard).map(res => res.json()).toPromise();
   }
 
-  syncSuite(testSuite: TestSuite, notExecutedFor: number, removeNotExecutedResults: boolean) {
-    return this.doGet(`/suite/sync`, {id: testSuite.id, notExecutedFor, removeNotExecutedResults}).map(res => res).toPromise();
+  syncSuite(tests: Test[], suiteId: number, removeNotExecutedResults: boolean) {
+    return this.doPost(`/suite/sync`, tests, { suiteId, removeNotExecutedResults }, true).map(res => res).toPromise();
+  }
+
+  findTestToSync(notExecutedFor: number, suiteId: number): Promise<Test[]> {
+    return this.doGet('/suite/sync', { notExecutedFor, suiteId }, true).map(res => res.json()).toPromise();
   }
 }

@@ -39,6 +39,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() actionsHeader = true;
   @Input() allowRefresh = false;
   @Input() allowBulkUpdate = false;
+  @Input() withSelector = false;
 
   @Output() createEntity = new EventEmitter();
   @Output() dataChange = new EventEmitter();
@@ -116,7 +117,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     if (this.allowDelete || this.allowCreate || this.allowBulkUpdate) {
       this.columns.push({ name: 'Action', property: 'action', type: 'button', editable: true });
     }
-    if (this.allowBulkUpdate) {
+    if (this.allowBulkUpdate || this.withSelector) {
       this.columns.unshift({ name: 'Selector', property: 'ft_select', type: 'selector', editable: true, class: 'fit' });
     }
   }
@@ -185,7 +186,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   bulkUpdate() {
-    const entitiesToUpdate = this.filteredData.filter(entity => entity.ft_select === true || entity.ft_select === 1);
+    const entitiesToUpdate = this.getSelectedEntitites();
     entitiesToUpdate.forEach(entity => {
       for (const property in this.bulkChangeEntity) {
         if (property) {
@@ -196,6 +197,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
     this.bulkChanges.emit(entitiesToUpdate);
     this.bulkChangeEntity = {};
+  }
+
+  getSelectedEntitites() {
+    return this.filteredData.filter(entity => entity.ft_select === true || entity.ft_select === 1);
   }
 
   manageColumns() {
