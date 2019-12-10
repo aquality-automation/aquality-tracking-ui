@@ -2,26 +2,32 @@
   <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
     (closed)="wasClosed($event)"></simple-popup>
-  <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle"
-    [tests]="testSuite.tests" [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]"
-    (execute)="moveToExecute($event)" (closed)="moveToWasClosed($event)"></move-test-modal>
+  <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [tests]="testSuite.tests"
+    [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="moveToExecute($event)"
+    (closed)="moveToWasClosed($event)"></move-test-modal>
+  <sync-suite-modal *ngIf="syncTestsModal" [suites]="testSuites" (execute)="syncTests($event)"
+    (closed)="syncSuiteClosed($event)" [suite]="selectedTestSuite"></sync-suite-modal>
   <div class="row">
     <div class="col-sm-4">
       <h2 class="pull-left" id="suite-view">Test Suite:</h2>
-      <lookup-autocomplete id="page-label-lookup" class="pull-left page-label-lookup"
-        [allowEmptyValue]="true" [propertiesToShow]="['name']" [array]="testSuites" [model]="selectedTestSuite"
-        [disabled]="false" placeholder="All Tests" (modelChange)="suiteChange($event)"></lookup-autocomplete>
+      <lookup-autocomplete id="page-label-lookup" class="pull-left page-label-lookup" [allowEmptyValue]="true"
+        [propertiesToShow]="['name']" [array]="testSuites" [model]="selectedTestSuite" [disabled]="false"
+        placeholder="All Tests" (modelChange)="suiteChange($event)"></lookup-autocomplete>
     </div>
     <div class="col-md-8">
       <div class="btn-group pull-right" role="group">
         <button class="btn btn-primary" routerLink="/project/{{testSuite.project_id}}/testrun/matrix"
           [queryParams]="{suite:testSuite.id}">Suite Matrix</button>
-        <button id="move-test-btn"*ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+        <button id="move-test-btn"
+          *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
           class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
         <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn">Export to CSV</button>
         <button (click)="openTestCreation()"
           *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
           class="btn btn-primary">Add Test</button>
+        <button (click)="syncSuite()"
+          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+          class="btn btn-primary">Sync</button>
       </div>
     </div>
     <hr class="col-sm-12 no-padding">
@@ -51,10 +57,9 @@
   </div>
 </div>
 <div class="panel-body">
-  <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20"
-    [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
-    [defaultSortBy]="{ property: 'name', order: 'desc' }"
-    [allowDelete]="allowEdit"
-    [allowBulkUpdate]="allowEdit" (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)"
-    (action)="handleAction($event)" (bulkChanges)="bulkUpdate($event)"></table-filter>
+  <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]"
+    [rowsOnPage]="20" [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
+    [defaultSortBy]="{ property: 'name', order: 'desc' }" [allowDelete]="allowEdit" [allowBulkUpdate]="allowEdit"
+    (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)" (action)="handleAction($event)"
+    (bulkChanges)="bulkUpdate($event)"></table-filter>
 </div>

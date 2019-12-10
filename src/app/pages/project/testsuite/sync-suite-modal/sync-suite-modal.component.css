@@ -1,0 +1,34 @@
+.mt-overlay{
+  display: block;
+}
+
+.simple-modal{
+  top: 220px;
+}
+
+.modal-message{
+  max-height: 500px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: solid 1px lightgray;
+}
+
+.panel-body {
+  padding-bottom: 10px;
+}
+
+.table-holder {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  max-height: 700px;
+  overflow: auto;
+}
+
+.modal-buttons label {
+  margin-top: 15px;
+  text-transform: none;
+}
+
+.modal-buttons input{
+  margin-top: 20px;
+}

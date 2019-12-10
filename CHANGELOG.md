@@ -6,6 +6,7 @@ Features:
   - Remove Customers Feature -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/25)
   - Add 'Steps' label into Test page -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/31)
   - Add ID column to Suites List -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/18)
+  - Add possibility to sync testsuites according to Not Executed results -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/32)
   - Add Executor and Pass Rate column to Test Run List table -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/41)
 
 Bugfixes:

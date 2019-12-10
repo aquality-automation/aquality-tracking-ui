@@ -36,12 +36,12 @@ export class SimpleRequester extends Http {
     }
   }
 
-  public doPost(url: string, object?) {
+  public doPost(url: string, object?, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false) {
     let jsonString = JSON.stringify(object);
     if (typeof jsonString === 'undefined') { jsonString = '{}'; }
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.post(this.api + url, jsonString, { headers: headers }), true);
+    return this.intercept(super.post(this.api + url, jsonString, { headers: headers, params }), showLoading);
   }
 
   public doPut(url: string, object?) {
@@ -90,6 +90,7 @@ export class SimpleRequester extends Http {
   intercept(observable: Observable<Response>, showLoading: boolean, handleError: boolean = true): Observable<Response> {
     if (showLoading) {
       this.globaldata.requestQuery++;
+      this.turnOnModal();
     }
     return observable
       .catch((err, source) => {
@@ -152,6 +153,13 @@ export class SimpleRequester extends Http {
   handleSuccess(message: string) {
     this.notificationsService.success(
       `Successful`,
+      message
+    );
+  }
+
+  handleInfo(message: string) {
+    this.notificationsService.info(
+      `Information`,
       message
     );
   }
