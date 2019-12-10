@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.3.4 (unreleased)
+## 0.3.4 (2019-12-10)
 
 Features:
   - Remove Customers Feature -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/25)
