@@ -52,6 +52,6 @@ export class TestService extends SimpleRequester {
 
   removeTest(test: Test) {
     return this.doDelete(`/test?id=${test.id}&projectId=${test.project_id}`)
-    .map(() => this.handleSuccess(`Test '${test.name}' was deleted.`));
+      .map(() => this.handleSuccess(`Test '${test.name}' was deleted.`));
   }
 }

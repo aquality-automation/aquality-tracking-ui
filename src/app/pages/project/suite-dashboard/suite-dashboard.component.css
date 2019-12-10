@@ -1,5 +1,4 @@
 .card {
-    min-height: 220px;
     padding: 5px;
     background: #fff;
     margin: 10px;
@@ -13,15 +12,28 @@
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 }
 
+.card-holder {
+    height: 299px;
+}
+
+.card-holder-sm {
+    height: 223px;
+}
+
 .settings-bar {
     padding: 60px 21px 0 0;
-    position: absolute;
+    position: fixed;
     left: 0;
-    bottom: 0;
     top: 0;
+    height: 100%;
     background-color: #101010;
     width: 300px;
     z-index: 1000;
+}
+
+.settings-content{
+    overflow: auto;
+    height: inherit;
 }
 
 .settings-toggler {

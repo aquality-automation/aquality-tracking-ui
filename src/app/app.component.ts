@@ -203,7 +203,7 @@ export class AppComponent {
 
   async getInfo() {
     this.isLogged = await this.userService.handleIsLogged(false);
-    this.globaldata.auditModule = await this.settingsService.getGeneralSettings().toPromise();
+    this.globaldata.auditModule = (await this.settingsService.getGeneralSettings().toPromise()).audits;
     if (this.isLogged && this.route.firstChild && this.route.firstChild.firstChild) {
       await this.getProjectInfo();
     }
@@ -211,7 +211,7 @@ export class AppComponent {
 
   async getProjectInfo() {
     this.route.firstChild.firstChild.params.subscribe(params => {
-      this.projectId = params['projectId'] ? parseInt(params['projectId'], 10) : undefined;
+      this.projectId = params.projectId ? parseInt(params.projectId, 10) : undefined;
     });
 
     if (this.projectId) {

@@ -7,6 +7,7 @@ import { Autocomplete } from '../autocomplete.element';
 import { InlineEditor } from '../inlineEditor.element';
 import { logger } from '../../utils/log.util';
 import { InlineAttach } from '../inlineAttach.element';
+import { Multiselect } from '../multiselect.element';
 
 export class Row extends BaseElement {
     constructor(locator: ElementFinder | Locator) {
@@ -52,7 +53,8 @@ export class Row extends BaseElement {
                 new Autocomplete(cell.element(by.xpath(`.//lookup-autocomplete`))),
             inlineEditor: () => new InlineEditor(cell.element(by.tagName('inline-editor'))),
             lookup: () => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
-            inlineAttachment: () => new InlineAttach(cell.element(by.xpath('.//attachment-inline')))
+            inlineAttachment: () => new InlineAttach(cell.element(by.xpath('.//attachment-inline'))),
+            multiselect: () => new Multiselect(cell.element(by.xpath('.//lookup-autocomplete-multiselect')))
         };
     }
 
@@ -82,6 +84,30 @@ export class Row extends BaseElement {
         throw new Error(`You are trying to edit not editable ${columnIndex} column!`);
     }
 
+    public async addMultiselectValueByColumnIndex(value: string, columnIndex: number) {
+        const rowElements = await this.getRowElements(columnIndex);
+        if (await this.isCellContainsEditableElement(columnIndex)) {
+            if (await rowElements.multiselect().element.isPresent()) {
+                return rowElements.multiselect().select(value);
+            }
+            throw new Error(`Column ${columnIndex} does not contain multiselect!`);
+        }
+
+        throw new Error(`You are trying to edit not editable ${columnIndex} column!`);
+    }
+
+    public async removeMultiselectValueByColumnIndex(value: string, columnIndex: number) {
+        const rowElements = await this.getRowElements(columnIndex);
+        if (await this.isCellContainsEditableElement(columnIndex)) {
+            if (await rowElements.multiselect().element.isPresent()) {
+                return rowElements.multiselect().remove(value);
+            }
+            throw new Error(`Column ${columnIndex} does not contain multiselect!`);
+        }
+
+        throw new Error(`You are trying to edit not editable ${columnIndex} column!`);
+    }
+
     public async isCellContainsEditableElement(columnIndex: number) {
         const rowElements = await this.getRowElements(columnIndex);
         if (await rowElements.inlineEditor().element.isPresent()) {
@@ -105,6 +131,9 @@ export class Row extends BaseElement {
         if (await rowElements.inlineAttachment().element.isPresent()) {
             return rowElements.inlineAttachment().isEditable();
         }
+        if (await rowElements.multiselect().element.isPresent()) {
+            return rowElements.multiselect().isEditable();
+        }
         return false;
     }
 
@@ -112,12 +141,14 @@ export class Row extends BaseElement {
         const rowElements = await this.getRowElements(columnIndex);
         if (await rowElements.input().element.isPresent()) {
             return rowElements.input().getValue();
-        } if (await rowElements.coloredLookup().element.isPresent()) {
+        } else if (await rowElements.coloredLookup().element.isPresent()) {
             return rowElements.coloredLookup().getSelectedValue();
-        } if (await rowElements.lookup().element.isPresent()) {
+        } else if (await rowElements.lookup().element.isPresent()) {
             return rowElements.lookup().getSelectedValue();
-        } if (await rowElements.checkbox().element.isPresent()) {
+        } else if (await rowElements.checkbox().element.isPresent()) {
             return rowElements.checkbox().isSelected();
+        } else if (await rowElements.multiselect().element.isPresent()) {
+            return rowElements.multiselect().getValue();
         } else {
             return (await this.getCellFromRow(columnIndex)).getText();
         }
@@ -156,4 +187,5 @@ export class CellElements {
     inlineEditor: () => InlineEditor;
     lookup: () => Lookup;
     inlineAttachment: () => InlineAttach;
+    multiselect: () => Multiselect;
 }

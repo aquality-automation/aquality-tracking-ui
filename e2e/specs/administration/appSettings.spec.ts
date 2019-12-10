@@ -26,8 +26,29 @@ describe('Full Admin Administartion User Flow', () => {
         }
     });
 
+
+    describe('Audit Module', () => {
+        it('I can disable Audit Module', async () => {
+            await userAdministration.sidebar.appSettings();
+            await appSettings.disableAuditModule();
+            await appSettings.saveGeneralSettings();
+            await appSettings.menuBar.clickLogo();
+            return expect(projectList.menuBar.isAuditTabExists()).toBe(false, 'Audit Module is not disabled!');
+        });
+
+        it('I can enable Audit Module', async () => {
+            await (await projectList.menuBar.user()).administration();
+            await userAdministration.sidebar.appSettings();
+            await appSettings.enableAuditModule();
+            await appSettings.saveGeneralSettings();
+            await appSettings.menuBar.clickLogo();
+            return expect(projectList.menuBar.isAuditTabExists()).toBe(true, 'Audit Module is not enabled!');
+        });
+    });
+
     describe('Default Email Pattern', () => {
         it('I can see closed Email Pattern Hint', async () => {
+            await (await projectList.menuBar.user()).administration();
             await userAdministration.sidebar.appSettings();
             return expect(appSettings.getHintText()).toEqual(Constants.emailHelpTextHint);
         });

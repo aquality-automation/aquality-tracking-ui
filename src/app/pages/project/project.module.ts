@@ -26,10 +26,10 @@ import { TestRunsComponent } from './testrun/testrun-list/testruns.component';
 import { TestRunViewComponent } from './testrun/testrun-view/testrun.view.component';
 import { CreateMilestoneComponent } from './milestone/create-milestone.component';
 import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.component';
-import { CreateTestSuiteComponent } from './testsuite/create-testsuite.component';
+import { CreateTestSuiteComponent } from './testsuite/create/create-testsuite.component';
 import { CreateTestComponent } from './test/test-create/create-test.component';
-import { TestSuiteComponent } from './testsuite/testsuite.component';
-import { TestSuiteViewComponent } from './testsuite/testsuite-view.component';
+import { TestSuiteComponent } from './testsuite/list/testsuite.component';
+import { TestSuiteViewComponent } from './testsuite/view/testsuite-view.component';
 import { TestViewComponent } from './test/test-view/test.view.component';
 import { ResultGridComponent } from './results/results-grid/results.grid.component';
 import { TestResultViewComponent } from './results/results-view/testresult.view.component';
@@ -54,6 +54,7 @@ import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { StepsService } from '../../services/steps.service';
 import { StepsContainerComponent } from './test/steps-container/steps-container.component';
 import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
+import { SyncSuiteModalComponent } from './testsuite/sync-suite-modal/sync-suite-modal.component';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.
     SuiteDashboardComponent,
     StepsListComponent,
     StepsContainerComponent,
-    SafePipe
+    SafePipe,
+    SyncSuiteModalComponent
   ],
   providers: [
     ProjectService,

@@ -56,96 +56,97 @@ export class TestRunsComponent implements OnInit {
     this.testRun = {
       project_id: this.route.snapshot.params['projectId']
     };
-    await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
-      this.milestones = res;
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] });
+    this.labels = await this.testrunService.getTestsRunLabels(0).toPromise();
+    this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
+    this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params['projectId'] });
+    this.testRuns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] });
+    this.testRuns.forEach(run => {
+      if (run.finish_time && run.start_time) {
+        run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
+        run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
+        run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
+        run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
+      }
     });
-    await this.testrunService.getTestsRunLabels(0).subscribe(res => {
-      this.labels = res;
-    });
-    await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
-      this.suites = res;
-    });
-    await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
-      this.testRunStats = res;
-      this.testrunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] }).then(result => {
-        this.testRuns = result;
-        this.testRuns.forEach(run => {
-          if (run.finish_time && run.start_time) {
-            run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
-            run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
-            run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
-          }
-        });
-        this.tbCols = [
-          {
-            name: 'Label',
-            property: 'label.name',
-            filter: true,
-            sorting: true,
-            type: 'lookup-colored',
-            entity: 'label',
-            values: this.labels,
-            editable: true,
-            class: 'fit'
-          },
-          { name: 'Start Time', property: 'start_time', filter: true, sorting: true, type: 'date', class: 'fit' },
-          { name: 'Build', property: 'build_name', filter: true, sorting: true, type: 'text', editable: false, class: 'ft-width-350' },
-          {
-            name: 'Test Suite',
-            property: 'test_suite.name',
-            filter: true,
-            sorting: true,
-            type: 'lookup-autocomplete',
-            values: this.suites,
-            propToShow: ['name'],
-            entity: 'test_suite',
-            allowEmpty: false,
-            editable: false,
-            class: 'fit'
-          },
-          {
-            name: 'Milestone',
-            property: 'milestone.name',
-            filter: true,
-            sorting: true,
-            type: 'lookup-autocomplete',
-            values: this.milestones,
-            propToShow: ['name'],
-            entity: 'milestone',
-            allowEmpty: true,
-            editable: false,
-            class: 'fit'
-          },
-          {
-            name: 'Execution Environment',
-            property: 'execution_environment',
-            filter: true,
-            sorting: true,
-            type: 'text',
-            editable: false,
-            class: 'fit'
-          },
-          { name: 'Total Tests Executed', property: 'totalTests', filter: false, sorting: true, type: 'text', class: 'fit' },
-          {
-            name: 'No Resolution',
-            property: 'not_assigned',
-            filter: true,
-            sorting: true,
-            type: 'percent',
-            editable: false,
-            link: {
-              template: `/project/${this.route.snapshot.params['projectId']}/testrun/{id}`,
-              properties: ['id'], params: { f_test_resolution_opt: 1 }
-            }
-          },
-          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', class: 'ft-width-120' }
-        ];
-        this.hiddenCols = [
-          { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' },
-          { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: false }
-        ];
-      });
-    });
+    this.tbCols = [
+      {
+        name: 'Label',
+        property: 'label.name',
+        filter: true,
+        sorting: true,
+        type: 'lookup-colored',
+        entity: 'label',
+        values: this.labels,
+        editable: true,
+        class: 'fit'
+      },
+      { name: 'Start Time', property: 'start_time', filter: true, sorting: true, type: 'date', class: 'fit' },
+      { name: 'Build', property: 'build_name', filter: true, sorting: true, type: 'text', editable: false, class: 'ft-width-350' },
+      {
+        name: 'Test Suite',
+        property: 'test_suite.name',
+        filter: true,
+        sorting: true,
+        type: 'lookup-autocomplete',
+        values: this.suites,
+        propToShow: ['name'],
+        entity: 'test_suite',
+        allowEmpty: false,
+        editable: false,
+        class: 'fit'
+      },
+      {
+        name: 'Milestone',
+        property: 'milestone.name',
+        filter: true,
+        sorting: true,
+        type: 'lookup-autocomplete',
+        values: this.milestones,
+        propToShow: ['name'],
+        entity: 'milestone',
+        allowEmpty: true,
+        editable: false,
+        class: 'fit'
+      },
+      {
+        name: 'Execution Environment',
+        property: 'execution_environment',
+        filter: true,
+        sorting: true,
+        type: 'text',
+        editable: false,
+        class: 'fit'
+      }, {
+        name: 'Executor',
+        property: 'author',
+        filter: true,
+        sorting: true,
+        type: 'text',
+        editable: false,
+        class: 'fit'
+      },
+      { name: 'Total', property: 'totalTests', filter: false, sorting: true, type: 'text', class: 'fit' },
+      {
+        name: 'No Resolution',
+        property: 'not_assigned',
+        filter: true,
+        sorting: true,
+        type: 'percent',
+        editable: false,
+        link: {
+          template: `/project/${this.route.snapshot.params['projectId']}/testrun/{id}`,
+          properties: ['id'], params: { f_test_resolution_opt: 1 }
+        },
+        class: 'ft-width-250'
+      },
+      { name: 'Pass Rate, %', property: 'passrate', filter: false, sorting: true, type: 'text', class: 'fit' },
+      { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', class: 'fit' }
+    ];
+    this.hiddenCols = [
+      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' },
+      { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: false }
+    ];
   }
 
   handleAction($event) {

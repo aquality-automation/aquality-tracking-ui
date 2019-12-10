@@ -35,10 +35,30 @@ export class SuiteView extends BasePage {
   }
 
   async clickMoveTest() {
-      return elements.moveTestBtn.click();
+    return elements.moveTestBtn.click();
   }
 
   openTest(testName: string) {
-      return elements.testsTable.clickRow(testName, columns.name);
+    return elements.testsTable.clickRow(testName, columns.name);
+  }
+
+  removeSuite(suiteName: string, testName: string) {
+    return elements.testsTable.removeValueFromMultiselect(suiteName, columns.suites, testName, columns.name);
+  }
+
+  addSuite(suiteName: string, testName: string) {
+    return elements.testsTable.addValueFromMultiselect(suiteName, columns.suites, testName, columns.name);
+  }
+
+  getTestSuites(testName: string): Promise<string[]|string> {
+       return elements.testsTable.getCellValue(columns.suites, testName, columns.name);
+  }
+
+  isTableEditable(): Promise<boolean> {
+    return elements.testsTable.isRowEditableByIndex(0);
+  }
+
+  isTestPresent(name: string): Promise<boolean> {
+    return elements.testsTable.isRowExists(name, columns.name);
   }
 }

@@ -14,7 +14,7 @@ export class ApplicationSettingsService extends SimpleRequester {
   }
 
   updateGeneralSettings(generalSettings: GeneralAppSettings) {
-    return this.doPost('/settings', generalSettings).map(res => res);
+    return this.doPost('/settings', generalSettings).map(res => res).toPromise();
   }
 
   updateLDAPSettings(ldapSettings: LDAPSettings) {
