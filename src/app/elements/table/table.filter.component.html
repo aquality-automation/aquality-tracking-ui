@@ -50,7 +50,11 @@
                     </th>
                 </tr>
                 <tr *ngIf="!hideFilter" class="filter-header vert-aligned">
-                    <td *ngFor="let col of columns" class="tf-column" [setClass]="col.class">
+                    <td *ngFor="let col of columns" class="tf-column" [setClass]="col.class" [ngClass]="{
+                        'fit': col.type === 'checkbox',
+                        'text-center': col.type === 'checkbox',
+                        'ft-tristate-filter': col.type === 'checkbox'
+                    }">
                         <input type="text"
                             *ngIf="(col.type === 'text' || col.type === 'textarea' || col.type=='long-text' || col.type=='email') && col.filter"
                             [ngModel]="textFilterData(col.property)" class="form-control input-sm"
@@ -76,6 +80,10 @@
                             [model]="getLookupFilterValue(col)[0]"
                             (modelChange)="handleLookupFilterChange(col.objectWithId ? col.objectWithId : col.entity, [$event])">
                         </lookup-colored>
+
+                        <tristate-checkbox *ngIf="col.type === 'checkbox' && col.filter"
+                            [model]="booleanFilterData(col.property)"
+                            (modelChange)="handleBooleanFilterChange(col, $event)"></tristate-checkbox>
 
                         <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete' && col.filter"
                             [cutLongText]="true" [small]="true" [propertiesToShow]="col.propToShow" [array]="col.values"

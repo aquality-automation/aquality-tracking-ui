@@ -37,14 +37,14 @@
         <ul class="nav navbar-nav" id="navigation-left-side">
           <li *ngFor="let navigation of navigations" [ngClass]="{'dropdown': navigation.children}"
             [id]="navigation.name">
-            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link"
+            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link" [queryParams]="navigation.params"
               [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
             <a *ngIf="navigation.show && navigation.children" data-toggle="dropdown" href=""
               class="dropdown-toggle">{{navigation.name}}
               <span *ngIf="navigation.children" class="caret"></span></a>
             <ul class="dropdown-menu">
               <li *ngFor="let child of navigation.children">
-                <a *ngIf="child.show" [routerLink]="child.link">{{child.name}}</a>
+                <a *ngIf="child.show" [routerLink]="child.link" [queryParams]="child.params">{{child.name}}</a>
               </li>
             </ul>
           </li>
@@ -58,14 +58,14 @@
         <ul *ngIf="isLogged" class="nav navbar-nav pull-right" id="navigation-right-side">
           <li [id]="navigation.id" *ngFor="let navigation of rightNavigations"
             [ngClass]="{'dropdown': navigation.children}">
-            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link"
+            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link" [queryParams]="navigation.params"
               [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
             <a *ngIf="navigation.show && navigation.children" data-toggle="dropdown" href=""
               class="dropdown-toggle">{{navigation.name}}
               <span *ngIf="navigation.children" class="caret"></span></a>
             <ul class="dropdown-menu">
               <li *ngFor="let child of navigation.children">
-                <a *ngIf="child.show && child.link" [routerLink]="child.link">{{child.name}}</a>
+                <a *ngIf="child.show && child.link" [routerLink]="child.link" [queryParams]="child.params">{{child.name}}</a>
                 <a *ngIf="child.show && child.href" [href]="child.href">{{child.name}}</a>
               </li>
             </ul>

@@ -348,6 +348,17 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return filter ? filter.value : '';
   }
 
+  booleanFilterData(property: string): number {
+    const filter = this.appliedFilters.find(x => x.property === property);
+    return filter 
+    ? filter.state === true 
+      ? 1
+      : filter.state === false 
+        ? 2 
+        : 3
+    : 3;
+  }
+
   toggleCreation() {
     this.showCreation = !this.showCreation;
   }
@@ -499,6 +510,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   handleFilterChange(col, $event) {
     const newFilter: Filter = { property: col.property, value: $event };
+    this.filterChange(newFilter);
+  }
+
+  handleBooleanFilterChange(col: any, value: number) {
+    const newFilter: Filter = { property: col.property, state: value === 1 ? true : value === 2 ? false : undefined };
     this.filterChange(newFilter);
   }
 
