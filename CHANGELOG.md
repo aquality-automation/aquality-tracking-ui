@@ -4,6 +4,7 @@
 
 Features:
   - Exclude Debug testruns from graph on test runs list -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/46)
+  - Import: Mark import as debug  -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/47)
 
 ## 0.3.4 (2019-12-10)
 
