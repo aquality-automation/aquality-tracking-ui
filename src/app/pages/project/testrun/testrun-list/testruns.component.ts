@@ -146,8 +146,8 @@ export class TestRunsComponent implements OnInit {
       { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', class: 'fit' }
     ];
     this.hiddenCols = [
-      { name: 'Debug', property: 'debug', filter: true, sorting: true, type: 'checkbox', editable: true }
-      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' },
+      { name: 'Debug', property: 'debug', filter: true, sorting: true, type: 'checkbox', editable: true },
+      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' }
     ];
   }
 
