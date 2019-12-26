@@ -13,7 +13,7 @@
       <br>
       <br>
       <div class="col-sm-12">
-        <table-filter *ngIf="tbCols && labels" [allowDelete]="userService.IsManager() || userService.IsLocalManager() || userService.IsLocalAdmin()"
+        <table-filter #testRunsTable *ngIf="tbCols && labels" [allowDelete]="userService.IsManager() || userService.IsLocalManager() || userService.IsLocalAdmin()"
           [allowExport]="true" [data]="testRuns" (shownData)="tableDataUpdate($event)" [columns]="tbCols" [hiddenColumns]="hiddenCols" [defaultSortBy]="sortBy"
           [queryParams]="true" (rowClick)="rowClicked($event)" (dataChange)="testRunUpdate($event)" (action)="handleAction($event)"></table-filter>
       </div>

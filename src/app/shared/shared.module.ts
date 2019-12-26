@@ -43,6 +43,7 @@ import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-swit
 import { AttachmentInlineComponent } from '../elements/attachment-inline/attachment-inline.component';
 import { LabeledInputComponent } from '../elements/labeled-element/labeled-input/labeled-input.component';
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
+import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 
 @NgModule({
   imports: [
@@ -94,7 +95,8 @@ import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.c
     LabeledSwitchComponent,
     AttachmentInlineComponent,
     LabeledInputComponent,
-    LabeledBaseComponent
+    LabeledBaseComponent,
+    TristateCheckboxComponent
   ],
   exports: [
     ClickableLinks,
@@ -142,7 +144,8 @@ import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.c
     LabeledSwitchComponent,
     AttachmentInlineComponent,
     LabeledInputComponent,
-    LabeledBaseComponent
+    LabeledBaseComponent,
+    TristateCheckboxComponent
   ]
 })
 export class SharedModule {}

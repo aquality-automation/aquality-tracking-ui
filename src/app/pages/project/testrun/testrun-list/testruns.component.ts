@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestRunService } from '../../../../services/testRun.service';
@@ -12,6 +12,7 @@ import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TestResultService } from '../../../../services/test-result.service';
 import { TestResultStat } from '../../../../shared/models/test-result';
 import { UserService } from '../../../../services/user.services';
+import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 
 @Component({
   templateUrl: './testruns.component.html',
@@ -40,6 +41,7 @@ export class TestRunsComponent implements OnInit {
   tbCols: any[];
   hiddenCols: any[];
   sortBy: { property: 'start_time', order: 'desc' };
+  @ViewChild(TableFilterComponent) testRunsTable: TableFilterComponent;
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -144,8 +146,8 @@ export class TestRunsComponent implements OnInit {
       { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', class: 'fit' }
     ];
     this.hiddenCols = [
-      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' },
-      { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: false }
+      { name: 'Debug', property: 'debug', filter: true, sorting: true, type: 'checkbox', editable: true },
+      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' }
     ];
   }
 
@@ -154,7 +156,7 @@ export class TestRunsComponent implements OnInit {
   }
 
   tableDataUpdate($event: TestRun[]) {
-    this.testRunStatsFiltered = this.testRunStats.filter(x => $event.find(y => y.id === x.id));
+    this.testRunStatsFiltered = this.testRunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
   }
 
   rowClicked($event: TestRun) {
@@ -170,8 +172,13 @@ export class TestRunsComponent implements OnInit {
     this.hideModal = false;
   }
 
-  testRunUpdate($event) {
-    this.testrunService.createTestRun($event).then();
+  async testRunUpdate(testrun: TestRun) {
+    await this.testrunService.createTestRun({
+      id: testrun.id,
+      label_id: testrun.label.id,
+      debug: testrun.debug
+    });
+    this.tableDataUpdate(this.testRunsTable.filteredData);
   }
 
   async execute($event) {
