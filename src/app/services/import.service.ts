@@ -40,4 +40,5 @@ export class ImportParameters {
   testRunId: number;
   cilink: string;
   addToLastTestRun: boolean;
+  debug: boolean;
 }
