@@ -34,7 +34,7 @@ describe('Administartion:', () => {
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await prepareProject(project);
         await (await projectsList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
@@ -49,7 +49,7 @@ describe('Administartion:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
@@ -57,7 +57,7 @@ describe('Administartion:', () => {
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
+                await logInPage.logInAs(user.user_name, user.password);
                 await projectsList.openProject(project.name);
             });
 
@@ -108,7 +108,7 @@ describe('Administartion:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
+                await logInPage.logInAs(user.user_name, user.password);
                 return projectsList.openProject(project.name);
             });
 

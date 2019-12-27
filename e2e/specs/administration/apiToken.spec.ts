@@ -32,7 +32,7 @@ describe('API Token:', () => {
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await createProject(project);
         await (await projectsList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
@@ -45,7 +45,7 @@ describe('API Token:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
@@ -53,7 +53,7 @@ describe('API Token:', () => {
     using(editorExamples, (user, description) => {
         describe(`API Token: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
+                await logInPage.logInAs(user.user_name, user.password);
                 await projectsList.openProject(project.name);
             });
 
@@ -93,7 +93,7 @@ describe('API Token:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`API Token: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
+                await logInPage.logInAs(user.user_name, user.password);
                 return projectsList.openProject(project.name);
             });
 

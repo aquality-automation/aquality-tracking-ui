@@ -11,7 +11,8 @@ import {
   postStep,
   postStepToTest,
   postTestToSuite,
-  postTestRun
+  postTestRun,
+  postMilestone
 } from '../utils/aqualityTrackingAPI.util';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
@@ -19,6 +20,7 @@ import { Test } from '../../src/app/shared/models/test';
 import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
 import { TestRun } from '../../src/app/shared/models/testRun';
+import { Milestone } from '../../src/app/shared/models/milestone';
 
 const projectList: ProjectList = new ProjectList();
 const projectCreate: ProjectCreate = new ProjectCreate();
@@ -140,4 +142,9 @@ export const addTestToSuite = (testId: number, suiteId: number, token: string, p
 export const prepareTestRun = (testrun: TestRun, token: string, projectId: number) => {
   testrun.project_id = projectId;
   return postTestRun(testrun, token, projectId);
-}
+};
+
+export const prepareMilestone = (milestone: Milestone, token: string, projectId: number) => {
+  milestone.project_id = projectId;
+  return postMilestone(milestone, token, projectId);
+};

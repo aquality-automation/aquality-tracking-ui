@@ -81,3 +81,6 @@ export class PermissionsAdministration extends AdministrationBase {
     await this.modal.clickYes();
   }
 }
+
+export const permissionsAdministration = new PermissionsAdministration();
+

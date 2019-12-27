@@ -8,7 +8,7 @@ import { TestSuite } from '../shared/models/testSuite';
 @Injectable()
 export class TestService extends SimpleRequester {
 
-  getTest(test: Test, withChildren: boolean = false, numberOfResults: number = 10000) {
+  getTest(test: Test, withChildren: boolean = false, numberOfResults: number = 10000): Promise<Test[]> {
     const params: { [key: string]: any | any[]; } = {
       id: test.id,
       project_id: test.project_id,
@@ -18,7 +18,7 @@ export class TestService extends SimpleRequester {
       withChildren: withChildren ? 1 : 0,
       numberOfResults
     };
-    return this.doGet('/test', params).map(res => res.json());
+    return this.doGet('/test', params).map(res => res.json()).toPromise();
   }
 
   createTest(test: Test): Promise<Test> {

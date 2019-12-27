@@ -43,3 +43,5 @@ export class APITokenAdministration extends AdministrationBase {
     return await elements.tokenValue.getText();
   }
 }
+
+export const apiTokenAdministration = new APITokenAdministration();

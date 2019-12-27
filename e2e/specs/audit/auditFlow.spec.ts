@@ -33,13 +33,13 @@ describe('Audit:', () => {
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await prepareProject(project);
         return projectsList.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
@@ -47,7 +47,7 @@ describe('Audit:', () => {
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(auditAdmin.user_name, auditAdmin.password);
+                await logInPage.logInAs(auditAdmin.user_name, auditAdmin.password);
                 await projectsList.openProject(project.name);
                 await (await projectsList.menuBar.audits()).project();
                 await projectAudits.clickCreate();
@@ -55,7 +55,7 @@ describe('Audit:', () => {
                 await createAudit.menuBar.clickLogo();
                 if (user.user_name !== auditAdmin.user_name) {
                     await projectsList.menuBar.clickLogOut();
-                    await logInPage.logIn(user.user_name, user.password);
+                    await logInPage.logInAs(user.user_name, user.password);
                 }
             });
 
@@ -142,7 +142,7 @@ describe('Audit:', () => {
                 it('Can submit audit', async () => {
                     if (user.user_name !== auditAdmin.user_name) {
                         await projectsList.menuBar.clickLogOut();
-                        await logInPage.logIn(auditAdmin.user_name, auditAdmin.password);
+                        await logInPage.logInAs(auditAdmin.user_name, auditAdmin.password);
                         await audit.open(project.name, audit.statuses.inReview);
                     }
                     await audit.submitAudit();
@@ -154,7 +154,7 @@ describe('Audit:', () => {
 
                     if (user.user_name !== auditAdmin.user_name) {
                         await projectsList.menuBar.clickLogOut();
-                        await logInPage.logIn(user.user_name, user.password);
+                        await logInPage.logInAs(user.user_name, user.password);
                         await audit.open(project.name, audit.statuses.submitted);
                     }
                 });

@@ -160,6 +160,27 @@ export class TestSuiteGuard implements CanActivate {
 }
 
 @Injectable()
+export class MilestoneGuard implements CanActivate {
+  constructor(
+    private router: Router,
+    public userService: UserService
+  ) { }
+
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    let islogged = false;
+    await this.userService.handleIsLogged().then(res => islogged = res);
+    if (!islogged) { return false; }
+
+    if (this.userService.IsManager() || this.userService.IsAuditAdmin() || this.userService.IsAuditor()
+      || this.userService.HaveAnyLocalPermissions(+state.url.split('/')[2])) {
+      return true;
+    }
+    this.router.navigate(['**']);
+    return false;
+  }
+}
+
+@Injectable()
 export class CreateTestSuiteGuard implements CanActivate {
 
   constructor(

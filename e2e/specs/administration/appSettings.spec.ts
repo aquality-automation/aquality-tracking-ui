@@ -16,7 +16,7 @@ describe('Full Admin Administartion User Flow', () => {
     const userToCreate: User = users.patternTest;
 
     beforeAll(async () => {
-        await logInPage.logIn(users.admin.user_name, users.admin.password);
+        await logInPage.logInAs(users.admin.user_name, users.admin.password);
         return (await projectList.menuBar.user()).administration();
     });
 

@@ -52,7 +52,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     };
 
     beforeAll(async () => {
-        await logInPage.logIn(users.admin.user_name, users.admin.password);
+        await logInPage.logInAs(users.admin.user_name, users.admin.password);
         await createTestProject(projects.resolutionProject);
         await createTestProject(projects.noResolutionProject);
         await (await projectList.menuBar.user()).administration();

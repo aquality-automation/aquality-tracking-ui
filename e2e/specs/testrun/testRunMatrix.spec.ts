@@ -36,7 +36,7 @@ describe('Test Run Matrix', () => {
     ];
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await executeCucumberImport(projectId, 'Test', importToken, imports, builds.filenames);

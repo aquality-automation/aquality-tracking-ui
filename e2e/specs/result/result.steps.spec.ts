@@ -63,7 +63,7 @@ describe('Result Steps:', () => {
     let projectId: number;
 
     beforeAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await (await projectList.menuBar.user()).administration();
@@ -92,7 +92,7 @@ describe('Result Steps:', () => {
     });
 
     afterAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(project.name);
     });
@@ -106,7 +106,7 @@ describe('Result Steps:', () => {
                     start_time: new Date()
                 };
                 testRun = await prepareTestRun(testRun, importToken, projectId);
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 await testRunView.navigateTo(projectId, testRun.id);
                 await testRunView.openResult(test.name);
@@ -195,7 +195,7 @@ describe('Result Steps:', () => {
                 };
                 testRun = await prepareTestRun(testRun, importToken, projectId);
 
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 await testRunView.navigateTo(projectId, testRun.id);
                 return testRunView.openResult(test.name);

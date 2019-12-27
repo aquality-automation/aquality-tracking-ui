@@ -6,6 +6,7 @@ import { Test } from '../../src/app/shared/models/test';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { logger } from './log.util';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
+import { Milestone } from '../../src/app/shared/models/milestone';
 
 export class ImportParams {
     projectId: number;
@@ -89,6 +90,10 @@ const postTestRun = async (testRun: TestRun, token: string, projectId: number) =
     return sendPost('/testrun', undefined, testRun, token, projectId);
 };
 
+const postMilestone = async (milestone: Milestone, token: string, projectId: number) => {
+    return sendPost('/milestone', undefined, milestone, token, projectId);
+};
+
 const getSuites = async (testSuite: TestSuite, token: string, projectId: number): Promise<TestSuite[]> => {
     return sendGet('/suite', testSuite, token, projectId);
 };
@@ -132,6 +137,9 @@ const postTestToSuite = (testId: number, suiteId: number, token: string, project
 
 
 export {
+    sendPostWithfiles,
+    sendPost,
+    sendGet,
     doImport,
     getSuites,
     getTests,
@@ -142,5 +150,6 @@ export {
     postStep,
     postStepToTest,
     postTestToSuite,
-    postTestRun
+    postTestRun,
+    postMilestone
 };

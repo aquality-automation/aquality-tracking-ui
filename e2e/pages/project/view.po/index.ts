@@ -19,3 +19,5 @@ export class ProjectView extends BasePage {
         return elements.emptyProjectMessage.isDisplayed();
     }
 }
+
+export const projectView = new ProjectView();

@@ -22,7 +22,7 @@ describe('Test Run Result Searcher', () => {
     const builds = { build_1: 'Build_1', build_2: 'Build_2' };
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await executeCucumberImport(projectId, 'Test Suite', importToken,

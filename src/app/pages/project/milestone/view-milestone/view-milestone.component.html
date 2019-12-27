@@ -1,0 +1,27 @@
+<div *ngIf="milestone" class="panel-heading">
+  <div class="col-sm-9">
+    <h2 id="milestone-view">Milestone {{milestone.name}}</h2>
+  </div>
+
+  <div class="col-sm-3">
+    <labeled-switch class="pull-right" id="stack-suites" label="Distinct Tests" size="small" [ngModel]="stackSuites"
+    (ngModelChange)="updateStackSuites($event)" title="Show Latest results by uniq Test or by uniq Suite and Test"></labeled-switch>
+  </div>
+</div>
+<hr class="col-sm-12 no-padding">
+<div class="row">
+  <div class="col-sm-6" *ngIf="resultsToShow">
+    <final-result-chart [testResults]="resultsToShow" (chartClick)="finalResultChartClick($event)">Loading...</final-result-chart>
+  </div>
+  <div class="col-sm-6" *ngIf="resultsToShow">
+    <result-resolution-chart [testResults]="resultsToShow" (chartClick)="resolutionChartClick($event)">Loading...</result-resolution-chart>
+  </div>
+</div>
+
+<div class="row">
+  <hr class="col-sm-12 no-padding">
+</div>
+
+<table-filter id="suite-results" *ngIf="columns" [hide]="hideTableValue" [allowExport]="true" [data]="viewData"
+  [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20" [columns]="columns" [defaultSortBy]="sortBy" [queryParams]="true"
+  (rowClick)="rowClicked($event)" (action)="handleAction($event)"></table-filter>

@@ -34,7 +34,7 @@ describe('Import Test Run: Add to Last Testrun', () => {
     let projectId: number;
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         apiToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
     });

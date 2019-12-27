@@ -53,7 +53,7 @@ describe('Test Steps:', () => {
     let projectId: number;
 
     beforeAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await (await projectList.menuBar.user()).administration();
@@ -74,7 +74,7 @@ describe('Test Steps:', () => {
     });
 
     afterAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(project.name);
     });
@@ -86,7 +86,7 @@ describe('Test Steps:', () => {
             const customStep3 = { name: `Project page is opened ${description}`, type_id: 3 };
             beforeAll(async () => {
                 customTest = await prepareTest(customTest, importToken, projectId);
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 await testView.navigateTo(projectId, customTest.id);
             });
@@ -176,7 +176,7 @@ describe('Test Steps:', () => {
                 customTest = await prepareTest(customTest, importToken, projectId);
                 await addStepToTest({step_id: step1.id, test_id: customTest.id, order: 1}, importToken, projectId);
 
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 return testView.navigateTo(projectId, customTest.id);
             });

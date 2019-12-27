@@ -16,7 +16,7 @@ describe('Full Admin Project', () => {
   const project: Project = projects.creation;
 
   beforeAll(() => {
-    return logInPage.logIn(users.admin.user_name, users.admin.password);
+    return logInPage.logInAs(users.admin.user_name, users.admin.password);
   });
 
   afterAll(async () => {

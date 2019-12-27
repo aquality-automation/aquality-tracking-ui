@@ -50,7 +50,7 @@ describe('Administartion: Project Settings:', () => {
     const commentFulText = 'Should be filled by full text';
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await (await projectsList.menuBar.user()).administration();
@@ -62,13 +62,13 @@ describe('Administartion: Project Settings:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
     describe(`Search Pattern:`, () => {
         beforeAll(async () => {
-            await logInPage.logIn(localManager.user_name, localManager.password);
+            await logInPage.logInAs(localManager.user_name, localManager.password);
             await projectsList.openProject(project.name);
             await (await projectsList.menuBar.user()).administration();
             await userAdministration.sidebar.projectSettings();

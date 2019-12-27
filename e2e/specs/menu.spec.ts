@@ -14,7 +14,7 @@ describe('Report an Issue', () => {
     });
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
     });
 
     afterAll(async () => {

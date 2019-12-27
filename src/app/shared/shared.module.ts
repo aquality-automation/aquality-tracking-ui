@@ -14,7 +14,7 @@ import { CustomEventListener } from '../derectives/customEventListener.derective
 import { CommentsComponent } from '../elements/comments/comments.component';
 import { NgxEditorModule } from 'ngx-editor';
 import { PanelsRowDirective } from '../derectives/panels-row.derective';
-import { FileUploadModule } from 'ng2-file-upload/file-upload/file-upload.module';
+import { FileUploadModule } from 'ng2-file-upload';
 import { UploaderComponent } from '../elements/file-uploader/uploader.element';
 import { LookupAutocompleteMultiselectComponent } from '../elements/lookup/lookupAutocompleteMultiselect.component';
 import { RouterModule } from '@angular/router';

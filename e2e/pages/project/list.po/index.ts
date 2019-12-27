@@ -37,3 +37,5 @@ export class ProjectList extends BasePage {
         return this.modal.clickYes();
     }
 }
+
+export const projectList = new ProjectList();

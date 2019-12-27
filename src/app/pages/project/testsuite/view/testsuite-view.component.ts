@@ -144,7 +144,7 @@ export class TestSuiteViewComponent implements OnInit {
       this.testRuns = await this.testRunService.getTestRun(this.testRun);
     } else {
       this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
-      this.testSuite.tests = await this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] }).toPromise();
+      this.testSuite.tests = await this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] });
       this.calculateManualDuration();
     }
   }

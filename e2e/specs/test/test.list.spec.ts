@@ -40,7 +40,7 @@ describe('Tests List:', () => {
     let projectId: number;
 
     beforeAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await (await projectList.menuBar.user()).administration();
@@ -60,7 +60,7 @@ describe('Tests List:', () => {
     });
 
     afterAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(project.name);
     });
@@ -68,7 +68,7 @@ describe('Tests List:', () => {
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 return (await projectList.menuBar.tests()).all();
             });
@@ -98,7 +98,7 @@ describe('Tests List:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logIn.logIn(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectList.openProject(project.name);
                 return (await projectList.menuBar.tests()).all();
             });

@@ -21,7 +21,7 @@ export class LogIn extends BasePage {
     return elements.passwordField.sendKeys(text);
   }
 
-  async logIn(userName: string, password: string) {
+  async logInAs(userName: string, password: string) {
     await this.menuBar.clickLogo();
     if (await this.menuBar.isLogged()) {
       await this.menuBar.clickLogOut();
@@ -39,3 +39,5 @@ export class LogIn extends BasePage {
     return elements.logInButton.isEnabled();
   }
 }
+
+export const logIn = new LogIn();

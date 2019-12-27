@@ -36,7 +36,7 @@ describe('Full Admin Administartion User Flow', () => {
     };
 
     beforeAll(async () => {
-        await logInPage.logIn(users.admin.user_name, users.admin.password);
+        await logInPage.logInAs(users.admin.user_name, users.admin.password);
         return (await projectList.menuBar.user()).administration();
     });
 
@@ -101,10 +101,10 @@ describe('Full Admin Administartion User Flow', () => {
 
         it('I can login as new user', async () => {
             await userAdministration.menuBar.clickLogOut();
-            await logInPage.logIn(userToCreate.user_name, userToCreate.password);
+            await logInPage.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logInPage.logIn(users.admin.user_name, users.admin.password);
+            await logInPage.logInAs(users.admin.user_name, users.admin.password);
             return (await projectList.menuBar.user()).administration();
         });
     });
@@ -166,10 +166,10 @@ describe('Full Admin Administartion User Flow', () => {
             await userAdministration.clickResetPassword(userToCreate.user_name);
             userToCreate.password = '123456';
             await userAdministration.menuBar.clickLogOut();
-            await logInPage.logIn(userToCreate.user_name, userToCreate.password);
+            await logInPage.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logInPage.logIn(users.admin.user_name, users.admin.password);
+            await logInPage.logInAs(users.admin.user_name, users.admin.password);
             return (await projectList.menuBar.user()).administration();
         });
     });

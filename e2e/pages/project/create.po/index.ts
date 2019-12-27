@@ -34,3 +34,5 @@ export class ProjectCreate extends BasePage {
         await this.clickCreateButton();
     }
 }
+
+export const projectCreate = new ProjectCreate();

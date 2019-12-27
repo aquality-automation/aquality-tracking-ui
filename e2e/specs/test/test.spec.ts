@@ -38,7 +38,7 @@ describe('Test', () => {
     };
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await executeImport(suites.suite_1, 0);
