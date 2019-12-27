@@ -1,8 +1,8 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectCreate } from '../../pages/project/create.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { SuiteCreate } from '../../pages/suite/create.po';
+import { projectView } from '../../pages/project/view.po';
+import { suiteCreate } from '../../pages/suite/create.po';
 import { TestRunCreate } from '../../pages/testrun/create.po';
 import { TestRunView } from '../../pages/testrun/view.po';
 import { milestoneCreate } from '../../pages/milestone/create.po';
@@ -16,8 +16,6 @@ import testruns from '../../data/testRuns.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Run', () => {
-    const projectView = new ProjectView();
-    const suiteCreate = new SuiteCreate();
     const testRunCreate = new TestRunCreate();
     const testRunView = new TestRunView();
     const testRunList = new TestRunList();

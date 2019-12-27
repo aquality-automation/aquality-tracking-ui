@@ -1,8 +1,8 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectCreate } from '../../pages/project/create.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { SuiteCreate } from '../../pages/suite/create.po';
+import { projectView } from '../../pages/project/view.po';
+import { suiteCreate } from '../../pages/suite/create.po';
 import { TestCreate } from '../../pages/test/create.po';
 import { TestRunCreate } from '../../pages/testrun/create.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -22,8 +22,6 @@ import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
-    const projectView: ProjectView = new ProjectView();
-    const suiteCreate: SuiteCreate = new SuiteCreate();
     const testCreate: TestCreate = new TestCreate();
     const testRunCreate: TestRunCreate = new TestRunCreate();
     const testRunList: TestRunList = new TestRunList();

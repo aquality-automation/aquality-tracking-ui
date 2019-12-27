@@ -9,7 +9,7 @@ import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
 import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { permissionsAdministration } from '../../pages/administration/permissions.po';
-import { StepsList } from '../../pages/steps.po';
+import { stepsList } from '../../pages/steps.po';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -24,8 +24,6 @@ const notEditorExamples = {
 
 describe('Steps:', () => {
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-    const stepsList: StepsList = new StepsList();
-
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     const step = { name: 'test step', type: 'When' };

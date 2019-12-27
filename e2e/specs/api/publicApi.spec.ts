@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
+import { projectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
 import { postTestRun, getSuites, getTests, getResults, postResult, postTest } from '../../utils/aqualityTrackingAPI.util';
@@ -16,7 +16,6 @@ import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 
 describe('Public API tests', () => {
-  const projectView = new ProjectView();
   const testRunList = new TestRunList();
   const project: Project = projects.apiTests;
   const builds = { build_1: 'Build_1' };

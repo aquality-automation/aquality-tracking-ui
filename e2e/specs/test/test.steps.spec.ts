@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
+import { projectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, setProjectPermissions, prepareTest, prepareStep, addStepToTest } from '../project.hooks';
 import { getClipboardText } from '../../utils/js.util';
@@ -15,7 +15,6 @@ import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 
 const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-const projectView = new ProjectView();
 const testView = new TestView();
 
 const test: Test = { name: 'Project can be opened from Projects list' };

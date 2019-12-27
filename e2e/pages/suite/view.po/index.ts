@@ -62,3 +62,5 @@ export class SuiteView extends BasePage {
     return elements.testsTable.isRowExists(name, columns.name);
   }
 }
+
+export const suiteView = new SuiteView();

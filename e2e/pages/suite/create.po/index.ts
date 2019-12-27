@@ -24,3 +24,5 @@ export class SuiteCreate extends BasePage {
         return elements.createButton.isEnabled();
     }
 }
+
+export const suiteCreate = new SuiteCreate();

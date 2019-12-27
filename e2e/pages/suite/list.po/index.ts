@@ -45,3 +45,5 @@ export class SuiteList extends BasePage {
         return elements.testSuiteTable.editRow(newName, columns.name, oldName, columns.name);
     }
 }
+
+export const suiteList = new SuiteList();

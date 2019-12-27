@@ -11,7 +11,7 @@ import firstError from '../../../data/import/regexImportErrorSearch/firstError.j
 import sameError from '../../../data/import/regexImportErrorSearch/sameError.json';
 import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { permissionsAdministration } from '../../../pages/administration/permissions.po';
-import { ProjectView } from '../../../pages/project/view.po';
+import { projectView } from '../../../pages/project/view.po';
 import { TestRunList } from '../../../pages/testrun/list.po';
 import { TestRunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../src/app/shared/models/user';
@@ -32,7 +32,6 @@ const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-    const projectView: ProjectView = new ProjectView();
     const testRunList: TestRunList = new TestRunList();
     const testRunView: TestRunView = new TestRunView();
 

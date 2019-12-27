@@ -67,3 +67,5 @@ export class StepsList extends BasePage {
         return totalRowsNumber === 0;
     }
 }
+
+export const stepsList = new StepsList();

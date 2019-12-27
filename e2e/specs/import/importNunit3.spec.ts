@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
+import { projectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -12,7 +12,6 @@ import projects from '../../data/projects.json';
 import { compareCSVStrings } from '../../utils/csv.util';
 
 describe('Import Test Run: Nunit V3', () => {
-    const projectView = new ProjectView();
     const testRunView = new TestRunView();
     const testRunList = new TestRunList();
     const project: Project = projects.nunit3Import;

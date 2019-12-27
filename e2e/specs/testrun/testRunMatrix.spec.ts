@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
+import { projectView } from '../../pages/project/view.po';
 import { Matrix } from '../../pages/testrun/matrix.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, executeCucumberImport, generateBuilds } from '../project.hooks';
@@ -14,7 +14,6 @@ import projects from '../../data/projects.json';
 import { TestRunView } from '../../pages/testrun/view.po';
 
 describe('Test Run Matrix', () => {
-    const projectView = new ProjectView();
     const testRunList = new TestRunList();
     const testRunView = new TestRunView();
     const matrix = new Matrix();
