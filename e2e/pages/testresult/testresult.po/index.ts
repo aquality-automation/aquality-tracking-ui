@@ -102,3 +102,5 @@ export class TestResultView extends BasePage {
     return (await this.attachCell(name)).inlineAttachment().removeAttach();
   }
 }
+
+export const testResultView = new TestResultView();

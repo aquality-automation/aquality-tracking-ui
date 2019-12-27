@@ -26,3 +26,5 @@ export class TestView extends BasePage {
         return elements.copyScenario.click();
     }
 }
+
+export const testView = new TestView();

@@ -52,3 +52,5 @@ export class TestRunCreate extends BasePage {
         );
     }
 }
+
+export const testRunCreate = new TestRunCreate();

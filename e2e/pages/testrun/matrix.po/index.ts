@@ -58,3 +58,5 @@ export class Matrix extends BasePage {
         return +columnName.split(' | ')[0];
     }
 }
+
+export const matrix = new Matrix();

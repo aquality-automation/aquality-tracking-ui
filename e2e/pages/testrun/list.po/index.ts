@@ -43,3 +43,5 @@ export class TestRunList extends BasePage {
         }, 5, 3000);
     }
 }
+
+export const testRunList = new TestRunList();

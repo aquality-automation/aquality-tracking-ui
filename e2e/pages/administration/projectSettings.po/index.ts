@@ -42,3 +42,5 @@ export class ProjectSettingsAdministration extends AdministrationBase {
 export class ProjectSettings {
   stepsState: boolean;
 }
+
+export const projectSettingsAdministration = new ProjectSettingsAdministration();

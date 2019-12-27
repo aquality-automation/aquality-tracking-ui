@@ -7,7 +7,7 @@ import { notFound } from '../../../pages/notFound.po';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
-import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
+import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
 import { permissionsAdministration } from '../../../pages/administration/permissions.po';
 
@@ -23,7 +23,6 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
-    const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 

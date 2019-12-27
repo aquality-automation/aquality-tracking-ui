@@ -9,11 +9,11 @@ import resolutions from '../../../data/resolutions.json';
 import differentError from '../../../data/import/regexImportErrorSearch/differentError.json';
 import firstError from '../../../data/import/regexImportErrorSearch/firstError.json';
 import sameError from '../../../data/import/regexImportErrorSearch/sameError.json';
-import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
+import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { permissionsAdministration } from '../../../pages/administration/permissions.po';
 import { projectView } from '../../../pages/project/view.po';
-import { TestRunList } from '../../../pages/testrun/list.po';
-import { TestRunView } from '../../../pages/testrun/view.po';
+import { testRunList } from '../../../pages/testrun/list.po';
+import { testRunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../src/app/shared/models/user';
 
 const importFiles = {
@@ -31,10 +31,6 @@ const builds = {
 const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
-    const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-    const testRunList: TestRunList = new TestRunList();
-    const testRunView: TestRunView = new TestRunView();
-
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     let importToken: string;

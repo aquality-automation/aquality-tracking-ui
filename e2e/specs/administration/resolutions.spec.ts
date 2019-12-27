@@ -3,14 +3,14 @@ import { projectList } from '../../pages/project/list.po';
 import { projectCreate } from '../../pages/project/create.po';
 import { projectView } from '../../pages/project/view.po';
 import { suiteCreate } from '../../pages/suite/create.po';
-import { TestCreate } from '../../pages/test/create.po';
-import { TestRunCreate } from '../../pages/testrun/create.po';
+import { testCreate } from '../../pages/test/create.po';
+import { testRunCreate } from '../../pages/testrun/create.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { resolutionAdministration } from '../../pages/administration/resolutions.po';
 import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { TestResultView } from '../../pages/testresult/testresult.po';
+import { testRunList } from '../../pages/testrun/list.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { testResultView } from '../../pages/testresult/testresult.po';
 import { browser } from 'protractor';
 import { colors } from '../../pages/administration/resolutions.po/constants';
 
@@ -22,11 +22,6 @@ import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
-    const testCreate: TestCreate = new TestCreate();
-    const testRunCreate: TestRunCreate = new TestRunCreate();
-    const testRunList: TestRunList = new TestRunList();
-    const testRunView: TestRunView = new TestRunView();
-    const testResultView = new TestResultView();
     const resolution: ResultResolution = resolutions.flowTest;
     const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 

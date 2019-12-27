@@ -116,3 +116,5 @@ export class TestRunView extends BasePage {
     return +(url.match(regexp)[1]);
   }
 }
+
+export const testRunView = new TestRunView();

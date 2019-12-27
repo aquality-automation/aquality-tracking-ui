@@ -5,13 +5,12 @@ import { Project } from '../../../src/app/shared/models/project';
 import { suiteView } from '../../pages/suite/view.po';
 import { prepareProject, setProjectPermissions, prepareTest, prepareSuite } from '../project.hooks';
 import { userAdministration } from '../../pages/administration/users.po';
-import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
+import { projectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { Test } from '../../../src/app/shared/models/test';
 import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 
-const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
 let test: Test = { name: 'Project can be opened from Projects list' };
 let suite1: Test = { name: 'First Suite' };
 let suite2: Test = { name: 'Second Suite' };

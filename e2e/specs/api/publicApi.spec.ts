@@ -10,13 +10,12 @@ import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 import cucumberImport from '../../data/import/cucumber.json';
 import { prepareProject, executeCucumberImport } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 import { TestRun } from '../../../src/app/shared/models/testRun';
 import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 
 describe('Public API tests', () => {
-  const testRunList = new TestRunList();
   const project: Project = projects.apiTests;
   const builds = { build_1: 'Build_1' };
   let suite: TestSuite = suites.suiteCreation;

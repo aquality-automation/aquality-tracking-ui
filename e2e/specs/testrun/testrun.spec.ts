@@ -3,10 +3,10 @@ import { projectList } from '../../pages/project/list.po';
 import { projectCreate } from '../../pages/project/create.po';
 import { projectView } from '../../pages/project/view.po';
 import { suiteCreate } from '../../pages/suite/create.po';
-import { TestRunCreate } from '../../pages/testrun/create.po';
-import { TestRunView } from '../../pages/testrun/view.po';
+import { testRunCreate } from '../../pages/testrun/create.po';
+import { testRunView } from '../../pages/testrun/view.po';
 import { milestoneCreate } from '../../pages/milestone/create.po';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 
 import users from '../../data/users.json';
@@ -16,9 +16,6 @@ import testruns from '../../data/testRuns.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Run', () => {
-    const testRunCreate = new TestRunCreate();
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
     let startDateStore: Date;
     const project: Project = projects.testrunProject;
 

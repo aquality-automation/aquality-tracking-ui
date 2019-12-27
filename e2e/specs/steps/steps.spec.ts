@@ -7,7 +7,7 @@ import { prepareProject, setProjectPermissions } from '../project.hooks';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
-import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
+import { projectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { permissionsAdministration } from '../../pages/administration/permissions.po';
 import { stepsList } from '../../pages/steps.po';
 
@@ -23,7 +23,6 @@ const notEditorExamples = {
 };
 
 describe('Steps:', () => {
-    const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     const step = { name: 'test step', type: 'When' };

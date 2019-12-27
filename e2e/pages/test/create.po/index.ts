@@ -29,3 +29,5 @@ export class TestCreate extends BasePage {
         return this.clickCreate();
     }
 }
+
+export const testCreate = new TestCreate();

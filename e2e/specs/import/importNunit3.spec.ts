@@ -1,19 +1,17 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 import { compareCSVStrings } from '../../utils/csv.util';
 
 describe('Import Test Run: Nunit V3', () => {
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
     const project: Project = projects.nunit3Import;
     const featureName = {
         buildName: 'build 1',

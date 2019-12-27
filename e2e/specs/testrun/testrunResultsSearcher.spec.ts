@@ -1,18 +1,16 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 import { prepareProject, executeCucumberImport } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 
 describe('Test Run Result Searcher', () => {
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
     const project: Project = projects.testRunResultSearcherProject;
     let importToken: string;
     let projectId: number;
