@@ -1,10 +1,11 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
+import { milestoneList } from '../../pages/milestone/list.po';
+
+import { ProjectHelper } from '../../helpers/project.helper';
+import usersTestData from '../../data/users.json';
 
 import using from 'jasmine-data-provider';
-import usersTestData from '../../data/users.json';
-import { MilestoneList } from '../../pages/milestone/list.po';
-import { ProjectHelper } from '../../helpers/project.helper';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -19,8 +20,6 @@ const notEditorExamples = {
 
 describe('Milestone List:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
-    const projectsList: ProjectList = new ProjectList();
-    const milestoneList: MilestoneList = new MilestoneList();
 
     const milestone = { name: 'List Test' };
     const editedMilestone = { name: 'Edited List Test' };
@@ -44,11 +43,11 @@ describe('Milestone List:', () => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectsList.openProject(projectHelper.project.name);
+                await projectList.openProject(projectHelper.project.name);
             });
 
             it('I can open Milestone List page', async () => {
-                await projectsList.menuBar.milestones();
+                await projectList.menuBar.milestones();
                 return expect(milestoneList.isOpened())
                     .toBe(true, `Milestone List page is not opened for ${description}`);
             });
@@ -88,11 +87,11 @@ describe('Milestone List:', () => {
             beforeAll(async () => {
                 projectHelper.editorAPI.createMilestone(milestone);
                 await logIn.logInAs(user.user_name, user.password);
-                return projectsList.openProject(projectHelper.project.name);
+                return projectList.openProject(projectHelper.project.name);
             });
 
             it('I can open Milestone List page', async () => {
-                await projectsList.menuBar.milestones();
+                await projectList.menuBar.milestones();
                 return expect(milestoneList.isOpened())
                     .toBe(true, `Milestone List page is not opened for ${description}`);
             });

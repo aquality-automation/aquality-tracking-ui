@@ -1,13 +1,11 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { MilestoneList } from '../../pages/milestone/list.po';
+import { milestoneList } from '../../pages/milestone/list.po';
 
 import usersTestData from '../../data/users.json';
 import { ProjectHelper } from '../../helpers/project.helper';
 
 describe('Milestone:', () => {
-    const logInPage: LogIn = new LogIn();
-    const milestoneList: MilestoneList = new MilestoneList();
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     const milestones = {
@@ -27,14 +25,14 @@ describe('Milestone:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(projectHelper.project.name);
     });
 
     describe(`Milestone View: Viewer role:`, () => {
         beforeAll(async () => {
-            await logInPage.logInAs(usersTestData.viewer.user_name, usersTestData.viewer.password);
+            await logIn.logInAs(usersTestData.viewer.user_name, usersTestData.viewer.password);
             await projectHelper.openProject();
         });
 

@@ -1,7 +1,7 @@
 import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 
-export class MilestoneList extends BasePage {
+class MilestoneList extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -51,3 +51,5 @@ export class MilestoneList extends BasePage {
         return isActionColumnExist || isRowContainEditableElements;
     }
 }
+
+export const milestoneList = new MilestoneList();
