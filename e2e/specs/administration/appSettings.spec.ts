@@ -1,5 +1,4 @@
-import { LogIn } from '../../pages/login.po';
-
+import { logIn } from '../../pages/login.po';
 import users from '../../data/users.json';
 import { User } from '../../../src/app/shared/models/user';
 import { userAdministration } from '../../pages/administration/users.po';
@@ -9,18 +8,17 @@ import { Constants } from '../../../src/app/pages/administration/global/app-sett
 
 describe('Full Admin Administartion User Flow', () => {
 
-    const logInPage: LogIn = new LogIn();
     const projectList: ProjectList = new ProjectList();
     const userToCreate: User = users.patternTest;
 
     beforeAll(async () => {
-        await logInPage.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         return (await projectList.menuBar.user()).administration();
     });
 
     afterAll(async () => {
-        if (await logInPage.menuBar.isLogged()) {
-            return logInPage.menuBar.clickLogOut();
+        if (await logIn.menuBar.isLogged()) {
+            return logIn.menuBar.clickLogOut();
         }
     });
 

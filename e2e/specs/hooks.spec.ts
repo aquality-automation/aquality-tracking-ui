@@ -1,7 +1,7 @@
 import { browser } from 'protractor';
 import { environment } from '../../src/environments/environment';
 import { waiter } from '../utils/wait.util';
-import { LogIn } from '../pages/login.po';
+import { logIn } from '../pages/login.po';
 import { ProjectList } from '../pages/project/list.po';
 import { userAdministration } from '../pages/administration/users.po';
 import path from 'path';
@@ -11,7 +11,6 @@ import usersTestData from '../data/users.json';
 
 chai.use(chaiHttp);
 const downloadsPath = path.resolve(__dirname, '..', './data/downloads/');
-const logInPage: LogIn = new LogIn();
 const projectsList: ProjectList = new ProjectList();
 
 beforeAll(async () => {
@@ -23,7 +22,7 @@ beforeAll(async () => {
     if (!isBackendAvailable) {
         throw new Error(`Backend is unavailable ${environment.host}`);
     }
-    await logInPage.navigateTo();
+    await logIn.navigateTo();
     // await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
     // await (await projectsList.menuBar.user()).administration();
     // await userAdministration.create(usersTestData.localAdmin);

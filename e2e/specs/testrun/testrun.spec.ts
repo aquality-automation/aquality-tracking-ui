@@ -1,4 +1,4 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectCreate } from '../../pages/project/create.po';
 import { ProjectView } from '../../pages/project/view.po';
@@ -16,7 +16,6 @@ import testruns from '../../data/testRuns.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Run', () => {
-    const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectCreate = new ProjectCreate();
     const projectView = new ProjectView();

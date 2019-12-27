@@ -1,4 +1,4 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectCreate } from '../../pages/project/create.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
@@ -13,8 +13,6 @@ import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Suite', () => {
-
-  const logIn: LogIn = new LogIn();
   const projectCreate: ProjectCreate = new ProjectCreate();
   const projectList: ProjectList = new ProjectList();
   const projectView: ProjectView = new ProjectView();

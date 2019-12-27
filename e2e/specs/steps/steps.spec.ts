@@ -1,4 +1,4 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { userAdministration } from '../../pages/administration/users.po';
@@ -23,7 +23,6 @@ const notEditorExamples = {
 };
 
 describe('Steps:', () => {
-    const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const stepsList: StepsList = new StepsList();
@@ -34,7 +33,7 @@ describe('Steps:', () => {
     const editedStep = { name: 'test step edited', type: 'Given' };
 
     beforeAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await prepareProject(project);
         await (await projectsList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
@@ -52,7 +51,7 @@ describe('Steps:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
@@ -60,7 +59,7 @@ describe('Steps:', () => {
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logInAs(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 await projectsList.openProject(project.name);
             });
 
@@ -105,7 +104,7 @@ describe('Steps:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+                await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
                 await projectsList.isOpened();
                 await projectsList.openProject(project.name);
                 await (await projectsList.menuBar.tests()).steps();
@@ -114,7 +113,7 @@ describe('Steps:', () => {
                     await stepsList.createStep(step.type, step.name);
                 }
                 await stepsList.menuBar.clickLogOut();
-                await logInPage.logInAs(user.user_name, user.password);
+                await logIn.logInAs(user.user_name, user.password);
                 return projectsList.openProject(project.name);
             });
 

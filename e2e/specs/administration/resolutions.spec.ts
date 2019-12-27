@@ -1,5 +1,4 @@
-import { LogIn } from '../../pages/login.po';
-
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectCreate } from '../../pages/project/create.po';
 import { ProjectView } from '../../pages/project/view.po';
@@ -23,8 +22,6 @@ import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
-
-    const logInPage: LogIn = new LogIn();
     const projectList: ProjectList = new ProjectList();
     const projectCreate: ProjectCreate = new ProjectCreate();
     const projectView: ProjectView = new ProjectView();
@@ -51,7 +48,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     };
 
     beforeAll(async () => {
-        await logInPage.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         await createTestProject(projects.resolutionProject);
         await createTestProject(projects.noResolutionProject);
         await (await projectList.menuBar.user()).administration();
@@ -61,8 +58,8 @@ describe('Full Admin Administartion Resolution Flow', () => {
     afterAll(async () => {
         await projectList.removeProject(projects.resolutionProject.name);
         await projectList.removeProject(projects.noResolutionProject.name);
-        if (await logInPage.menuBar.isLogged()) {
-            return logInPage.menuBar.clickLogOut();
+        if (await logIn.menuBar.isLogged()) {
+            return logIn.menuBar.clickLogOut();
         }
     });
 

@@ -1,4 +1,4 @@
-import { LogIn } from '../../../pages/login.po';
+import { logIn } from '../../../pages/login.po';
 import { ProjectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
 import { userAdministration } from '../../../pages/administration/users.po';
@@ -31,7 +31,6 @@ const builds = {
 const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
-    const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const projectView: ProjectView = new ProjectView();
@@ -48,7 +47,7 @@ describe('Administartion: Project Settings:', () => {
     const commentFulText = 'Should be filled by full text';
 
     beforeAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
         await (await projectsList.menuBar.user()).administration();
@@ -60,13 +59,13 @@ describe('Administartion: Project Settings:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await projectsList.isOpened();
         await projectsList.removeProject(project.name);
     });
     describe(`Search Pattern:`, () => {
         beforeAll(async () => {
-            await logInPage.logInAs(localManager.user_name, localManager.password);
+            await logIn.logInAs(localManager.user_name, localManager.password);
             await projectsList.openProject(project.name);
             await (await projectsList.menuBar.user()).administration();
             await userAdministration.sidebar.projectSettings();

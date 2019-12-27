@@ -1,4 +1,4 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { Matrix } from '../../pages/testrun/matrix.po';
@@ -14,7 +14,6 @@ import projects from '../../data/projects.json';
 import { TestRunView } from '../../pages/testrun/view.po';
 
 describe('Test Run Matrix', () => {
-    const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
     const testRunList = new TestRunList();

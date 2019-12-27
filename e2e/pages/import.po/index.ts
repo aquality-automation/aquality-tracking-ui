@@ -130,3 +130,5 @@ export class Import extends BasePage {
     }, 5, 3000);
   }
 }
+
+export const importPage = new Import();

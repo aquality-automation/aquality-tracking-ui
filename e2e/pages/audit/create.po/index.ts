@@ -39,3 +39,5 @@ export class CreateAudit extends BasePage {
         return this.clickCreate();
     }
 }
+
+export const createAudit = new CreateAudit();

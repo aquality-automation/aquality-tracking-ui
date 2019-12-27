@@ -22,3 +22,5 @@ export class ProjectAudits extends BasePage {
         return elements.auditsTable.clickRow(status, columns.status);
     }
 }
+
+export const projectAudits = new ProjectAudits();

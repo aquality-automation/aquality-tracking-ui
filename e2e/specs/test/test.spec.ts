@@ -1,4 +1,4 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
@@ -14,7 +14,6 @@ import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Test', () => {
-    const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
     const testRunView = new TestRunView();

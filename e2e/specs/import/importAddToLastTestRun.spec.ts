@@ -1,8 +1,8 @@
-import { LogIn } from '../../pages/login.po';
+import { logIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
-import { Import } from '../../pages/import.po';
+import { importPage } from '../../pages/import.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, executeCucumberImport, executeImport } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
@@ -11,12 +11,10 @@ import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Import Test Run: Add to Last Testrun', () => {
-    const logIn = new LogIn();
     const projectList = new ProjectList();
     const projectView = new ProjectView();
     const testRunView = new TestRunView();
     const testRunList = new TestRunList();
-    const importPage = new Import();
     const project: Project = projects.testRunResultSearcherProject;
     const ui = {
         buildName: 'cucumber',
