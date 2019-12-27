@@ -1,14 +1,14 @@
 import { LogIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { UserAdministration } from '../../pages/administration/users.po';
+import { userAdministration } from '../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions } from '../project.hooks';
 
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
 import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
 import { StepsList } from '../../pages/steps.po';
 
 const editorExamples = {
@@ -25,8 +25,6 @@ const notEditorExamples = {
 describe('Steps:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const stepsList: StepsList = new StepsList();
 

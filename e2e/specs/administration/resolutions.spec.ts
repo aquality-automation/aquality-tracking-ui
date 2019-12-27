@@ -7,7 +7,7 @@ import { SuiteCreate } from '../../pages/suite/create.po';
 import { TestCreate } from '../../pages/test/create.po';
 import { TestRunCreate } from '../../pages/testrun/create.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { ResolutionAdministration } from '../../pages/administration/resolutions.po';
+import { resolutionAdministration } from '../../pages/administration/resolutions.po';
 import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
 import { TestRunList } from '../../pages/testrun/list.po';
 import { TestRunView } from '../../pages/testrun/view.po';
@@ -34,7 +34,6 @@ describe('Full Admin Administartion Resolution Flow', () => {
     const testRunList: TestRunList = new TestRunList();
     const testRunView: TestRunView = new TestRunView();
     const testResultView = new TestResultView();
-    const resolutionAdministration: ResolutionAdministration = new ResolutionAdministration();
     const resolution: ResultResolution = resolutions.flowTest;
     const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 

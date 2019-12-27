@@ -3,7 +3,7 @@ import { environment } from '../../src/environments/environment';
 import { waiter } from '../utils/wait.util';
 import { LogIn } from '../pages/login.po';
 import { ProjectList } from '../pages/project/list.po';
-import { UserAdministration } from '../pages/administration/users.po';
+import { userAdministration } from '../pages/administration/users.po';
 import path from 'path';
 import chai from 'chai';
 import chaiHttp = require('chai-http');
@@ -13,7 +13,6 @@ chai.use(chaiHttp);
 const downloadsPath = path.resolve(__dirname, '..', './data/downloads/');
 const logInPage: LogIn = new LogIn();
 const projectsList: ProjectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
 
 beforeAll(async () => {
     const isBackendAvailable = waiter.forTrue(async () => {

@@ -2,14 +2,13 @@ import { LogIn } from '../../pages/login.po';
 
 import users from '../../data/users.json';
 import { User } from '../../../src/app/shared/models/user';
-import { UserAdministration } from '../../pages/administration/users.po';
+import { userAdministration } from '../../pages/administration/users.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { browser } from 'protractor';
 
 describe('Full Admin Administartion User Flow', () => {
 
     const logInPage: LogIn = new LogIn();
-    const userAdministration: UserAdministration = new UserAdministration();
     const projectList: ProjectList = new ProjectList();
     const userToCreate: User = users.creationTest;
 

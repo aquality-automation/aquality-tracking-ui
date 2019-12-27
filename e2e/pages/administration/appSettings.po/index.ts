@@ -43,3 +43,5 @@ export class AppSettings extends AdministrationBase {
     return elements.auditsModuleSwitch.switchOn();
   }
 }
+
+export const appSettings = new AppSettings();

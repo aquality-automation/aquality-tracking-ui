@@ -123,3 +123,5 @@ export class UserAdministration extends AdministrationBase {
     await this.modal.clickYes();
   }
 }
+
+export const userAdministration = new UserAdministration();

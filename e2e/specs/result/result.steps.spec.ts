@@ -13,8 +13,8 @@ import {
     addTestToSuite,
     prepareTestRun
 } from '../project.hooks';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
+import { userAdministration } from '../../pages/administration/users.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
 import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { Step } from '../../../src/app/shared/models/steps';
 import { Test } from '../../../src/app/shared/models/test';
@@ -29,8 +29,6 @@ import { testData } from '../../utils/testData.util';
 
 const logIn = new LogIn();
 const projectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
-const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
 const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
 const projectView = new ProjectView();
 const testResultView = new TestResultView();

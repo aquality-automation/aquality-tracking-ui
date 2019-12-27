@@ -7,8 +7,8 @@ import { NotFound } from '../../pages/notFound.po';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { APITokenAdministration } from '../../pages/administration/apiToken.po';
+import { userAdministration } from '../../pages/administration/users.po';
+import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -24,8 +24,6 @@ const notEditorExamples = {
 describe('API Token:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const apiTokenAdministration: APITokenAdministration = new APITokenAdministration();
     const notFound: NotFound = new NotFound();
 
     const project: Project = projects.customerOnly;

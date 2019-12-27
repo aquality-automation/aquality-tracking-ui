@@ -59,3 +59,5 @@ export class ResolutionAdministration extends AdministrationBase {
     return elements.resolutionsTable.isRowEditableByValue(name, columns.name);
   }
 }
+
+export const resolutionAdministration = new ResolutionAdministration();

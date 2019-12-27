@@ -1,9 +1,9 @@
 import { LogIn } from '../../pages/login.po';
 import { ProjectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { UserAdministration } from '../../pages/administration/users.po';
+import { userAdministration } from '../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions } from '../project.hooks';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
 import { NotFound } from '../../pages/notFound.po';
 
 import using from 'jasmine-data-provider';
@@ -24,8 +24,6 @@ const notEditorExamples = {
 describe('Administartion:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
     const notFound: NotFound = new NotFound();
 
     const project: Project = projects.customerOnly;

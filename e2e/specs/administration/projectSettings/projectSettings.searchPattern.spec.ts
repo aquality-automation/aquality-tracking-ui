@@ -1,7 +1,7 @@
 import { LogIn } from '../../../pages/login.po';
 import { ProjectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
-import { UserAdministration } from '../../../pages/administration/users.po';
+import { userAdministration } from '../../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions, executeCucumberImport } from '../../project.hooks';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
@@ -10,7 +10,7 @@ import differentError from '../../../data/import/regexImportErrorSearch/differen
 import firstError from '../../../data/import/regexImportErrorSearch/firstError.json';
 import sameError from '../../../data/import/regexImportErrorSearch/sameError.json';
 import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
-import { PermissionsAdministration } from '../../../pages/administration/permissions.po';
+import { permissionsAdministration } from '../../../pages/administration/permissions.po';
 import { ProjectView } from '../../../pages/project/view.po';
 import { TestRunList } from '../../../pages/testrun/list.po';
 import { TestRunView } from '../../../pages/testrun/view.po';
@@ -33,8 +33,6 @@ const localManager: User = usersTestData.localManager;
 describe('Administartion: Project Settings:', () => {
     const logInPage: LogIn = new LogIn();
     const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const projectView: ProjectView = new ProjectView();
     const testRunList: TestRunList = new TestRunList();

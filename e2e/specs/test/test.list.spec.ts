@@ -4,7 +4,7 @@ import { ProjectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { SuiteView } from '../../pages/suite/view.po';
 import { prepareProject, setProjectPermissions, prepareTest, prepareSuite } from '../project.hooks';
-import { UserAdministration } from '../../pages/administration/users.po';
+import { userAdministration } from '../../pages/administration/users.po';
 import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { Test } from '../../../src/app/shared/models/test';
 import projects from '../../data/projects.json';
@@ -13,7 +13,6 @@ import using from 'jasmine-data-provider';
 
 const logIn = new LogIn();
 const projectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
 const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
 const projectView = new ProjectView();
 const suiteView = new SuiteView();

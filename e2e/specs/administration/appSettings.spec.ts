@@ -2,16 +2,14 @@ import { LogIn } from '../../pages/login.po';
 
 import users from '../../data/users.json';
 import { User } from '../../../src/app/shared/models/user';
-import { UserAdministration } from '../../pages/administration/users.po';
+import { userAdministration } from '../../pages/administration/users.po';
 import { ProjectList } from '../../pages/project/list.po';
-import { AppSettings } from '../../pages/administration/appSettings.po';
+import { appSettings } from '../../pages/administration/appSettings.po';
 import { Constants } from '../../../src/app/pages/administration/global/app-settings/app-settings.constants';
 
 describe('Full Admin Administartion User Flow', () => {
 
     const logInPage: LogIn = new LogIn();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const appSettings: AppSettings = new AppSettings();
     const projectList: ProjectList = new ProjectList();
     const userToCreate: User = users.patternTest;
 
