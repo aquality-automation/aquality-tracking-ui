@@ -3,7 +3,7 @@ import { elements, baseUrl, names } from './constants';
 import { AdministrationBase } from '../base.po';
 import { Project } from '../../../../src/app/shared/models/project';
 
-export class ProjectSettingsAdministration extends AdministrationBase {
+class ProjectSettingsAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

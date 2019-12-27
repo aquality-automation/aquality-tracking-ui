@@ -1,7 +1,7 @@
 import { elements, names, columns, stepTypes } from './constants';
 import { BasePage } from '../base.po';
 
-export class StepsList extends BasePage {
+class StepsList extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }

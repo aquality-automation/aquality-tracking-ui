@@ -3,7 +3,7 @@ import { BasePage } from '../../base.po';
 import { browser } from 'protractor';
 import { Steps } from './steps.component';
 
-export class TestView extends BasePage {
+class TestView extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }

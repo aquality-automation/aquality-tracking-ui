@@ -4,7 +4,7 @@ import { BasePage } from '../base.po';
 import { waiter } from '../../utils/wait.util';
 import { importHelper } from './helpers';
 
-export class Import extends BasePage {
+class Import extends BasePage {
   constructor() {
     super(elements.selectImportTypeLookup.element, names.pageName);
   }

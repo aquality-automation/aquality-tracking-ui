@@ -2,7 +2,7 @@ import { elements, names } from './constants';
 import { BasePage } from '../../base.po';
 import { TestSuite } from '../../../../src/app/shared/models/testSuite';
 
-export class SuiteCreate extends BasePage {
+class SuiteCreate extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }

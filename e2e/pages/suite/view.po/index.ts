@@ -3,7 +3,7 @@ import { BasePage } from '../../base.po';
 import { elements, baseUrl, names, columns } from './constants';
 import { moveTest } from '../../modals/moveTest.po';
 
-export class SuiteView extends BasePage {
+class SuiteView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

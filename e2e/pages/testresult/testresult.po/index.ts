@@ -3,7 +3,7 @@ import { BasePage } from '../../base.po';
 import { elements, names, baseUrl, stepColumns } from './constants';
 import { testData } from '../../../utils/testData.util';
 
-export class TestResultView extends BasePage {
+class TestResultView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

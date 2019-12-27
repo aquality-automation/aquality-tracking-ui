@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names, columns, colors } from './constants';
 import { AdministrationBase } from '../base.po';
 
-export class ResolutionAdministration extends AdministrationBase {
+class ResolutionAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

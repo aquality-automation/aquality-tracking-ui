@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { baseUrl, elements, names } from './constants';
 import { BasePage } from '../../base.po';
 
-export class ProjectView extends BasePage {
+class ProjectView extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }

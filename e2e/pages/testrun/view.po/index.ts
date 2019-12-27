@@ -3,7 +3,7 @@ import { baseUrl, elements, names, regexps, columns, pieChartClickSectionScript,
 import { BasePage } from '../../base.po';
 import { convertHoursTo24HourFormat, padYear } from './helpers';
 
-export class TestRunView extends BasePage {
+class TestRunView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

@@ -5,7 +5,7 @@ import { User } from '../../../../src/app/shared/models/user';
 import { projectList } from '../../project/list.po';
 import { projectAudits } from '../project.list.po';
 
-export class AuditInfo extends BasePage {
+class AuditInfo extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
