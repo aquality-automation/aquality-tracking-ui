@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { environment } from '../../src/environments/environment';
 import { waiter } from '../utils/wait.util';
 import { logIn } from '../pages/login.po';
-import { ProjectList } from '../pages/project/list.po';
+import { projectList } from '../pages/project/list.po';
 import { userAdministration } from '../pages/administration/users.po';
 import path from 'path';
 import chai from 'chai';
@@ -11,7 +11,6 @@ import usersTestData from '../data/users.json';
 
 chai.use(chaiHttp);
 const downloadsPath = path.resolve(__dirname, '..', './data/downloads/');
-const projectsList: ProjectList = new ProjectList();
 
 beforeAll(async () => {
     const isBackendAvailable = waiter.forTrue(async () => {

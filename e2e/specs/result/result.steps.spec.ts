@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -27,7 +27,6 @@ import { TestRun } from '../../../src/app/shared/models/testRun';
 import { TestResultView } from '../../pages/testresult/testresult.po';
 import { testData } from '../../utils/testData.util';
 
-const projectList = new ProjectList();
 const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
 const projectView = new ProjectView();
 const testResultView = new TestResultView();

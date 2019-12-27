@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
@@ -16,7 +16,6 @@ import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 
 describe('Public API tests', () => {
-  const projectList = new ProjectList();
   const projectView = new ProjectView();
   const testRunList = new TestRunList();
   const project: Project = projects.apiTests;

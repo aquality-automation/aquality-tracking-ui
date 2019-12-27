@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { userAdministration } from '../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions } from '../project.hooks';
@@ -23,7 +23,6 @@ const notEditorExamples = {
 };
 
 describe('Steps:', () => {
-    const projectsList: ProjectList = new ProjectList();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
     const stepsList: StepsList = new StepsList();
 
@@ -35,7 +34,7 @@ describe('Steps:', () => {
     beforeAll(async () => {
         await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await prepareProject(project);
-        await (await projectsList.menuBar.user()).administration();
+        await (await projectList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
         await setProjectPermissions(project, {
             admin: usersTestData.admin,
@@ -52,19 +51,19 @@ describe('Steps:', () => {
 
     afterAll(async () => {
         await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectsList.isOpened();
-        await projectsList.removeProject(project.name);
+        await projectList.isOpened();
+        await projectList.removeProject(project.name);
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectsList.openProject(project.name);
+                await projectList.openProject(project.name);
             });
 
             it('I can open Steps page', async () => {
-                await (await projectsList.menuBar.tests()).steps();
+                await (await projectList.menuBar.tests()).steps();
                 return expect(stepsList.isOpened())
                     .toBe(true, `Steps page is not opened for ${description}`);
             });
@@ -105,20 +104,20 @@ describe('Steps:', () => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-                await projectsList.isOpened();
-                await projectsList.openProject(project.name);
-                await (await projectsList.menuBar.tests()).steps();
+                await projectList.isOpened();
+                await projectList.openProject(project.name);
+                await (await projectList.menuBar.tests()).steps();
                 await stepsList.isOpened();
                 if (await stepsList.hasNoData()) {
                     await stepsList.createStep(step.type, step.name);
                 }
                 await stepsList.menuBar.clickLogOut();
                 await logIn.logInAs(user.user_name, user.password);
-                return projectsList.openProject(project.name);
+                return projectList.openProject(project.name);
             });
 
             it('I can open Steps page', async () => {
-                await (await projectsList.menuBar.tests()).steps();
+                await (await projectList.menuBar.tests()).steps();
                 return expect(stepsList.isOpened())
                     .toBe(true, `Steps page is not opened for ${description}`);
             });

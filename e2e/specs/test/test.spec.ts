@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -14,7 +14,6 @@ import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Test', () => {
-    const projectList = new ProjectList();
     const projectView = new ProjectView();
     const testRunView = new TestRunView();
     const testRunList = new TestRunList();

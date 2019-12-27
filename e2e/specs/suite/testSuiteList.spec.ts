@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectCreate } from '../../pages/project/create.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { SuiteList } from '../../pages/suite/list.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -13,8 +13,6 @@ import { browser } from 'protractor';
 import { SuiteView } from '../../pages/suite/view.po';
 
 describe('Full Admin Test Suite List', () => {
-  const projectCreate: ProjectCreate = new ProjectCreate();
-  const projectList: ProjectList = new ProjectList();
   const projectView: ProjectView = new ProjectView();
   const testSuiteList: SuiteList = new SuiteList();
   const testSuiteView: SuiteView = new SuiteView();

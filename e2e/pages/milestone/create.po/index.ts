@@ -20,3 +20,5 @@ export class MilestoneCreate extends BasePage {
         await elements.createButton.click();
     }
 }
+
+export const milestoneCreate = new MilestoneCreate();

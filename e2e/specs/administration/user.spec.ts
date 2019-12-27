@@ -2,11 +2,10 @@ import { logIn } from '../../pages/login.po';
 import users from '../../data/users.json';
 import { User } from '../../../src/app/shared/models/user';
 import { userAdministration } from '../../pages/administration/users.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { browser } from 'protractor';
 
 describe('Full Admin Administartion User Flow', () => {
-    const projectList: ProjectList = new ProjectList();
     const userToCreate: User = users.creationTest;
 
     const validateUser = async () => {

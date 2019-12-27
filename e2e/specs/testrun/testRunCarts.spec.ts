@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { TestRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
@@ -11,7 +11,6 @@ import { prepareProject, executeCucumberImport } from '../project.hooks';
 import { TestRunList } from '../../pages/testrun/list.po';
 
 describe('Test Run View Charts', () => {
-    const projectList = new ProjectList();
     const projectView = new ProjectView();
     const testRunView = new TestRunView();
     const testRunList = new TestRunList();

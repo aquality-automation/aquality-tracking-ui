@@ -1,14 +1,14 @@
 import { browser } from 'protractor';
 import { BasePage } from '../../base.po';
 import { elements, baseUrl, names, columns } from './constants';
-import { MoveTest } from '../../modals/moveTest.po';
+import { moveTest } from '../../modals/moveTest.po';
 
 export class SuiteView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
 
-  moveTestmodal = new MoveTest();
+  moveTestmodal = moveTest;
 
   navigateTo(id: number, item: number) {
     return browser.get(baseUrl(id, item));

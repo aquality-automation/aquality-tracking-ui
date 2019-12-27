@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, setProjectPermissions, prepareTest, prepareStep, addStepToTest } from '../project.hooks';
@@ -14,7 +14,6 @@ import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 
-const projectList = new ProjectList();
 const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
 const projectView = new ProjectView();
 const testView = new TestView();

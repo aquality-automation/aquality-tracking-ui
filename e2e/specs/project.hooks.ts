@@ -1,5 +1,5 @@
-import { ProjectList } from '../pages/project/list.po';
-import { ProjectCreate } from '../pages/project/create.po';
+import { projectList } from '../pages/project/list.po';
+import { projectCreate } from '../pages/project/create.po';
 import { permissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
 import { apiTokenAdministration } from '../pages/administration/apiToken.po';
@@ -21,9 +21,6 @@ import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
 import { TestRun } from '../../src/app/shared/models/testRun';
 import { Milestone } from '../../src/app/shared/models/milestone';
-
-const projectList: ProjectList = new ProjectList();
-const projectCreate: ProjectCreate = new ProjectCreate();
 
 export const userPermissionTypeKeys = {
   admin: 'admin',

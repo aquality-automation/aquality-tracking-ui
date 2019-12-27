@@ -1,10 +1,9 @@
 import { logIn } from '../pages/login.po';
-import { ProjectList } from '../pages/project/list.po';
+import { projectList } from '../pages/project/list.po';
 import users from '../data/users.json';
 import { browser } from 'protractor';
 
 describe('Report an Issue', () => {
-    const projectList = new ProjectList();
     const githubUrl = 'https://github.com/aquality-automation/aquality-tracking/issues';
 
     beforeAll(() => {

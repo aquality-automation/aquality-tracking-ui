@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { projectCreate } from '../../pages/project/create.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { SuiteCreate } from '../../pages/suite/create.po';
 import { SuiteList } from '../../pages/suite/list.po';
@@ -13,8 +13,6 @@ import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Suite', () => {
-  const projectCreate: ProjectCreate = new ProjectCreate();
-  const projectList: ProjectList = new ProjectList();
   const projectView: ProjectView = new ProjectView();
   const createTestSuite: SuiteCreate = new SuiteCreate();
   const testSuiteList: SuiteList = new SuiteList();

@@ -1,13 +1,14 @@
-import { ProjectList } from '../../../pages/project/list.po';
+import { projectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
 import { userAdministration } from '../../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions } from '../../project.hooks';
-import { NotFound } from '../../../pages/notFound.po';
+import { notFound } from '../../../pages/notFound.po';
 
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
 import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
+import { logIn } from '../../../pages/login.po';
 import { permissionsAdministration } from '../../../pages/administration/permissions.po';
 
 const editorExamples = {
@@ -22,17 +23,14 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
-    const projectsList: ProjectList = new ProjectList();
     const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-    const notFound: NotFound = new NotFound();
-
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
         await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         await prepareProject(project);
-        await (await projectsList.menuBar.user()).administration();
+        await (await projectList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
         await setProjectPermissions(project, {
             admin: usersTestData.admin,
@@ -46,19 +44,19 @@ describe('Administartion:', () => {
 
     afterAll(async () => {
         await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectsList.isOpened();
-        await projectsList.removeProject(project.name);
+        await projectList.isOpened();
+        await projectList.removeProject(project.name);
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectsList.openProject(project.name);
+                await projectList.openProject(project.name);
             });
 
             it('I can open Project Settings page', async () => {
-                await (await projectsList.menuBar.user()).administration();
+                await (await projectList.menuBar.user()).administration();
                 await userAdministration.sidebar.projectSettings();
                 return expect(projectSettingsAdministration.isOpened())
                     .toBe(true, `Project Settings page is not opened for ${description}`);
@@ -105,11 +103,11 @@ describe('Administartion:', () => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                return projectsList.openProject(project.name);
+                return projectList.openProject(project.name);
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {
-                return expect((await projectsList.menuBar.user()).isAdministrationExists())
+                return expect((await projectList.menuBar.user()).isAdministrationExists())
                     .toBe(false, `Administartion should not be visible for ${description}`);
             });
 

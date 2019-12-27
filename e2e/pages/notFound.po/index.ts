@@ -11,3 +11,5 @@ export class NotFound extends BasePage {
         return browser.get(baseUrl);
     }
 }
+
+export const notFound = new NotFound();

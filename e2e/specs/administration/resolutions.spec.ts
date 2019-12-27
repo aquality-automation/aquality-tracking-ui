@@ -1,6 +1,6 @@
 import { logIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectCreate } from '../../pages/project/create.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectCreate } from '../../pages/project/create.po';
 import { ProjectView } from '../../pages/project/view.po';
 import { SuiteCreate } from '../../pages/suite/create.po';
 import { TestCreate } from '../../pages/test/create.po';
@@ -22,8 +22,6 @@ import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
-    const projectList: ProjectList = new ProjectList();
-    const projectCreate: ProjectCreate = new ProjectCreate();
     const projectView: ProjectView = new ProjectView();
     const suiteCreate: SuiteCreate = new SuiteCreate();
     const testCreate: TestCreate = new TestCreate();

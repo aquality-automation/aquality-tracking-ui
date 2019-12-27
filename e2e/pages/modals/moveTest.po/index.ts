@@ -18,3 +18,5 @@ export class MoveTest extends BasePage {
         return elements.moveBtn.click();
     }
 }
+
+export const moveTest = new MoveTest();

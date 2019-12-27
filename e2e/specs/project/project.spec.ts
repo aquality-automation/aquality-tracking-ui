@@ -1,6 +1,6 @@
-import { ProjectList } from '../../pages/project/list.po';
+import { projectList } from '../../pages/project/list.po';
 import { ProjectView } from '../../pages/project/view.po';
-import { ProjectCreate } from '../../pages/project/create.po';
+import { projectCreate } from '../../pages/project/create.po';
 import { logIn } from '../../pages/login.po';
 import { Project } from '../../../src/app/shared/models/project';
 
@@ -8,10 +8,7 @@ import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Full Admin Project', () => {
-
-  const projectList: ProjectList = new ProjectList();
   const projectView: ProjectView = new ProjectView();
-  const projectCreate: ProjectCreate = new ProjectCreate();
   const project: Project = projects.creation;
 
   beforeAll(() => {
