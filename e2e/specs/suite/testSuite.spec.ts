@@ -1,35 +1,25 @@
 import { logIn } from '../../pages/login.po';
-import { projectCreate } from '../../pages/project/create.po';
-import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
 import { suiteCreate } from '../../pages/suite/create.po';
 import { suiteList } from '../../pages/suite/list.po';
 import { suiteView } from '../../pages/suite/view.po';
-import { Project } from '../../../src/app/shared/models/project';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
-
+import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Suite', () => {
-  const project: Project = projects.suiteProject;
+  const projectHelper: ProjectHelper = new ProjectHelper();
   const suite: TestSuite = suites.suiteCreation;
 
   beforeAll(async () => {
+    await projectHelper.init();
     await logIn.logInAs(users.admin.user_name, users.admin.password);
-    await projectList.clickCreateProjectButton();
-    await projectCreate.createProject(project);
-    await projectList.openProject(project.name);
+    await projectHelper.openProject();
   });
 
   afterAll(async () => {
-    await projectList.navigateTo();
-    await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickYes();
-    if (await projectList.menuBar.isLogged()) {
-      return projectList.menuBar.clickLogOut();
-    }
+    await projectHelper.dispose();
   });
 
   it('Create button is disabled when Name is not filled', async () => {

@@ -1,25 +1,21 @@
 import { logIn } from '../../pages/login.po';
-import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
-import { Project } from '../../../src/app/shared/models/project';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
 import { postTestRun, getSuites, getTests, getResults, postResult, postTest } from '../../utils/aqualityTrackingAPI.util';
-
-import users from '../../data/users.json';
-import projects from '../../data/projects.json';
+import { ProjectHelper } from '../../helpers/project.helper';
 import suites from '../../data/suites.json';
+import users from '../../data/users.json';
 import cucumberImport from '../../data/import/cucumber.json';
-import { prepareProject, executeCucumberImport } from '../project.hooks';
 import { testRunList } from '../../pages/testrun/list.po';
 import { TestRun } from '../../../src/app/shared/models/testRun';
 import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 
 describe('Public API tests', () => {
-  const project: Project = projects.apiTests;
+  const projectHelper: ProjectHelper = new ProjectHelper();
   const builds = { build_1: 'Build_1' };
   let suite: TestSuite = suites.suiteCreation;
-  let importToken: string;
+  let token: string;
   let projectId: number;
   let testrun: TestRun;
   let tests: Test[];
@@ -27,26 +23,22 @@ describe('Public API tests', () => {
   let newtest: Test;
 
   beforeAll(async () => {
+    await projectHelper.init();
+    await projectHelper.importer.executeCucumberImport(suite.name, [cucumberImport], [`${builds.build_1}.json`]);
     await logIn.logInAs(users.admin.user_name, users.admin.password);
-    importToken = await prepareProject(project);
-    projectId = await projectView.getCurrentProjectId();
-    await executeCucumberImport(projectId, suite.name,
-      importToken, [JSON.stringify(cucumberImport)], [`${builds.build_1}.json`]);
+    await projectHelper.openProject();
     await projectView.menuBar.testRuns();
     const isTestRunAppear = await testRunList.waitForTestRun(builds.build_1);
     expect(isTestRunAppear).toBe(true, 'Import was not finished!');
+    projectId = projectHelper.project.id;
+    token = projectHelper.editorAPI.token;
     suite.project_id = projectId;
-    suite = (await getSuites(suite, importToken, projectId))[0];
+    suite = (await getSuites(suite, token, projectId))[0];
     return;
   });
 
   afterAll(async () => {
-    await projectList.navigateTo();
-    await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickYes();
-    if (await projectList.menuBar.isLogged()) {
-      return projectList.menuBar.clickLogOut();
-    }
+    await projectHelper.dispose();
   });
 
   it('Test Run can be created via API', async () => {
@@ -55,17 +47,17 @@ describe('Public API tests', () => {
       build_name: 'Build_2',
       project_id: projectId,
       test_suite_id: suite.id
-    }, importToken, projectId);
+    }, token, projectId);
     expect(testrun.id).toBeDefined('Test run was not created');
   });
 
   it('Tests can be found for Suite', async () => {
-    tests = await getTests({ test_suite_id: suite.id, project_id: projectId }, importToken, projectId);
+    tests = await getTests({ test_suite_id: suite.id, project_id: projectId }, token, projectId);
     expect(tests.length).toBe(3, 'Tests number is not correct');
   });
 
   it('Test Result can be found by test tun and test id', async () => {
-    const testResults = await getResults({ test_id: tests[0].id, test_run_id: testrun.id, project_id: projectId }, importToken, projectId);
+    const testResults = await getResults({ test_id: tests[0].id, test_run_id: testrun.id, project_id: projectId }, token, projectId);
     expect(testResults.length).toBe(1, 'Test Results number is not correct');
     expect(testResults[0].final_result_id).toBe(3, 'Final Result should be Not Executed!');
     testresult = testResults[0];
@@ -73,14 +65,14 @@ describe('Public API tests', () => {
 
   it('Test Result can be updated', async () => {
     testresult.final_result_id = 4;
-    testresult = await postResult(testresult, importToken, projectId);
+    testresult = await postResult(testresult, token, projectId);
     expect(testresult.final_result_id).toBe(4, 'Final Result should be In Progress!');
   });
 
   it('Test can be updated', async () => {
     let test: Test = tests[0];
     test.body = 'New Test Body';
-    test = await postTest(test, importToken, projectId);
+    test = await postTest(test, token, projectId);
     expect(test.body).toBe('New Test Body', 'Test Body Should be updated!');
   });
 
@@ -90,7 +82,7 @@ describe('Public API tests', () => {
         name: 'Super New Test',
         project_id: projectId,
         suites: [{ id: suite.id, project_id: projectId }]
-      }, importToken, projectId);
+      }, token, projectId);
     expect(newtest.id).toBeDefined('Test was not created');
   });
 
@@ -102,7 +94,7 @@ describe('Public API tests', () => {
         final_result_id: 4,
         test_run_id: testrun.id,
         start_date: new Date()
-      }, importToken, projectId);
+      }, token, projectId);
     expect(newResult.id).toBeDefined('Test Result was not created');
   });
 });

@@ -37,7 +37,6 @@ export class ProjectHelper {
 
     public async init(permissions?: { [key: string]: User; }) {
         await logIn.logInAs(this.admin.user_name, this.admin.password);
-
         await this.createProject(this.project);
         await this.openProject();
         this.project.id = await projectView.getCurrentProjectId();
@@ -45,9 +44,9 @@ export class ProjectHelper {
         if (permissions) {
             await this.assigneProjectPermissions(this.project, permissions);
         }
+        
         this.importer = new Importer(this.project, token);
         this.editorAPI = new EditorAPI(this.project, token);
-
         return projectView.menuBar.clickLogOut();
     }
 
