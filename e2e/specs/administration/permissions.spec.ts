@@ -2,10 +2,9 @@ import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { userAdministration } from '../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions } from '../project.hooks';
 import { permissionsAdministration } from '../../pages/administration/permissions.po';
 import { notFound } from '../../pages/notFound.po';
-
+import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
@@ -22,28 +21,22 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager
         });
-        return permissionsAdministration.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
@@ -51,7 +44,7 @@ describe('Administartion:', () => {
             const tempUser = usersTestData.projectTemp;
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectList.openProject(project.name);
+                await projectHelper.openProject();
             });
 
             it('I can open Permissions page', async () => {
@@ -120,7 +113,7 @@ describe('Administartion:', () => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                return projectList.openProject(project.name);
+                return projectHelper.openProject();
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {

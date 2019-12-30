@@ -1,7 +1,6 @@
 import { projectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
 import { userAdministration } from '../../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions } from '../../project.hooks';
 import { notFound } from '../../../pages/notFound.po';
 import { ProjectHelper } from '../../../helpers/project.helper';
 import using from 'jasmine-data-provider';
@@ -9,7 +8,6 @@ import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
-import { permissionsAdministration } from '../../../pages/administration/permissions.po';
 
 const editorExamples = {
     admin: usersTestData.admin,

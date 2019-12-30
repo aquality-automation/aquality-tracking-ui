@@ -20,7 +20,6 @@ describe('Full Admin Administartion User Flow', () => {
         }
     });
 
-
     describe('Audit Module', () => {
         it('I can disable Audit Module', async () => {
             await userAdministration.sidebar.appSettings();
