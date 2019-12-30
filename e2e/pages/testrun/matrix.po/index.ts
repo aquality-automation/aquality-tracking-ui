@@ -2,7 +2,7 @@ import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { browser } from 'protractor';
 
-export class Matrix extends BasePage {
+class Matrix extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -58,3 +58,5 @@ export class Matrix extends BasePage {
         return +columnName.split(' | ')[0];
     }
 }
+
+export const matrix = new Matrix();

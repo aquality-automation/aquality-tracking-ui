@@ -1,25 +1,19 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { Matrix } from '../../pages/testrun/matrix.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectView } from '../../pages/project/view.po';
+import { matrix } from '../../pages/testrun/matrix.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, executeCucumberImport, generateBuilds } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import { compareCSVStrings } from '../../utils/csv.util';
 
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
-import { TestRunView } from '../../pages/testrun/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
 
 describe('Test Run Matrix', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunList = new TestRunList();
-    const testRunView = new TestRunView();
-    const matrix = new Matrix();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     let importToken: string;

@@ -2,7 +2,7 @@ import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { waiter } from '../../../utils/wait.util';
 
-export class TestRunList extends BasePage {
+class TestRunList extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -43,3 +43,5 @@ export class TestRunList extends BasePage {
         }, 5, 3000);
     }
 }
+
+export const testRunList = new TestRunList();

@@ -1,12 +1,12 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectView } from '../../pages/project/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, executeCucumberImport, generateBuilds } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { SuiteView } from '../../pages/suite/view.po';
-import { TestView } from '../../pages/test/test.po';
+import { testRunList } from '../../pages/testrun/list.po';
+import { suiteView } from '../../pages/suite/view.po';
+import { testView } from '../../pages/test/test.po';
 import { browser } from 'protractor';
 
 import cucumberImport from '../../data/import/cucumber.json';
@@ -14,13 +14,6 @@ import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Test', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
-    const suiteView = new SuiteView();
-    const testView = new TestView();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     let importToken: string;

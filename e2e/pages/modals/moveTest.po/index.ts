@@ -1,7 +1,7 @@
 import { BasePage } from '../../base.po';
 import { elements, names } from './constants';
 
-export class MoveTest extends BasePage {
+class MoveTest extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -18,3 +18,5 @@ export class MoveTest extends BasePage {
         return elements.moveBtn.click();
     }
 }
+
+export const moveTest = new MoveTest();

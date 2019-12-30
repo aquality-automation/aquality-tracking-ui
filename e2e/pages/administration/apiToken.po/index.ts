@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { AdministrationBase } from '../base.po';
 
-export class APITokenAdministration extends AdministrationBase {
+class APITokenAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

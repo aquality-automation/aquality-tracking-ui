@@ -4,7 +4,7 @@ import { User } from '../../../../src/app/shared/models/user';
 import { AdministrationBase } from '../base.po';
 import { LocalPermissions } from '../../../../src/app/shared/models/LocalPermissions';
 
-export class PermissionsAdministration extends AdministrationBase {
+class PermissionsAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

@@ -2,7 +2,7 @@ import { elements, names, regexps } from './constants';
 import { BasePage } from '../../base.po';
 import { TestRun } from '../../../../src/app/shared/models/testRun';
 
-export class TestRunCreate extends BasePage {
+class TestRunCreate extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -52,3 +52,5 @@ export class TestRunCreate extends BasePage {
         );
     }
 }
+
+export const testRunCreate = new TestRunCreate();

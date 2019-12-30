@@ -1,7 +1,7 @@
-import { LogIn } from '../../../pages/login.po';
-import { ProjectList } from '../../../pages/project/list.po';
+import { logIn } from '../../../pages/login.po';
+import { projectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
-import { UserAdministration } from '../../../pages/administration/users.po';
+import { userAdministration } from '../../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions, executeCucumberImport } from '../../project.hooks';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
@@ -9,11 +9,11 @@ import resolutions from '../../../data/resolutions.json';
 import differentError from '../../../data/import/regexImportErrorSearch/differentError.json';
 import firstError from '../../../data/import/regexImportErrorSearch/firstError.json';
 import sameError from '../../../data/import/regexImportErrorSearch/sameError.json';
-import { ProjectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
-import { PermissionsAdministration } from '../../../pages/administration/permissions.po';
-import { ProjectView } from '../../../pages/project/view.po';
-import { TestRunList } from '../../../pages/testrun/list.po';
-import { TestRunView } from '../../../pages/testrun/view.po';
+import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
+import { permissionsAdministration } from '../../../pages/administration/permissions.po';
+import { projectView } from '../../../pages/project/view.po';
+import { testRunList } from '../../../pages/testrun/list.po';
+import { testRunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../src/app/shared/models/user';
 
 const importFiles = {
@@ -31,15 +31,6 @@ const builds = {
 const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
-    const logInPage: LogIn = new LogIn();
-    const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
-    const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-    const projectView: ProjectView = new ProjectView();
-    const testRunList: TestRunList = new TestRunList();
-    const testRunView: TestRunView = new TestRunView();
-
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
     let importToken: string;
@@ -50,10 +41,10 @@ describe('Administartion: Project Settings:', () => {
     const commentFulText = 'Should be filled by full text';
 
     beforeAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
         importToken = await prepareProject(project);
         projectId = await projectView.getCurrentProjectId();
-        await (await projectsList.menuBar.user()).administration();
+        await (await projectList.menuBar.user()).administration();
         await userAdministration.sidebar.permissions();
         await setProjectPermissions(project, {
             localManager: usersTestData.localManager,
@@ -62,15 +53,15 @@ describe('Administartion: Project Settings:', () => {
     });
 
     afterAll(async () => {
-        await logInPage.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectsList.isOpened();
-        await projectsList.removeProject(project.name);
+        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+        await projectList.isOpened();
+        await projectList.removeProject(project.name);
     });
     describe(`Search Pattern:`, () => {
         beforeAll(async () => {
-            await logInPage.logInAs(localManager.user_name, localManager.password);
-            await projectsList.openProject(project.name);
-            await (await projectsList.menuBar.user()).administration();
+            await logIn.logInAs(localManager.user_name, localManager.password);
+            await projectList.openProject(project.name);
+            await (await projectList.menuBar.user()).administration();
             await userAdministration.sidebar.projectSettings();
             await executeCucumberImport(projectId, 'Regex', importToken, [importFiles.firstError], [`${builds.build_1}.json`]);
         });
@@ -88,7 +79,7 @@ describe('Administartion: Project Settings:', () => {
 
         it('Results can be inherithed from previous run using Regexp', async () => {
             await projectSettingsAdministration.menuBar.clickLogo();
-            await projectsList.openProject(project.name);
+            await projectList.openProject(project.name);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_1);
             await testRunView.setResolution(resolutions.global.appIssue.name, testFailed);

@@ -1,8 +1,8 @@
-import { ProjectList } from '../pages/project/list.po';
-import { ProjectCreate } from '../pages/project/create.po';
-import { PermissionsAdministration } from '../pages/administration/permissions.po';
+import { projectList } from '../pages/project/list.po';
+import { projectCreate } from '../pages/project/create.po';
+import { permissionsAdministration } from '../pages/administration/permissions.po';
 import { Project } from '../../src/app/shared/models/project';
-import { APITokenAdministration } from '../pages/administration/apiToken.po';
+import { apiTokenAdministration } from '../pages/administration/apiToken.po';
 import {
   doImport,
   ImportParams,
@@ -21,11 +21,6 @@ import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
 import { TestRun } from '../../src/app/shared/models/testRun';
 import { Milestone } from '../../src/app/shared/models/milestone';
-
-const projectList: ProjectList = new ProjectList();
-const projectCreate: ProjectCreate = new ProjectCreate();
-const importTokenAdministration: APITokenAdministration = new APITokenAdministration();
-const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
 
 export const userPermissionTypeKeys = {
   admin: 'admin',
@@ -47,9 +42,9 @@ export const createProject = async (project: Project): Promise<void> => {
 export const prepareProject = async (project: Project): Promise<string> => {
   await createProject(project);
   await (await projectList.menuBar.user()).administration();
-  await importTokenAdministration.sidebar.apiToken();
-  const token = await importTokenAdministration.generateToken(project.name);
-  await importTokenAdministration.menuBar.clickLogo();
+  await apiTokenAdministration.sidebar.apiToken();
+  const token = await apiTokenAdministration.generateToken(project.name);
+  await apiTokenAdministration.menuBar.clickLogo();
   await projectList.openProject(project.name);
   return token;
 };

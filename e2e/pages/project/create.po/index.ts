@@ -3,7 +3,7 @@ import { BasePage } from '../../base.po';
 import { baseUrl, elements, names } from './constants';
 import { Project } from '../../../../src/app/shared/models/project';
 
-export class ProjectCreate extends BasePage {
+class ProjectCreate extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }

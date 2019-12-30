@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { BasePage } from '../base.po';
 
-export class LogIn extends BasePage {
+class LogIn extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }

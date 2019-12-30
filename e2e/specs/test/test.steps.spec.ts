@@ -1,26 +1,18 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectView } from '../../pages/project/view.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { prepareProject, setProjectPermissions, prepareTest, prepareStep, addStepToTest } from '../project.hooks';
 import { getClipboardText } from '../../utils/js.util';
-import { TestView } from '../../pages/test/test.po';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
-import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
+import { testView } from '../../pages/test/test.po';
+import { userAdministration } from '../../pages/administration/users.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
+import { projectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { Step } from '../../../src/app/shared/models/steps';
 import { Test } from '../../../src/app/shared/models/test';
 import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
-
-const logIn = new LogIn();
-const projectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
-const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
-const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-const projectView = new ProjectView();
-const testView = new TestView();
 
 const test: Test = { name: 'Project can be opened from Projects list' };
 const step2: Step = { name: 'I click project row', type_id: 2 };

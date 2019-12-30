@@ -1,17 +1,16 @@
-import { LogIn } from '../../pages/login.po';
-
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { SuiteCreate } from '../../pages/suite/create.po';
-import { TestCreate } from '../../pages/test/create.po';
-import { TestRunCreate } from '../../pages/testrun/create.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectCreate } from '../../pages/project/create.po';
+import { projectView } from '../../pages/project/view.po';
+import { suiteCreate } from '../../pages/suite/create.po';
+import { testCreate } from '../../pages/test/create.po';
+import { testRunCreate } from '../../pages/testrun/create.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { ResolutionAdministration } from '../../pages/administration/resolutions.po';
+import { resolutionAdministration } from '../../pages/administration/resolutions.po';
 import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { TestResultView } from '../../pages/testresult/testresult.po';
+import { testRunList } from '../../pages/testrun/list.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { testResultView } from '../../pages/testresult/testresult.po';
 import { browser } from 'protractor';
 import { colors } from '../../pages/administration/resolutions.po/constants';
 
@@ -23,18 +22,6 @@ import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
-
-    const logInPage: LogIn = new LogIn();
-    const projectList: ProjectList = new ProjectList();
-    const projectCreate: ProjectCreate = new ProjectCreate();
-    const projectView: ProjectView = new ProjectView();
-    const suiteCreate: SuiteCreate = new SuiteCreate();
-    const testCreate: TestCreate = new TestCreate();
-    const testRunCreate: TestRunCreate = new TestRunCreate();
-    const testRunList: TestRunList = new TestRunList();
-    const testRunView: TestRunView = new TestRunView();
-    const testResultView = new TestResultView();
-    const resolutionAdministration: ResolutionAdministration = new ResolutionAdministration();
     const resolution: ResultResolution = resolutions.flowTest;
     const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 
@@ -52,7 +39,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     };
 
     beforeAll(async () => {
-        await logInPage.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         await createTestProject(projects.resolutionProject);
         await createTestProject(projects.noResolutionProject);
         await (await projectList.menuBar.user()).administration();
@@ -62,8 +49,8 @@ describe('Full Admin Administartion Resolution Flow', () => {
     afterAll(async () => {
         await projectList.removeProject(projects.resolutionProject.name);
         await projectList.removeProject(projects.noResolutionProject.name);
-        if (await logInPage.menuBar.isLogged()) {
-            return logInPage.menuBar.clickLogOut();
+        if (await logIn.menuBar.isLogged()) {
+            return logIn.menuBar.clickLogOut();
         }
     });
 
