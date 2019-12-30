@@ -5,7 +5,6 @@ import { TestResult } from '../../../shared/models/test-result';
 import { FinalResult } from '../../../shared/models/final-result';
 import { FinalResultService } from '../../../services/final_results.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'final-result-chart',
@@ -19,7 +18,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class FinalResultChartsComponent implements OnInit, OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
-  @Output() chartClick = new EventEmitter<FinalResult>();
+  @Output() clickedResult = new EventEmitter<FinalResult>();
   public lineChartDataTest: Array<any>;
   doughnutChartType = 'doughnut';
   listOfFinalResults: FinalResult[];
@@ -113,7 +112,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
       const dataIndex = event.active[0]._index;
       const label: string = this.chart.labels[dataIndex].toString();
       const clickedResult = this.listOfFinalResults.find(x => label.startsWith(x.name));
-      this.chartClick.emit(clickedResult);
+      this.clickedResult.emit(clickedResult);
     }
   }
 }

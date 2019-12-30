@@ -8,7 +8,7 @@ import suites from '../../data/suites.json';
 import { browser } from 'protractor';
 import { suiteView } from '../../pages/suite/view.po';
 
-fdescribe('Full Admin Test Suite List', () => {
+describe('Full Admin Test Suite List', () => {
   const projectHelper: ProjectHelper = new ProjectHelper();
   const suite: TestSuite = suites.suiteCreation;
 
