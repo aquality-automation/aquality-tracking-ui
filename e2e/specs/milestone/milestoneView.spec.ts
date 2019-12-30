@@ -1,16 +1,38 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { milestoneList } from '../../pages/milestone/list.po';
+import { milestoneView } from '../../pages/milestone/view.po';
 
 import usersTestData from '../../data/users.json';
-import { ProjectHelper } from '../../helpers/project.helper';
 
-describe('Milestone:', () => {
+import loginTestRunJson from '../../data/import/milestoneView/login.json';
+import testRun_ManagerTestRunJson from '../../data/import/milestoneView/testRunManager.json';
+import testRun_ViewerTestRunJson from '../../data/import/milestoneView/testRunViewer.json';
+
+import { ProjectHelper } from '../../helpers/project.helper';
+import { testData } from '../../utils/testData.util';
+import { compareCSVStrings } from '../../utils/csv.util';
+import { TestRun } from '../../../src/app/shared/models/testRun';
+import { Milestone } from '../../../src/app/shared/models/milestone';
+
+fdescribe('Milestone:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
-    const milestones = {
+    const milestones: { version1: Milestone, version2: Milestone } = {
         version1: { name: 'v1.1.0' },
         version2: { name: 'v1.2.0' }
+    };
+
+    const suites = {
+        login: 'Login',
+        testRun_Manager: 'Test Run: Manager',
+        testRun_Viewer: 'Test Run: Viewer'
+    };
+
+    const importedRuns: { login: TestRun, testRun_Manager: TestRun, testRun_Viewer: TestRun } = {
+        login: undefined,
+        testRun_Manager: undefined,
+        testRun_Viewer: undefined
     };
 
     beforeAll(async () => {
@@ -20,33 +42,73 @@ describe('Milestone:', () => {
 
         milestones.version1 = await projectHelper.editorAPI.createMilestone(milestones.version1);
         milestones.version2 = await projectHelper.editorAPI.createMilestone(milestones.version2);
-
-        return milestoneList.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(projectHelper.project.name);
+        return projectHelper.dispose();
     });
 
     describe(`Milestone View: Viewer role:`, () => {
         beforeAll(async () => {
             await logIn.logInAs(usersTestData.viewer.user_name, usersTestData.viewer.password);
-            await projectHelper.openProject();
+            return projectHelper.openProject();
         });
 
         it('I can open Milestone View page', async () => {
             await projectList.menuBar.milestones();
+            await milestoneList.openMilestone(milestones.version1.name);
+            return expect(milestoneView.isOpened()).toBe(true, `Milestone ${milestones.version1.name} view page is not opened!`);
         });
 
-        it('I can create Milestone', async () => {
+        it('I can see empty table when no testruns assigned to Milestone', async () => {
+            return expect(milestoneView.isEmpty())
+                .toBe(true, `Milestone ${milestones.version1.name} view page should not contain any results!`);
         });
 
-        it('I can edit Milestone', async () => {
+        it('I can see not executed tests when imported test run is not assigned to milestone', async () => {
+            const imported = await projectHelper.importer.executeCucumberImport(suites.login, [loginTestRunJson], ['login.json']);
+            importedRuns.login = imported[0];
+
+            await milestoneView.menuBar.milestones();
+            await milestoneList.openMilestone(milestones.version1.name);
+
+            const actualTableCSV = await milestoneView.getCSV();
+            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/noAssignedTestRuns.csv');
+            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
         });
 
-        it('I can remove Milestone', async () => {
+        it('I can see results from test run that assigned to milestone', async () => {
+            await projectHelper.editorAPI.createTestRun({
+                id: importedRuns.login.id,
+                project_id: importedRuns.login.project_id,
+                milestone_id: milestones.version1.id
+            });
+            await milestoneView.menuBar.milestones();
+            await milestoneList.openMilestone(milestones.version1.name);
+
+            const actualTableCSV = await milestoneView.getCSV();
+            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/firstAssignedTestRun.csv');
+            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+        });
+
+        it('I can see Not Executed results from second suite', async () => {
+        });
+
+        it('I can Distinct Tests test results', async () => {
+        });
+
+        it('I can Filter results by clicking Final Result chart', async () => {
+        });
+
+        it('I can Filter results by clicking Result Resolution chart', async () => {
         });
     });
 });

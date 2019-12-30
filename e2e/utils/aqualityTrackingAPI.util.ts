@@ -61,6 +61,19 @@ const sendPost = async (endpoint: string, params: object, body: any, token: stri
     }
 };
 
+const sendPostFiles = (endpoint: string, params: object, filesAsString: string[], filenames: string[],
+    token: string, projectId: number) => {
+    const req = superagent.post(getFullURL(endpoint, params));
+    req.set('Authorization', createAuthHeaderValue(token, projectId));
+    for (let i = 0; i < filesAsString.length; i++) {
+        const file = filesAsString[i];
+        const filename = filenames[i];
+        req.attach('file', new Buffer(file), { filename });
+    }
+
+    return req;
+};
+
 const sendPostWithfiles = (endpoint: string, params: object, filesAsString: string[], filenames: string[]) => {
     const req = superagent.post(getFullURL(endpoint, params));
     for (let i = 0; i < filesAsString.length; i++) {
@@ -128,16 +141,17 @@ const postStepToTest = (stepToTest: StepToTest, token: string, projectId: number
 
 const postTestToSuite = (testId: number, suiteId: number, token: string, projectId: number) => {
     return sendPost(`/testToSuite`,
-    {
-        testId,
-        suiteId,
-        projectId
-    },  {}, token, projectId);
+        {
+            testId,
+            suiteId,
+            projectId
+        }, {}, token, projectId);
 };
 
 
 export {
     sendPostWithfiles,
+    sendPostFiles,
     sendPost,
     sendGet,
     doImport,

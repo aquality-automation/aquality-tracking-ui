@@ -45,6 +45,10 @@ class MilestoneList extends BasePage {
         return elements.milestonesTable.editRow(newName, columns.name, oldName, columns.name);
     }
 
+    openMilestone(name: string) {
+        return elements.milestonesTable.clickRow(name, columns.name);
+    }
+
     async isTableEditable(): Promise<boolean> {
         const isActionColumnExist = await elements.milestonesTable.isColumnExist(columns.action);
         const isRowContainEditableElements = await elements.milestonesTable.isRowEditableByIndex(0);

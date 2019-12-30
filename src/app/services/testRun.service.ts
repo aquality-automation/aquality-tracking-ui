@@ -10,7 +10,9 @@ import { TestRunStat } from '../shared/models/testrunStats';
 export class TestRunService extends SimpleRequester {
 
   getTestRun(testRun: TestRun, limit: number = 0): Promise<TestRun[]> {
-    testRun.project_id = this.route.snapshot.params['projectId'];
+    if (!testRun.project_id) {
+      testRun.project_id = this.route.snapshot.params['projectId'];
+    }
     testRun['limit'] = limit;
     return this.doGet(`/testrun`, testRun).map(res => res.json()).toPromise();
   }

@@ -77,4 +77,8 @@ export class EditorAPI {
         return sendGet(Endpoints.testresult, testResult, this.token, this.project.id);
     }
 
+    public async getTestRuns(testrun: TestRun): Promise<TestRun[]> {
+        return sendGet(Endpoints.testrun, testrun, this.token, this.project.id);
+    }
+
 }
