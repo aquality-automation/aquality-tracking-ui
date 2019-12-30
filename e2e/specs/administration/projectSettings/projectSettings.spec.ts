@@ -3,7 +3,7 @@ import { Project } from '../../../../src/app/shared/models/project';
 import { userAdministration } from '../../../pages/administration/users.po';
 import { prepareProject, setProjectPermissions } from '../../project.hooks';
 import { notFound } from '../../../pages/notFound.po';
-
+import { ProjectHelper } from '../../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
@@ -23,35 +23,29 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager
         });
-        return permissionsAdministration.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectList.openProject(project.name);
+                await projectHelper.openProject();
             });
 
             it('I can open Project Settings page', async () => {
@@ -82,7 +76,7 @@ describe('Administartion:', () => {
             it('Can decline confirmation', async () => {
                 await projectSettingsAdministration.modal.clickNo();
                 await expect(projectSettingsAdministration.notification.isVisible())
-                .toBe(false, 'Mesaage is shown after declining the Save action!');
+                    .toBe(false, 'Mesaage is shown after declining the Save action!');
             });
 
             it('Can disable steps', async () => {
@@ -102,7 +96,7 @@ describe('Administartion:', () => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                return projectList.openProject(project.name);
+                await projectHelper.openProject();
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {

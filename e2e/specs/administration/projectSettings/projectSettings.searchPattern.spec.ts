@@ -1,8 +1,6 @@
 import { logIn } from '../../../pages/login.po';
 import { projectList } from '../../../pages/project/list.po';
 import { Project } from '../../../../src/app/shared/models/project';
-import { userAdministration } from '../../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions, executeCucumberImport } from '../../project.hooks';
 import usersTestData from '../../../data/users.json';
 import projects from '../../../data/projects.json';
 import resolutions from '../../../data/resolutions.json';
@@ -10,16 +8,17 @@ import differentError from '../../../data/import/regexImportErrorSearch/differen
 import firstError from '../../../data/import/regexImportErrorSearch/firstError.json';
 import sameError from '../../../data/import/regexImportErrorSearch/sameError.json';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
-import { permissionsAdministration } from '../../../pages/administration/permissions.po';
+import { userAdministration } from '../../../pages/administration/users.po';
 import { projectView } from '../../../pages/project/view.po';
 import { testRunList } from '../../../pages/testrun/list.po';
 import { testRunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../src/app/shared/models/user';
+import { ProjectHelper } from '../../../helpers/project.helper';
 
 const importFiles = {
-    differentError: JSON.stringify(differentError),
-    firstError: JSON.stringify(firstError),
-    sameError: JSON.stringify(sameError)
+    differentError: differentError,
+    firstError: firstError,
+    sameError: sameError
 };
 
 const builds = {
@@ -31,39 +30,31 @@ const builds = {
 const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
     const testFailed = 'Test Feature with all results: step failed';
     const testPending = 'Test Feature with all results: Step skipped';
     const commentRegex = 'Should be filled by regex';
     const commentFulText = 'Should be filled by full text';
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
-            localManager: usersTestData.localManager,
+        await projectHelper.init({
+            localManager: usersTestData.localManager
         });
-        return permissionsAdministration.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        return projectHelper.dispose();
     });
+
     describe(`Search Pattern:`, () => {
         beforeAll(async () => {
             await logIn.logInAs(localManager.user_name, localManager.password);
-            await projectList.openProject(project.name);
+            await projectHelper.openProject();
             await (await projectList.menuBar.user()).administration();
             await userAdministration.sidebar.projectSettings();
-            await executeCucumberImport(projectId, 'Regex', importToken, [importFiles.firstError], [`${builds.build_1}.json`]);
+            await projectHelper.importer.executeCucumberImport('Regex', [importFiles.firstError], [`${builds.build_1}.json`])
         });
 
         it('I can set Import Compare Results Pattern', async () => {
@@ -78,15 +69,14 @@ describe('Administartion: Project Settings:', () => {
         });
 
         it('Results can be inherithed from previous run using Regexp', async () => {
-            await projectSettingsAdministration.menuBar.clickLogo();
-            await projectList.openProject(project.name);
+            await projectHelper.openProject();
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_1);
             await testRunView.setResolution(resolutions.global.appIssue.name, testFailed);
             await testRunView.setComment(commentRegex, testFailed);
             await testRunView.setResolution(resolutions.global.environmentIssue.name, testPending);
             await testRunView.setComment(commentFulText, testPending);
-            await executeCucumberImport(projectId, 'Regex', importToken, [importFiles.sameError], [`${builds.build_2}.json`]);
+            await projectHelper.importer.executeCucumberImport('Regex', [importFiles.sameError], [`${builds.build_2}.json`]);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_2);
             expect(await testRunView.getResolution(testFailed))
@@ -100,7 +90,7 @@ describe('Administartion: Project Settings:', () => {
         });
 
         it('Results is not inherithed when Regex group is not equal', async () => {
-            await executeCucumberImport(projectId, 'Regex', importToken, [importFiles.differentError], [`${builds.build_3}.json`]);
+            await projectHelper.importer.executeCucumberImport('Regex', [importFiles.differentError], [`${builds.build_3}.json`]);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_3);
             expect(await testRunView.getResolution(testFailed))
