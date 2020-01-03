@@ -5,7 +5,7 @@ import { EditorAPI } from './editor.api';
 import { TestRun } from '../../src/app/shared/models/testRun';
 
 export class ImportParams {
-    projectId: number;
+    projectId?: number;
     format: ImportFormats;
     suite: string;
     addToLastTestRun: boolean;
@@ -14,10 +14,11 @@ export class ImportParams {
 }
 
 export enum ImportFormats {
-    cucumber = 'Cucumber'
+    cucumber = 'Cucumber',
+    msTest = 'MSTest'
 }
 
-const CHECK_IMPORTED_DELAY = 5000;
+const CHECK_IMPORTED_DELAY = 2000;
 
 export class Importer {
     project: Project;
@@ -31,34 +32,44 @@ export class Importer {
     }
 
     public async executeImport(importParameters: ImportParams, files: string[], fileNames: string[]) {
+        importParameters.projectId = this.project.id;
+        const buildNames = fileNames.map(fileName => fileName.split('.').slice(0, -1).join('.'));
         const result = await this.doImport(importParameters, files, fileNames);
         if (!result) {
             throw Error('Import Failed!');
         }
-        return result;
-    }
-
-    public async executeCucumberImport(suiteName: string, files: object[], fileNames: string[]): Promise<any> {
-        const filesAsStringArray = files.map(file => JSON.stringify(file));
-        const buildNames = fileNames.map(fileName => fileName.split('.').slice(0, -1).join('.'));
-        await this.executeImport({
-            projectId: this.project.id,
-            suite: suiteName,
-            format: ImportFormats.cucumber,
-            addToLastTestRun: false
-        }, filesAsStringArray, fileNames);
 
         return new Promise(async (resolve) => {
             let imported = await this.isAllBuildsAreImported(buildNames);
             if (imported.length > 0) {
+                logger.info(`Import was finished Successfully`);
                 resolve(imported);
             }
 
             setTimeout(async () => {
                 imported = await this.isAllBuildsAreImported(buildNames);
-                resolve(imported);
+                if (imported.length > 0) {
+                    logger.info(`Import was finished Successfully`);
+                    resolve(imported);
+                }
+
+                setTimeout(async () => {
+                    imported = await this.isAllBuildsAreImported(buildNames);
+                    logger.info(`Import was finished Successfully, but testrun was not created yet.`);
+                    resolve(imported);
+                }, CHECK_IMPORTED_DELAY);
             }, CHECK_IMPORTED_DELAY);
         });
+    }
+
+    public async executeCucumberImport(suiteName: string, files: object[], fileNames: string[]): Promise<any> {
+        const filesAsStringArray = files.map(file => JSON.stringify(file));
+        return this.executeImport({
+            projectId: this.project.id,
+            suite: suiteName,
+            format: ImportFormats.cucumber,
+            addToLastTestRun: false
+        }, filesAsStringArray, fileNames);
     }
 
     public generateBuilds(count: number): { names: any, filenames: string[] } {
@@ -94,7 +105,6 @@ export class Importer {
             logger.info(`Files count: ${filesAsString.length}`);
             logger.info(`File Names count: ${filesAsString.length}`);
             await sendPostFiles('/import', params, filesAsString, fileNames, this.token, this.project.id);
-            logger.info(`Import was finished Successfully`);
             return true;
         } catch (err) {
             logger.error(`Import was failed: ${err.message}`);

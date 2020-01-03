@@ -1,15 +1,14 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectAudits } from '../../pages/audit/project.list.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject } from '../project.hooks';
-import using from 'jasmine-data-provider';
-import usersTestData from '../../data/users.json';
-import projects from '../../data/projects.json';
 import { createAudit } from '../../pages/audit/create.po';
 import { auditInfo } from '../../pages/audit/view.po';
 import { browser } from 'protractor';
 import { testData } from '../../utils/testData.util';
+import { ProjectHelper } from '../../helpers/project.helper';
+
+import using from 'jasmine-data-provider';
+import usersTestData from '../../data/users.json';
 
 const editorExamples = {
     auditAdmin: usersTestData.auditAdmin,
@@ -22,26 +21,21 @@ const assignedAuditor = editorExamples.assignedAuditor;
 const attachName = 'attach.docx';
 
 describe('Audit:', () => {
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
+    const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        return projectList.menuBar.clickLogOut();
+        return projectHelper.init();
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(auditAdmin.user_name, auditAdmin.password);
-                await projectList.openProject(project.name);
+                await projectHelper.openProject();
                 await (await projectList.menuBar.audits()).project();
                 await projectAudits.clickCreate();
                 await createAudit.create(createAudit.services.auto, assignedAuditor);
@@ -54,7 +48,7 @@ describe('Audit:', () => {
 
             describe(`In Progress:`, () => {
                 it('Can open Audit from Project Audits', async () => {
-                    await projectList.openProject(project.name);
+                    await projectHelper.openProject();
                     await (await projectList.menuBar.audits()).project();
                     await expect(projectAudits.isOpened()).toBe(true, 'Project Audits page is not opened!');
                     await projectAudits.openAudit(projectAudits.statuses.open);
@@ -136,7 +130,7 @@ describe('Audit:', () => {
                     if (user.user_name !== auditAdmin.user_name) {
                         await projectList.menuBar.clickLogOut();
                         await logIn.logInAs(auditAdmin.user_name, auditAdmin.password);
-                        await auditInfo.open(project.name, auditInfo.statuses.inReview);
+                        await auditInfo.open(projectHelper.project.name, auditInfo.statuses.inReview);
                     }
                     await auditInfo.submitAudit();
                     await expect(auditInfo.modal.isVisible()).toBe(true, 'No Confirmation modal for Submit Audit action!');
@@ -148,7 +142,7 @@ describe('Audit:', () => {
                     if (user.user_name !== auditAdmin.user_name) {
                         await projectList.menuBar.clickLogOut();
                         await logIn.logInAs(user.user_name, user.password);
-                        await auditInfo.open(project.name, auditInfo.statuses.submitted);
+                        await auditInfo.open(projectHelper.project.name, auditInfo.statuses.submitted);
                     }
                 });
             });

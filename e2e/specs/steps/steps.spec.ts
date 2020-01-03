@@ -1,15 +1,10 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { userAdministration } from '../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions } from '../project.hooks';
+import { stepsList } from '../../pages/steps.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
-import projects from '../../data/projects.json';
-import { projectSettingsAdministration } from '../../pages/administration/projectSettings.po';
-import { permissionsAdministration } from '../../pages/administration/permissions.po';
-import { stepsList } from '../../pages/steps.po';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -23,40 +18,30 @@ const notEditorExamples = {
 };
 
 describe('Steps:', () => {
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const step = { name: 'test step', type: 'When' };
     const editedStep = { name: 'test step edited', type: 'Given' };
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        return projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager,
             viewer: usersTestData.viewer
-        });
-        await permissionsAdministration.sidebar.projectSettings();
-        await projectSettingsAdministration.setStepsForProject(project, { stepsState: true });
-        return projectSettingsAdministration.menuBar.clickLogOut();
+        }, true);
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectList.openProject(project.name);
+                await projectHelper.openProject();
             });
 
             it('I can open Steps page', async () => {
@@ -100,17 +85,9 @@ describe('Steps:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-                await projectList.isOpened();
-                await projectList.openProject(project.name);
-                await (await projectList.menuBar.tests()).steps();
-                await stepsList.isOpened();
-                if (await stepsList.hasNoData()) {
-                    await stepsList.createStep(step.type, step.name);
-                }
-                await stepsList.menuBar.clickLogOut();
+                projectHelper.editorAPI.createStep({name: step.name, type_id: 2});
                 await logIn.logInAs(user.user_name, user.password);
-                return projectList.openProject(project.name);
+                return projectHelper.openProject();
             });
 
             it('I can open Steps page', async () => {

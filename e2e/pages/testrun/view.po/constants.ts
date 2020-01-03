@@ -1,6 +1,8 @@
 import { by, element } from 'protractor';
 import { SmartTable } from '../../../elements/smartTable.element';
 import { ResultSearcher } from '../../../elements/searcher';
+import { ResolutionPieChart } from '../../../elements/charts/resolution.Pie.element';
+import { ResultPieChart } from '../../../elements/charts/resultPie.element';
 
 export const baseUrl = function (projectId, testRunId) {
     return `#/project/${projectId}/testrun/${testRunId}`;
@@ -22,8 +24,8 @@ export const elements = {
     startTimeLabel: element(by.xpath(`//li[.//label[contains(text(), '${names.startTimeLabel}')]]//p`)),
     resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
     resultSearcher: new ResultSearcher(by.id('resultSearcher')),
-    resultsChart: element(by.id('finalResultsChart')),
-    resolutionsChart: element(by.id('resultResolutionsChart')),
+    resultsChart: new ResultPieChart(by.id('finalResultsChart')),
+    resolutionsChart: new ResolutionPieChart(by.id('resultResolutionsChart')),
 };
 
 export const regexps = {
@@ -39,26 +41,3 @@ export const columns = {
     assignee: 'Assignee',
     comment: 'Comment',
 };
-
-export const results = {
-    none: { chartId: -1, name: 'None' },
-    passed: { chartId: 1, name: 'Passed' }
-};
-
-export const resolutions = {
-    none: { chartId: -1, name: 'None' },
-    testIssue: { chartId: 3, name: 'Test Issue' }
-};
-
-export const pieChartClickSectionScript = `
-(function clickChart(el, etype, eventActiveProperty) {
-  if (el.fireEvent) {
-      el.fireEvent('on' + etype);
-  } else {
-      var evObj = document.createEvent('Events');
-      evObj.initEvent(etype, true, false);
-      evObj['active'] = eventActiveProperty;
-      el.dispatchEvent(evObj);
-  }
-})(arguments[0], 'chartClick', [{_index: arguments[1]}])
-`;

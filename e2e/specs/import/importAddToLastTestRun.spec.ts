@@ -3,10 +3,12 @@ import { projectView } from '../../pages/project/view.po';
 import { testRunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
 import { ProjectHelper } from '../../helpers/project.helper';
-import { executeCucumberImport, executeImport } from '../project.hooks';
 import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
+
 import users from '../../data/users.json';
+import cucumberImport from '../../data/import/cucumber.json';
+import { ImportFormats } from '../../api/importer.api';
 
 describe('Import Test Run: Add to Last Testrun', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
@@ -33,7 +35,7 @@ describe('Import Test Run: Add to Last Testrun', () => {
         await projectHelper.dispose();
     });
 
-    it('You can import results into Last Test Run via UI', async () => {        
+    it('You can import results into Last Test Run via UI', async () => {
         await projectView.menuBar.import();
         await importPage.selectImportType(importPage.importTypes.cucumber);
         await importPage.uploadFile(testData.getFullPath(importFiles.cucumber));
@@ -68,19 +70,15 @@ describe('Import Test Run: Add to Last Testrun', () => {
     it('You can import into Last Test Run via API', async () => {
         await projectView.menuBar.import();
         let lastImportDate: Date = await importPage.getLatestImportedTestRunDate();
-        await executeCucumberImport(projectHelper.project.id, api.suiteName, projectHelper.editorAPI.token,
-            [await testData.readAsString(importFiles.cucumber)], [`${api.buildName}.json`]);
+        await projectHelper.importer.executeCucumberImport(api.suiteName, [cucumberImport], [`${api.buildName}.json`]);
         await expect(importPage.waitForNewImportResult(lastImportDate)).toBe(true, 'Cucumber was not imported as first test run');
         lastImportDate = await importPage.getLatestImportedTestRunDate();
-        await executeImport({
-            projectId: projectHelper.project.id,
+        projectHelper.importer.executeImport({
             suite: api.suiteName,
-            importToken: projectHelper.editorAPI.token,
-            format: 'MSTest',
+            format: ImportFormats.msTest,
             addToLastTestRun: true,
             testNameKey: 'descriptionNode'
-        },
-            [await testData.readAsString(importFiles.mstest)], ['mstest.trx']);
+        }, [await testData.readAsString(importFiles.mstest)], ['mstest.trx']);
         await expect(importPage.waitForNewImportResult(lastImportDate)).toBe(true, 'Trx Was not imported as second test run');
         const lastImportedTestRunID = await importPage.getTestRunIdFromImportRow(0);
         const previousImportedTestRunID = await importPage.getTestRunIdFromImportRow(1);

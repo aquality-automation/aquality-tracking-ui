@@ -10,8 +10,8 @@ class MilestoneView extends BasePage {
         return elements.milestonesTable.hasNoData();
     }
 
-    getCSV() {
-        return elements.milestonesTable.getCSV();
+    checkIfTableEqualToCSv(path: string) {
+        return elements.milestonesTable.checkIfTableEqualToCSv(path);
     }
 
     removeFinishedColumn() {
@@ -20,6 +20,28 @@ class MilestoneView extends BasePage {
 
     setDistinctTest(state: boolean) {
         return elements.distinctTest.setState(state);
+    }
+
+    async clickResultPieChartPassedSection() {
+        return elements.resultsChart.clickPassed();
+    }
+
+    async clickResolutionPieChartNotAssignedSection() {
+        return elements.resolutionsChart.clickNotAssigned();
+    }
+
+    async resultsAreFilteredByResult(result: string): Promise<boolean> {
+        return this.resultsAreFiltered(columns.result, result);
+    }
+
+    async resultsAreFilteredByResolution(result: string): Promise<boolean> {
+        return this.resultsAreFiltered(columns.resolution, result);
+    }
+
+    async resultsAreFiltered(column: string, value: string): Promise<boolean> {
+        const isSelected = await elements.milestonesTable.isFilterSelected(column, value);
+        const isFiltered = await elements.milestonesTable.isContainOnlyRowsWith(column, value);
+        return isSelected && isFiltered;
     }
 }
 

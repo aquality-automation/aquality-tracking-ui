@@ -11,10 +11,10 @@
 <hr class="col-sm-12 no-padding">
 <div class="row">
   <div class="col-sm-6" *ngIf="resultsToShow">
-    <final-result-chart [testResults]="resultsToShow" (chartClick)="finalResultChartClick($event)">Loading...</final-result-chart>
+    <final-result-chart [testResults]="resultsToShow" (clickedResult)="finalResultChartClick($event)">Loading...</final-result-chart>
   </div>
   <div class="col-sm-6" *ngIf="resultsToShow">
-    <result-resolution-chart [testResults]="resultsToShow" (chartClick)="resolutionChartClick($event)">Loading...</result-resolution-chart>
+    <result-resolution-chart [testResults]="resultsToShow" (clickedResult)="resolutionChartClick($event)">Loading...</result-resolution-chart>
   </div>
 </div>
 

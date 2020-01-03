@@ -10,8 +10,6 @@ import testRun_ManagerTestRunJson from '../../data/import/milestoneView/testRunM
 import testRun_ViewerTestRunJson from '../../data/import/milestoneView/testRunViewer.json';
 
 import { ProjectHelper } from '../../helpers/project.helper';
-import { testData } from '../../utils/testData.util';
-import { compareCSVStrings } from '../../utils/csv.util';
 import { TestRun } from '../../../src/app/shared/models/testRun';
 import { Milestone } from '../../../src/app/shared/models/milestone';
 
@@ -42,7 +40,7 @@ const assigneMilestone = (testRun: TestRun) => {
     });
 };
 
-fdescribe('Milestone:', () => {
+describe('Milestone:', () => {
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -81,13 +79,8 @@ fdescribe('Milestone:', () => {
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
 
-            const actualTableCSV = await milestoneView.getCSV();
-            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/noAssignedTestRuns.csv');
-            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+            const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/noAssignedTestRuns.csv');
+            return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
         });
 
         it('I can see results from test run that assigned to milestone', async () => {
@@ -96,13 +89,8 @@ fdescribe('Milestone:', () => {
             await milestoneList.openMilestone(milestones.version1.name);
             await milestoneView.removeFinishedColumn();
 
-            const actualTableCSV = await milestoneView.getCSV();
-            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/firstAssignedTestRun.csv');
-            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+            const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/firstAssignedTestRun.csv');
+            return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
         });
 
         it('I can see Not Executed results from second suite', async () => {
@@ -114,13 +102,8 @@ fdescribe('Milestone:', () => {
             await milestoneList.openMilestone(milestones.version1.name);
             await milestoneView.removeFinishedColumn();
 
-            const actualTableCSV = await milestoneView.getCSV();
-            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/assignedAndUnissigned.csv');
-            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+            const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/assignedAndUnissigned.csv');
+            return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
         });
 
         it('I can see Distinct Tests test results', async () => {
@@ -137,31 +120,27 @@ fdescribe('Milestone:', () => {
 
             await milestoneView.setDistinctTest(true);
 
-            const actualTableCSV = await milestoneView.getCSV();
-            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/distinctResults.csv');
-            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+            const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/distinctResults.csv');
+            return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
         });
 
         it('I can see Suite Tests test results', async () => {
             await milestoneView.setDistinctTest(false);
 
-            const actualTableCSV = await milestoneView.getCSV();
-            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/suitesResults.csv');
-            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-            expect(comparisonResult.missedFromActual.length)
-                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+            const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/suitesResults.csv');
+            return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
         });
 
         it('I can Filter results by clicking Final Result chart', async () => {
+            const clickedSectionName = await milestoneView.clickResultPieChartPassedSection();
+            return expect(milestoneView.resultsAreFilteredByResult(clickedSectionName))
+                .toBe(true, 'Results are not filtered by Result');
         });
 
         it('I can Filter results by clicking Result Resolution chart', async () => {
+            const clickedSectionName = await milestoneView.clickResolutionPieChartNotAssignedSection();
+            return expect(milestoneView.resultsAreFilteredByResolution(clickedSectionName))
+                .toBe(true, 'Results are not filtered by Resolution');
         });
     });
 });

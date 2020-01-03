@@ -31,16 +31,16 @@ class Matrix extends BasePage {
         return elements.showButton.click();
     }
 
-    getCSV() {
-        return elements.testRunsTable.getCSV();
-    }
-
     isShowResolutionSelected() {
         return elements.resolutionSwitch.isOn();
     }
 
     swithOffShowResolution() {
         return elements.resolutionSwitch.switchOff();
+    }
+
+    checkIfTableEqualToCSv(path: string) {
+        return elements.testRunsTable.checkIfTableEqualToCSv(path);
     }
 
     async rightClickTestRunHeader(columnName: string) {

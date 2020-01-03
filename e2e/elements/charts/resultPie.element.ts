@@ -1,0 +1,19 @@
+import { Locator, ElementFinder } from 'protractor';
+import { PieChartBase, PieChartSections } from './pieBase.element';
+import allResults from '../../data/results.json';
+
+const results: PieChartSections = allResults;
+
+export class ResultPieChart extends PieChartBase {
+    constructor(locator: Locator | ElementFinder) {
+        super(locator);
+    }
+
+    public clickNone() {
+        return this.clickChartSection(results.none);
+    }
+
+    public clickPassed() {
+        return this.clickChartSection(results.passed);
+    }
+}

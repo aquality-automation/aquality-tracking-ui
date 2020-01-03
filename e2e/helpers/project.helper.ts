@@ -5,6 +5,7 @@ import { logIn } from '../pages/login.po';
 import { Project } from '../../src/app/shared/models/project';
 import { apiTokenAdministration } from '../pages/administration/apiToken.po';
 import { permissionsAdministration } from '../pages/administration/permissions.po';
+import { projectSettingsAdministration } from '../pages/administration/projectSettings.po';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
 import { Importer } from '../api/importer.api';
@@ -35,19 +36,26 @@ export class ProjectHelper {
             : new Date().getTime().toString();
     }
 
-    public async init(permissions?: { [key: string]: User; }) {
-        await logIn.logInAs(this.admin.user_name, this.admin.password);
-        await this.createProject(this.project);
-        await this.openProject();
-        this.project.id = await projectView.getCurrentProjectId();
-        const token = await this.createToken(this.project);
-        if (permissions) {
-            await this.assigneProjectPermissions(this.project, permissions);
+    public async init(permissions?: { [key: string]: User; }, steps?: boolean) {
+        try {
+            await logIn.logInAs(this.admin.user_name, this.admin.password);
+            await this.createProject(this.project);
+            await this.openProject();
+            this.project.id = await projectView.getCurrentProjectId();
+            const token = await this.createToken(this.project);
+            if (permissions) {
+                await this.assigneProjectPermissions(this.project, permissions);
+            }
+            if (steps) {
+                await this.setSteps(true);
+            }
+
+            this.importer = new Importer(this.project, token);
+            this.editorAPI = new EditorAPI(this.project, token);
+            return projectView.menuBar.clickLogOut();
+        } catch (err) {
+            logger.error(err.message);
         }
-        
-        this.importer = new Importer(this.project, token);
-        this.editorAPI = new EditorAPI(this.project, token);
-        return projectView.menuBar.clickLogOut();
     }
 
     public async openProject() {
@@ -59,6 +67,26 @@ export class ProjectHelper {
         await logIn.logInAs(this.admin.user_name, this.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(this.project.name);
+    }
+
+
+    public generateBuilds = (count: number): { names: any, filenames: string[] } => {
+        const names = {};
+        const filenames: string[] = [];
+
+        for (let i = 0; i < count; i++) {
+            const name = `build_${i + 1}`;
+            names[name] = name;
+            filenames.push(`${name}.json`);
+        }
+
+        return { names, filenames };
+    }
+
+    private async setSteps(stepsState: boolean) {
+        await (await projectList.menuBar.user()).administration();
+        await permissionsAdministration.sidebar.projectSettings();
+        return projectSettingsAdministration.setStepsForProject(this.project, { stepsState });
     }
 
     private async createProject(project: Project): Promise<void> {

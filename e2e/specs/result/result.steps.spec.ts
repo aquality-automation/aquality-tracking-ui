@@ -1,24 +1,7 @@
 import { logIn } from '../../pages/login.po';
-import { projectList } from '../../pages/project/list.po';
-import { projectView } from '../../pages/project/view.po';
 import { testRunView } from '../../pages/testrun/view.po';
-import { Project } from '../../../src/app/shared/models/project';
-import {
-    prepareProject,
-    setProjectPermissions,
-    prepareTest,
-    prepareStep,
-    addStepToTest,
-    prepareSuite,
-    addTestToSuite,
-    prepareTestRun
-} from '../project.hooks';
-import { userAdministration } from '../../pages/administration/users.po';
-import { permissionsAdministration } from '../../pages/administration/permissions.po';
-import { projectSettingsAdministration } from '../../pages/administration/projectSettings.po';
 import { Step } from '../../../src/app/shared/models/steps';
 import { Test } from '../../../src/app/shared/models/test';
-import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import results from '../../data/results.json';
 import using from 'jasmine-data-provider';
@@ -26,6 +9,7 @@ import { TestSuite } from '../../../src/app/shared/models/testSuite';
 import { TestRun } from '../../../src/app/shared/models/testRun';
 import { testResultView } from '../../pages/testresult/testresult.po';
 import { testData } from '../../utils/testData.util';
+import { ProjectHelper } from '../../helpers/project.helper';
 
 const imageAttachName = 'image.jpg';
 const docAttachName = 'attach.docx';
@@ -49,44 +33,30 @@ const notEditorExamples = {
 };
 
 describe('Result Steps:', () => {
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
+    const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager,
             viewer: usersTestData.viewer
-        });
-        await permissionsAdministration.sidebar.projectSettings();
-        await projectSettingsAdministration.setStepsForProject(project, { stepsState: true });
+        }, true);
 
-        step1 = await prepareStep(step1, importToken, projectId);
-        step2 = await prepareStep(step2, importToken, projectId);
-        step3 = await prepareStep(step3, importToken, projectId);
-        test = await prepareTest(test, importToken, projectId);
-        await addStepToTest({ step_id: step1.id, test_id: test.id, order: 1 }, importToken, projectId);
-        await addStepToTest({ step_id: step2.id, test_id: test.id, order: 2 }, importToken, projectId);
-        await addStepToTest({ step_id: step3.id, test_id: test.id, order: 3 }, importToken, projectId);
-        suite = await prepareSuite(suite, importToken, projectId);
-        await addTestToSuite(test.id, suite.id, importToken, projectId);
-
-        return projectSettingsAdministration.menuBar.clickLogOut();
+        step1 = await projectHelper.editorAPI.createStep(step1);
+        step2 = await projectHelper.editorAPI.createStep(step2);
+        step3 = await projectHelper.editorAPI.createStep(step3);
+        test = await projectHelper.editorAPI.createTest(test);
+        await projectHelper.editorAPI.addStepToTest({ step_id: step1.id, test_id: test.id, order: 1 });
+        await projectHelper.editorAPI.addStepToTest({ step_id: step2.id, test_id: test.id, order: 2 });
+        await projectHelper.editorAPI.addStepToTest({ step_id: step3.id, test_id: test.id, order: 3 });
+        suite = await projectHelper.editorAPI.createSuite(suite);
+        await await projectHelper.editorAPI.addTestToSuite(test.id, suite.id);
     });
 
     afterAll(async () => {
-        await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
@@ -97,10 +67,9 @@ describe('Result Steps:', () => {
                     build_name: `build_${new Date().getTime().toString()}`,
                     start_time: new Date()
                 };
-                testRun = await prepareTestRun(testRun, importToken, projectId);
+                testRun = await projectHelper.editorAPI.createTestRun(testRun);
                 await logIn.logInAs(user.user_name, user.password);
-                await projectList.openProject(project.name);
-                await testRunView.navigateTo(projectId, testRun.id);
+                await testRunView.navigateTo(projectHelper.project.id, testRun.id);
                 await testRunView.openResult(test.name);
             });
 
@@ -185,11 +154,10 @@ describe('Result Steps:', () => {
                     build_name: `build_${new Date().getTime().toString()}`,
                     start_time: new Date()
                 };
-                testRun = await prepareTestRun(testRun, importToken, projectId);
+                testRun = await projectHelper.editorAPI.createTestRun(testRun);
 
                 await logIn.logInAs(user.user_name, user.password);
-                await projectList.openProject(project.name);
-                await testRunView.navigateTo(projectId, testRun.id);
+                await testRunView.navigateTo(projectHelper.project.id, testRun.id);
                 return testRunView.openResult(test.name);
             });
 

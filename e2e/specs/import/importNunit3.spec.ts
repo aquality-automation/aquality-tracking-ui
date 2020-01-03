@@ -6,7 +6,6 @@ import { ProjectHelper } from '../../helpers/project.helper';
 import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
-import { compareCSVStrings } from '../../utils/csv.util';
 
 describe('Import Test Run: Nunit V3', () => {
     const projectHepler: ProjectHelper = new ProjectHelper();
@@ -83,13 +82,9 @@ describe('Import Test Run: Nunit V3', () => {
     it('Results were correctly created during Feature: TestName import results via UI', async () => {
         await testRunList.openTestRun(featureName.buildName);
         await testRunView.sortResultsByName();
-        const actualResults = await testRunView.getResultsCSV();
-        const expected = await testData.readAsString('/resultsTable/nunitV3FeatureName.csv');
-        const comparisonResult = compareCSVStrings(actualResults, expected);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await testRunView.checkIfTableEqualToCSv('/resultsTable/nunitV3FeatureName.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
     it('You can import Nunit v3 with Class Name names', async () => {
@@ -113,12 +108,8 @@ describe('Import Test Run: Nunit V3', () => {
     it('Results were correctly created during Class Name import results via UI', async () => {
         await testRunList.openTestRun(className.buildName);
         await testRunView.sortResultsByName();
-        const actualResults = await testRunView.getResultsCSV();
-        const expected = await testData.readAsString('/resultsTable/nunitV3ClassName.csv');
-        const comparisonResult = compareCSVStrings(actualResults, expected);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await testRunView.checkIfTableEqualToCSv('/resultsTable/nunitV3ClassName.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 });

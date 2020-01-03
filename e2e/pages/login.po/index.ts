@@ -1,6 +1,7 @@
 import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { BasePage } from '../base.po';
+import { projectList } from '../project/list.po';
 
 class LogIn extends BasePage {
   constructor() {
@@ -28,7 +29,8 @@ class LogIn extends BasePage {
     }
     await this.setUserName(userName);
     await this.setPassword(password);
-    return this.clickLogIn();
+    await this.clickLogIn();
+    return projectList.waitForIsOpened();
   }
 
   clickLogIn() {
