@@ -19,7 +19,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ResultResolutionsChartsComponent implements OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
-  @Output() chartClick = new EventEmitter<ResultResolution>();
+  @Output() clickedResult = new EventEmitter<ResultResolution>();
   includeNotExecuted = false;
   shownTestResults: TestResult[];
   listOfResultResolutions: ResultResolution[];
@@ -121,7 +121,7 @@ export class ResultResolutionsChartsComponent implements OnChanges {
       const dataIndex = event.active[0]._index;
       const label: string = this.chart.labels[dataIndex].toString();
       const clickedResolution = this.listOfResultResolutions.find(x => label.startsWith(x.name));
-      this.chartClick.emit(clickedResolution);
+      this.clickedResult.emit(clickedResolution);
     }
   }
 }

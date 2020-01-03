@@ -1,11 +1,9 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { projectCreate } from '../../pages/project/create.po';
 import { projectView } from '../../pages/project/view.po';
 import { suiteCreate } from '../../pages/suite/create.po';
 import { testCreate } from '../../pages/test/create.po';
 import { testRunCreate } from '../../pages/testrun/create.po';
-import { Project } from '../../../src/app/shared/models/project';
 import { resolutionAdministration } from '../../pages/administration/resolutions.po';
 import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
 import { testRunList } from '../../pages/testrun/list.po';
@@ -13,50 +11,43 @@ import { testRunView } from '../../pages/testrun/view.po';
 import { testResultView } from '../../pages/testresult/testresult.po';
 import { browser } from 'protractor';
 import { colors } from '../../pages/administration/resolutions.po/constants';
-
+import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 import tests from '../../data/tests.json';
 import testruns from '../../data/testRuns.json';
 import resolutions from '../../data/resolutions.json';
 
 describe('Full Admin Administartion Resolution Flow', () => {
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const resolution: ResultResolution = resolutions.flowTest;
     const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
 
-    const createTestProject = async (project: Project) => {
-        await projectList.clickCreateProjectButton();
-        await projectCreate.createProject(project);
-        await projectList.openProject(project.name);
+    const fillProject = async (projectHelper: ProjectHelper) => {        
+        await projectHelper.openProject();
         await (await projectView.menuBar.create()).suite();
         await suiteCreate.createSuite(suites.testCreation);
         await (await projectView.menuBar.create()).test();
         await testCreate.createTest(tests.creationTest, suites.testCreation.name);
         await (await projectView.menuBar.create()).testRun();
-        await testRunCreate.creteTestRun(testruns.build1, suites.testCreation.name);
-        return projectView.menuBar.clickLogo();
+        await testRunCreate.creteTestRun(testruns.build1, suites.testCreation.name);        
     };
 
     beforeAll(async () => {
+        await projectHelper.init();
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await createTestProject(projects.resolutionProject);
-        await createTestProject(projects.noResolutionProject);
+        await fillProject(projectHelper);
         await (await projectList.menuBar.user()).administration();
         return resolutionAdministration.sidebar.resolutions();
     });
 
     afterAll(async () => {
-        await projectList.removeProject(projects.resolutionProject.name);
-        await projectList.removeProject(projects.noResolutionProject.name);
-        if (await logIn.menuBar.isLogged()) {
-            return logIn.menuBar.clickLogOut();
-        }
+        await projectHelper.dispose();
     });
 
     describe('Create', () => {
         it('I can create Resolution', async () => {
-            await resolutionAdministration.selectProject(projects.resolutionProject.name);
+            await resolutionAdministration.selectProject(projectHelper.project.name);
             await resolutionAdministration.openCreation();
             await resolutionAdministration.fillName(resolution.name);
             await resolutionAdministration.selectColor(resolution.color as string);
@@ -66,8 +57,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
 
     describe('Usage', () => {
         it('I can select created resolution on test run view Resolution', async () => {
-            await resolutionAdministration.menuBar.clickLogo();
-            await projectList.openProject(projects.resolutionProject.name);
+            await projectHelper.openProject();
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(testruns.build1.build_name);
             await testRunView.setResolution(resolution.name, tests.creationTest.name);
@@ -83,8 +73,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
         });
 
         it('I can not select created resolution on test run view Resolution for other projects', async () => {
-            await resolutionAdministration.menuBar.clickLogo();
-            await projectList.openProject(projects.resolutionProject.name);
+            await projectHelper.openProject();
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(testruns.build1.build_name);
             return expect(testRunView.isResolutionPresent(resolution.name, tests.creationTest.name))
@@ -97,7 +86,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
             const newName = new Date().getTime().toString();
             await (await projectList.menuBar.user()).administration();
             await resolutionAdministration.sidebar.resolutions();
-            await resolutionAdministration.selectProject(projects.resolutionProject.name);
+            await resolutionAdministration.selectProject(projectHelper.project.name);
             await resolutionAdministration.updateResolution(newName, resolutionAdministration.columns.name,
                 resolution.name, resolutionAdministration.columns.name);
             resolution.name = newName;
@@ -106,7 +95,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
                 resolution.name, resolutionAdministration.columns.name);
             await browser.refresh();
             await resolutionAdministration.sidebar.resolutions();
-            await resolutionAdministration.selectProject(projects.resolutionProject.name);
+            await resolutionAdministration.selectProject(projectHelper.project.name);
             await expect(await resolutionAdministration.isResolutionPresent(resolution.name)).toBe(true, 'Resolution Name is not Updated');
             await expect(await resolutionAdministration.getResolutionColor(resolution.name))
                 .toBe(resolution.color, 'Resolution Color is not Updated');
@@ -128,14 +117,13 @@ describe('Full Admin Administartion Resolution Flow', () => {
             await resolutionAdministration.modal.clickYes();
             await resolutionAdministration.refresh();
             await resolutionAdministration.sidebar.resolutions();
-            await resolutionAdministration.selectProject(projects.resolutionProject.name);
+            await resolutionAdministration.selectProject(projectHelper.project.name);
             await expect(await resolutionAdministration.isResolutionPresent(resolution.name))
                 .toBe(false, 'Resolution was not removed');
         });
 
         it('Results with deleted resolutions become Not Assigned', async () => {
-            await resolutionAdministration.menuBar.clickLogo();
-            await projectList.openProject(projects.resolutionProject.name);
+            await projectHelper.openProject();
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(testruns.build1.build_name);
             return expect(testRunView.getResolution(tests.creationTest.name))

@@ -1,18 +1,15 @@
 import { logIn } from '../../pages/login.po';
-import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
 import { testRunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject } from '../project.hooks';
+import { ProjectHelper } from '../../helpers/project.helper';
 import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
 import { compareCSVStrings } from '../../utils/csv.util';
 
 describe('Import Test Run: Nunit V3', () => {
-    const project: Project = projects.nunit3Import;
+    const projectHepler: ProjectHelper = new ProjectHelper();
     const featureName = {
         buildName: 'build 1',
         suiteName: 'featureName'
@@ -24,20 +21,15 @@ describe('Import Test Run: Nunit V3', () => {
     const importFiles = {
         nunitV3: '/import/Nunit3.xml'
     };
-    let apiToken: string;
-    let projectId: number;
 
     beforeAll(async () => {
+        await projectHepler.init();
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        apiToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
+        await projectHepler.openProject();
     });
 
     afterAll(async () => {
-        await projectList.removeProject(project.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHepler.dispose();
     });
 
     it('NUnit v3 option can be selected and Files can be uploaded', async () => {
