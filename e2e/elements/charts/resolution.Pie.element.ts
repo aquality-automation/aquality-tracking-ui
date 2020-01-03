@@ -9,10 +9,6 @@ export class ResolutionPieChart extends PieChartBase {
         super(locator);
     }
 
-    public clickNone() {
-        return this.clickChartSection(resolutions.none);
-    }
-
     public clickNotAssigned() {
         return this.clickChartSection(resolutions.notAssigned);
     }

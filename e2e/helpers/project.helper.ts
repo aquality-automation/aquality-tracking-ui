@@ -63,12 +63,11 @@ export class ProjectHelper {
         return projectList.openProject(this.project.name);
     }
 
-    public async  dispose() {
+    public async dispose() {
         await logIn.logInAs(this.admin.user_name, this.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(this.project.name);
     }
-
 
     public generateBuilds = (count: number): { names: any, filenames: string[] } => {
         const names = {};

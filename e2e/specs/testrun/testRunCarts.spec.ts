@@ -28,7 +28,7 @@ describe('Test Run View Charts', () => {
     });
 
     it('Can Filter by Result', async () => {
-        const clickedChartSection = await testRunView.clickResultPieChartSection();
+        const clickedChartSection = await testRunView.clickResultPassedChartSection();
         return expect(testRunView.resultsAreFilteredByResult(clickedChartSection))
             .toBe(true, 'Results are not filtered by Result');
     });
@@ -37,7 +37,7 @@ describe('Test Run View Charts', () => {
         await testRunView.setResultFilter(resolutions.global.none.name);
         await testRunView.setResolution(resolutions.global.testIssue.name,
             `${cucumberImport[0].name}: ${cucumberImport[0].elements[2].name}`);
-        const clickedChartSection = await testRunView.clickResolutionPieChartSection();
+        const clickedChartSection = await testRunView.clickResolutionTestIssueChartSection();
         return expect(testRunView.resultsAreFilteredByResolution(clickedChartSection))
             .toBe(true, 'Results are not filtered by Resolution');
     });

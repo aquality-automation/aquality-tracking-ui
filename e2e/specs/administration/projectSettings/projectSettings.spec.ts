@@ -1,11 +1,9 @@
 import { projectList } from '../../../pages/project/list.po';
-import { Project } from '../../../../src/app/shared/models/project';
 import { userAdministration } from '../../../pages/administration/users.po';
 import { notFound } from '../../../pages/notFound.po';
 import { ProjectHelper } from '../../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
-import projects from '../../../data/projects.json';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
 
@@ -22,8 +20,6 @@ const notEditorExamples = {
 
 describe('Administartion:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -54,13 +50,13 @@ describe('Administartion:', () => {
             });
 
             it('I can enable Steps', async () => {
-                await projectSettingsAdministration.selectProject(project.name);
+                await projectSettingsAdministration.selectProject(projectHelper.project.name);
                 await projectSettingsAdministration.setSteps(true);
                 await projectSettingsAdministration.clickSave();
                 await expect(projectSettingsAdministration.notification.isSuccess())
                     .toBe(true, 'Success meessage is not shown on save settings!');
                 await expect(projectSettingsAdministration.notification.getContent())
-                    .toBe(`'${project.name}' project was updated!`, 'Success meessage is wrong!');
+                    .toBe(`'${projectHelper.project.name}' project was updated!`, 'Success meessage is wrong!');
                 await projectSettingsAdministration.notification.close();
             });
 
@@ -84,7 +80,7 @@ describe('Administartion:', () => {
                 await expect(projectSettingsAdministration.notification.isSuccess())
                     .toBe(true, 'Success meessage is not shown on save settings!');
                 await expect(projectSettingsAdministration.notification.getContent())
-                    .toBe(`'${project.name}' project was updated!`, 'Success meessage is wrong!');
+                    .toBe(`'${projectHelper.project.name}' project was updated!`, 'Success meessage is wrong!');
                 await projectSettingsAdministration.notification.close();
             });
         });

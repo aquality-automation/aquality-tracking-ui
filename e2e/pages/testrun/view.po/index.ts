@@ -62,11 +62,11 @@ class TestRunView extends BasePage {
     return elements.resultsTable.rightClickCell(columns.failReason, failReason, columns.failReason);
   }
 
-  async clickResultPieChartSection() {
+  async clickResultPassedChartSection() {
     return elements.resultsChart.clickPassed();
   }
 
-  async clickResolutionPieChartSection() {
+  async clickResolutionTestIssueChartSection() {
     return elements.resolutionsChart.clickTestIssue();
   }
 

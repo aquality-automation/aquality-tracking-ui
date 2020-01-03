@@ -9,10 +9,6 @@ export class ResultPieChart extends PieChartBase {
         super(locator);
     }
 
-    public clickNone() {
-        return this.clickChartSection(results.none);
-    }
-
     public clickPassed() {
         return this.clickChartSection(results.passed);
     }

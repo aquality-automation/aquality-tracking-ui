@@ -1,8 +1,6 @@
 import { logIn } from '../../../pages/login.po';
 import { projectList } from '../../../pages/project/list.po';
-import { Project } from '../../../../src/app/shared/models/project';
 import usersTestData from '../../../data/users.json';
-import projects from '../../../data/projects.json';
 import resolutions from '../../../data/resolutions.json';
 import differentError from '../../../data/import/regexImportErrorSearch/differentError.json';
 import firstError from '../../../data/import/regexImportErrorSearch/firstError.json';
@@ -31,8 +29,6 @@ const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
     const testFailed = 'Test Feature with all results: step failed';
     const testPending = 'Test Feature with all results: Step skipped';
     const commentRegex = 'Should be filled by regex';
@@ -58,13 +54,13 @@ describe('Administartion: Project Settings:', () => {
         });
 
         it('I can set Import Compare Results Pattern', async () => {
-            await projectSettingsAdministration.selectProject(project.name);
+            await projectSettingsAdministration.selectProject(projectHelper.project.name);
             await projectSettingsAdministration.setImportCompareResultsPattern('\\[error\\]\\n(.*)\\n\\[error\\]');
             await projectSettingsAdministration.clickSave();
             await expect(projectSettingsAdministration.notification.isSuccess())
                 .toBe(true, 'Success meessage is not shown on save settings!');
             await expect(projectSettingsAdministration.notification.getContent())
-                .toBe(`'${project.name}' project was updated!`, 'Success meessage is wrong!');
+                .toBe(`'${projectHelper.project.name}' project was updated!`, 'Success meessage is wrong!');
             await projectSettingsAdministration.notification.close();
         });
 
