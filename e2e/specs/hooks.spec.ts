@@ -22,8 +22,8 @@ beforeAll(async () => {
         throw new Error(`Backend is unavailable ${environment.host}`);
     }
     await logIn.navigateTo();
-    // await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-    // await (await projectsList.menuBar.user()).administration();
+    // await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+    // await (await projectList.menuBar.user()).administration();
     // await userAdministration.create(usersTestData.localAdmin);
     // await userAdministration.create(usersTestData.auditAdmin);
     // await userAdministration.create(usersTestData.assignedAuditor);

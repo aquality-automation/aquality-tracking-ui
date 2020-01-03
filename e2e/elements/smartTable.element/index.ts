@@ -1,4 +1,4 @@
-import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element, promise } from 'protractor';
+import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element } from 'protractor';
 import { BaseElement } from '../base.element';
 import { logger } from '../../utils/log.util';
 import { Lookup } from '../lookup.element';
@@ -6,10 +6,12 @@ import { testData } from '../../utils/testData.util';
 import { rightClick } from '../../utils/click.util';
 import { Paginator } from './paginator.element';
 import { Row, CellElements } from './row.element';
+import { ManageColumns } from './manageCollumns.element';
 
 const EC = protractor.ExpectedConditions;
 
 export class SmartTable extends BaseElement {
+    public manageColumns: ManageColumns;
     private paginator: Paginator;
     private creationRow = new Row(this.element.element(by.css('.ft-creation-row')));
     private bulkEditRow = new Row(this.element.element(by.css('.ft-bulk-edit-row')));
@@ -23,6 +25,7 @@ export class SmartTable extends BaseElement {
     constructor(locator: Locator) {
         super(locator);
         this.paginator = new Paginator(locator);
+        this.manageColumns = new ManageColumns(locator);
     }
 
     public async getRow(value: string | number, columnName: string): Promise<Row> {

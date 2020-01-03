@@ -15,25 +15,34 @@ import { compareCSVStrings } from '../../utils/csv.util';
 import { TestRun } from '../../../src/app/shared/models/testRun';
 import { Milestone } from '../../../src/app/shared/models/milestone';
 
+const projectHelper: ProjectHelper = new ProjectHelper();
+
+const milestones: { version1: Milestone, version2: Milestone } = {
+    version1: { name: 'v1.1.0' },
+    version2: { name: 'v1.2.0' }
+};
+
+const suites = {
+    login: 'Login',
+    testRun_Manager: 'Test Run: Manager',
+    testRun_Viewer: 'Test Run: Viewer'
+};
+
+const importedRuns: { login: TestRun, testRun_Manager: TestRun, testRun_Viewer: TestRun } = {
+    login: undefined,
+    testRun_Manager: undefined,
+    testRun_Viewer: undefined
+};
+
+const assigneMilestone = (testRun: TestRun) => {
+    return projectHelper.editorAPI.createTestRun({
+        id: testRun.id,
+        project_id: testRun.project_id,
+        milestone_id: milestones.version1.id
+    });
+};
+
 fdescribe('Milestone:', () => {
-    const projectHelper: ProjectHelper = new ProjectHelper();
-
-    const milestones: { version1: Milestone, version2: Milestone } = {
-        version1: { name: 'v1.1.0' },
-        version2: { name: 'v1.2.0' }
-    };
-
-    const suites = {
-        login: 'Login',
-        testRun_Manager: 'Test Run: Manager',
-        testRun_Viewer: 'Test Run: Viewer'
-    };
-
-    const importedRuns: { login: TestRun, testRun_Manager: TestRun, testRun_Viewer: TestRun } = {
-        login: undefined,
-        testRun_Manager: undefined,
-        testRun_Viewer: undefined
-    };
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -82,13 +91,10 @@ fdescribe('Milestone:', () => {
         });
 
         it('I can see results from test run that assigned to milestone', async () => {
-            await projectHelper.editorAPI.createTestRun({
-                id: importedRuns.login.id,
-                project_id: importedRuns.login.project_id,
-                milestone_id: milestones.version1.id
-            });
+            await assigneMilestone(importedRuns.login);
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
+            await milestoneView.removeFinishedColumn();
 
             const actualTableCSV = await milestoneView.getCSV();
             const expectedTableCSV = await testData.readAsString('/expected/milestoneView/firstAssignedTestRun.csv');
@@ -100,9 +106,56 @@ fdescribe('Milestone:', () => {
         });
 
         it('I can see Not Executed results from second suite', async () => {
+            const imported = await projectHelper.importer
+                .executeCucumberImport(suites.testRun_Manager, [testRun_ManagerTestRunJson], ['ManagerTestRunJson.json']);
+            importedRuns.testRun_Manager = imported[0];
+
+            await milestoneView.menuBar.milestones();
+            await milestoneList.openMilestone(milestones.version1.name);
+            await milestoneView.removeFinishedColumn();
+
+            const actualTableCSV = await milestoneView.getCSV();
+            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/assignedAndUnissigned.csv');
+            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
         });
 
-        it('I can Distinct Tests test results', async () => {
+        it('I can see Distinct Tests test results', async () => {
+            const imported = await projectHelper.importer
+                .executeCucumberImport(suites.testRun_Viewer, [testRun_ViewerTestRunJson], ['ViewerTestRunJson.json']);
+            importedRuns.testRun_Viewer = imported[0];
+
+            await assigneMilestone(importedRuns.testRun_Manager);
+            await assigneMilestone(importedRuns.testRun_Viewer);
+
+            await milestoneView.menuBar.milestones();
+            await milestoneList.openMilestone(milestones.version1.name);
+            await milestoneView.removeFinishedColumn();
+
+            await milestoneView.setDistinctTest(true);
+
+            const actualTableCSV = await milestoneView.getCSV();
+            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/distinctResults.csv');
+            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+        });
+
+        it('I can see Suite Tests test results', async () => {
+            await milestoneView.setDistinctTest(false);
+
+            const actualTableCSV = await milestoneView.getCSV();
+            const expectedTableCSV = await testData.readAsString('/expected/milestoneView/suitesResults.csv');
+            const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
+            expect(comparisonResult.missedFromActual.length)
+                .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
         });
 
         it('I can Filter results by clicking Final Result chart', async () => {

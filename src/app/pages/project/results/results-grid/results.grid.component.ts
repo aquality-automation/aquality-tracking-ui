@@ -240,7 +240,7 @@ export class ResultGridComponent implements OnInit {
   }
 
   hideVal(entity: TestResult, property: string) {
-    if ((property === 'test_resolution.name' || property === 'assigned_user.user.user_name') && entity.final_result.color === 5) {
+    if ((property === 'test_resolution.name' || property === 'assigned_user.user') && entity.final_result.color === 5) {
       return true;
     }
     return false;

@@ -13,6 +13,14 @@ class MilestoneView extends BasePage {
     getCSV() {
         return elements.milestonesTable.getCSV();
     }
+
+    removeFinishedColumn() {
+        return elements.milestonesTable.manageColumns.removeColumn(columns.finished);
+    }
+
+    setDistinctTest(state: boolean) {
+        return elements.distinctTest.setState(state);
+    }
 }
 
 export const milestoneView = new MilestoneView();

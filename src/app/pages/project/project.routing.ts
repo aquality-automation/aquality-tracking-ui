@@ -54,7 +54,7 @@ const projectRoutes: Routes = [
               { path: 'compare', component: TestrunCompareComponent, canActivate: [TestRunGuard] },
               { path: ':testRunId', component: TestRunViewComponent, canActivate: [TestRunGuard] }
             ]
-          }, 
+          },
           { path: 'milestone', children: [
             { path: '', component: ListMilestoneComponent, canActivate: [MilestoneGuard] },
             { path: ':milestoneId', component: ViewMilestoneComponent, canActivate: [MilestoneGuard] }

@@ -1,4 +1,4 @@
-import { element, ElementFinder, Locator } from 'protractor';
+import { element, ElementFinder, Locator, browser } from 'protractor';
 import { waiter } from '../utils/wait.util';
 
 export class BaseElement {
@@ -11,11 +11,23 @@ export class BaseElement {
         }
     }
 
+    async click() {
+        return this.element.click();
+    }
+
     async isVisible(): Promise<boolean> {
         return waiter.forTrue(() => this.element.isPresent(), 2, 500);
     }
 
     async isPresent(): Promise<boolean> {
         return this.element.isPresent();
+    }
+
+    async dragAndDrop(moveTo: BaseElement) {
+        return browser.actions()
+            .mouseDown(this.element)
+            .mouseMove(moveTo.element)
+            .mouseUp()
+            .perform();
     }
 }
