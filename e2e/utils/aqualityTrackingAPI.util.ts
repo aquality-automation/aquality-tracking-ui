@@ -1,12 +1,6 @@
 import superagent from 'superagent';
 import { environment } from '../../src/environments/environment';
-import { TestRun } from '../../src/app/shared/models/testRun';
-import { TestSuite } from '../../src/app/shared/models/testSuite';
-import { Test } from '../../src/app/shared/models/test';
-import { TestResult } from '../../src/app/shared/models/test-result';
 import { logger } from './log.util';
-import { Step, StepToTest } from '../../src/app/shared/models/steps';
-import { Milestone } from '../../src/app/shared/models/milestone';
 
 export class ImportParams {
     projectId: number;
@@ -99,71 +93,10 @@ const doImport = async (params: ImportParams, filesAsString: string[], fileNames
     }
 };
 
-const postTestRun = async (testRun: TestRun, token: string, projectId: number) => {
-    return sendPost('/testrun', undefined, testRun, token, projectId);
-};
-
-const postMilestone = async (milestone: Milestone, token: string, projectId: number) => {
-    return sendPost('/milestone', undefined, milestone, token, projectId);
-};
-
-const getSuites = async (testSuite: TestSuite, token: string, projectId: number): Promise<TestSuite[]> => {
-    return sendGet('/suite', testSuite, token, projectId);
-};
-
-const getTests = (test: Test, token: string, projectId: number): Promise<Test[]> => {
-    return sendGet('/test', test, token, projectId);
-};
-
-const getResults = (testResult: TestResult, token: string, projectId: number): Promise<TestResult[]> => {
-    return sendGet('/testresult', testResult, token, projectId);
-};
-
-const postResult = (testResult: TestResult, token: string, projectId: number): Promise<TestResult> => {
-    return sendPost('/testresult', undefined, testResult, token, projectId);
-};
-
-const postTest = (test: Test, token: string, projectId: number): Promise<Test> => {
-    return sendPost('/test', undefined, test, token, projectId);
-};
-
-const postSuite = (suite: TestSuite, token: string, projectId: number): Promise<Test> => {
-    return sendPost('/suite', undefined, suite, token, projectId);
-};
-
-const postStep = (step: Step, token: string, projectId: number): Promise<Test> => {
-    return sendPost('/steps', undefined, step, token, projectId);
-};
-
-const postStepToTest = (stepToTest: StepToTest, token: string, projectId: number): Promise<Test> => {
-    return sendPost('/test/steps', undefined, stepToTest, token, projectId);
-};
-
-const postTestToSuite = (testId: number, suiteId: number, token: string, projectId: number) => {
-    return sendPost(`/testToSuite`,
-        {
-            testId,
-            suiteId,
-            projectId
-        }, {}, token, projectId);
-};
-
-
 export {
     sendPostWithfiles,
     sendPostFiles,
     sendPost,
     sendGet,
-    doImport,
-    getSuites,
-    getTests,
-    getResults,
-    postResult,
-    postTest,
-    postSuite,
-    postStep,
-    postStepToTest,
-    postTestToSuite,
-    postTestRun,
-    postMilestone
+    doImport
 };
