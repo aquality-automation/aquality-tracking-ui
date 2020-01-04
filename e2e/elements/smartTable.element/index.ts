@@ -41,7 +41,7 @@ export class SmartTable extends BaseElement {
             result.result = false;
             result.message = `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`;
         }
-        if (comparisonResult.missedFromActual.length > 0) {
+        if (comparisonResult.missedFromExpected.length > 0) {
             result.result = false;
             result.message = `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`;
         }

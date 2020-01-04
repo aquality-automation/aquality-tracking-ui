@@ -25,7 +25,6 @@ export class PieChartBase extends BaseElement {
         logger.info(`${section.name} section of Pie Chart was clicked.`);
         return section.name;
     }
-
 }
 
 export interface PieChartSections {
