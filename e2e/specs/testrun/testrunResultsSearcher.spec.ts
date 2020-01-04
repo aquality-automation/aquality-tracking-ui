@@ -14,7 +14,11 @@ describe('Test Run Result Searcher', () => {
         await projectHelper.init();
         await logIn.logInAs(users.admin.user_name, users.admin.password);
         await projectHelper.openProject();
-        await projectHelper.importer.executeCucumberImport('Test Suite', [cucumberImport, cucumberImport], [`${builds.build_1}.json`, `${builds.build_2}.json`]);
+        await projectHelper.importer.executeCucumberImport(
+            'Test Suite',
+            [cucumberImport, cucumberImport],
+            [`${builds.build_1}.json`,
+            `${builds.build_2}.json`]);
         await projectView.menuBar.testRuns();
         const isTestRunAppear = await testRunList.waitForTestRun(builds.build_2);
         expect(isTestRunAppear).toBe(true, 'Import was not finished!');
