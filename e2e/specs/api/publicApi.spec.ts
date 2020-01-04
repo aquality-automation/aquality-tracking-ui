@@ -6,7 +6,7 @@ import { TestRun } from '../../../src/app/shared/models/testRun';
 import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 
-fdescribe('Public API tests', () => {
+describe('Public API tests', () => {
   const projectHelper: ProjectHelper = new ProjectHelper();
   const builds = { build_1: 'Build_1' };
   let suite: TestSuite = suites.suiteCreation;
