@@ -17,7 +17,7 @@ describe('Full Admin Test Run', () => {
 
     beforeAll(async () => {
         await projectHelper.init();
-        await logIn.logInAs(users.admin.user_name, users.admin.password);        
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         await projectHelper.openProject();
         await (await projectView.menuBar.create()).suite();
         await suiteCreate.createSuite(suites.testRunCreation);

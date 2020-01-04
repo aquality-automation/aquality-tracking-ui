@@ -4,7 +4,7 @@ import { testRunView } from '../../pages/testrun/view.po';
 import { testRunList } from '../../pages/testrun/list.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 
-import resolutions from '../../data/resolutions.json';
+import lookupOptions from '../../data/lookupOptions.json';
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 
@@ -34,8 +34,8 @@ describe('Test Run View Charts', () => {
     });
 
     it('Can Filter by Resolution', async () => {
-        await testRunView.setResultFilter(resolutions.global.none.name);
-        await testRunView.setResolution(resolutions.global.testIssue.name,
+        await testRunView.setResultFilter(lookupOptions.global.none.name);
+        await testRunView.setResolution(lookupOptions.global.testIssue.name,
             `${cucumberImport[0].name}: ${cucumberImport[0].elements[2].name}`);
         const clickedChartSection = await testRunView.clickResolutionTestIssueChartSection();
         return expect(testRunView.resultsAreFilteredByResolution(clickedChartSection))

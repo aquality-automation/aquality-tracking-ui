@@ -29,7 +29,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
         suite = await projectHelper.editorAPI.createSuite(suite);
         test = await projectHelper.editorAPI.createTest(test);
         await projectHelper.editorAPI.addTestToSuite(test.id, suite.id);
-        await projectHelper.editorAPI.createTestRun({build_name: testruns.build1.build_name, test_suite_id: suite.id});
+        await projectHelper.editorAPI.createTestRun({ build_name: testruns.build1.build_name, test_suite_id: suite.id });
 
         await logIn.logInAs(users.admin.user_name, users.admin.password);
         await (await projectList.menuBar.user()).administration();
