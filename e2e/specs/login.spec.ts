@@ -17,32 +17,32 @@ describe('Log in', () => {
     await logIn.setUserName(users.admin.user_name);
     await logIn.setPassword(users.admin.password);
     await logIn.clickLogIn();
-    expect(logIn.menuBar.isLogged()).toBe(true);
+    return expect(logIn.menuBar.isLogged()).toBe(true);
   });
 
   it('should not be able to login with wrong username', async () => {
     await logIn.setUserName('admin1');
     await logIn.setPassword(users.admin.password);
     await logIn.clickLogIn();
-    expect(logIn.menuBar.isLogged()).toBe(false);
-    expect(logIn.notification.isError()).toBe(true);
+    await expect(logIn.menuBar.isLogged()).toBe(false);
+    return expect(logIn.notification.isError()).toBe(true);
   });
 
   it('should not be able to login with wrong password', async () => {
     await logIn.setUserName(users.admin.user_name);
     await logIn.setPassword('1234567');
     await logIn.clickLogIn();
-    expect(logIn.menuBar.isLogged()).toBe(false);
-    expect(logIn.notification.isError()).toBe(true);
+    await expect(logIn.menuBar.isLogged()).toBe(false);
+    return expect(logIn.notification.isError()).toBe(true);
   });
 
   it('Log in button should be disabled if username is blank', async () => {
     await logIn.setPassword('1234567');
-    expect(!logIn.isLogInEnabled()).toBe(false);
+    return expect(!logIn.isLogInEnabled()).toBe(false);
   });
 
   it('Log in button should be disabled if password is blank', async () => {
     await logIn.setUserName('admin');
-    expect(!logIn.isLogInEnabled()).toBe(false);
+    return expect(!logIn.isLogInEnabled()).toBe(false);
   });
 });

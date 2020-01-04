@@ -8,8 +8,9 @@ class LogIn extends BasePage {
     super(elements.uniqueElement, names.pageName);
   }
 
-  navigateTo() {
-    return browser.get(baseUrl);
+  async navigateTo() {
+    await browser.get(baseUrl);
+    return this.waitForIsOpened();
   }
 
   async setUserName(text: string) {

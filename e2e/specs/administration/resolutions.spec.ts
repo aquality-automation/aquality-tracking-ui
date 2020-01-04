@@ -1,16 +1,15 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { projectView } from '../../pages/project/view.po';
-import { suiteCreate } from '../../pages/suite/create.po';
-import { testCreate } from '../../pages/test/create.po';
-import { testRunCreate } from '../../pages/testrun/create.po';
 import { resolutionAdministration } from '../../pages/administration/resolutions.po';
-import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
 import { testRunList } from '../../pages/testrun/list.po';
 import { testRunView } from '../../pages/testrun/view.po';
 import { testResultView } from '../../pages/testresult/testresult.po';
-import { browser } from 'protractor';
 import { colors } from '../../pages/administration/resolutions.po/constants';
+import { ResultResolution } from '../../../src/app/shared/models/result_resolution';
+import { TestSuite } from '../../../src/app/shared/models/testSuite';
+import { Test } from '../../../src/app/shared/models/test';
+import { browser } from 'protractor';
 import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
 import suites from '../../data/suites.json';
@@ -22,21 +21,17 @@ describe('Full Admin Administartion Resolution Flow', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const resolution: ResultResolution = resolutions.flowTest;
     const globalResolutions: ResultResolution[] = Object.values(resolutions.global);
-
-    const fillProject = async (projectHelper: ProjectHelper) => {        
-        await projectHelper.openProject();
-        await (await projectView.menuBar.create()).suite();
-        await suiteCreate.createSuite(suites.testCreation);
-        await (await projectView.menuBar.create()).test();
-        await testCreate.createTest(tests.creationTest, suites.testCreation.name);
-        await (await projectView.menuBar.create()).testRun();
-        await testRunCreate.creteTestRun(testruns.build1, suites.testCreation.name);        
-    };
+    let suite: TestSuite = suites.testCreation;
+    let test: Test = tests.creationTest;
 
     beforeAll(async () => {
         await projectHelper.init();
+        suite = await projectHelper.editorAPI.createSuite(suite);
+        test = await projectHelper.editorAPI.createTest(test);
+        await projectHelper.editorAPI.addTestToSuite(test.id, suite.id);
+        await projectHelper.editorAPI.createTestRun({build_name: testruns.build1.build_name, test_suite_id: suite.id});
+
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await fillProject(projectHelper);
         await (await projectList.menuBar.user()).administration();
         return resolutionAdministration.sidebar.resolutions();
     });
