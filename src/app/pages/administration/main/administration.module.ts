@@ -7,6 +7,7 @@ import { administrationRouting } from './administration.routing';
 import { AdministrationComponent } from './administration.component';
 import { SharedModule } from '../../../shared/shared.module';
 import { AdministrationGuard } from '../../../shared/guards/administration-guard.service';
+import { CurrentPermissionsService } from '../../../services/current-permissions.service';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { AdministrationGuard } from '../../../shared/guards/administration-guard
   providers: [
     ProjectService,
     UserService,
+    CurrentPermissionsService,
     AdministrationGuard
   ],
 })

@@ -3,7 +3,7 @@ import { Project } from '../../../shared/models/project';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { ProjectService } from '../../../services/project.service';
 import { UserService } from '../../../services/user.services';
-import { Router } from '@angular/router';
+import { CurrentPermissionsService, Permissions } from '../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './administration.component.html',
@@ -21,25 +21,27 @@ export class AdministrationComponent {
   constructor(
     private projectService: ProjectService,
     public userService: UserService,
-    private router: Router
+    private permissionsService: CurrentPermissionsService
   ) {
     this.projectService.getProjects(this.project).subscribe(result => {
       this.projects = result;
     }, error => this.projectService.handleError(error));
-    this.redirect();
   }
 
   IsAdmin(): boolean {
-    return this.userService.IsAdmin();
+    return this.permissionsService.IsAdmin();
   }
 
-  redirect() {
-    if (this.userService.IsAdmin()) {
-      this.router.navigate(['administration/global/users']);
-      return true;
-    } else if (this.userService.IsManager() || this.userService.AnyLocalAdmin() || this.userService.AnyLocalManager()) {
-      this.router.navigate(['administration/project/permissions']);
-      return true;
-    }
+  IsGlobalEditor(): boolean {
+    return this.permissionsService.IsManager() || this.permissionsService.IsAdmin();
+  }
+
+  async IsLocalManager(): Promise<boolean> {
+    const local = await this.permissionsService.hasLocalPermissions([Permissions.admin, Permissions.manager]);
+    return this.permissionsService.IsManager() || this.permissionsService.IsAdmin() || local;
+  }
+
+  async IsLocalEditor(): Promise<boolean> {
+    return this.IsGlobalEditor() || await this.permissionsService.isLocalEngineer();
   }
 }

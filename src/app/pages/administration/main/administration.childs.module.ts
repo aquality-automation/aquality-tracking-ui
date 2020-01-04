@@ -12,8 +12,14 @@ import { APITokenComponent } from '../projects/api-token/api-token.component';
 import { AdministrationPermissionsComponent } from '../projects/permissions/administration.permissions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
-import { AdministrationGlobalGuard, AdministrationProjectGuard } from '../../../shared/guards/administration-guard.service';
+import {
+  AdministrationGlobalGuard,
+  AdministrationProjectManagerGuard,
+  AdministrationProjectGuard
+} from '../../../shared/guards/administration-guard.service';
 import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
+import { PredefinedResolutionComponent } from '../projects/predefinedResolution/predefinedResolution.component';
+import { CurrentPermissionsService } from '../../../services/current-permissions.service';
 
 @NgModule({
   imports: [
@@ -30,11 +36,14 @@ import { AdministrationProjectSettingsComponent } from '../projects/settings/adm
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
     APITokenComponent,
-    AdministrationProjectSettingsComponent
+    AdministrationProjectSettingsComponent,
+    PredefinedResolutionComponent
   ],
   providers: [
     ProjectService,
+    CurrentPermissionsService,
     UserService,
+    AdministrationProjectManagerGuard,
     AdministrationProjectGuard,
     AdministrationGlobalGuard,
     DatePipe

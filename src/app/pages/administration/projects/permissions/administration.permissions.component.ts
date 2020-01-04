@@ -9,7 +9,6 @@ import { User } from '../../../../shared/models/user';
 @Component({
   templateUrl: './administration.permissions.component.html',
   providers: [
-    ProjectService,
     SimpleRequester
   ]
 })

@@ -26,24 +26,6 @@ export class UserService extends SimpleRequester {
     }).toPromise();
   }
 
-  private isAuthorized(handleError: boolean = true): Promise<User> {
-    const result = new Promise(async (resolve, reject) => {
-      if (this.isAuthHeaderExists()) {
-        try {
-          const checkHeaderPromise = await this.doGet('/users/isAuthorized', undefined, false, handleError).map(res => {
-            this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
-            return res.json();
-          }).toPromise();
-          resolve(checkHeaderPromise);
-        } catch (err) {
-          reject();
-        }
-      }
-      reject();
-    });
-    return result;
-  }
-
   getPermissionsForProject(projectId: number) {
     return this.doGet('/users/permissions?projectId=' + projectId).map(res => res.json());
   }
@@ -52,16 +34,16 @@ export class UserService extends SimpleRequester {
     return this.doGet('/project/users?projectId=' + projectId).map(res => res.json());
   }
 
+  getUserProjects(userId: number): Promise<LocalPermissions[]> {
+    return this.doGet('/project/users', { userId }).map(res => res.json()).toPromise();
+  }
+
   createOrUpdateProjectUser(localPermissions: LocalPermissions): Promise<LocalPermissions> {
     return this.doPost('/users/permissions', localPermissions).map(res => {
       const permissions: LocalPermissions = res.json();
       this.handleSuccess(`Permissions were updated.`);
       return permissions;
     }).toPromise();
-  }
-
-  checkIsAccountTeamMember() {
-    return this.doGet('/users/accountTeam').map(res => res);
   }
 
   removeProjectUser(user: LocalPermissions) {
@@ -84,6 +66,31 @@ export class UserService extends SimpleRequester {
     });
   }
 
+  removeUser(user: User) {
+    return this.doDelete(`/users?id=${user.id}`).map(res => {
+      this.handleSuccess(`User '${user.first_name} ${user.second_name}' was deleted.`);
+      return res;
+    });
+  }
+
+  private isAuthorized(handleError: boolean = true): Promise<User> {
+    const result = new Promise(async (resolve, reject) => {
+      if (this.isAuthHeaderExists()) {
+        try {
+          const checkHeaderPromise = await this.doGet('/users/isAuthorized', undefined, false, handleError).map(res => {
+            this.globaldata.teamMember = res.headers.get('accountMember') === 'true';
+            return res.json();
+          }).toPromise();
+          resolve(checkHeaderPromise);
+        } catch (err) {
+          reject();
+        }
+      }
+      reject();
+    });
+    return result;
+  }
+
   private async checkAuth(handleError: boolean = true): Promise<boolean> {
     try {
       this.globaldata.currentUser = await this.isAuthorized(handleError);
@@ -92,13 +99,6 @@ export class UserService extends SimpleRequester {
       this.globaldata.currentUser = undefined;
       return false;
     }
-  }
-
-  removeUser(user: User) {
-    return this.doDelete(`/users?id=${user.id}`).map(res => {
-      this.handleSuccess(`User '${user.first_name} ${user.second_name}' was deleted.`);
-      return res;
-    });
   }
 
   async redirectToLogin(returnUrl?: string) {

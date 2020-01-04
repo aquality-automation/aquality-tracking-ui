@@ -197,8 +197,7 @@ export class AppComponent {
           link: `/administration`,
           show: this.userService.IsAdmin()
             || this.userService.IsManager()
-            || this.userService.IsLocalAdmin()
-            || this.userService.IsLocalManager()
+            || this.userService.HaveAnyLocalPermissionsWithoutPUpdating()
         }, {
           name: 'Report an Issue',
           href: `https://github.com/aquality-automation/aquality-tracking/issues`,
