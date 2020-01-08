@@ -8,7 +8,7 @@ import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 import { ProjectHelper } from '../../helpers/project.helper';
 
-fdescribe('Test', () => {
+describe('Test', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const builds = projectHelper.generateBuilds(2);
     const suites = { suite_1: 'Test Suite 1', suite_2: 'Test Suite 2' };
