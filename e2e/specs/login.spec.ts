@@ -3,8 +3,8 @@ import * as users from '../data/users.json';
 
 describe('Log in', () => {
 
-  beforeEach(() => {
-    return logIn.navigateTo();
+  beforeEach(async () => {
+    await logIn.navigateTo();
   });
 
   afterEach(async () => {
