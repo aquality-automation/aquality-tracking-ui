@@ -4,7 +4,7 @@ import * as users from '../data/users.json';
 describe('Log in', () => {
 
   beforeEach(() => {
-    logIn.navigateTo();
+    return logIn.navigateTo();
   });
 
   afterEach(async () => {
@@ -14,7 +14,6 @@ describe('Log in', () => {
   });
 
   it('should be able to login as admin', async () => {
-    await logIn.waitForIsOpened();
     await logIn.setUserName(users.admin.user_name);
     await logIn.setPassword(users.admin.password);
     await logIn.clickLogIn();

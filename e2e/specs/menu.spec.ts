@@ -7,7 +7,7 @@ describe('Report an Issue', () => {
     const githubUrl = 'https://github.com/aquality-automation/aquality-tracking/issues';
 
     beforeAll(() => {
-        logIn.navigateTo();
+        return logIn.navigateTo();
     });
 
     beforeAll(async () => {
