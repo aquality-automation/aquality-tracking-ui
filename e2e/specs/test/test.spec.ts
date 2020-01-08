@@ -8,22 +8,22 @@ import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
 import { ProjectHelper } from '../../helpers/project.helper';
 
-describe('Test', () => {
-    const projectHepler: ProjectHelper = new ProjectHelper();
-    const builds = projectHepler.generateBuilds(2);
+fdescribe('Test', () => {
+    const projectHelper: ProjectHelper = new ProjectHelper();
+    const builds = projectHelper.generateBuilds(2);
     const suites = { suite_1: 'Test Suite 1', suite_2: 'Test Suite 2' };
     const testName = 'Test Feature with all results: step failed';
 
     beforeAll(async () => {
-        await projectHepler.init();
-        await projectHepler.importer.executeCucumberImport(suites.suite_1, [cucumberImport], [builds.filenames[0]]);
-        await projectHepler.importer.executeCucumberImport(suites.suite_2, [cucumberImport], [builds.filenames[1]]);
+        await projectHelper.init();
+        await projectHelper.importer.executeCucumberImport(suites.suite_1, [cucumberImport], [builds.filenames[0]]);
+        await projectHelper.importer.executeCucumberImport(suites.suite_2, [cucumberImport], [builds.filenames[1]]);
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await projectHepler.openProject();
+        await projectHelper.openProject();
     });
 
     afterAll(async () => {
-        await projectHepler.dispose();
+        await projectHelper.dispose();
     });
 
     it('Can see all Suites assigned to test', async () => {

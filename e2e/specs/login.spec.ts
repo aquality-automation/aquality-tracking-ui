@@ -14,6 +14,7 @@ describe('Log in', () => {
   });
 
   it('should be able to login as admin', async () => {
+    await logIn.waitForIsOpened();
     await logIn.setUserName(users.admin.user_name);
     await logIn.setPassword(users.admin.password);
     await logIn.clickLogIn();
