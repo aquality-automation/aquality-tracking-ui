@@ -50,7 +50,7 @@ describe('Administartion: Project Settings:', () => {
             await projectHelper.openProject();
             await (await projectList.menuBar.user()).administration();
             await userAdministration.sidebar.projectSettings();
-            await projectHelper.importer.executeCucumberImport('Regex', [importFiles.firstError], [`${builds.build_1}.json`])
+            await projectHelper.importer.executeCucumberImport('Regex', [importFiles.firstError], [`${builds.build_1}.json`]);
         });
 
         it('I can set Import Compare Results Pattern', async () => {
