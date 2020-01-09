@@ -2,6 +2,11 @@ import { logIn } from '../pages/login.po';
 import * as users from '../data/users.json';
 
 describe('Log in', () => {
+
+  beforeEach(async () => {
+    await logIn.navigateTo();
+  });
+
   afterEach(async () => {
     if (await logIn.menuBar.isLogged()) {
       return logIn.menuBar.clickLogOut();
