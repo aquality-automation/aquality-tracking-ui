@@ -4,9 +4,6 @@ import * as users from '../data/users.json';
 describe('Log in', () => {
 
   beforeEach(async () => {
-    if (await logIn.menuBar.isLogged()) {
-      await logIn.menuBar.clickLogOut();
-    }
     await logIn.navigateTo();
   });
 
