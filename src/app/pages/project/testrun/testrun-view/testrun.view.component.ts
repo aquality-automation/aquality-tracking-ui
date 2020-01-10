@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestRunService } from '../../../../services/testRun.service';
 import { TestResult } from '../../../../shared/models/test-result';
@@ -11,6 +11,8 @@ import { Milestone } from '../../../../shared/models/milestone';
 import { MilestoneService } from '../../../../services/milestones.service';
 import { ResultResolutionsChartsComponent } from '../../../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
+import { FinalResult } from '../../../../shared/models/final-result';
+import { ResultResolution } from '../../../../shared/models/result_resolution';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -45,9 +47,9 @@ export class TestRunViewComponent implements OnInit {
     private testRunService: TestRunService,
     private route: ActivatedRoute,
     public userService: UserService,
-    private emailSettingService: EmailSettingsService
-  ) {
-  }
+    private emailSettingService: EmailSettingsService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.emailSettingService.getEmailsStatus().subscribe(res => {
@@ -153,5 +155,17 @@ export class TestRunViewComponent implements OnInit {
         this.testRunUpdate();
       });
     });
+  }
+
+  finalResultChartClick(result: FinalResult) {
+    this.router.navigate(
+      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      { queryParams: { f_final_result_opt: result.id } });
+  }
+
+  resolutionChartClick(resolution: ResultResolution) {
+    this.router.navigate(
+      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      { queryParams: { f_test_resolution_opt: resolution.id } });
   }
 }

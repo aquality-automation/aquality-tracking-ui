@@ -1,26 +1,12 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject, setProjectPermissions, prepareTest, prepareStep, addStepToTest } from '../project.hooks';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
 import { getClipboardText } from '../../utils/js.util';
-import { TestView } from '../../pages/test/test.po';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
-import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
+import { testView } from '../../pages/test/test.po';
 import { Step } from '../../../src/app/shared/models/steps';
 import { Test } from '../../../src/app/shared/models/test';
-import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
-
-const logIn = new LogIn();
-const projectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
-const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
-const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-const projectView = new ProjectView();
-const testView = new TestView();
+import { ProjectHelper } from '../../helpers/project.helper';
 
 const test: Test = { name: 'Project can be opened from Projects list' };
 const step2: Step = { name: 'I click project row', type_id: 2 };
@@ -47,36 +33,22 @@ const viewerScenario = (description: string) => `Scenario: ${test.name} ${descri
 \t${testView.steps.stepTypes.given} ${step1.name}`;
 
 describe('Test Steps:', () => {
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
+    const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager,
             viewer: usersTestData.viewer
-        });
-        await permissionsAdministration.sidebar.projectSettings();
-        await projectSettingsAdministration.setStepsForProject(project, { stepsState: true });
-        step1 = await prepareStep(step1, importToken, projectId);
-
-        return projectSettingsAdministration.menuBar.clickLogOut();
+        }, true);
+        step1 = await projectHelper.editorAPI.createStep(step1);
     });
 
     afterAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
@@ -85,10 +57,9 @@ describe('Test Steps:', () => {
             const customStep2 = { name: `I click project row ${description}`, type_id: 2 };
             const customStep3 = { name: `Project page is opened ${description}`, type_id: 3 };
             beforeAll(async () => {
-                customTest = await prepareTest(customTest, importToken, projectId);
-                await logIn.logIn(user.user_name, user.password);
-                await projectList.openProject(project.name);
-                await testView.navigateTo(projectId, customTest.id);
+                customTest = await projectHelper.editorAPI.createTest(customTest);
+                await logIn.logInAs(user.user_name, user.password);
+                await testView.navigateTo(projectHelper.project.id, customTest.id);
             });
 
             it('I can add existing step', async () => {
@@ -173,12 +144,11 @@ describe('Test Steps:', () => {
         describe(`Permissions: ${description} role:`, () => {
             let customTest: Test = { name: `Project can be opened from Projects list ${description}` };
             beforeAll(async () => {
-                customTest = await prepareTest(customTest, importToken, projectId);
-                await addStepToTest({step_id: step1.id, test_id: customTest.id, order: 1}, importToken, projectId);
+                customTest = await projectHelper.editorAPI.createTest(customTest);
+                await projectHelper.editorAPI.addStepToTest({step_id: step1.id, test_id: customTest.id, order: 1});
 
-                await logIn.logIn(user.user_name, user.password);
-                await projectList.openProject(project.name);
-                return testView.navigateTo(projectId, customTest.id);
+                await logIn.logInAs(user.user_name, user.password);
+                return testView.navigateTo(projectHelper.project.id, customTest.id);
             });
 
             it('I can see steps', async () => {

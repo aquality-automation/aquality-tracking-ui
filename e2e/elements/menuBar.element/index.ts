@@ -34,6 +34,10 @@ export class MenuBar {
         return new AuditsOptions();
     }
 
+    milestones() {
+        return element(by.id('Milestones')).click();
+    }
+
     async create() {
         await element(by.id('Create')).click();
         return new CreateOptions();

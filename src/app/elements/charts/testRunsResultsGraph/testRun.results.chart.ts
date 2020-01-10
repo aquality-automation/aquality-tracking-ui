@@ -161,8 +161,10 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
   }
 
   chartClicked(e: any) {
-    const datasetIndex = e.active[0]._datasetIndex;
-    const dataIndex = e.active[0]._index;
-    window.open(`#/project/${this.route.snapshot.params['projectId']}/testrun/${this.lineChartData[datasetIndex].data[dataIndex].ts.id}`);
+    if (e.active[0]) {
+      const datasetIndex = e.active[0]._datasetIndex;
+      const dataIndex = e.active[0]._index;
+      window.open(`#/project/${this.route.snapshot.params['projectId']}/testrun/${this.lineChartData[datasetIndex].data[dataIndex].ts.id}`);
+    }
   }
 }

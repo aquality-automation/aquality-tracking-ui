@@ -91,6 +91,12 @@ export class AppComponent {
           && this.projectId !== undefined,
         routerOptions: { exact: false }
       }, {
+        name: 'Milestones',
+        link: `/project/${this.projectId}/milestone`,
+        show: this.isLogged
+          && this.projectId !== undefined,
+        routerOptions: { exact: false }
+      }, {
         name: 'Tests',
         children: [{
           name: 'All',

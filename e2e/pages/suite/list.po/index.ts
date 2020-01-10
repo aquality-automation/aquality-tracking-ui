@@ -1,7 +1,7 @@
 import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 
-export class SuiteList extends BasePage {
+class SuiteList extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -45,3 +45,5 @@ export class SuiteList extends BasePage {
         return elements.testSuiteTable.editRow(newName, columns.name, oldName, columns.name);
     }
 }
+
+export const suiteList = new SuiteList();

@@ -2,7 +2,7 @@ import { elements, names } from './constants';
 import { BasePage } from '../../base.po';
 import { Milestone } from '../../../../src/app/shared/models/milestone';
 
-export class MilestoneCreate extends BasePage {
+class MilestoneCreate extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -20,3 +20,5 @@ export class MilestoneCreate extends BasePage {
         await elements.createButton.click();
     }
 }
+
+export const milestoneCreate = new MilestoneCreate();

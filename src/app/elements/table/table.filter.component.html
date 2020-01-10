@@ -19,7 +19,7 @@
                                 <button id="getSCV-Copy" mat-menu-item (click)="copyCSV()">Copy to Clipboard</button>
                             </mat-menu>
                             <button *ngIf="columnManagement && !allowCreate"
-                                class="btn btn-sm btn-default ft-header-button" title="Manage Columns"
+                                class="btn btn-sm btn-default ft-header-button manage-columns-opener" title="Manage Columns"
                                 (click)="manageColumns()"><span class="glyphicon glyphicon-th"></span></button>
                             <button *ngIf="allowRefresh" class="btn btn-sm ft-header-button ft-refresh"
                                 title="Refresh (double click to enable)" (click)="hitRefresh()"

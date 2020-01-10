@@ -1,11 +1,10 @@
-import { Component, Input, ViewChild, OnInit } from '@angular/core';
+import { Component, Input, ViewChild, OnInit, OnChanges, Output, EventEmitter } from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
 import { FinalResult } from '../../../shared/models/final-result';
 import { FinalResultService } from '../../../services/final_results.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'final-result-chart',
@@ -16,9 +15,10 @@ import { Router, ActivatedRoute } from '@angular/router';
     FinalResultService
   ]
 })
-export class FinalResultChartsComponent implements OnInit{
+export class FinalResultChartsComponent implements OnInit, OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
+  @Output() clickedResult = new EventEmitter<FinalResult>();
   public lineChartDataTest: Array<any>;
   doughnutChartType = 'doughnut';
   listOfFinalResults: FinalResult[];
@@ -37,18 +37,30 @@ export class FinalResultChartsComponent implements OnInit{
 
   constructor(
     private finalResultService: FinalResultService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
+  ) { }
 
-  }
-
-  async ngOnInit(){
+  async ngOnInit() {
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
     this.testResults = this.testResults.filter(x => x.debug === 0);
     this.fillChartData();
     this.fillChartLabels();
     this.fillChartColors();
+  }
+
+  ngOnChanges() {
+    if (this.listOfFinalResults) {
+      this.getData();
+    }
+  }
+
+  getData() {
+    this.fillChartData();
+    this.fillChartColors();
+    this.fillChartLabels();
+    if (this.chart && this.chart.chart && this.chart.chart.config) {
+      this.chart.chart.config.data.labels = this.doughnutChartLabels;
+      this.chart.chart.update();
+    }
   }
 
   fillChartLabels() {
@@ -95,12 +107,12 @@ export class FinalResultChartsComponent implements OnInit{
     this.chartColors = [{ backgroundColor: colors }];
   }
 
-  public chartClicked(e: any): void {
-    const dataIndex = e.active[0]._index;
-    const label: string = this.chart.labels[dataIndex].toString();
-    const clickedResult = this.listOfFinalResults.find(x => label.startsWith(x.name));
-    this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
-      { queryParams: { f_final_result_opt: clickedResult.id } });
+  public chartClicked(event: any): void {
+    if (event.active[0]) {
+      const dataIndex = event.active[0]._index;
+      const label: string = this.chart.labels[dataIndex].toString();
+      const clickedResult = this.listOfFinalResults.find(x => label.startsWith(x.name));
+      this.clickedResult.emit(clickedResult);
+    }
   }
 }

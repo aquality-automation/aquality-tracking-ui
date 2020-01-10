@@ -1,16 +1,14 @@
 import { browser } from 'protractor';
-import { baseUrl, elements, names, regexps, columns, pieChartClickSectionScript, results, resolutions } from './constants';
+import { baseUrl, elements, names, regexps, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { convertHoursTo24HourFormat, padYear } from './helpers';
 
-export class TestRunView extends BasePage {
+class TestRunView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
 
   public resultSearcher = elements.resultSearcher;
-  public results = results;
-  public resolutions = resolutions;
 
   navigateTo(projectId: number, testRunId: number) {
     return browser.get(baseUrl(projectId, testRunId));
@@ -64,12 +62,12 @@ export class TestRunView extends BasePage {
     return elements.resultsTable.rightClickCell(columns.failReason, failReason, columns.failReason);
   }
 
-  async clickResultPieChartSection(id: number) {
-    return browser.executeScript(pieChartClickSectionScript, elements.resultsChart, id);
+  async clickResultPassedChartSection() {
+    return elements.resultsChart.clickPassed();
   }
 
-  async clickResolutionPieChartSection(id: number) {
-    return browser.executeScript(pieChartClickSectionScript, elements.resolutionsChart, id);
+  async clickResolutionTestIssueChartSection() {
+    return elements.resolutionsChart.clickTestIssue();
   }
 
   async getStartTime() {
@@ -96,10 +94,6 @@ export class TestRunView extends BasePage {
     return this.resultsAreFiltered(columns.resolution, resolution);
   }
 
-  async getResultsCSV() {
-    return elements.resultsTable.getCSV();
-  }
-
   async resultsAreFiltered(column: string, value: string): Promise<boolean> {
     const isSelected = await elements.resultsTable.isFilterSelected(column, value);
     const isFiltered = await elements.resultsTable.isContainOnlyRowsWith(column, value);
@@ -115,4 +109,10 @@ export class TestRunView extends BasePage {
     const regexp = /\/testrun\/(\d+)/;
     return +(url.match(regexp)[1]);
   }
+
+  checkIfTableEqualToCSv(path: string) {
+    return elements.resultsTable.checkIfTableEqualToCSv(path);
+  }
 }
+
+export const testRunView = new TestRunView();

@@ -2,7 +2,7 @@ import { elements, names } from './constants';
 import { BasePage } from '../../base.po';
 import { Test } from '../../../../src/app/shared/models/test';
 
-export class TestCreate extends BasePage {
+class TestCreate extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -29,3 +29,5 @@ export class TestCreate extends BasePage {
         return this.clickCreate();
     }
 }
+
+export const testCreate = new TestCreate();

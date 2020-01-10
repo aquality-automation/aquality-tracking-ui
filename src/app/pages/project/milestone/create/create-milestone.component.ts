@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Milestone } from '../../../shared/models/milestone';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { MilestoneService } from '../../../services/milestones.service';
+import { Milestone } from '../../../../shared/models/milestone';
+import { SimpleRequester } from '../../../../services/simple-requester';
+import { MilestoneService } from '../../../../services/milestones.service';
 
 @Component({
   templateUrl: './create-milestone.component.html',

@@ -1,42 +1,24 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { SuiteCreate } from '../../pages/suite/create.po';
-import { TestRunCreate } from '../../pages/testrun/create.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { MilestoneCreate } from '../../pages/milestone/create.po';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { Project } from '../../../src/app/shared/models/project';
-
+import { logIn } from '../../pages/login.po';
+import { projectView } from '../../pages/project/view.po';
+import { suiteCreate } from '../../pages/suite/create.po';
+import { testRunCreate } from '../../pages/testrun/create.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { milestoneCreate } from '../../pages/milestone/create.po';
+import { testRunList } from '../../pages/testrun/list.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
 import milestones from '../../data/milestones.json';
 import testruns from '../../data/testRuns.json';
 import suites from '../../data/suites.json';
 
 describe('Full Admin Test Run', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectCreate = new ProjectCreate();
-    const projectView = new ProjectView();
-    const suiteCreate = new SuiteCreate();
-    const testRunCreate = new TestRunCreate();
-    const testRunView = new TestRunView();
-    const milestoneCreate = new MilestoneCreate();
-    const testRunList = new TestRunList();
     let startDateStore: Date;
-    const project: Project = projects.testrunProject;
-
-    beforeAll(() => {
-        logIn.navigateTo();
-    });
+    const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
-        await projectList.clickCreateProjectButton();
-        await projectCreate.createProject(project);
-        await projectList.openProject(projects.testrunProject.name);
+        await projectHelper.init();
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.openProject();
         await (await projectView.menuBar.create()).suite();
         await suiteCreate.createSuite(suites.testRunCreation);
         await (await projectView.menuBar.create()).milestone();
@@ -44,14 +26,11 @@ describe('Full Admin Test Run', () => {
     });
 
     afterAll(async () => {
-        await projectList.removeProject(projects.testrunProject.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHelper.dispose();
     });
 
     it('Test Run can be created without Milestone', async () => {
-        await projectView.menuBar.project(project.name);
+        await projectHelper.openProject();
         await (await projectView.menuBar.create()).testRun();
         await expect(testRunCreate.isCreateButtonEnabled()).toBe(false, 'Create button is enabled');
         await testRunCreate.fillBuildNameField(testruns.build1.build_name);
@@ -62,7 +41,7 @@ describe('Full Admin Test Run', () => {
     });
 
     it('Test Run can be created with Milestone', async () => {
-        await projectView.menuBar.project(project.name);
+        await projectHelper.openProject();
         await (await projectView.menuBar.create()).testRun();
         await testRunCreate.fillBuildNameField(testruns.build2.build_name);
         await testRunCreate.selectTestSuite(suites.testRunCreation.name);

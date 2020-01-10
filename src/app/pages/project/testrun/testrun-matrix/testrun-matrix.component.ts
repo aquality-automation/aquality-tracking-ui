@@ -81,7 +81,7 @@ export class TestrunMatrixComponent implements OnInit {
         this.tests = await this.testService.getTest({
             test_suite_id: this.selectedSuite.id,
             project_id: this.selectedSuite.project_id
-        }).toPromise();
+        });
         this.refreshDataToShow();
         this.refreshTable(this.showResolutions);
     }

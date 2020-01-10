@@ -1,58 +1,38 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { Matrix } from '../../pages/testrun/matrix.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject, executeCucumberImport, generateBuilds } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { testData } from '../../utils/testData.util';
-import { compareCSVStrings } from '../../utils/csv.util';
+import { logIn } from '../../pages/login.po';
+import { matrix } from '../../pages/testrun/matrix.po';
+import { testRunList } from '../../pages/testrun/list.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
-import { TestRunView } from '../../pages/testrun/view.po';
 
 describe('Test Run Matrix', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunList = new TestRunList();
-    const testRunView = new TestRunView();
-    const matrix = new Matrix();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
-    const builds = generateBuilds(6);
+    const projectHepler: ProjectHelper = new ProjectHelper();
+    const builds = projectHepler.generateBuilds(6);
     const imports =
     [
-        JSON.stringify(cucumberImport),
-        JSON.stringify(cucumberImport),
-        JSON.stringify(cucumberImport),
-        JSON.stringify(cucumberImport),
-        JSON.stringify(cucumberImport),
-        JSON.stringify(cucumberImport)
+        cucumberImport,
+        cucumberImport,
+        cucumberImport,
+        cucumberImport,
+        cucumberImport,
+        cucumberImport
     ];
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await executeCucumberImport(projectId, 'Test', importToken, imports, builds.filenames);
-        await projectView.menuBar.testRuns();
-        const isTestRunAppear = await testRunList.waitForTestRun(builds.names.build_6);
-        expect(isTestRunAppear).toBe(true, 'Imports were not finished!');
+        await projectHepler.init();
+        await projectHepler.importer.executeCucumberImport('Test', imports, builds.filenames);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHepler.openProject();
     });
 
     afterAll(async () => {
-        await projectList.removeProject(project.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHepler.dispose();
     });
 
     it('Can Open Matrix Page', async () => {
+        await testRunList.menuBar.testRuns();
         await testRunList.clickSuiteMatrix();
         return expect(matrix.isOpened()).toBe(true, 'Matrix page was not opened!');
     });
@@ -77,13 +57,9 @@ describe('Test Run Matrix', () => {
 
     it('Search can be executed without selecting Label (Show Resolution)', async () => {
         await matrix.clickShow();
-        const actualTableCSV = await matrix.getCSV();
-        const expectedTableCSV = await testData.readAsString('/matrixTable/allShowResolution.csv');
-        const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await matrix.checkIfTableEqualToCSv('/matrixTable/allShowResolution.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
     it('Show Resolution is selected by default', async () => {
@@ -92,38 +68,26 @@ describe('Test Run Matrix', () => {
 
     it('Results are changed when Show Resolution is changed (Show Result)', async () => {
         await matrix.swithOffShowResolution();
-        const actualTableCSV = await matrix.getCSV();
-        const expectedTableCSV = await testData.readAsString('/matrixTable/allShowResults.csv');
-        const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await matrix.checkIfTableEqualToCSv('/matrixTable/allShowResults.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
     it('Search can be executed with Result Number filter (5) (Show Result)', async () => {
         await matrix.setResultsNumberLookupValue('5');
         await matrix.clickShow();
-        const actualTableCSV = await matrix.getCSV();
-        const expectedTableCSV = await testData.readAsString('/matrixTable/5ShowResults.csv');
-        const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await matrix.checkIfTableEqualToCSv('/matrixTable/5ShowResults.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
     it('Search can be executed with Label filter (Manual) (Show Result)', async () => {
         await matrix.setResultsNumberLookupValue('All');
         await matrix.setLabelLookupValue('Manual');
         await matrix.clickShow();
-        const actualTableCSV = await matrix.getCSV();
-        const expectedTableCSV = await testData.readAsString('/matrixTable/allManual.csv');
-        const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`);
-        expect(comparisonResult.missedFromActual.length)
-            .toBe(0, `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`);
+
+        const tableComparisonResult = await matrix.checkIfTableEqualToCSv('/matrixTable/allManual.csv');
+        return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
     it('Test Run can be opened by rightclick header', async () => {

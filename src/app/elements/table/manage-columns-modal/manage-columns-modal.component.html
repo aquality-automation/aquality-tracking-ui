@@ -15,13 +15,13 @@
             <div class="col-sm-12 modal-message">
                 <div class="col-sm-6 me-padding-left-3">Do not Show:</div>
                 <div class="col-sm-6">Show:</div>
-                <div class="no-padding clearfix me-drop-parent pull-left">
+                <div id="hidden-columns" class="no-padding clearfix me-drop-parent pull-left">
                     <ul class="col-sm-12 no-padding me-droppable mc-can-be-empty" [dragula]="'cols-bag'"
                         [dragulaModel]='newHiddenColumns'>
                         <li class="me-draggable" *ngFor="let hcol of newHiddenColumns">{{hcol.name}}</li>
                     </ul>
                 </div>
-                <div class="no-padding clearfix me-drop-parent pull-right">
+                <div id="shown-columns" class="no-padding clearfix me-drop-parent pull-right">
                     <ul class="col-sm-12 no-padding me-droppable" [dragula]="'cols-bag'"
                         [dragulaModel]='newShownColumns'>
                         <li [ngClass]="{ 

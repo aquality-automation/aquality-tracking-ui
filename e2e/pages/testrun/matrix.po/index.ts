@@ -2,7 +2,7 @@ import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { browser } from 'protractor';
 
-export class Matrix extends BasePage {
+class Matrix extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -31,16 +31,16 @@ export class Matrix extends BasePage {
         return elements.showButton.click();
     }
 
-    getCSV() {
-        return elements.testRunsTable.getCSV();
-    }
-
     isShowResolutionSelected() {
         return elements.resolutionSwitch.isOn();
     }
 
     swithOffShowResolution() {
         return elements.resolutionSwitch.switchOff();
+    }
+
+    checkIfTableEqualToCSv(path: string) {
+        return elements.testRunsTable.checkIfTableEqualToCSv(path);
     }
 
     async rightClickTestRunHeader(columnName: string) {
@@ -58,3 +58,5 @@ export class Matrix extends BasePage {
         return +columnName.split(' | ')[0];
     }
 }
+
+export const matrix = new Matrix();

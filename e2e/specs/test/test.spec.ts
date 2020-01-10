@@ -1,56 +1,29 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject, executeCucumberImport, generateBuilds } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
-import { SuiteView } from '../../pages/suite/view.po';
-import { TestView } from '../../pages/test/test.po';
+import { logIn } from '../../pages/login.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { suiteView } from '../../pages/suite/view.po';
+import { testView } from '../../pages/test/test.po';
 import { browser } from 'protractor';
 
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
+import { ProjectHelper } from '../../helpers/project.helper';
 
 describe('Test', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
-    const suiteView = new SuiteView();
-    const testView = new TestView();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
-    const builds = generateBuilds(2);
+    const projectHelper: ProjectHelper = new ProjectHelper();
+    const builds = projectHelper.generateBuilds(2);
     const suites = { suite_1: 'Test Suite 1', suite_2: 'Test Suite 2' };
     const testName = 'Test Feature with all results: step failed';
 
-    const executeImport = async (suite: string, buildIndex: number) => {
-        await executeCucumberImport(projectId, suite,
-            importToken, [JSON.stringify(cucumberImport)], [builds.filenames[buildIndex]]);
-        await projectView.menuBar.testRuns();
-        const isTestRunAppear = await testRunList.waitForTestRun(builds.names[`build_${buildIndex + 1}`]);
-        expect(isTestRunAppear).toBe(true, 'Import was not finished!');
-    };
-
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await executeImport(suites.suite_1, 0);
-        return executeImport(suites.suite_2, 1);
+        await projectHelper.init();
+        await projectHelper.importer.executeCucumberImport(suites.suite_1, [cucumberImport], [builds.filenames[0]]);
+        await projectHelper.importer.executeCucumberImport(suites.suite_2, [cucumberImport], [builds.filenames[1]]);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.openProject();
     });
 
     afterAll(async () => {
-        await suiteView.menuBar.clickLogo();
-        await projectList.removeProject(project.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHelper.dispose();
     });
 
     it('Can see all Suites assigned to test', async () => {

@@ -133,10 +133,10 @@
   </div>
   <div class="row">
     <div class="col-sm-6" *ngIf="testResults?.length">
-      <final-result-chart [testResults]="testResults">Loading...</final-result-chart>
+      <final-result-chart [testResults]="testResults" (clickedResult)="finalResultChartClick($event)">Loading...</final-result-chart>
     </div>
     <div class="col-sm-6" *ngIf="testResults?.length">
-      <result-resolution-chart [testResults]="testResults">Loading...</result-resolution-chart>
+      <result-resolution-chart [testResults]="testResults" (clickedResult)="resolutionChartClick($event)">Loading...</result-resolution-chart>
     </div>
   </div>
   <div class="row" *ngIf="testResults?.length">

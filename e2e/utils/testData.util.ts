@@ -89,12 +89,13 @@ class TestData {
      * @return {Promise<boolean>} promise resolving into true is file exists
      */
     async waitUntilFileExists(pathFromDataFolder: string, filter: string): Promise<boolean> {
-        return waiter.forTrue(() => {
-            const files = this.findFilesInDir(pathFromDataFolder, filter);
-            const count = files ? files.length : 0;
-            logger.info(`Files in download folder: ${count}`);
-            return count > 0;
-        }, 10, 500);
+        const isFileExist = async () => {
+                const files = this.findFilesInDir(pathFromDataFolder, filter);
+                const count = files ? files.length : 0;
+                logger.info(`Files in download folder: ${count}`);
+                return count > 0;
+        };
+        return waiter.forTrue(isFileExist, 10, 500);
     }
 
     /**

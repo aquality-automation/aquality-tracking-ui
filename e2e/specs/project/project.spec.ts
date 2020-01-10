@@ -1,27 +1,22 @@
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { LogIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { projectView } from '../../pages/project/view.po';
+import { projectCreate } from '../../pages/project/create.po';
+import { logIn } from '../../pages/login.po';
 import { Project } from '../../../src/app/shared/models/project';
 
 import users from '../../data/users.json';
 import projects from '../../data/projects.json';
 
 describe('Full Admin Project', () => {
-
-  const projectList: ProjectList = new ProjectList();
-  const projectView: ProjectView = new ProjectView();
-  const projectCreate: ProjectCreate = new ProjectCreate();
-  const logInPage: LogIn = new LogIn();
   const project: Project = projects.creation;
 
   beforeAll(() => {
-    return logInPage.logIn(users.admin.user_name, users.admin.password);
+    return logIn.logInAs(users.admin.user_name, users.admin.password);
   });
 
   afterAll(async () => {
-    if (await logInPage.menuBar.isLogged()) {
-      return logInPage.menuBar.clickLogOut();
+    if (await logIn.menuBar.isLogged()) {
+      return logIn.menuBar.clickLogOut();
     }
   });
 

@@ -1,99 +1,82 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectCreate } from '../../pages/project/create.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { SuiteList } from '../../pages/suite/list.po';
-import { Project } from '../../../src/app/shared/models/project';
+import { logIn } from '../../pages/login.po';
+import { projectView } from '../../pages/project/view.po';
+import { suiteList } from '../../pages/suite/list.po';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
-
+import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
 import suites from '../../data/suites.json';
 import { browser } from 'protractor';
-import { SuiteView } from '../../pages/suite/view.po';
+import { suiteView } from '../../pages/suite/view.po';
 
 describe('Full Admin Test Suite List', () => {
-
-  const logIn: LogIn = new LogIn();
-  const projectCreate: ProjectCreate = new ProjectCreate();
-  const projectList: ProjectList = new ProjectList();
-  const projectView: ProjectView = new ProjectView();
-  const testSuiteList: SuiteList = new SuiteList();
-  const testSuiteView: SuiteView = new SuiteView();
-  const project: Project = projects.suiteProject;
+  const projectHelper: ProjectHelper = new ProjectHelper();
   const suite: TestSuite = suites.suiteCreation;
 
   beforeAll(async () => {
-    await logIn.logIn(users.admin.user_name, users.admin.password);
-    await projectList.clickCreateProjectButton();
-    await projectCreate.createProject(project);
-    await projectList.openProject(project.name);
+    await projectHelper.init();
+    await logIn.logInAs(users.admin.user_name, users.admin.password);
+    await projectHelper.openProject();
   });
 
   afterAll(async () => {
-    await projectList.navigateTo();
-    await projectList.clickRemoveProjectButton(project.name);
-    await projectList.modal.clickYes();
-    if (await projectList.menuBar.isLogged()) {
-      return projectList.menuBar.clickLogOut();
-    }
+    await projectHelper.dispose();
   });
 
   it('The error message exists for not filled creation row', async () => {
     await (await projectView.menuBar.tests()).suites();
-    await testSuiteList.openCreationRow();
-    return expect(testSuiteList.getCreationError()).toEqual('Fill all required fields');
+    await suiteList.openCreationRow();
+    return expect(suiteList.getCreationError()).toEqual('Fill all required fields');
   });
 
   it('No error messages when suite name is filled', async () => {
-    await testSuiteList.setCreationName(suite.name);
-    return expect(testSuiteList.getCreationError()).toEqual('');
+    await suiteList.setCreationName(suite.name);
+    return expect(suiteList.getCreationError()).toEqual('');
   });
 
   it('Green notification appears and suite is created', async () => {
-    await testSuiteList.acceptCreation();
-    await expect(testSuiteList.notification.isSuccess()).toEqual(true);
-    await expect(testSuiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was created!`);
-    await expect(testSuiteList.isTestSuitePresent(suite.name)).toEqual(true);
-    await testSuiteList.notification.close();
+    await suiteList.acceptCreation();
+    await expect(suiteList.notification.isSuccess()).toEqual(true);
+    await expect(suiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was created!`);
+    await expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
+    await suiteList.notification.close();
   });
 
   it('Green notification appears and suite is updated', async () => {
     const newName = `${suite.name} New`;
-    await testSuiteList.updateSuiteName(newName, suite.name);
+    await suiteList.updateSuiteName(newName, suite.name);
     suite.name = newName;
-    await expect(testSuiteList.notification.isSuccess()).toEqual(true);
-    await expect(testSuiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was updated!`);
-    await expect(testSuiteList.isTestSuitePresent(suite.name)).toEqual(true);
-    await testSuiteList.notification.close();
+    await expect(suiteList.notification.isSuccess()).toEqual(true);
+    await expect(suiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was updated!`);
+    await expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
+    await suiteList.notification.close();
   });
 
   it('Suite is still updated after refresh', async () => {
     await browser.refresh();
-    await expect(testSuiteList.isTestSuitePresent(suite.name)).toEqual(true);
+    await expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
   });
 
   it('Suite with same name cannot be created', async () => {
-    await testSuiteList.openCreationRow();
-    await testSuiteList.setCreationName(suite.name);
-    await testSuiteList.acceptCreation();
-    await expect(testSuiteList.notification.isError()).toEqual(true);
-    await expect(testSuiteList.notification.getContent()).toEqual(`You are trying to create duplicate entity.`);
-    await testSuiteList.notification.close();
+    await suiteList.openCreationRow();
+    await suiteList.setCreationName(suite.name);
+    await suiteList.acceptCreation();
+    await expect(suiteList.notification.isError()).toEqual(true);
+    await expect(suiteList.notification.getContent()).toEqual(`You are trying to create duplicate entity.`);
+    await suiteList.notification.close();
   });
 
   it('Suite should be opened after click on row', async () => {
-    await testSuiteList.clickTestSuite(suite.name);
-    return expect(testSuiteView.getNameOfLabelTestSuite()).toEqual(suite.name);
+    await suiteList.clickTestSuite(suite.name);
+    return expect(suiteView.getNameOfLabelTestSuite()).toEqual(suite.name);
   });
 
   it('I can Remove Test Suite', async () => {
-    await (await testSuiteView.menuBar.tests()).suites();
-    await testSuiteList.clickRemoveSuiteButton(suite.name);
-    await expect(testSuiteList.modal.isVisible()).toBe(true, 'Remove Test Run modal is not opened');
-    await testSuiteList.modal.clickYes();
-    await testSuiteList.refresh();
-    await expect(testSuiteList.isTestSuitePresent(suite.name)).toBe(false,
+    await (await suiteView.menuBar.tests()).suites();
+    await suiteList.clickRemoveSuiteButton(suite.name);
+    await expect(suiteList.modal.isVisible()).toBe(true, 'Remove Test Run modal is not opened');
+    await suiteList.modal.clickYes();
+    await suiteList.refresh();
+    await expect(suiteList.isTestSuitePresent(suite.name)).toBe(false,
       `Suite ${suite.name} is still displayed`);
   });
 });

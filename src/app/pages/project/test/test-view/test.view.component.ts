@@ -66,7 +66,7 @@ export class TestViewComponent implements OnInit {
         id: params['testId']
       };
 
-      this.testService.getTest(this.test, true).subscribe(result => {
+      this.testService.getTest(this.test, true).then(result => {
         this.userService.getProjectUsers(this.route.snapshot.params['projectId'])
           .subscribe(res => {
             this.users = res;
@@ -101,7 +101,7 @@ export class TestViewComponent implements OnInit {
   }
 
   moveTestOpen() {
-    this.testService.getTest({ project_id: this.test.project_id }).subscribe(res => {
+    this.testService.getTest({ project_id: this.test.project_id }).then(res => {
       this.tests = res;
       this.hideMoveModal = false;
     });

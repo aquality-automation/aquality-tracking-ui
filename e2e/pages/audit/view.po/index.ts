@@ -2,15 +2,13 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names, statuses } from './constants';
 import { BasePage } from '../../base.po';
 import { User } from '../../../../src/app/shared/models/user';
-import { ProjectList } from '../../project/list.po';
-import { ProjectAudits } from '../project.list.po';
+import { projectList } from '../../project/list.po';
+import { projectAudits } from '../project.list.po';
 
-export class AuditInfo extends BasePage {
+class AuditInfo extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
-    private projectsList: ProjectList = new ProjectList();
-    private projectAudits: ProjectAudits = new ProjectAudits();
 
     statuses = statuses;
 
@@ -20,9 +18,9 @@ export class AuditInfo extends BasePage {
 
     async open(projectName: string, status: string) {
         await this.menuBar.clickLogo();
-        await this.projectsList.openProject(projectName);
-        await(await this.projectsList.menuBar.audits()).project();
-        return this.projectAudits.openAudit(status);
+        await projectList.openProject(projectName);
+        await(await projectList.menuBar.audits()).project();
+        return projectAudits.openAudit(status);
     }
 
     selectService(name: string) {
@@ -97,3 +95,5 @@ export class AuditInfo extends BasePage {
         return elements.submit.isPresent();
     }
 }
+
+export const auditInfo = new AuditInfo();

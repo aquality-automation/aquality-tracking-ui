@@ -1,11 +1,10 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions } from '../project.hooks';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
-import { NotFound } from '../../pages/notFound.po';
-
+import { userAdministration } from '../../pages/administration/users.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
+import { notFound } from '../../pages/notFound.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
@@ -22,46 +21,34 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
-    const logInPage: LogIn = new LogIn();
-    const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
-    const notFound: NotFound = new NotFound();
-
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        await (await projectsList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager
         });
-        return permissionsAdministration.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectsList.isOpened();
-        await projectsList.removeProject(project.name);
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             const tempUser = usersTestData.projectTemp;
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
-                await projectsList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                await projectHelper.openProject();
             });
 
             it('I can open Permissions page', async () => {
-                await (await projectsList.menuBar.user()).administration();
+                await (await projectList.menuBar.user()).administration();
                 await userAdministration.sidebar.permissions();
                 return expect(permissionsAdministration.isOpened()).toBe(true, `Permissions page is not opened for ${description}`);
             });
@@ -125,12 +112,12 @@ describe('Administartion:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
-                return projectsList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                return projectHelper.openProject();
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                return expect((await projectsList.menuBar.user()).isAdministrationExists())
+                return expect((await projectList.menuBar.user()).isAdministrationExists())
                     .toBe(false, `Administartion should not be visible for ${description}`);
             });
 
