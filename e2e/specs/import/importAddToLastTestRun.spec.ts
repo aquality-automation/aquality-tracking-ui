@@ -73,7 +73,7 @@ describe('Import Test Run: Add to Last Testrun', () => {
         await projectHelper.importer.executeCucumberImport(api.suiteName, [cucumberImport], [`${api.buildName}.json`]);
         await expect(importPage.waitForNewImportResult(lastImportDate)).toBe(true, 'Cucumber was not imported as first test run');
         lastImportDate = await importPage.getLatestImportedTestRunDate();
-        projectHelper.importer.executeImport({
+        await projectHelper.importer.executeImport({
             suite: api.suiteName,
             format: ImportFormats.msTest,
             addToLastTestRun: true,
