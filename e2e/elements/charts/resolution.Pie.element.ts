@@ -1,8 +1,8 @@
 import { Locator, ElementFinder } from 'protractor';
 import { PieChartBase, PieChartSections } from './pieBase.element';
-import allResolutions from '../../data/resolutions.json';
+import allLookupOptions from '../../data/lookupOptions.json';
 
-const resolutions: PieChartSections = allResolutions.global;
+const lookupOptions: PieChartSections = allLookupOptions.global;
 
 export class ResolutionPieChart extends PieChartBase {
     constructor(locator: Locator | ElementFinder) {
@@ -10,10 +10,10 @@ export class ResolutionPieChart extends PieChartBase {
     }
 
     public clickNotAssigned() {
-        return this.clickChartSection(resolutions.notAssigned);
+        return this.clickChartSection(lookupOptions.notAssigned);
     }
 
     public clickTestIssue() {
-        return this.clickChartSection(resolutions.testIssue);
+        return this.clickChartSection(lookupOptions.testIssue);
     }
 }

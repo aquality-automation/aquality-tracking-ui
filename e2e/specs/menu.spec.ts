@@ -6,10 +6,6 @@ import { browser } from 'protractor';
 describe('Report an Issue', () => {
     const githubUrl = 'https://github.com/aquality-automation/aquality-tracking/issues';
 
-    beforeAll(() => {
-        logIn.navigateTo();
-    });
-
     beforeAll(async () => {
         await logIn.logInAs(users.admin.user_name, users.admin.password);
     });

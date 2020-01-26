@@ -67,6 +67,10 @@ export class ProjectHelper {
         await logIn.logInAs(this.admin.user_name, this.admin.password);
         await projectList.isOpened();
         await projectList.removeProject(this.project.name);
+        await logIn.menuBar.clickLogo();
+        if (await logIn.menuBar.isLogged()) {
+            await logIn.menuBar.clickLogOut();
+        }
     }
 
     public generateBuilds = (count: number): { names: any, filenames: string[] } => {
