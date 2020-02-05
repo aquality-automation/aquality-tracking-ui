@@ -325,11 +325,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   getLookupFilterValue(col: any) {
     const filter = this.appliedFilters.find(x => {
-      if (col.objectWithId) {
-        return x.property === col.objectWithId;
+      if (col.lookup.objectWithId) {
+        return x.property === col.lookup.objectWithId;
       }
-      if (col.entity) {
-        return x.property === col.entity;
+      if (col.lookup.entity) {
+        return x.property === col.lookup.entity;
       }
       return x.property === col.property;
     });

@@ -3,7 +3,7 @@ import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { userAdministration } from '../../pages/administration/users.po';
 import { permissionsAdministration } from '../../pages/administration/permissions.po';
-import { notFound } from '../../pages/notFound.po';
+import { predefinedResolutions } from '../../pages/administration/predefinedResolutions.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
@@ -109,14 +109,15 @@ describe('Administartion:', () => {
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                return expect((await projectList.menuBar.user()).isAdministrationExists())
-                    .toBe(false, `Administartion should not be visible for ${description}`);
+                await (await projectList.menuBar.user()).administration();
+                return expect(permissionsAdministration.sidebar.isPermissionsExist())
+                    .toBe(false, `Permissions should not be visible for ${description}`);
             });
 
             it('I can not Open Permissions page using url', async () => {
                 await permissionsAdministration.navigateTo();
                 await expect(permissionsAdministration.isOpened()).toBe(false, `Permissions page is opened for ${description}`);
-                return expect(notFound.isOpened()).toBe(true, `404 page is not opened for ${description}`);
+                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
             });
         });
     });

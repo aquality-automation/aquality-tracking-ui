@@ -65,5 +65,6 @@ export enum TFColumnType {
     button = 'button',
     selector = 'selector',
     date = 'date',
-    link = 'link'
+    link = 'link',
+    file = 'file'
 }
