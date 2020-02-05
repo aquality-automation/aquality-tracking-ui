@@ -10,12 +10,13 @@ export class BasePage {
     private uniqueElement: ElementFinder;
     private pageName: string;
     public menuBar: MenuBar = new MenuBar();
-    public notification: Notification = new Notification();
+    public notification: Notification;
     public modal: Modal = new Modal();
 
     constructor(uniqueElement: ElementFinder, pageName: string) {
         this.uniqueElement = uniqueElement;
         this.pageName = pageName;
+        this.notification = new Notification(this.pageName);
     }
 
     async isOpened() {
