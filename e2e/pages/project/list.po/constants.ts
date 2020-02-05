@@ -10,7 +10,7 @@ export const elements = {
 };
 
 export const names = {
-  pageName: 'Product List Page'
+  pageName: 'Project List Page'
 };
 
 export const columns = {
