@@ -38,7 +38,7 @@ describe('Tests List:', () => {
     });
 
     afterAll(async () => {
-        projectHelper.dispose();
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {

@@ -1,28 +1,33 @@
 {
-    "flowTest": {
-        "name": "Auto Flow Test",
-        "color": "Danger"
-    },
     "global": {
+        "none":{
+            "name": "None",
+            "index": -1
+        },
         "notAssigned": {
             "name": "Not Assigned",
-            "color": "Primary"
+            "color": "Primary",
+            "index": 0
         },
         "appIssue":{
             "name": "Application Issue",
-            "color": "Danger"
+            "color": "Danger",
+            "index": 1
         },
         "environmentIssue":{
             "name": "Environment Issue",
-            "color": "Warning"
+            "color": "Warning",
+            "index": 2
         },
         "testIssue":{
             "name": "Test Issue",
-            "color": "Warning"
+            "color": "Warning",
+            "index": 3
         },
         "testDesignIssue": {
             "name": "Test Design Issue",
-            "color": "Warning"
+            "color": "Warning",
+            "index": 4
         }
     }
 }
