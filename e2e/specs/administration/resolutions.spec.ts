@@ -64,7 +64,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
             await testResultView.waitForIsOpened();
             await testResultView.setResolution(resolution.name);
             await testResultView.saveResult();
-            return expect(testResultView.notification.isSuccess()).toBe(true);
+            return testResultView.notification.assertIsSuccess();
         });
 
         it('I can not select created resolution on test run view Resolution for other projects', async () => {

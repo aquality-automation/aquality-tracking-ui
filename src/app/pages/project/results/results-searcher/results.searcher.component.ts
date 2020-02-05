@@ -7,6 +7,7 @@ import { ResultResolutionService } from '../../../../services/result-resolution.
 import { UserService } from '../../../../services/user.services';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { FinalResult } from '../../../../shared/models/final-result';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   selector: 'results-searcher',
@@ -37,7 +38,7 @@ export class ResultSearcherComponent {
   testResults: TestResult[];
   toggledOn = 'out';
   failReasonSearch = '';
-  tbCols: any[];
+  tbCols: TFColumn[];
   isRegexSearch = false;
   limit = 10;
   pendingSearch = false;
@@ -59,15 +60,14 @@ export class ResultSearcherComponent {
   async getResults() {
     this.pendingSearch = true;
     this.tbCols = [
-      { name: 'Started', property: 'start_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-      { name: 'Test Name', property: 'test.name', filter: true, sorting: true, type: 'text', editable: false },
+      { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      { name: 'Test Name', property: 'test.name', filter: true, sorting: true, type: TFColumnType.text },
       {
         name: 'Fail Reason',
         property: 'fail_reason',
         filter: true,
         sorting: true,
-        type: 'long-text',
-        editable: false,
+        type: TFColumnType.longtext,
         listeners: ['contextmenu'],
         class: 'ft-width-500'
       },
@@ -76,10 +76,12 @@ export class ResultSearcherComponent {
         property: 'final_result.name',
         filter: true,
         sorting: true,
-        type: 'lookup-colored',
-        entity: 'final_result',
-        values: this.finalResults,
-        editable: false,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'final_result',
+          values: this.finalResults,
+          propToShow: ['name']
+        },
         class: 'fit'
       },
       {
@@ -87,14 +89,15 @@ export class ResultSearcherComponent {
         property: 'test_resolution.name',
         filter: true,
         sorting: true,
-        type: 'lookup-colored',
-        entity: 'test_resolution',
-        allowEmpty: false,
-        values: this.listOfResolutions,
-        editable: false,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'test_resolution',
+          values: this.listOfResolutions,
+          propToShow: ['name']
+        },
         class: 'fit'
       },
-      { name: 'Comment', property: 'comment', filter: true, sorting: false, type: 'text', editable: false, class: 'ft-width-250' }
+      { name: 'Comment', property: 'comment', filter: true, type: TFColumnType.text, class: 'ft-width-250' }
     ];
     if (this.failReasonSearch.length > 150) {
       this.failReasonSearch = this.failReasonSearch.slice(0, 150);

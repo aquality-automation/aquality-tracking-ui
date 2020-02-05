@@ -2,9 +2,11 @@ import { by, element } from 'protractor';
 import { BaseElement } from './base.element';
 
 export class Notification extends BaseElement {
+    private pageName: string;
 
-    constructor() {
+    constructor(pageName: string) {
         super(by.tagName('simple-notification'));
+        this.pageName = pageName;
     }
 
     async isError() {
@@ -29,6 +31,28 @@ export class Notification extends BaseElement {
 
     close() {
         return this.getContainer().click();
+    }
+
+    assertIsSuccess(message?: string, header?: string) {
+        return this.assert('success', message, header);
+    }
+
+    assertIsError(message?: string, header?: string) {
+        return this.assert('error', message, header);
+    }
+
+    private async assert(type: string, message?: string, header?: string) {
+        await expect(type === 'error' ? this.isError() : type === 'success' ? this.isSuccess() : false)
+            .toBe(true, `${this.pageName}: No Success notification message!`);
+        if (message) {
+            await expect(this.getContent())
+                .toBe(message, `${this.pageName}: Notification message is wrong!`);
+        }
+        if (header) {
+            await expect(this.getHeader())
+                .toEqual(header);
+        }
+        await this.close();
     }
 
     private getContainer() {

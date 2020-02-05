@@ -3,6 +3,7 @@ import { StepsService } from '../../../../services/steps.service';
 import { Step, StepType } from '../../../../shared/models/steps';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.services';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   selector: 'app-steps-list',
@@ -21,7 +22,7 @@ export class StepsListComponent implements OnInit {
   public stepTypes: StepType[];
   public allowDelete = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
   public allowCreate = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
-  public columns: any[];
+  public columns: TFColumn[];
 
   async ngOnInit() {
     this.stepTypes = await this.stepService.getStepTypes({});
@@ -61,28 +62,36 @@ export class StepsListComponent implements OnInit {
     return steps;
   }
 
-  private getСolumns() {
+  private getСolumns(): TFColumn[] {
     return [
       {
         name: 'Type',
         property: 'type',
         filter: true,
         sorting: true,
-        type: 'lookup-autocomplete',
-        propToShow: ['name'],
-        entity: 'type',
-        values: this.stepTypes,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          entity: 'type',
+          propToShow: ['name'],
+          values: this.stepTypes,
+        },
         editable: this.allowCreate,
-        class: 'fit'
+        class: 'fit',
+        creation: {
+          required: true
+        }
       },
       {
         name: 'Name',
         property: 'name',
         filter: true,
         sorting: true,
-        type: 'text',
+        type: TFColumnType.text,
         editable: this.allowCreate,
-        creationLength: '500'
+        creation: {
+          creationLength: 500,
+          required: true
+        }
       },
     ];
   }

@@ -17,6 +17,7 @@ import { TransformationsService } from '../../../../services/transformations.ser
 import { ResultResolutionsChartsComponent } from '../../../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { FinalResultChartsComponent } from '../../../../elements/charts/finalResults/finalResults.charts.component';
 import { TestSuiteService } from '../../../../services/testSuite.service';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './view-milestone.component.html',
@@ -48,7 +49,7 @@ export class ViewMilestoneComponent implements OnInit {
   latestResults: TestResult[];
   suites: TestSuite[];
   tests: Test[];
-  columns: any[];
+  columns: TFColumn[];
   stackSuites = false;
   sortBy = { order: 'desc', property: 'result.final_result.name' };
 
@@ -171,23 +172,49 @@ export class ViewMilestoneComponent implements OnInit {
     );
   }
 
-  private getColumns() {
+  private getColumns(): TFColumn[] {
     return [
-      { name: 'Test', property: 'testName', filter: true, sorting: true, type: 'text', editable: false, class: 'ft-width-150' },
+      { name: 'Test', property: 'testName', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-150' },
       {
-        name: 'Test Suite', property: 'suite.name', filter: true, sorting: true, type: 'lookup-autocomplete', entity: 'suite',
-        propToShow: ['name'], values: this.suites, class: 'fit'
+        name: 'Test Suite', property: 'suite.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          entity: 'suite',
+          propToShow: ['name'],
+          values: this.suites
+        },
+        class: 'fit'
       },
       {
-        name: 'Result', property: 'result.final_result.name', filter: true, sorting: true, type: 'lookup-colored',
-        entity: 'result.final_result', values: this.finalResults, class: 'fit'
+        name: 'Result',
+        property: 'result.final_result.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'result.final_result',
+          values: this.finalResults,
+          propToShow: ['name']
+        },
+        class: 'fit'
       },
       {
-        name: 'Resolution', property: 'test_resolution.name', filter: true, sorting: true, type: 'lookup-colored',
-        entity: 'result.test_resolution', values: this.resolutions, class: 'fit'
+        name: 'Resolution',
+        property: 'test_resolution.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'result.test_resolution',
+          values: this.resolutions,
+          propToShow: ['name']
+        },
+        class: 'fit'
       },
-      { name: 'Comment', property: 'result.comment', filter: true, type: 'text', class: 'ft-width-150' },
-      { name: 'Finished', property: 'result.finish_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' }
+      { name: 'Comment', property: 'result.comment', filter: true, type: TFColumnType.text, class: 'ft-width-150' },
+      { name: 'Finished', property: 'result.finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' }
     ];
   }
 

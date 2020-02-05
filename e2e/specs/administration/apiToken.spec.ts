@@ -1,11 +1,9 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { Project } from '../../../src/app/shared/models/project';
 import { notFound } from '../../pages/notFound.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
-import projects from '../../data/projects.json';
 import { userAdministration } from '../../pages/administration/users.po';
 import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
 
@@ -22,8 +20,6 @@ const notEditorExamples = {
 
 describe('API Token:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -51,7 +47,7 @@ describe('API Token:', () => {
             });
 
             it('I can generate API Token ', async () => {
-                await apiTokenAdministration.selectProject(project.name);
+                await apiTokenAdministration.selectProject(projectHelper.project.name);
                 await apiTokenAdministration.clickGenerateToken();
                 await expect(apiTokenAdministration.isModalOpened()).toBe(true, 'Confirmation Modal is Missed!');
                 await apiTokenAdministration.acceptModal();
@@ -67,7 +63,7 @@ describe('API Token:', () => {
             });
 
             it('I can regenerate API Token', async () => {
-                await apiTokenAdministration.selectProject(project.name);
+                await apiTokenAdministration.selectProject(projectHelper.project.name);
                 await apiTokenAdministration.clickGenerateToken();
                 await apiTokenAdministration.acceptModal();
                 const regexpr = /[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{25}/;

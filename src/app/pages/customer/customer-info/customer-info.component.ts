@@ -8,6 +8,7 @@ import { UserService } from '../../../services/user.services';
 import { Project } from '../../../shared/models/project';
 import { ProjectService } from '../../../services/project.service';
 import { TransformationsService } from '../../../services/transformations.service';
+import { TFColumnType, TFColumn } from '../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: 'customer-info.component.html',
@@ -26,7 +27,7 @@ export class CustomerInfoComponent implements OnInit {
     URL;
     canEdit: boolean;
     users: User[];
-    public columns;
+    public columns: TFColumn[];
     public defSort = { property: 'name', order: 'desc' };
 
     constructor(
@@ -48,8 +49,16 @@ export class CustomerInfoComponent implements OnInit {
         this.customerService.getCustomer(+this.route.snapshot.params['customer_id'], true).subscribe(res => {
             this.customer = res[0];
             this.columns = [
-                { name: 'Name', property: 'name', filter: true, sorting: true, type: 'text', editable: this.userService.IsAdmin() },
-                { name: 'Created', property: 'created', filter: true, sorting: true, type: 'date', editable: false, class: 'ft-date-width' }
+                {
+                    name: 'Name', property: 'name', filter: true,
+                    sorting: true, type: TFColumnType.text, editable: this.userService.IsAdmin(),
+                    creation: {
+                        required: true
+                    }
+                },
+                {
+                    name: 'Created', property: 'created', filter: true, sorting: true, type: TFColumnType.date, class: 'ft-date-width'
+                }
             ];
         });
         this.canEdit = this.userService.IsUnitCoordinator() || this.userService.IsHead();

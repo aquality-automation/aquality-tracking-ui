@@ -12,6 +12,7 @@ import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
+import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
 
 
 @Component({
@@ -40,7 +41,7 @@ export class TestSuiteViewComponent implements OnInit {
   testRun: TestRun;
   totalManualDuration: string;
   users: LocalPermissions[];
-  tbCols: any[];
+  tbCols: TFColumn[];
   allowEdit: boolean;
 
   constructor(
@@ -76,21 +77,25 @@ export class TestSuiteViewComponent implements OnInit {
             property: 'name',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: this.allowEdit,
-            creationLength: '500'
+            creation: {
+              required: true,
+              creationLength: 500
+            }
           },
           {
             name: 'Developer',
             property: 'developer',
-            objectWithId: 'developer.user',
             filter: true,
-            sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'developer',
-            allowEmpty: true,
-            values: this.users,
+            type: TFColumnType.autocomplete,
+            lookup: {
+              entity: 'developer',
+              propToShow: ['user.first_name', 'user.second_name'],
+              allowEmpty: true,
+              values: this.users,
+              objectWithId: 'developer.user'
+            },
             nullFilter: true,
             editable: this.allowEdit,
             bulkEdit: true,
@@ -99,12 +104,13 @@ export class TestSuiteViewComponent implements OnInit {
           {
             name: 'Suites',
             property: 'suites',
-            entity: 'suites',
             filter: true,
-            sorting: false,
-            type: 'multiselect',
-            propToShow: ['name'],
-            values: this.testSuites,
+            type: TFColumnType.multiselect,
+            lookup: {
+              entity: 'suites',
+              propToShow: ['name'],
+              values: this.testSuites,
+            },
             editable: this.allowEdit,
             bulkEdit: true,
             class: 'ft-width-250'
@@ -112,9 +118,8 @@ export class TestSuiteViewComponent implements OnInit {
           {
             name: 'Manual Duration',
             property: 'manual_duration',
-            filter: false,
             sorting: true,
-            type: 'time',
+            type: TFColumnType.time,
             editable: this.allowEdit,
             bulkEdit: true,
             class: 'fit'
@@ -263,8 +268,8 @@ export class TestSuiteViewComponent implements OnInit {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   moveTestOpen() {
@@ -292,7 +297,7 @@ export class TestSuiteViewComponent implements OnInit {
     this.testService.handleSimpleError('Name is invalid', 'Test Suite name can\'t be empty or less than 4 symbols!');
   }
 
-  moveToWasClosed($event) {
+  moveTowasClosed() {
     this.hideMoveModal = true;
   }
 

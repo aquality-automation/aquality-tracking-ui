@@ -56,7 +56,7 @@ export class APITokenComponent {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 }

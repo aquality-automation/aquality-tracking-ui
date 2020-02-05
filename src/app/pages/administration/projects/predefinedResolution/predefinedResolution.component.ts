@@ -6,6 +6,7 @@ import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { UserService } from '../../../../services/user.services';
 import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { User } from '../../../../shared/models/user';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './predefinedResolution.component.html',
@@ -19,7 +20,7 @@ export class PredefinedResolutionComponent implements OnInit {
   selectedProject: Project;
   predefinedResolutions: PredefinedResolution[];
   resolutions: ResultResolution[];
-  columns: any[];
+  columns: TFColumn[];
   predefinedResolutionToRemove: PredefinedResolution;
   users: User[];
 
@@ -51,48 +52,65 @@ export class PredefinedResolutionComponent implements OnInit {
   }
 
   updateColumns() {
-    this.columns.find(column => column.name === 'Resolution').values = this.resolutions;
-    this.columns.find(column => column.name === 'Assignee').values = this.users;
+    this.columns.find(column => column.name === 'Resolution').lookup.values = this.resolutions;
+    this.columns.find(column => column.name === 'Assignee').lookup.values = this.users;
   }
 
   createColumns() {
     this.columns = [
       {
         name: 'Resolution',
-        entity: 'resolution',
         property: 'resolution.name',
         filter: true,
         sorting: true,
-        type: 'lookup-colored',
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'resolution',
+          values: this.resolutions,
+          propToShow: ['name']
+        },
         editable: true,
-        values: this.resolutions
+        creation: {
+          required: true
+        }
       },
       {
         name: 'Comment',
         property: 'comment',
         filter: true,
         sorting: true,
-        type: 'text',
-        editable: true
+        type: TFColumnType.text,
+        editable: true,
+        creation: {
+          required: true
+        }
       },
       {
         name: 'Expression',
         property: 'expression',
         filter: true,
         sorting: true,
-        type: 'text',
-        editable: true
+        type: TFColumnType.text,
+        editable: true,
+        creation: {
+          required: true
+        }
       },
       {
         name: 'Assignee',
-        entity: 'assigned_user',
         property: 'assigned_user.user_name',
-        propToShow: ['user_name'],
         filter: true,
         sorting: true,
-        type: 'lookup-autocomplete',
+        type: TFColumnType.autocomplete,
+        lookup: {
+          entity: 'assigned_user',
+          propToShow: ['user_name'],
+          values: this.users
+        },
         editable: true,
-        values: this.users
+        creation: {
+          required: false
+        }
       },
     ];
   }
@@ -130,15 +148,16 @@ export class PredefinedResolutionComponent implements OnInit {
     this.projectService.handleSuccess(`Predefined Resolution was updated!`);
   }
 
-  async execute($event) {
-    if (await $event) {
+  async execute(event: Promise<boolean>) {
+    if (await event) {
       await this.projectService.removePredefinedResolution(this.predefinedResolutionToRemove);
       this.predefinedResolutions = await this.getPredefinedResolutions(this.selectedProject);
+      this.projectService.handleSuccess('Predefined Resolution was removed!');
     }
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 }

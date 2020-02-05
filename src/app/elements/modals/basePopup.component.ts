@@ -26,7 +26,7 @@ export class BasePopupComponent implements OnInit {
 
   hideModal() {
     this.isHidden = true;
-    this.closed.emit(this.isHidden);
+    this.closed.emit();
   }
 
   onClick(event: boolean) {

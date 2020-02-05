@@ -6,6 +6,7 @@ import { CustomerDashboardGuard, CustomerCreateGuard } from '../../shared/guards
 import { customerRouting } from './customer.routing';
 import { CustomerCreateComponent } from './customer-create/customer-create.component';
 import { CustomerInfoComponent } from './customer-info/customer-info.component';
+import { GuardService } from '../../shared/guards/guard.service';
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import { CustomerInfoComponent } from './customer-info/customer-info.component';
     ],
     providers: [
       CustomerDashboardGuard,
-      CustomerCreateGuard
+      CustomerCreateGuard,
+      GuardService
     ]
 })
 export class CustomerModule {

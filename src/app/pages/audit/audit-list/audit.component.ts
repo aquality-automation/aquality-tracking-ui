@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../shared/models/user';
 import { UserService } from '../../../services/user.services';
 import BlobUtils from '../../../shared/utils/blob.utils';
+import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './audit.component.html',
@@ -32,7 +33,7 @@ export class AuditComponent implements OnInit {
     color: 'danger',
     lower: new Date(new Date(new Date().setDate(new Date().getDate())).setHours(0, 0, 0, 0))
   }];
-  columns;
+  columns: TFColumn[];
   linkNames: string[] = [];
 
   constructor(
@@ -71,17 +72,17 @@ export class AuditComponent implements OnInit {
         this.auditService.getServices().subscribe(services => {
           this.services = services;
           this.columns = [
-            { name: 'Project', property: 'name', filter: true, sorting: true, type: 'text', editable: false },
+            { name: 'Project', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
             {
               name: 'Unit Coordinator',
               property: 'project.customer.coordinator',
-              entity: 'project.customer.coordinator',
               filter: true,
-              sorting: false,
-              type: 'lookup-autocomplete',
-              propToShow: ['first_name', 'second_name'],
-              values: this.coordinators,
-              editable: false,
+              type: TFColumnType.autocomplete,
+              lookup: {
+                entity: 'project.customer.coordinator',
+                propToShow: ['first_name', 'second_name'],
+                values: this.coordinators,
+              },
               class: 'ft-width-150'
             },
             {
@@ -89,10 +90,12 @@ export class AuditComponent implements OnInit {
               property: 'service.name',
               filter: true,
               sorting: true,
-              type: 'lookup-colored',
-              entity: 'service',
-              values: this.services,
-              editable: false,
+              type: TFColumnType.colored,
+              lookup: {
+                entity: 'service',
+                values: this.services,
+                propToShow: ['name']
+              },
               class: 'fit'
             },
             {
@@ -100,8 +103,7 @@ export class AuditComponent implements OnInit {
               property: 'result',
               filter: true,
               sorting: true,
-              type: 'percent',
-              editable: false,
+              type: TFColumnType.percent,
               link: {
                 template: '/audit/{id}/info/{last_submitted_id}',
                 properties: ['id', 'last_submitted_id']
@@ -111,20 +113,20 @@ export class AuditComponent implements OnInit {
               name: 'Submitted Audit',
               property: 'last_submitted_date',
               filter: true,
-              orting: true,
-              type: 'date',
-              editable: false,
+              sorting: true,
+              type: TFColumnType.date,
               class: 'ft-date-width'
             },
             {
               name: 'Last Auditors',
               property: 'auditors_last',
               filter: true,
-              sorting: false,
-              type: 'multiselect',
-              propToShow: ['first_name', 'second_name'],
-              values: this.auditors,
-              editable: false,
+              type: TFColumnType.multiselect,
+              lookup: {
+                entity: 'auditors_last',
+                propToShow: ['first_name', 'second_name'],
+                values: this.auditors,
+              },
               class: 'ft-width-250'
             },
             {
@@ -132,7 +134,7 @@ export class AuditComponent implements OnInit {
               property: 'last_created_due_date',
               filter: true,
               sorting: true,
-              type: 'date',
+              type: TFColumnType.date,
               format: 'dd/MM/yy',
               editable: false,
               class: 'fit'
@@ -142,8 +144,12 @@ export class AuditComponent implements OnInit {
               property: 'next_action',
               filter: true,
               sorting: false,
-              type: 'link',
-              values: this.linkNames,
+              type: TFColumnType.link,
+              lookup: {
+                entity: 'next_action',
+                values: this.linkNames,
+                propToShow: []
+              },
               editable: false,
               class: 'ft-width-120'
             },
@@ -152,10 +158,12 @@ export class AuditComponent implements OnInit {
               property: 'auditors_next',
               filter: true,
               sorting: false,
-              type: 'multiselect',
-              propToShow: ['first_name', 'second_name'],
-              values: this.auditors,
-              editable: false,
+              type: TFColumnType.multiselect,
+              lookup: {
+                entity: 'auditors_next',
+                propToShow: ['first_name', 'second_name'],
+                values: this.auditors,
+              },
               class: 'ft-width-250'
             },
           ];

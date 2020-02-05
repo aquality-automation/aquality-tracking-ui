@@ -1,89 +1,62 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { UserService } from '../../services/user.services';
-import { CurrentPermissionsService, Permissions } from '../../services/current-permissions.service';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ELocalPermissions, EGlobalPermissions } from '../../services/current-permissions.service';
+import { GuardService } from './guard.service';
 
 
 @Injectable()
 export class AdministrationGlobalGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    private userService: UserService,
-    private permissionsService: CurrentPermissionsService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (await this.userService.handleIsLogged()) {
-      if (this.permissionsService.IsAdmin()) {
-        return true;
-      }
-    }
-    this.router.navigate(['/administration/project/permissions']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.admin]
+    }, ['/administration/project/permissions']);
   }
 }
 
 @Injectable()
 export class AdministrationProjectManagerGuard implements CanActivate {
   constructor(
-    private router: Router,
-    public userService: UserService,
-    private permissionsService: CurrentPermissionsService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (await this.userService.handleIsLogged()) {
-      const local = await this.permissionsService.hasLocalPermissions([Permissions.admin, Permissions.manager]);
-      const global = this.permissionsService.IsManager() || this.permissionsService.IsAdmin();
-      if (local || global) {
-        return true;
-      }
-    }
-    this.router.navigate(['/administration/project/predefined-resolutions']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.admin, EGlobalPermissions.manager],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager]
+    }, ['/administration/project/predefined-resolutions']);
   }
 }
 
 @Injectable()
 export class AdministrationProjectGuard implements CanActivate {
   constructor(
-    private router: Router,
-    public userService: UserService,
-    private permissionsService: CurrentPermissionsService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (await this.userService.handleIsLogged()) {
-      const local = await this.permissionsService.isLocalEngineer();
-      const global = this.permissionsService.IsManager();
-      if (local || global) {
-        return true;
-      }
-    }
-    this.router.navigate(['**']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.manager],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]
+    }, ['**']);
   }
 }
 
 @Injectable()
 export class AdministrationGuard implements CanActivate {
   constructor(
-    private router: Router,
-    public userService: UserService,
-    private permissionsService: CurrentPermissionsService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (await this.userService.handleIsLogged()) {
-      const local = await this.permissionsService.isLocalEngineer();
-      const global = this.permissionsService.IsManager() || this.userService.IsAdmin();
-      if (local || global) {
-        return true;
-      }
-    }
-    this.router.navigate(['**']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.manager, EGlobalPermissions.admin],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]
+    }, ['**']);
   }
 }

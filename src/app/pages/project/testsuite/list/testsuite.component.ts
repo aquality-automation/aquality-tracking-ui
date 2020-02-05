@@ -4,6 +4,7 @@ import { TestSuite } from '../../../../shared/models/testSuite';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { UserService } from '../../../../services/user.services';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './testSuite.component.html',
@@ -19,7 +20,7 @@ export class TestSuiteComponent implements OnInit {
   testSuiteToRemove: TestSuite;
   testSuite: TestSuite;
   testSuites: TestSuite[];
-  tbCols;
+  tbCols: TFColumn[];
 
   constructor(
     private testSuiteService: TestSuiteService,
@@ -36,20 +37,20 @@ export class TestSuiteComponent implements OnInit {
       {
         name: 'Id',
         property: 'id',
-        filter: false,
         sorting: true,
-        type: 'text',
-        editable: false,
-        class: 'fit',
-        excludeCreation: true
+        type: TFColumnType.text,
+        class: 'fit'
       }, {
         name: 'Name',
         property: 'name',
         filter: true,
         sorting: true,
-        type: 'text',
+        type: TFColumnType.text,
         editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
-        creationLength: '500'
+        creation: {
+          creationLength: 500,
+          required: true
+        }
       }];
   }
 
@@ -88,8 +89,8 @@ export class TestSuiteComponent implements OnInit {
     }
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   async createSuite(suite: TestSuite) {

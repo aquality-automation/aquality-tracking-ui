@@ -1,10 +1,10 @@
 <notify-team-modal *ngIf="users" [(isHidden)]="hideNotifyModal" [testRun]="testRun" [users]="users"
   [buttons]="[{name:'Send Email', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
-  (closed)="wasClosed($event)"></notify-team-modal>
+  (closed)="wasClosed()"></notify-team-modal>
 
 <print-testrun-modal *ngIf="testResults" [(isHidden)]="hidePrintModal" [testRun]="testRun" [testResults]="testResults"
   [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
-  (closed)="wasClosed($event)"></print-testrun-modal>
+  (closed)="wasClosed()"></print-testrun-modal>
 
 <div *ngIf="testRun" class="panel-body">
   <div class="row panel-padding">

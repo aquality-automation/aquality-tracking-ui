@@ -19,7 +19,8 @@ import {
 } from '../../../shared/guards/administration-guard.service';
 import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
 import { PredefinedResolutionComponent } from '../projects/predefinedResolution/predefinedResolution.component';
-import { CurrentPermissionsService } from '../../../services/current-permissions.service';
+import { PermissionsService } from '../../../services/current-permissions.service';
+import { GuardService } from '../../../shared/guards/guard.service';
 
 @NgModule({
   imports: [
@@ -41,12 +42,13 @@ import { CurrentPermissionsService } from '../../../services/current-permissions
   ],
   providers: [
     ProjectService,
-    CurrentPermissionsService,
+    PermissionsService,
     UserService,
     AdministrationProjectManagerGuard,
     AdministrationProjectGuard,
     AdministrationGlobalGuard,
-    DatePipe
+    DatePipe,
+    GuardService
   ],
 })
 

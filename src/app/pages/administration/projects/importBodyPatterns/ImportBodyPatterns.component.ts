@@ -22,8 +22,13 @@ export class ImportBodyPatternsComponent implements OnInit {
     private selectedProject: Project;
     bodyPatterns: ImportBodyPattern[];
     private patternToRemove: ImportBodyPattern;
-    private tableColumns = [
-        { name: 'Name', property: 'name', filter: true, sorting: true, type: 'text', editable: true },
+    tableColumns = [
+        {
+            name: 'Name', property: 'name', filter: true, sorting: true, type: 'text', editable: true,
+            creation: {
+                required: true
+            }
+        },
     ];
 
     ngOnInit() {
@@ -90,7 +95,7 @@ export class ImportBodyPatternsComponent implements OnInit {
         this.hideModal = true;
     }
 
-    wasClosed($event) {
-        this.hideModal = $event;
+    wasClosed() {
+        this.hideModal = true;
     }
 }

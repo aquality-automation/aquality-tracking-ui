@@ -1,7 +1,7 @@
 <simple-popup *ngIf="!hideModal" title="Are you sure you want to leave?"
   message="There is pending work. Sure you want to leave?" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="wasExecuted($event)"
-  (closed)="wasClosed($event)"></simple-popup>
+  (closed)="wasClosed()"></simple-popup>
 
 <div class="panel-heading clearfix">
   <h2 class="col-sm-10 no-padding" id="test-result-view">Test Result: {{currentState?.id}}</h2>

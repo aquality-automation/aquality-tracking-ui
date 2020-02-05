@@ -14,6 +14,7 @@ export class AdministrationBase extends BasePage {
     permissions: () => elements.permissions.click(),
     resolutions: () => elements.resolutions.click(),
     users: () => elements.users.click(),
-    projectSettings: () => elements.settings.click()
+    projectSettings: () => elements.settings.click(),
+    predefinedResolutions: () => elements.predefinedResolutions.click()
   };
 }

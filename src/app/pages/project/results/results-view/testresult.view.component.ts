@@ -113,8 +113,8 @@ export class TestResultViewComponent implements OnInit {
     this.canClose = $event;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   timeout(ms) {

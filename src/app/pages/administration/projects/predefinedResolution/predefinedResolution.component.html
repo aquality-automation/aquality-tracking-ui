@@ -1,7 +1,7 @@
 <div class="row">
   <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
-    (closed)="wasClosed($event)"></simple-popup>
+    (closed)="wasClosed()"></simple-popup>
   <div *ngIf="projects" class="col-md-12 vert-aligned">
     <label class="col-md-2 label-inline control-label">Select Project:</label>
     <div class="col-sm-3">
@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="col-md-12 top-padding-md">
-    <table-filter id="predefined-resolutions-table" *ngIf="predefinedResolutions && columns" [data]="predefinedResolutions"
+    <table-filter id="predefined-resolutions-table" *ngIf="columns" [data]="predefinedResolutions"
       [columns]="columns" [allowCreate]="true" [allowDelete]="true" (dataChange)="updateRow($event)"
       (action)="handleAction($event)" [queryParams]="true">
     </table-filter>
