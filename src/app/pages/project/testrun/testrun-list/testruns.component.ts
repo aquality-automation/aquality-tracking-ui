@@ -87,8 +87,22 @@ export class TestRunsComponent implements OnInit {
         editable: true,
         class: 'fit'
       },
-      { name: 'Start Time', property: 'start_time', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-      { name: 'Build', property: 'build_name', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-350' },
+      {
+        name: 'Start Time',
+        property: 'start_time',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        class: 'fit'
+      },
+      {
+        name: 'Build',
+        property: 'build_name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.text,
+        class: 'ft-width-350'
+      },
       {
         name: 'Test Suite',
         property: 'test_suite.name',

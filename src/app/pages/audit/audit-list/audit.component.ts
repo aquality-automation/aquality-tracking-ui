@@ -136,7 +136,6 @@ export class AuditComponent implements OnInit {
               sorting: true,
               type: TFColumnType.date,
               format: 'dd/MM/yy',
-              editable: false,
               class: 'fit'
             },
             {

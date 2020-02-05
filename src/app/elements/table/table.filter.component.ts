@@ -288,6 +288,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       newFilter.to = filterData.to ? new Date(new Date(filterData.to).setHours(23, 59, 59, 99)) : undefined;
     }
     this.filterChange(newFilter);
+    console.log(this.appliedFilters);
   }
 
   fixIvalidRange(range: string | number) {
