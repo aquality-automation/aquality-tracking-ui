@@ -37,7 +37,7 @@ const edit = {
 
 const creationError = 'Fill all required fields';
 
-fdescribe('Predefined Resolution:', () => {
+describe('Predefined Resolution:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
