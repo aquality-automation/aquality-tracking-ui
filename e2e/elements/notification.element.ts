@@ -21,6 +21,12 @@ export class Notification extends BaseElement {
         return classAttr.includes('success');
     }
 
+    async isWarning() {
+        await this.isVisible();
+        const classAttr: string = await this.getContainer().getAttribute('class');
+        return classAttr.includes('warn');
+    }
+
     getHeader() {
         return element(by.css('simple-notification .sn-title')).getText();
     }
@@ -41,8 +47,12 @@ export class Notification extends BaseElement {
         return this.assert('error', message, header);
     }
 
+    assertIsWarning(message?: string, header?: string) {
+        return this.assert('warn', message, header);
+    }
+
     private async assert(type: string, message?: string, header?: string) {
-        await expect(type === 'error' ? this.isError() : type === 'success' ? this.isSuccess() : false)
+        await expect(type === 'error' ? this.isError() : type === 'success' ? this.isSuccess() : type === 'warn' ? this.isWarning() : false)
             .toBe(true, `${this.pageName}: No Success notification message!`);
         if (message) {
             await expect(this.getContent())

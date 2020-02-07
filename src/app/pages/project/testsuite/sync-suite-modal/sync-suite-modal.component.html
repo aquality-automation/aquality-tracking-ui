@@ -21,11 +21,11 @@
                 </div>
                 <div class="col-sm-2">
                     <input id="not-executed-for" class="form-control" placeholder="#" [(ngModel)]="notExecutedFor"
-                        title="Number of Not Executed results in a row" />
+                        title="Number of Not Executed results in a row" type="number"/>
                 </div>
                 <div class="col-sm-2">
-                    <button id="find-tests-to-sync" (click)="findTests()" class="btn btn-success">Find
-                        Tests</button>
+                    <button id="find-tests-to-sync" (click)="findTests()" class="btn btn-success"
+                        [disabled]="!suite || !notExecutedFor">Find Tests</button>
                 </div>
             </div>
             <div class="col-sm-12 modal-buttons">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="col-sm-4 modal-buttons-form">
                     <button [id]="button.name" autofocus (click)="accept(button.execute)"
-                        [disabled]="button.execute && !suite" class="btn btn-sm btn-default"
+                        [disabled]="button.execute && (!suite || !notExecutedFor)" class="btn btn-sm btn-default"
                         *ngFor="let button of buttons">{{button.name}}</button>
                 </div>
             </div>

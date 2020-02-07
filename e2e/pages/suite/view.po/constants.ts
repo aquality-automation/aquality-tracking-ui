@@ -16,7 +16,8 @@ export const elements = {
     totalManualDurationLabel: element(by.id('totalManualDuration')),
     totalTestsLabel: element(by.id('testsNumber')),
     automationDurationLabel: element(by.id('latestAutomationDuration')),
-    moveTestBtn: element(by.id('move-test-btn'))
+    moveTestBtn: element(by.id('move-test-btn')),
+    syncBtn: element(by.id('sync-btn'))
 };
 
 export const columns = {
