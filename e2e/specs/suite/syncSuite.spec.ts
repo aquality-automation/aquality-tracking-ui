@@ -42,7 +42,7 @@ describe('Sync Test Suite', () => {
   const builds = projectHelper.generateBuilds(3);
 
   beforeAll(async () => {
-    await projectHelper.init({
+    return projectHelper.init({
       admin: users.admin,
       localAdmin: users.localAdmin,
       localManager: users.localManager,
@@ -52,17 +52,17 @@ describe('Sync Test Suite', () => {
   });
 
   afterAll(async () => {
-    await projectHelper.dispose();
+    return projectHelper.dispose();
   });
 
   using(notEditorExamples, (user, description) => {
     describe(`${description} role:`, () => {
       beforeAll(async () => {
         await logIn.logInAs(user.user_name, user.password);
-        await projectHelper.openProject();
+        return projectHelper.openProject();
       });
 
-      it(`Sync suite is disabled for role ${description}`, async () => {
+      it(`Sync suite is not present for role ${description}`, async () => {
         await (await projectView.menuBar.tests()).all();
         return expect(suiteView.isSyncButtonPresent()).toBe(false, `Sync suite should be disable`);
       });
@@ -81,7 +81,7 @@ describe('Sync Test Suite', () => {
         syncTestRuns = await projectHelper.importer.executeCucumberImport(
           testSuite, [syncImport, syncImport], [builds.filenames[1], builds.filenames[2]]);
         await logIn.logInAs(user.user_name, user.password);
-        await projectHelper.openProject();
+        return projectHelper.openProject();
       });
 
       afterAll(async () => {
