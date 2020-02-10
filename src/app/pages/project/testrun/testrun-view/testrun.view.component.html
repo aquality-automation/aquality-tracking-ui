@@ -15,6 +15,12 @@
     </div>
     <div *ngIf="testRun" class="col-sm-10 no-padding">
       <div class="btn-group pull-right margin-right-cut-md">
+        <button *ngIf="canEdit && !testRun.finish_time" class="btn btn-success" (click)="finishTestRun()">Finish
+          <span class="glyphicon glyphicon-stop"></span>
+        </button>
+        <button *ngIf="canEdit && testRun.finish_time" class="btn btn-success" (click)="reopenTestRun()">Reopen
+          <span class="glyphicon glyphicon-play"></span>
+        </button>
         <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
           <span class="glyphicon glyphicon-modal-window"></span>
         </button>
@@ -87,7 +93,8 @@
             <inline-editor
               [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
               maxLength="500" [name]="ExecutionEnvironment" placeholder="Execution Environment" type="text" trim="blur"
-              [(ngModel)]="testRun.execution_environment" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+              [(ngModel)]="testRun.execution_environment" (onSave)="testRunUpdate()" [required]="false"
+              [config]="{empty:'Add...'}"></inline-editor>
           </div>
         </li>
         <li
@@ -98,7 +105,8 @@
             <inline-editor
               [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
               maxLength="500" [name]="Executor" placeholder="Executor" type="text" trim="blur"
-              [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+              [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}">
+            </inline-editor>
           </div>
         </li>
         <li *ngIf="testRun?.finish_time" class="col-md-6">
@@ -122,10 +130,10 @@
           <label *ngIf="!testRun.ci_build" class="label-inline pull-left">CI Build: </label>
           <a *ngIf="testRun.ci_build" class="label-inline pull-left ci-link" [href]="testRun.ci_build">CI Build</a>
           <div class="pull-left">
-            <inline-editor
-              *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+            <inline-editor *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
               maxLength="500" [name]="Executor" placeholder="CI Build" type="text" trim="blur"
-              [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
+              [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}">
+            </inline-editor>
           </div>
         </li>
       </ul>
@@ -133,10 +141,12 @@
   </div>
   <div class="row">
     <div class="col-sm-6" *ngIf="testResults?.length">
-      <final-result-chart [testResults]="testResults" (clickedResult)="finalResultChartClick($event)">Loading...</final-result-chart>
+      <final-result-chart [testResults]="testResults" (clickedResult)="finalResultChartClick($event)">Loading...
+      </final-result-chart>
     </div>
     <div class="col-sm-6" *ngIf="testResults?.length">
-      <result-resolution-chart [testResults]="testResults" (clickedResult)="resolutionChartClick($event)">Loading...</result-resolution-chart>
+      <result-resolution-chart [testResults]="testResults" (clickedResult)="resolutionChartClick($event)">Loading...
+      </result-resolution-chart>
     </div>
   </div>
   <div class="row" *ngIf="testResults?.length">

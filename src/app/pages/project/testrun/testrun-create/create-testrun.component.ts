@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestRunService } from '../../../../services/testRun.service';
@@ -19,41 +18,27 @@ import { TestRun } from '../../../../shared/models/testRun';
   ]
 })
 export class CreateTestRunComponent implements OnInit {
-  datePickerState: boolean;
-  dateLabel: string;
-  date: Date;
-  hours: number;
-  minutes: number;
-  newBuildName = '';
-  startTime: string;
-  executionEnvironment = '';
+  newBuildName: string;
+  executionEnvironment: string;
   testSuite: TestSuite;
   milestone: Milestone;
-  blankTestSuite: TestSuite;
-  blankMilestone: Milestone;
   testSuites: TestSuite[];
   milestones: Milestone[];
+  projectId: number;
 
   constructor(
-    private datepipe: DatePipe,
     private postService: TestRunService,
     private route: ActivatedRoute,
     private router: Router,
     private testSuiteService: TestSuiteService,
-    private milestoneService: MilestoneService
-  ) {
-    this.datePickerState = false;
-    this.date = new Date();
-    this.hours = this.date.getHours();
-    this.minutes = this.date.getMinutes();
-    this.dateLabel = this.getDateString();
-
-  }
+    private milestoneService: MilestoneService,
+  ) { }
 
   async ngOnInit() {
+    this.projectId = this.route.snapshot.params.projectId;
     [this.testSuites, this.milestones] = await Promise.all([
-      this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] }),
-      this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] })
+      this.testSuiteService.getTestSuite({ project_id: this.projectId }),
+      this.milestoneService.getMilestone({ project_id: this.projectId })
     ]);
   }
 
@@ -65,51 +50,31 @@ export class CreateTestRunComponent implements OnInit {
     this.milestone = newmilestone;
   }
 
-  setHours(hours: number) {
-    if (hours < 24) {
-      this.hours = hours;
-      this.date.setHours(hours);
-      this.dateLabel = this.getDateString();
-    }
-  }
-
-  toggleDatePicker() {
-    this.datePickerState = !this.datePickerState;
-  }
-
-  setMinutes(minutes: number) {
-    if (minutes < 60) {
-      this.minutes = minutes;
-      this.date.setMinutes(minutes);
-      this.dateLabel = this.getDateString();
-    }
-  }
-
-  onSelectionDone(event) {
-    this.date = event;
-    this.date.setHours(this.hours);
-    this.date.setMinutes(this.minutes);
-    this.dateLabel = this.getDateString();
-  }
-
-  getDateString() {
-    return this.datepipe.transform(this.date, 'dd/MM/yyyy HH:mm');
-  }
-
   async processTestRunCreation() {
     const testRun: TestRun = {
       build_name: this.newBuildName,
       test_suite_id: this.testSuite.id,
       execution_environment: this.executionEnvironment,
-      start_time: this.date,
-      finish_time: this.date,
-      project_id: this.route.snapshot.params['projectId'],
+      start_time: new Date(),
+      project_id: this.projectId,
       debug: 0
     };
     if (this.milestone) {
       testRun.milestone_id = this.milestone.id;
     }
     const result = await this.postService.createTestRun(testRun);
-    this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/testrun/' + result.id]);
+    this.router.navigate(['/project/' + this.projectId + '/testrun/' + result.id]);
+  }
+
+  async createTestSuite(name: string) {
+    await this.testSuiteService.createTestSuite({ name, project_id: this.projectId });
+    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
+    this.testSuite = this.testSuites.find(x => x.name === name);
+  }
+
+  async createMilestone(name: string) {
+    await this.milestoneService.createMilestone({ name, project_id: this.projectId });
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
+    this.milestone = this.milestones.find(x => x.name === name);
   }
 }

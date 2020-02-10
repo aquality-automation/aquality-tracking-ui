@@ -5,7 +5,7 @@ import { TestSuite } from './testSuite';
 export class TestRun {
   test_suite_id?: number;
   test_suite?: TestSuite;
-  start_time?: Date;
+  start_time?: string | Date;
   project_id?: number;
   milestone_id?: number;
   milestone?: Milestone;
@@ -14,7 +14,7 @@ export class TestRun {
   build_name?: string;
   milestone_name?: string;
   testsuite_name?: string;
-  finish_time?: Date;
+  finish_time?: string | Date;
   debug?: number;
   author?: string;
   testResults?: TestResult[];

@@ -168,4 +168,20 @@ export class TestRunViewComponent implements OnInit {
       [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
       { queryParams: { f_test_resolution_opt: resolution.id } });
   }
+
+  async reopenTestRun() {
+    await this.testRunService.createTestRun({
+      id: this.testRun.id,
+      finish_time: undefined,
+      project_id: this.testRun.project_id
+    });
+  }
+
+  async finishTestRun() {
+    await this.testRunService.createTestRun({
+      id: this.testRun.id,
+      finish_time: new Date(),
+      project_id: this.testRun.project_id
+    });
+  }
 }
