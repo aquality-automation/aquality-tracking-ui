@@ -55,6 +55,18 @@ const sendPost = async (endpoint: string, params: object, body: any, token: stri
     }
 };
 
+const sendDelete = async (endpoint: string, params: object, body: any, token: string, projectId: number) => {
+    try {
+        const resp = await superagent.delete(getFullURL(endpoint, params))
+            .send(body)
+            .set('Authorization', createAuthHeaderValue(token, projectId))
+            .set('Accept', 'application/json');
+        return resp.body;
+    } catch (error) {
+        throw new Error(`Was not able to delete ${endpoint}. \n ${error}`);
+    }
+};
+
 const sendPostFiles = (endpoint: string, params: object, filesAsString: string[], filenames: string[],
     token: string, projectId: number) => {
     const req = superagent.post(getFullURL(endpoint, params));
@@ -98,5 +110,6 @@ export {
     sendPostFiles,
     sendPost,
     sendGet,
-    doImport
+    doImport,
+    sendDelete
 };

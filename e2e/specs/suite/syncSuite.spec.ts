@@ -37,12 +37,13 @@ const noSyncTest = 'Test Feature with all results: All passed';
 const syncTest = 'Test Feature with all results: step failed';
 const syncAndRemoveTest = 'Test Feature with all results: Step skipped';
 
-fdescribe('Sync Test Suite', () => {
+describe('Sync Test Suite', () => {
   const projectHelper: ProjectHelper = new ProjectHelper();
   const builds = projectHelper.generateBuilds(3);
 
   beforeAll(async () => {
     await projectHelper.init({
+      admin: users.admin,
       localAdmin: users.localAdmin,
       localManager: users.localManager,
       localEngineer: users.localEngineer,
@@ -81,6 +82,12 @@ fdescribe('Sync Test Suite', () => {
           testSuite, [syncImport, syncImport], [builds.filenames[1], builds.filenames[2]]);
         await logIn.logInAs(user.user_name, user.password);
         await projectHelper.openProject();
+      });
+
+      afterAll(async () => {
+        await projectHelper.editorAPI.removeTestRun(notSyncTestRun[0].id);
+        await projectHelper.editorAPI.removeTestRun(syncTestRuns[0].id);
+        return projectHelper.editorAPI.removeTestRun(syncTestRuns[1].id);
       });
 
       it('Check default fields if suite was not chosen', async () => {
