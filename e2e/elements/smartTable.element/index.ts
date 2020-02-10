@@ -1,4 +1,4 @@
-import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element } from 'protractor';
+import { by, Locator, ElementFinder, browser, protractor, ElementArrayFinder, element, promise } from 'protractor';
 import { BaseElement } from '../base.element';
 import { logger } from '../../utils/log.util';
 import { Lookup } from '../lookup.element';
@@ -152,8 +152,12 @@ export class SmartTable extends BaseElement {
         throw Error('Creation Row is not opened');
     }
 
-    public async clickCreateAction() {
+    public async clickCreateAction(): promise.Promise<void> {
         return this.creationRow.clickAction();
+    }
+
+    public async isCreateActionEnabled(): promise.Promise<boolean> {
+        return this.creationRow.isActionEnabled();
     }
 
     public async clickBulkAction() {
