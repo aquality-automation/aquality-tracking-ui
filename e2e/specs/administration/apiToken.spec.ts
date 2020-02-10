@@ -1,13 +1,11 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { notFound } from '../../pages/notFound.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
-import projects from '../../data/projects.json';
 import { userAdministration } from '../../pages/administration/users.po';
 import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
+import { predefinedResolutions } from '../../pages/administration/predefinedResolutions.po';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -22,8 +20,6 @@ const notEditorExamples = {
 
 describe('API Token:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -51,7 +47,7 @@ describe('API Token:', () => {
             });
 
             it('I can generate API Token ', async () => {
-                await apiTokenAdministration.selectProject(project.name);
+                await apiTokenAdministration.selectProject(projectHelper.project.name);
                 await apiTokenAdministration.clickGenerateToken();
                 await expect(apiTokenAdministration.isModalOpened()).toBe(true, 'Confirmation Modal is Missed!');
                 await apiTokenAdministration.acceptModal();
@@ -67,7 +63,7 @@ describe('API Token:', () => {
             });
 
             it('I can regenerate API Token', async () => {
-                await apiTokenAdministration.selectProject(project.name);
+                await apiTokenAdministration.selectProject(projectHelper.project.name);
                 await apiTokenAdministration.clickGenerateToken();
                 await apiTokenAdministration.acceptModal();
                 const regexpr = /[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{25}/;
@@ -85,14 +81,15 @@ describe('API Token:', () => {
             });
 
             it('I can not Open API Token page using Menu Bar', async () => {
-                return expect((await projectList.menuBar.user()).isAdministrationExists())
-                    .toBe(false, `Administartion should not be visible for ${description}`);
+                await (await projectList.menuBar.user()).administration();
+                return expect(apiTokenAdministration.sidebar.isApiTokenExist())
+                    .toBe(false, `API Token should not be visible for ${description}`);
             });
 
             it('I can not Open API Token page using url', async () => {
                 await apiTokenAdministration.navigateTo();
                 await expect(apiTokenAdministration.isOpened()).toBe(false, `API Token page is opened for ${description}`);
-                return expect(notFound.isOpened()).toBe(true, `404 page is not opened for ${description}`);
+                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
             });
         });
     });

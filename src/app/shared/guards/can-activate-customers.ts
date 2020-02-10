@@ -1,32 +1,35 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { UserService } from '../../services/user.services';
-import { GlobalDataService } from '../../services/globaldata.service';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { GuardService } from './guard.service';
+import { EGlobalPermissions } from '../../services/current-permissions.service';
+
+
+@Injectable()
+export class AuditCreateGuard implements CanActivate {
+
+  constructor(
+    private guardService: GuardService
+  ) { }
+
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.audit_admin]
+    }, ['**']);
+  }
+}
 
 @Injectable()
 export class CustomerDashboardGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    private userService: UserService,
-    private globalDataService: GlobalDataService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    if (!this.userService.IsHead()
-      && !this.userService.IsUnitCoordinator()
-      && !this.userService.IsAccountManager()
-      && !this.globalDataService.teamMember) {
-      this.router.navigate(['**']);
-      return false;
-    }
-
-    return true;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.head, EGlobalPermissions.unit_coordinator, EGlobalPermissions.account_manager]
+    }, ['**']);
   }
 }
 
@@ -34,20 +37,12 @@ export class CustomerDashboardGuard implements CanActivate {
 export class CustomerCreateGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    private userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    if (!this.userService.IsHead() && !this.userService.IsUnitCoordinator()) {
-      this.router.navigate(['**']);
-      return false;
-    }
-
-    return true;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.head, EGlobalPermissions.unit_coordinator]
+    }, ['**']);
   }
 }

@@ -5,6 +5,7 @@ import { ProjectService } from '../../../../services/project.service';
 import { ResultResolutionService } from '../../../../services/result-resolution.service';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { TransformationsService } from '../../../../services/transformations.service';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './administration.resolutions.component.html',
@@ -31,7 +32,7 @@ export class AdministrationResolutionsComponent {
     { id: 5, title: 'Success', color: 5 }];
   public sortBy = 'name';
   public sortOrder = 'asc';
-  public tbCols: any[];
+  public tbCols: TFColumn[];
 
   constructor(
     private projectService: ProjectService,
@@ -47,18 +48,27 @@ export class AdministrationResolutionsComponent {
           property: 'name',
           filter: true,
           sorting: true,
-          type: 'text',
-          editable: true
+          type: TFColumnType.text,
+          editable: true,
+          creation: {
+            required: true
+          }
         },
         {
           name: 'Color',
-          entity: 'colorObject',
           property: 'colorObject.title',
           filter: true,
           sorting: true,
-          type: 'lookup-colored',
+          type: TFColumnType.colored,
+          lookup: {
+            entity: 'colorObject',
+            values: this.colors,
+            propToShow: ['title']
+          },
           editable: true,
-          values: this.colors
+          creation: {
+            required: true
+          }
         }
       ];
     }, error => console.log(error));
@@ -124,7 +134,7 @@ export class AdministrationResolutionsComponent {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 }

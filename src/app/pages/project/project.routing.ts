@@ -14,7 +14,6 @@ import { TestViewComponent } from './test/test-view/test.view.component';
 import { ImportComponent } from './import/import.component';
 import { TestResultViewComponent } from './results/results-view/testresult.view.component';
 import {
-  AuthGuard,
   CreateProjectGuard,
   ProjectGuard,
   TestRunGuard,
@@ -27,7 +26,7 @@ import {
   CreateTestSuiteGuard,
   CreateTestGuard,
   MilestoneGuard
-} from '../../shared/guards/auth-guard.service';
+} from '../../shared/guards/project-guard.service';
 import { TestrunCompareComponent } from './testrun/testrun-compare/testrun-compare.component';
 import { TestrunMatrixComponent } from './testrun/testrun-matrix/testrun-matrix.component';
 import { SuiteDashboardComponent } from './suite-dashboard/suite-dashboard.component';
@@ -35,6 +34,7 @@ import { ResultViewCanDeactivate, TestViewCanDeactivate } from '../../shared/gua
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ListMilestoneComponent } from './milestone/list-milestone/list-milestone.component';
 import { ViewMilestoneComponent } from './milestone/view-milestone/view-milestone.component';
+import { AuthGuard } from '../../shared/guards/login-guard.service';
 
 
 const projectRoutes: Routes = [

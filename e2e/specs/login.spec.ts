@@ -25,7 +25,7 @@ describe('Log in', () => {
     await logIn.setPassword(users.admin.password);
     await logIn.clickLogIn();
     await expect(logIn.menuBar.isLogged()).toBe(false);
-    return expect(logIn.notification.isError()).toBe(true);
+    return logIn.notification.assertIsError();
   });
 
   it('should not be able to login with wrong password', async () => {
@@ -33,7 +33,7 @@ describe('Log in', () => {
     await logIn.setPassword('1234567');
     await logIn.clickLogIn();
     await expect(logIn.menuBar.isLogged()).toBe(false);
-    return expect(logIn.notification.isError()).toBe(true);
+    return logIn.notification.assertIsError();
   });
 
   it('Log in button should be disabled if username is blank', async () => {

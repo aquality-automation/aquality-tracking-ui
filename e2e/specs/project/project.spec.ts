@@ -50,9 +50,7 @@ describe('Full Admin Project', () => {
     });
 
     it('Message about creation is shown', async () => {
-      await expect(projectList.notification.isSuccess()).toEqual(true);
-      await expect(projectList.notification.getContent()).toEqual(`${project.name} project is created!`);
-      return projectList.notification.close();
+      return projectList.notification.assertIsSuccess(`${project.name} project is created!`);
     });
 
     it(`Project is in list after creation`, async () => {
@@ -77,8 +75,7 @@ describe('Full Admin Project', () => {
       await projectList.clickRemoveProjectButton(project.name);
       await expect(projectList.modal.isVisible()).toEqual(true);
       await projectList.modal.clickYes();
-      await expect(projectList.notification.isSuccess()).toEqual(true);
-      await expect(projectList.notification.getContent()).toEqual(`Project '${project.name}' was deleted.`);
+      await projectList.notification.assertIsSuccess(`Project '${project.name}' was deleted.`);
       return expect(projectList.isProjectInList(project.name)).toEqual(false);
     });
   });

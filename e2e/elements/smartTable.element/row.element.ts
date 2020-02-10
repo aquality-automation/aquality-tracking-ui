@@ -1,4 +1,4 @@
-import { by, Locator, ElementFinder } from 'protractor';
+import { by, Locator, ElementFinder, promise } from 'protractor';
 import { BaseElement } from './../base.element';
 import { Input } from '../input.element';
 import { Checkbox } from '../checkbox.element';
@@ -14,8 +14,12 @@ export class Row extends BaseElement {
         super(locator);
     }
 
-    public clickAction() {
-        return this.element.element(by.css('.row-action-button')).click();
+    public clickAction(): promise.Promise<void> {
+        return this.getActionButton().click();
+    }
+
+    public isActionEnabled(): promise.Promise<boolean> {
+        return this.getActionButton().isEnabled();
     }
 
     public async selectRow() {
@@ -174,6 +178,10 @@ export class Row extends BaseElement {
 
     private getColumns() {
         return this.element.all(by.tagName('td'));
+    }
+
+    private getActionButton(): ElementFinder {
+        return this.element.element(by.css('.row-action-button'));
     }
 }
 

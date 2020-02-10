@@ -55,29 +55,19 @@ describe('Steps:', () => {
                 await stepsList.setCreationName(step.name);
                 await stepsList.setCreationType(step.type);
                 await stepsList.acceptCreation();
-                await expect(stepsList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on save step!');
-                await expect(stepsList.notification.getContent())
-                    .toBe(`The step '${step.name}' was created.`, 'Success meessage is wrong!');
-                return stepsList.notification.close();
+                return stepsList.notification.assertIsSuccess(`The step '${step.name}' was created.`);
             });
 
             it('I can edit step', async () => {
                 await stepsList.updateStepName(editedStep.name, step.name);
-                await expect(stepsList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on update step!');
-                await stepsList.notification.close();
+                await stepsList.notification.assertIsSuccess();
                 await stepsList.updateStepType(editedStep.name, editedStep.type);
-                await expect(stepsList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on update step!');
-                return stepsList.notification.close();
+                return stepsList.notification.assertIsSuccess();
             });
 
             it('I can remove step', async () => {
                 await stepsList.clickRemoveStepButton(editedStep.name);
-                await expect(stepsList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on delete step!');
-                return stepsList.notification.close();
+                return stepsList.notification.assertIsSuccess();
             });
         });
     });

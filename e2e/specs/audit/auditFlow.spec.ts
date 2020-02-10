@@ -61,15 +61,13 @@ describe('Audit:', () => {
                     await auditInfo.modal.clickYes();
                     await expect(auditInfo.getStatus()).toBe(auditInfo.statuses.inProgress, 'Audit is not In Progress status!');
                     await expect(auditInfo.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await auditInfo.notification.close();
+                    return auditInfo.notification.assertIsSuccess();
                 });
 
                 it('Can set Result', async () => {
                     const result = '58';
                     await auditInfo.setResult(result);
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await auditInfo.notification.close();
+                    await auditInfo.notification.assertIsSuccess();
                     await expect(auditInfo.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
                     await browser.refresh();
                     await expect(auditInfo.getResult()).toBe(result, 'Result is not updatet');
@@ -79,8 +77,7 @@ describe('Audit:', () => {
                     const summary = 'Some Text';
                     await auditInfo.setSummary(summary);
                     await auditInfo.clickSaveSummary();
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await auditInfo.notification.close();
+                    await auditInfo.notification.assertIsSuccess();
                     await expect(auditInfo.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
                     await browser.refresh();
                     await expect(auditInfo.getSummary()).toBe(summary, 'Summary is not updatet');
@@ -93,9 +90,7 @@ describe('Audit:', () => {
 
                 it('Can upload attachments', async () => {
                     await auditInfo.uploadAttachment(attachName);
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await expect(auditInfo.notification.getContent()).toBe(`'${attachName}' file was uploaded!`, 'Message is wrong!');
-                    await auditInfo.notification.close();
+                    await auditInfo.notification.assertIsSuccess(`'${attachName}' file was uploaded!`);
                     await expect(auditInfo.isAttachUploaded(attachName)).toBe(true, `${attachName} is not uploaded!`);
                     return expect(auditInfo.isFinishProgressEnabled()).toBe(true, 'Finish progress should be availabe!');
                 });
@@ -107,8 +102,7 @@ describe('Audit:', () => {
                     await expect(auditInfo.modal.isVisible()).toBe(true, 'No Confirmation modal for Finish Audit action!');
                     await auditInfo.modal.clickYes();
                     await expect(auditInfo.getStatus()).toBe(auditInfo.statuses.inReview, 'Audit is not In Review status!');
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await auditInfo.notification.close();
+                    return auditInfo.notification.assertIsSuccess();
                 });
 
                 it('Can add changes to in review audit', async () => {
@@ -136,8 +130,7 @@ describe('Audit:', () => {
                     await expect(auditInfo.modal.isVisible()).toBe(true, 'No Confirmation modal for Submit Audit action!');
                     await auditInfo.modal.clickYes();
                     await expect(auditInfo.getStatus()).toBe(auditInfo.statuses.submitted, 'Audit is not Submitted status!');
-                    await expect(auditInfo.notification.isSuccess()).toBe(true, 'Success message is not shown!');
-                    await auditInfo.notification.close();
+                    await auditInfo.notification.assertIsSuccess();
 
                     if (user.user_name !== auditAdmin.user_name) {
                         await projectList.menuBar.clickLogOut();

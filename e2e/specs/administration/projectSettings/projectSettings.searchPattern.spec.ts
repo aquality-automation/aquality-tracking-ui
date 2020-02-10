@@ -57,11 +57,7 @@ describe('Administartion: Project Settings:', () => {
             await projectSettingsAdministration.selectProject(projectHelper.project.name);
             await projectSettingsAdministration.setImportCompareResultsPattern('\\[error\\]\\n(.*)\\n\\[error\\]');
             await projectSettingsAdministration.clickSave();
-            await expect(projectSettingsAdministration.notification.isSuccess())
-                .toBe(true, 'Success meessage is not shown on save settings!');
-            await expect(projectSettingsAdministration.notification.getContent())
-                .toBe(`'${projectHelper.project.name}' project was updated!`, 'Success meessage is wrong!');
-            await projectSettingsAdministration.notification.close();
+            return projectSettingsAdministration.notification.assertIsSuccess(`'${projectHelper.project.name}' project was updated!`);
         });
 
         it('Results can be inherithed from previous run using Regexp', async () => {

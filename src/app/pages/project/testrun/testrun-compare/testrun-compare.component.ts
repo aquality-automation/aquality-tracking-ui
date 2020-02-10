@@ -15,6 +15,7 @@ import { ResultResolutionService } from '../../../../services/result-resolution.
 import { FinalResultService } from '../../../../services/final_results.service';
 import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { UserService } from '../../../../services/user.services';
+import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: 'testrun-compare.component.html',
@@ -45,8 +46,8 @@ export class TestrunCompareComponent implements OnInit {
     resultsSecond: TestResult[];
     listOfResolutions: ResultResolution[];
     finalResults: FinalResult[];
-    tbCols: any[];
-    tbHiddenCols: any[];
+    tbCols: TFColumn[];
+    tbHiddenCols: TFColumn[];
     diffs: Test[];
     onlyDiffs = true;
     sortBy = { property: 'name', order: 'desc' };
@@ -128,14 +129,13 @@ export class TestrunCompareComponent implements OnInit {
         this.getDiffs();
 
         this.tbCols = [
-            { name: 'Test Name', property: 'name', filter: true, sorting: true, type: 'text', editable: false, class: 'ft-width-180' },
+            { name: 'Test Name', property: 'name', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-180' },
             {
                 name: 'First Fail Reason',
                 property: 'f_result.fail_reason',
                 filter: true,
                 sorting: true,
-                type: 'long-text',
-                editable: false,
+                type: TFColumnType.longtext,
                 listeners: ['contextmenu'],
                 class: 'ft-width-250'
             },
@@ -144,10 +144,12 @@ export class TestrunCompareComponent implements OnInit {
                 property: 'f_result.final_result.name',
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: 'f_result.final_result',
-                values: this.finalResults,
-                editable: false,
+                type: TFColumnType.colored,
+                lookup: {
+                    entity: 'f_result.final_result',
+                    values: this.finalResults,
+                    propToShow: ['name']
+                },
                 class: 'fit width100'
             },
             {
@@ -155,11 +157,12 @@ export class TestrunCompareComponent implements OnInit {
                 property: 'f_result.test_resolution.name',
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: 'f_result.test_resolution',
-                allowEmpty: false,
-                values: this.listOfResolutions,
-                editable: false,
+                type: TFColumnType.colored,
+                lookup: {
+                    entity: 'f_result.test_resolution',
+                    values: this.listOfResolutions,
+                    propToShow: ['name']
+                },
                 class: 'fit'
             },
             {
@@ -167,7 +170,7 @@ export class TestrunCompareComponent implements OnInit {
                 property: 's_result.fail_reason',
                 filter: true,
                 sorting: true,
-                type: 'long-text',
+                type: TFColumnType.longtext,
                 editable: false,
                 listeners: ['contextmenu'],
                 class: 'ft-width-250'
@@ -177,9 +180,12 @@ export class TestrunCompareComponent implements OnInit {
                 property: 's_result.final_result.name',
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: 's_result.final_result',
-                values: this.finalResults,
+                type: TFColumnType.colored,
+                lookup: {
+                    entity: 's_result.final_result',
+                    values: this.finalResults,
+                    propToShow: ['name']
+                },
                 editable: false,
                 class: 'fit width100'
             },
@@ -188,11 +194,12 @@ export class TestrunCompareComponent implements OnInit {
                 property: 's_result.test_resolution.name',
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: 's_result.test_resolution',
-                allowEmpty: false,
-                values: this.listOfResolutions,
-                editable: false,
+                type: TFColumnType.colored,
+                lookup: {
+                    entity: 's_result.test_resolution',
+                    values: this.listOfResolutions,
+                    propToShow: ['name']
+                },
                 class: 'fit'
             }
         ];
@@ -203,23 +210,21 @@ export class TestrunCompareComponent implements OnInit {
                 property: 'f_result.assigned_user.user',
                 filter: true,
                 sorting: true,
-                type: 'lookup-autocomplete',
-                propToShow: ['user.first_name', 'user.second_name'],
-                entity: 'f_result.assigned_user',
-                allowEmpty: true,
-                placeholder: 'Unassinged',
-                objectWithId: 'f_result.assigned_user.user',
-                values: this.users,
-                editable: false,
+                type: TFColumnType.autocomplete,
+                lookup: {
+                    entity: 'f_result.assigned_user',
+                    propToShow: ['user.first_name', 'user.second_name'],
+                    placeholder: 'Unassinged',
+                    objectWithId: 'f_result.assigned_user.user',
+                    values: this.users,
+                },
                 class: 'fit'
             },
             {
                 name: 'First Comment',
                 property: 'f_result.comment',
                 filter: true,
-                sorting: false,
-                type: 'textarea',
-                editable: false,
+                type: TFColumnType.textarea,
                 class: 'ft-width-250'
             },
             {
@@ -227,23 +232,20 @@ export class TestrunCompareComponent implements OnInit {
                 property: 's_result.assigned_user.user',
                 filter: true,
                 sorting: true,
-                type: 'lookup-autocomplete',
-                propToShow: ['user.first_name', 'user.second_name'],
-                entity: 's_result.assigned_user',
-                allowEmpty: true,
-                placeholder: 'Unassinged',
-                objectWithId: 's_result.assigned_user.user',
-                values: this.users,
-                editable: false,
+                type: TFColumnType.autocomplete,
+                lookup: {
+                    values: this.users,
+                    entity: 's_result.assigned_user',
+                    propToShow: ['user.first_name', 'user.second_name'],
+                    objectWithId: 's_result.assigned_user.user',
+                },
                 class: 'fit'
             },
             {
                 name: 'Second Comment',
                 property: 's_result.comment',
                 filter: true,
-                sorting: false,
-                type: 'textarea',
-                editable: false,
+                type: TFColumnType.textarea,
                 class: 'ft-width-250'
             },
         ];

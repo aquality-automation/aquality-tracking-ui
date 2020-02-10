@@ -3,6 +3,7 @@ import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './list-milestone.component.html',
@@ -23,7 +24,7 @@ export class ListMilestoneComponent implements OnInit {
   canEdit: boolean;
   milestones: Milestone[];
   milestoneToRemove: Milestone;
-  columns: any[];
+  columns: TFColumn[];
   projectId: number;
 
   public defSort = { property: 'name', order: 'desc' };
@@ -36,20 +37,20 @@ export class ListMilestoneComponent implements OnInit {
       {
         name: 'Id',
         property: 'id',
-        filter: false,
         sorting: true,
-        type: 'text',
-        editable: false,
+        type: TFColumnType.text,
         class: 'fit',
-        excludeCreation: true
       }, {
         name: 'Name',
         property: 'name',
         filter: true,
         sorting: true,
-        type: 'text',
+        type: TFColumnType.text,
         editable: this.canEdit,
-        creationLength: '500'
+        creation: {
+          creationLength: 500,
+          required: true
+        }
       }];
   }
 

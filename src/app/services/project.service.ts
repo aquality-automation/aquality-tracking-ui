@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { Project, ImportBodyPattern } from '../shared/models/project';
+import { Project, ImportBodyPattern, PredefinedResolution } from '../shared/models/project';
 
 
 @Injectable()
@@ -44,6 +44,24 @@ export class ProjectService extends SimpleRequester {
   }
 
   createAPIToken(project: Project) {
-    return this.doGet(`/project/apiToken`, {id: project.id}).map(res => res.json());
+    return this.doGet(`/project/apiToken`, { id: project.id }).map(res => res.json());
+  }
+
+  createPredefinedResolution(predefinedResolution: PredefinedResolution) {
+    if (predefinedResolution.resolution) {
+      predefinedResolution.resolution_id = predefinedResolution.resolution.id;
+    }
+    if (predefinedResolution.assigned_user) {
+      predefinedResolution.assignee = predefinedResolution.assigned_user.id;
+    }
+    return this.doPost(`/project/predefined-resolution`, predefinedResolution).map(res => res.json()).toPromise();
+  }
+
+  getPredefinedResolution(predefinedResolution: PredefinedResolution) {
+    return this.doGet(`/project/predefined-resolution`, predefinedResolution).map(res => res.json()).toPromise();
+  }
+
+  removePredefinedResolution(predefinedResolution: PredefinedResolution) {
+    return this.doDelete(`/project/predefined-resolution`, predefinedResolution).map(res => res).toPromise();
   }
 }

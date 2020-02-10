@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuditService } from '../../../services/audits.service';
 import { Audit, Service } from '../../../shared/models/audit';
 import { UserService } from '../../../services/user.services';
+import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './audit.project.component.html',
@@ -18,7 +19,7 @@ export class AuditProjectComponent implements OnInit {
   project: Project;
   redirect: any;
   public data: Audit[];
-  public columns;
+  public columns: TFColumn[];
   public defSort = { property: 'created', order: 'asc' };
 
   constructor(
@@ -46,33 +47,34 @@ export class AuditProjectComponent implements OnInit {
                 property: 'service.name',
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: 'service',
-                values: this.services,
-                editable: false,
+                type: TFColumnType.colored,
+                lookup: {
+                  entity: 'service',
+                  values: this.services,
+                  propToShow: ['name']
+                },
                 class: 'fit'
               },
-              { name: 'Status', property: 'status.name', filter: false, type: 'text', editable: false },
-              { name: 'Created', property: 'created', filter: false, sorting: true, type: 'date', editable: false },
-              { name: 'Started', property: 'started', filter: false, sorting: true, type: 'date', editable: false },
-              { name: 'Progress Finished', property: 'progress_finished', filter: false, sorting: true, type: 'date', editable: false },
-              { name: 'Submitted', property: 'submitted', filter: false, sorting: true, type: 'date', editable: false },
+              { name: 'Status', property: 'status.name', type: TFColumnType.text},
+              { name: 'Created', property: 'created', sorting: true, type: TFColumnType.date },
+              { name: 'Started', property: 'started', sorting: true, type: TFColumnType.date },
+              { name: 'Progress Finished', property: 'progress_finished', sorting: true, type: TFColumnType.date },
+              { name: 'Submitted', property: 'submitted', sorting: true, type: TFColumnType.date },
               {
                 name: 'Result, %',
                 property: 'result',
-                filter: false,
                 sorting: true,
-                type: 'text',
-                editable: false
+                type: TFColumnType.text
               },
               {
                 name: 'Auditors',
                 property: 'auditors',
-                filter: true,
-                sorting: false,
-                type: 'multiselect',
-                propToShow: ['first_name', 'second_name'],
-                editable: false
+                type: TFColumnType.multiselect,
+                lookup: {
+                  entity: 'auditors',
+                  values: this.services,
+                  propToShow: ['first_name', 'second_name'],
+                }
               }
             ];
           });

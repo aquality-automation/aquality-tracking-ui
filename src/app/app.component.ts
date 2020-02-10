@@ -9,6 +9,7 @@ import { Project } from './shared/models/project';
 import { ProjectService } from './services/project.service';
 import { ApplicationSettingsService } from './services/applicationSettings.service';
 import { Navigation } from './shared/models/navigation.model';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from './services/current-permissions.service';
 
 declare var require: any;
 const { version: appVersion } = require('../../package.json');
@@ -52,7 +53,8 @@ export class AppComponent {
     public globaldata: GlobalDataService,
     public userService: UserService,
     public projectService: ProjectService,
-    public settingsService: ApplicationSettingsService
+    public settingsService: ApplicationSettingsService,
+    private permissionsService: PermissionsService
   ) {
     this.appVersion = appVersion;
     this.globaldata.showLoader.subscribe(value => {
@@ -72,10 +74,10 @@ export class AppComponent {
       }, {
         name: 'Audits',
         link: '/audit',
-        show: this.isLogged
-          && this.globaldata.auditModule
+        show: this.globaldata.auditModule
           && !this.projectId
-          && (this.userService.IsManager() || this.userService.IsAuditor() || this.userService.IsAuditAdmin()),
+          && (await this.permissionsService.hasPermissions(
+            [EGlobalPermissions.manager, EGlobalPermissions.audit_admin, EGlobalPermissions.auditor])),
         routerOptions: { exact: false }
       }, {
         name: this.currentProject ? this.currentProject.name : '',
@@ -119,9 +121,10 @@ export class AppComponent {
         routerOptions: { exact: true }
       }, {
         name: 'Create',
-        show: this.isLogged
-          && this.projectId
-          && (this.userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || this.userService.IsManager()),
+        show: this.projectId
+          && (await this.permissionsService.hasPermissions(
+            [EGlobalPermissions.manager],
+            [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager])),
         children: [{
           name: 'Milestone',
           link: `/project/${this.projectId}/create/milestone`,
@@ -142,27 +145,21 @@ export class AppComponent {
       }, {
         name: 'Import',
         link: `/project/${this.projectId}/import`,
-        show: this.isLogged
-          && this.projectId
-          && (this.userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || this.userService.IsManager()),
+        show: this.projectId && (await this.permissionsService.hasPermissions(
+          [EGlobalPermissions.manager],
+          [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager])),
         routerOptions: { exact: false }
       }, {
         name: 'Audits',
         link: `/audit/${this.projectId}`,
-        show: this.isLogged
-          && this.globaldata.auditModule
-          && this.projectId
-          && (!this.userService.IsManager()
-            && !this.userService.IsAuditor()
-            && !this.userService.IsAuditAdmin()
-            && this.userService.HaveAnyLocalPermissions !== undefined),
+        show: (await this.permissionsService.hasPermissions(undefined,
+          [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]))
+          && this.projectId && this.globaldata.auditModule,
         routerOptions: { exact: true }
       }, {
         name: 'Audits',
-        show: this.isLogged
-          && this.globaldata.auditModule
-          && this.projectId
-          && (this.userService.IsManager() || this.userService.IsAuditor() || this.userService.IsAuditAdmin()),
+        show: (await this.permissionsService.hasPermissions([EGlobalPermissions.manager, EGlobalPermissions.auditor,
+        EGlobalPermissions.audit_admin])) && this.projectId && this.globaldata.auditModule,
         children: [{
           name: 'Dashboard',
           link: `/audit`,
@@ -175,11 +172,8 @@ export class AppComponent {
       }, {
         name: 'Customers',
         link: '/customer',
-        show: this.isLogged
-          && (this.userService.IsHead()
-            || this.userService.IsUnitCoordinator()
-            || this.userService.IsAccountManager()
-            || this.globaldata.teamMember),
+        show: await this.permissionsService.hasPermissions([EGlobalPermissions.head, EGlobalPermissions.unit_coordinator,
+        EGlobalPermissions.account_manager]),
         routerOptions: { exact: false }
       }
     ];
@@ -195,10 +189,8 @@ export class AppComponent {
         }, {
           name: 'Administration',
           link: `/administration`,
-          show: this.userService.IsAdmin()
-            || this.userService.IsManager()
-            || this.userService.IsLocalAdmin()
-            || this.userService.IsLocalManager()
+          show: await this.permissionsService.hasPermissions([EGlobalPermissions.admin, EGlobalPermissions.manager],
+            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer])
         }, {
           name: 'Report an Issue',
           href: `https://github.com/aquality-automation/aquality-tracking/issues`,

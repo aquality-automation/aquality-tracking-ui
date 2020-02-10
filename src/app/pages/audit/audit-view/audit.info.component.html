@@ -1,6 +1,6 @@
 <div id="audit-info-page" *ngIf="audit" class="panel-heading">
   <simple-popup *ngIf="!hideModal" [title]="modalTitle" [message]="modalMessage" [type]="'warning'" [buttons]="buttons"
-    (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+    (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
   <div class="row">
     <div class="col-md-9">
       <h2>Audit Info - {{audit.project.name}}</h2>

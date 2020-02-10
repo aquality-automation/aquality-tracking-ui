@@ -4,6 +4,7 @@ import { UserService } from '../../../services/user.services';
 import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../shared/models/customer';
 import { User } from '../../../shared/models/user';
+import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: 'customer.component.html',
@@ -15,7 +16,7 @@ export class CustomerComponent implements OnInit {
     accountManagers: User[];
     users: User[];
     defSort = { property: 'name', order: 'desc' };
-    columns;
+    columns: TFColumn[];
     customerToRemove: Customer;
     hideModal = true;
     removeModalTitle: string;
@@ -36,17 +37,17 @@ export class CustomerComponent implements OnInit {
                 this.coordinators = result.filter(x => x.unit_coordinator === 1);
                 this.accountManagers = result.filter(x => x.account_manager === 1);
                 this.columns = [
-                    { name: 'Customer Name', property: 'name', filter: true, sorting: true, type: 'text', editable: false },
+                    { name: 'Customer Name', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
                     {
                         name: 'Unit Coordinator',
                         property: 'coordinator',
-                        entity: 'coordinator',
                         filter: true,
-                        sorting: false,
-                        type: 'lookup-autocomplete',
-                        propToShow: ['first_name', 'second_name'],
-                        values: this.coordinators,
-                        editable: false,
+                        type: TFColumnType.autocomplete,
+                        lookup: {
+                            entity: 'coordinator',
+                            propToShow: ['first_name', 'second_name'],
+                            values: this.coordinators,
+                        },
                         class: 'ft-width-150'
                     },
                     {
@@ -54,8 +55,7 @@ export class CustomerComponent implements OnInit {
                         property: 'projects_count',
                         filter: true,
                         sorting: true,
-                        type: 'percent',
-                        editable: false,
+                        type: TFColumnType.percent,
                         class: 'fit'
                     }
                 ];
@@ -90,7 +90,7 @@ export class CustomerComponent implements OnInit {
         this.hideModal = true;
     }
 
-    wasClosed($event) {
-        this.hideModal = $event;
+    wasClosed() {
+        this.hideModal = true;
     }
 }

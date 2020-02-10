@@ -9,6 +9,7 @@ import { AuditCreateComponent } from './audit-create/audit.create.component';
 import { AuditInfoComponent } from './audit-view/audit.info.component';
 import { AuditProjectComponent } from './audit-project-list/audit.project.component';
 import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard } from '../../shared/guards/audit-guard.service';
+import { GuardService } from '../../shared/guards/guard.service';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard } from '../../
   providers: [
     AuditCreateGuard,
     AuditProjectGuard,
-    AuditDashboardGuard
+    AuditDashboardGuard,
+    GuardService
   ]
 })
 

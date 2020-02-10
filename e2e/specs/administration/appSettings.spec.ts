@@ -56,20 +56,14 @@ describe('Full Admin Administartion User Flow', () => {
             await userAdministration.sidebar.appSettings();
             await appSettings.setDefaultEmailPattern('@wrongPattern.test');
             await appSettings.saveEmailSettings();
-            await expect(appSettings.notification.isError()).toEqual(true);
-            await expect(appSettings.notification.getContent())
-                .toEqual(Constants.emailPatternErrorMessage);
-            await expect(appSettings.notification.getHeader())
-                .toEqual(Constants.emailPatternErrorMessageHeader);
-            return appSettings.notification.close();
+            return appSettings.notification.assertIsError(Constants.emailPatternErrorMessage, Constants.emailPatternErrorMessageHeader);
         });
 
         it('I can see success message when Email Pattern is correct', async () => {
             await userAdministration.sidebar.appSettings();
             await appSettings.setDefaultEmailPattern('%LN%%LN{2}%.%FN%%FN{2}%.%LASTNAME%.%FIRSTNAME%@p.t');
             await appSettings.saveEmailSettings();
-            await expect(appSettings.notification.isSuccess()).toEqual(true);
-            return appSettings.notification.close();
+            return appSettings.notification.assertIsSuccess();
         });
 
         it('When creating user pattern is applied', async () => {
@@ -87,8 +81,7 @@ describe('Full Admin Administartion User Flow', () => {
             await userAdministration.sidebar.appSettings();
             await appSettings.clearDefaultEmailPattern();
             await appSettings.saveEmailSettings();
-            await expect(appSettings.notification.isSuccess()).toEqual(true);
-            return appSettings.notification.close();
+            return appSettings.notification.assertIsSuccess();
         });
 
         it('When creating user and pattern is blank email and user name are not changed', async () => {

@@ -35,20 +35,16 @@ describe('Full Admin Test Suite List', () => {
 
   it('Green notification appears and suite is created', async () => {
     await suiteList.acceptCreation();
-    await expect(suiteList.notification.isSuccess()).toEqual(true);
-    await expect(suiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was created!`);
-    await expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
-    await suiteList.notification.close();
+    await suiteList.notification.assertIsSuccess(`Suite '${suite.name}' was created!`);
+    return expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
   });
 
   it('Green notification appears and suite is updated', async () => {
     const newName = `${suite.name} New`;
     await suiteList.updateSuiteName(newName, suite.name);
     suite.name = newName;
-    await expect(suiteList.notification.isSuccess()).toEqual(true);
-    await expect(suiteList.notification.getContent()).toEqual(`Suite '${suite.name}' was updated!`);
-    await expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
-    await suiteList.notification.close();
+    await suiteList.notification.assertIsSuccess(`Suite '${suite.name}' was updated!`);
+    return expect(suiteList.isTestSuitePresent(suite.name)).toEqual(true);
   });
 
   it('Suite is still updated after refresh', async () => {
@@ -60,9 +56,7 @@ describe('Full Admin Test Suite List', () => {
     await suiteList.openCreationRow();
     await suiteList.setCreationName(suite.name);
     await suiteList.acceptCreation();
-    await expect(suiteList.notification.isError()).toEqual(true);
-    await expect(suiteList.notification.getContent()).toEqual(`You are trying to create duplicate entity.`);
-    await suiteList.notification.close();
+    return suiteList.notification.assertIsError(`You are trying to create duplicate entity.`);
   });
 
   it('Suite should be opened after click on row', async () => {

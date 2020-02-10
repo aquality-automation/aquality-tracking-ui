@@ -1,10 +1,10 @@
 <div *ngIf="testSuite" class="panel-heading">
   <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
-    (closed)="wasClosed($event)"></simple-popup>
+    (closed)="wasClosed()"></simple-popup>
   <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [tests]="testSuite.tests"
     [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="moveToExecute($event)"
-    (closed)="moveToWasClosed($event)"></move-test-modal>
+    (closed)="moveTowasClosed()"></move-test-modal>
   <sync-suite-modal *ngIf="syncTestsModal" [suites]="testSuites" (execute)="syncTests($event)"
     (closed)="syncSuiteClosed($event)" [suite]="selectedTestSuite"></sync-suite-modal>
   <div class="row">

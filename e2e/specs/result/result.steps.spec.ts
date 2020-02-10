@@ -79,16 +79,12 @@ describe('Result Steps:', () => {
 
             it('I can set result for the step', async () => {
                 await testResultView.setStepResult(step1.name, results.failed.name);
-                await testResultView.notification.isSuccess();
-                await expect(testResultView.notification.getContent()).toBe(`The step result '${step1.name}' was updated.`);
-                return testResultView.notification.close();
+                return testResultView.notification.assertIsSuccess(`The step result '${step1.name}' was updated.`);
             });
 
             it('I can set comment for the step', async () => {
                 await testResultView.setStepComment(step1.name, 'Unathorized user can not open project page.');
-                await testResultView.notification.isSuccess();
-                await expect(testResultView.notification.getContent()).toBe(`The step result '${step1.name}' was updated.`);
-                return testResultView.notification.close();
+                return testResultView.notification.assertIsSuccess(`The step result '${step1.name}' was updated.`);
             });
 
             it('I can set result for the step in a bulk', async () => {
@@ -108,9 +104,7 @@ describe('Result Steps:', () => {
 
             it('I can add image attachmet to the step', async () => {
                 await testResultView.addAttachToStep(testData.getFullPath(`/attachments/${imageAttachName}`), step2.name);
-                await testResultView.notification.isSuccess();
-                await expect(testResultView.notification.getContent()).toBe(`The step result '${step2.name}' was updated.`);
-                await testResultView.notification.close();
+                await testResultView.notification.assertIsSuccess(`The step result '${step2.name}' was updated.`);
                 return expect(testResultView.isAttachAddedToStep(step2.name)).toBe(true, 'Attach is not added!');
             });
 
@@ -124,9 +118,7 @@ describe('Result Steps:', () => {
             it('I can change attachmet', async () => {
                 await expect(testResultView.isChangeAttachExistsForStep(step2.name)).toBe(true, 'Change Attach is not exist!');
                 await testResultView.addAttachToStep(testData.getFullPath(`/attachments/${docAttachName}`), step2.name);
-                await testResultView.notification.isSuccess();
-                await expect(testResultView.notification.getContent()).toBe(`The step result '${step2.name}' was updated.`);
-                return testResultView.notification.close();
+                return testResultView.notification.assertIsSuccess(`The step result '${step2.name}' was updated.`);
             });
 
             it('I can download not image attachment', async () => {
@@ -138,9 +130,7 @@ describe('Result Steps:', () => {
 
             it('I can remove attachment', async () => {
                 await testResultView.removeAttachForStep(step2.name);
-                await testResultView.notification.isSuccess();
-                await expect(testResultView.notification.getContent()).toBe(`The step result '${step2.name}' was updated.`);
-                await testResultView.notification.close();
+                await testResultView.notification.assertIsSuccess(`The step result '${step2.name}' was updated.`);
                 await expect(testResultView.isChangeAttachExistsForStep(step2.name)).toBe(false, 'Change Attach is not removed!');
             });
         });

@@ -3,7 +3,7 @@ import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
 import { userAdministration } from '../../pages/administration/users.po';
 import { permissionsAdministration } from '../../pages/administration/permissions.po';
-import { notFound } from '../../pages/notFound.po';
+import { predefinedResolutions } from '../../pages/administration/predefinedResolutions.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
@@ -60,10 +60,7 @@ describe('Administartion:', () => {
                 await permissionsAdministration.setAdmin(true);
                 await permissionsAdministration.setManager(true);
                 await permissionsAdministration.clickCreate();
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on create!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe('Permissions were updated.', 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await expect(permissionsAdministration.isUserDisplayed(tempUser.user_name)).toBe(true, 'User was not added!');
                 const data = await permissionsAdministration.getPermissionData(tempUser);
                 await expect(data[permissionsAdministration.columns.admin]).toBe(true,
@@ -77,10 +74,7 @@ describe('Administartion:', () => {
             it('I can edit Permission', async () => {
                 await permissionsAdministration.updateUser(false, permissionsAdministration.columns.admin,
                     tempUser.user_name, permissionsAdministration.columns.username);
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on update!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe('Permissions were updated.', 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await permissionsAdministration.updateUser(false, permissionsAdministration.columns.manager,
                     tempUser.user_name, permissionsAdministration.columns.username);
                 await permissionsAdministration.updateUser(true, permissionsAdministration.columns.engineer,
@@ -100,10 +94,8 @@ describe('Administartion:', () => {
             it('I can remove Permission', async () => {
                 await permissionsAdministration.clickRemoveUserButton(tempUser.user_name);
                 await permissionsAdministration.modal.clickYes();
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on create!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe(`Permissions for '${tempUser.first_name} ${tempUser.second_name}' were deleted.`, 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification
+                    .assertIsSuccess(`Permissions for '${tempUser.first_name} ${tempUser.second_name}' were deleted.`);
                 return expect(permissionsAdministration.isUserDisplayed(tempUser.user_name)).toBe(false, 'User was not removed!');
             });
         });
@@ -117,14 +109,15 @@ describe('Administartion:', () => {
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                return expect((await projectList.menuBar.user()).isAdministrationExists())
-                    .toBe(false, `Administartion should not be visible for ${description}`);
+                await (await projectList.menuBar.user()).administration();
+                return expect(permissionsAdministration.sidebar.isPermissionsExist())
+                    .toBe(false, `Permissions should not be visible for ${description}`);
             });
 
             it('I can not Open Permissions page using url', async () => {
                 await permissionsAdministration.navigateTo();
                 await expect(permissionsAdministration.isOpened()).toBe(false, `Permissions page is opened for ${description}`);
-                return expect(notFound.isOpened()).toBe(true, `404 page is not opened for ${description}`);
+                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
             });
         });
     });

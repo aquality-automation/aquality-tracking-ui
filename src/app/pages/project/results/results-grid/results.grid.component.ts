@@ -12,6 +12,7 @@ import { ResultSearcherComponent } from '../results-searcher/results.searcher.co
 import { FinalResult } from '../../../../shared/models/final-result';
 import { FinalResultService } from '../../../../services/final_results.service';
 import { TestRunService } from '../../../../services/testRun.service';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   selector: 'results-grid',
@@ -38,9 +39,9 @@ export class ResultGridComponent implements OnInit {
   public showSearcher = false;
   public searcherText = '';
   redirect: { url: string, property: string };
-  public tbCols: any[];
-  public tbHiddenCols: any[];
-  public allColumns: any[];
+  public tbCols: TFColumn[];
+  public tbHiddenCols: TFColumn[];
+  public allColumns: TFColumn[];
   canEdit: boolean;
 
   constructor(
@@ -72,15 +73,17 @@ export class ResultGridComponent implements OnInit {
           result['testrun'] = testruns.find(x => x.id === result.test_run_id);
         });
         this.allColumns = [
-          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Build Name', property: 'testrun.build_name', filter: true, sorting: true, type: 'text', class: 'ft-width-150' },
+          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.text, class: 'fit' },
+          {
+            name: 'Build Name', property: 'testrun.build_name', filter: true,
+            sorting: true, type: TFColumnType.text, class: 'ft-width-150'
+          },
           {
             name: 'Test Name',
             property: 'test.name',
             filter: true,
             sorting: true,
-            type: 'text',
-            editable: false,
+            type: TFColumnType.text,
             class: 'ft-width-150'
           },
           {
@@ -88,8 +91,7 @@ export class ResultGridComponent implements OnInit {
             property: 'fail_reason',
             filter: true,
             sorting: true,
-            type: 'long-text',
-            editable: false,
+            type: TFColumnType.longtext,
             listeners: ['contextmenu'],
             class: 'ft-width-250'
           },
@@ -98,10 +100,12 @@ export class ResultGridComponent implements OnInit {
             property: 'final_result.name',
             filter: true,
             sorting: true,
-            type: 'lookup-colored',
-            entity: 'final_result',
-            values: this.finalResults,
-            editable: false,
+            type: TFColumnType.colored,
+            lookup: {
+              entity: 'final_result',
+              values: this.finalResults,
+              propToShow: ['name']
+            },
             class: 'fit'
           },
           {
@@ -109,10 +113,12 @@ export class ResultGridComponent implements OnInit {
             property: 'test_resolution.name',
             filter: true,
             sorting: true,
-            type: 'lookup-colored',
-            entity: 'test_resolution',
-            allowEmpty: false,
-            values: this.listOfResolutions,
+            type: TFColumnType.colored,
+            lookup: {
+              entity: 'test_resolution',
+              values: this.listOfResolutions,
+              propToShow: ['name']
+            },
             editable: this.canEdit,
             bulkEdit: true,
             class: 'fit'
@@ -121,14 +127,15 @@ export class ResultGridComponent implements OnInit {
             name: 'Assignee',
             property: 'assigned_user.user',
             filter: true,
-            sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'assigned_user',
-            allowEmpty: true,
+            type: TFColumnType.autocomplete,
+            lookup: {
+              propToShow: ['user.first_name', 'user.second_name'],
+              entity: 'assigned_user',
+              allowEmpty: true,
+              objectWithId: 'assigned_user.user',
+              values: this.users,
+            },
             nullFilter: true,
-            objectWithId: 'assigned_user.user',
-            values: this.users,
             editable: this.canEdit,
             bulkEdit: true,
             class: 'fit'
@@ -138,7 +145,7 @@ export class ResultGridComponent implements OnInit {
             property: 'comment',
             filter: true,
             sorting: false,
-            type: 'textarea',
+            type: TFColumnType.textarea,
             editable: this.canEdit,
             bulkEdit: true,
             class: 'ft-width-150'
@@ -148,19 +155,20 @@ export class ResultGridComponent implements OnInit {
             property: 'developer.user',
             filter: true,
             sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'developer',
+            type: TFColumnType.autocomplete,
+            lookup: {
+              propToShow: ['user.first_name', 'user.second_name'],
+              entity: 'developer',
+              objectWithId: 'developer.user',
+              values: this.users,
+            },
             nullFilter: true,
-            objectWithId: 'developer.user',
-            values: this.users,
-            editable: false,
             class: 'fit'
           },
-          { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Updated', property: 'updated', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', editable: false, class: 'fit' },
-          { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: this.canEdit, class: 'fit' }
+          { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+          { name: 'Updated', property: 'updated', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' },
+          { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' }
         ];
         this.tbCols = this.allColumns.filter(x => this.showOnly.includes(x.name));
         this.tbHiddenCols = this.allColumns.filter(x => !this.showOnly.includes(x.name));

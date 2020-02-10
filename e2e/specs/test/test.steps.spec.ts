@@ -73,9 +73,7 @@ describe('Test Steps:', () => {
             it('I can create step inline', async () => {
                 await testView.steps.setAddStepType(testView.steps.stepTypes.then);
                 await testView.steps.createAddStep(customStep3.name);
-                await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on create step!');
-                await expect(testView.notification.getContent()).toBe(`The step '${customStep3.name}' was created.`);
-                await testView.notification.close();
+                await testView.notification.assertIsSuccess(`The step '${customStep3.name}' was created.`);
                 await testView.steps.acceptAddStep();
                 return expect(testView.steps.isStepAdded(testView.steps.stepTypes.then, customStep3.name))
                     .toBe(true, 'Existing Step Was not added!');
@@ -88,9 +86,7 @@ describe('Test Steps:', () => {
                 await testView.steps.acceptAddStep();
                 await testView.steps.changeStepOrder(customStep2.name, customStep3.name);
                 await testView.copyScenario();
-                await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on copy Scenario!');
-                await expect(testView.notification.getContent()).toBe(`'${customTest.name}' scenario was copied!`);
-                await testView.notification.close();
+                await testView.notification.assertIsSuccess(`'${customTest.name}' scenario was copied!`);
                 return expect(getClipboardText()).toBe(fullScenario(description));
             });
 
@@ -102,9 +98,7 @@ describe('Test Steps:', () => {
 
             it('I can save changes', async () => {
                 await testView.steps.saveChages();
-                await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on save!');
-                await expect(testView.notification.getContent()).toBe(`Test steps were updated!`);
-                return testView.notification.close();
+                return testView.notification.assertIsSuccess(`Test steps were updated!`);
             });
 
             it('I not notified about not saved changes after saving changes', async () => {
@@ -131,9 +125,7 @@ describe('Test Steps:', () => {
             it('I can remove step', async () => {
                 await testView.steps.removeStep(step1.name);
                 await testView.steps.saveChages();
-                await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on save!');
-                await expect(testView.notification.getContent()).toBe(`Test steps were updated!`);
-                await testView.notification.close();
+                await testView.notification.assertIsSuccess(`Test steps were updated!`);
                 return expect(testView.steps.isStepAdded(testView.steps.stepTypes.given, step1.name))
                 .toBe(false, 'Step was not removed!');
             });
@@ -161,9 +153,7 @@ describe('Test Steps:', () => {
 
             it('I can copy scenario', async () => {
                 await testView.copyScenario();
-                await expect(testView.notification.isSuccess()).toBe(true, 'Notification is not shown on copy Scenario!');
-                await expect(testView.notification.getContent()).toBe(`'${customTest.name}' scenario was copied!`);
-                await testView.notification.close();
+                await testView.notification.assertIsSuccess(`'${customTest.name}' scenario was copied!`);
                 return expect(getClipboardText()).toBe(viewerScenario(description));
             });
         });

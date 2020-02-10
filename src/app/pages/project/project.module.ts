@@ -16,7 +16,7 @@ import {
   TestResultGuard,
   ProjectImportGuard,
   MilestoneGuard
-} from '../../shared/guards/auth-guard.service';
+} from '../../shared/guards/project-guard.service';
 import { ProjectService } from '../../services/project.service';
 import { projectRouting } from './project.routing';
 import { UserService } from '../../services/user.services';

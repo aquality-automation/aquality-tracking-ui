@@ -9,7 +9,7 @@
     [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
     (execute)="execute($event)"
-    (closed)="wasClosed($event)"></simple-popup>
+    (closed)="wasClosed()"></simple-popup>
     <table-filter *ngIf="testSuites" id="suites-table" #table
     [rowsOnPageSet]="[5,10,20]"
     [rowsOnPage]="20"

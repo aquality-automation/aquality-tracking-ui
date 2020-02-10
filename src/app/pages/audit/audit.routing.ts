@@ -1,10 +1,10 @@
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from '../../shared/guards/auth-guard.service';
 import { AuditComponent } from './audit-list/audit.component';
 import { AuditProjectComponent } from './audit-project-list/audit.project.component';
 import { AuditInfoComponent } from './audit-view/audit.info.component';
 import { AuditCreateComponent } from './audit-create/audit.create.component';
 import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard} from '../../shared/guards/audit-guard.service';
+import { AuthGuard } from '../../shared/guards/login-guard.service';
 
 const auditRoutes: Routes = [
   {

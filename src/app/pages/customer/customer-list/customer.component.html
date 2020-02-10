@@ -1,5 +1,5 @@
 <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
-  (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+  (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
 
 <div class="panel-heading page">
   <div class="row clearfix">

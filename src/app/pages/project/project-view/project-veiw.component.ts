@@ -10,6 +10,7 @@ import { TestRunStat } from '../../../shared/models/testrunStats';
 import { AuditService } from '../../../services/audits.service';
 import { Audit, AuditNotification } from '../../../shared/models/audit';
 import { GlobalDataService } from '../../../services/globaldata.service';
+import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './project-view.component.html',
@@ -30,7 +31,7 @@ export class ProjectViewComponent implements OnInit {
   hideAll = true;
   auditNotification: AuditNotification;
   notification: { text: string, type: string };
-  columns: any[];
+  columns: TFColumn[];
 
   constructor(
     public globaldata: GlobalDataService,
@@ -60,11 +61,11 @@ export class ProjectViewComponent implements OnInit {
         testrun['failed'] = this.getNumberOfFails(testrun.id);
       });
       this.columns = [
-        { name: 'Build Name', property: 'build_name', type: 'text' },
-        { name: 'Execution Environment', property: 'execution_environment', type: 'text' },
-        { name: 'Start Time', property: 'start_time', type: 'date', class: 'fit' },
-        { name: 'Finish Time', property: 'finish_time', type: 'date', class: 'fit' },
-        { name: 'Pass Rate, %', property: 'failed', type: 'text', class: 'fit' },
+        { name: 'Build Name', property: 'build_name', type: TFColumnType.text },
+        { name: 'Execution Environment', property: 'execution_environment', type: TFColumnType.text },
+        { name: 'Start Time', property: 'start_time', type: TFColumnType.date, class: 'fit' },
+        { name: 'Finish Time', property: 'finish_time', type: TFColumnType.date, class: 'fit' },
+        { name: 'Pass Rate, %', property: 'failed', type: TFColumnType.text, class: 'fit' },
       ];
     });
   }

@@ -117,7 +117,7 @@ export class TestRunViewComponent implements OnInit {
     this.hidePrintModal = true;
   }
 
-  wasClosed($event) {
+  wasClosed() {
     this.hideNotifyModal = true;
     this.hidePrintModal = true;
   }

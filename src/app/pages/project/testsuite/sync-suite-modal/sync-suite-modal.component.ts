@@ -5,6 +5,7 @@ import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestSuite } from '../../../../shared/models/testSuite';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 import { TestSuiteService } from '../../../../services/testSuite.service';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
     selector: 'sync-suite-modal',
@@ -26,13 +27,13 @@ export class SyncSuiteModalComponent extends BasePopupComponent implements OnIni
     testsToSync: Test[] = [];
     notExecutedFor = 5;
     removeNotExecuted = true;
-    cols = [
+    cols: TFColumn[] = [
         {
             name: 'Name',
             property: 'name',
             filter: true,
             sorting: true,
-            type: 'text'
+            type: TFColumnType.text
         }
     ];
 

@@ -56,18 +56,12 @@ describe('Milestone List:', () => {
                 await milestoneList.openCreationRow();
                 await milestoneList.setCreationName(milestone.name);
                 await milestoneList.acceptCreation();
-                await expect(milestoneList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on save milestone!');
-                await expect(milestoneList.notification.getContent())
-                    .toBe(`The milestone '${milestone.name}' was created.`, 'Success meessage is wrong!');
-                return milestoneList.notification.close();
+                return milestoneList.notification.assertIsSuccess(`The milestone '${milestone.name}' was created.`);
             });
 
             it('I can edit Milestone', async () => {
                 await milestoneList.updateMilestoneName(editedMilestone.name, milestone.name);
-                await expect(milestoneList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on update milestone!');
-                return milestoneList.notification.close();
+                return milestoneList.notification.assertIsSuccess();
             });
 
             it('I can remove Milestone', async () => {
@@ -75,9 +69,7 @@ describe('Milestone List:', () => {
                 await expect(milestoneList.modal.isPresent())
                     .toBe(true, 'No confirmations modal when trying to delete milestone!');
                 await milestoneList.modal.clickYes();
-                await expect(milestoneList.notification.isSuccess())
-                    .toBe(true, 'Success meessage is not shown on delete milestone!');
-                return milestoneList.notification.close();
+                return milestoneList.notification.assertIsSuccess();
             });
         });
     });
