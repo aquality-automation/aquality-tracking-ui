@@ -152,15 +152,15 @@ export class SmartTable extends BaseElement {
         throw Error('Creation Row is not opened');
     }
 
-    public async clickCreateAction(): promise.Promise<void> {
+    public clickCreateAction(): promise.Promise<void> {
         return this.creationRow.clickAction();
     }
 
-    public async isCreateActionEnabled(): promise.Promise<boolean> {
+    public isCreateActionEnabled(): promise.Promise<boolean> {
         return this.creationRow.isActionEnabled();
     }
 
-    public async clickBulkAction() {
+    public clickBulkAction() {
         return this.bulkEditRow.clickAction();
     }
 
