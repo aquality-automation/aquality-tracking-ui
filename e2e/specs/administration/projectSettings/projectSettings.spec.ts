@@ -1,11 +1,11 @@
 import { projectList } from '../../../pages/project/list.po';
 import { userAdministration } from '../../../pages/administration/users.po';
-import { notFound } from '../../../pages/notFound.po';
 import { ProjectHelper } from '../../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
+import { predefinedResolutions } from '../../../pages/administration/predefinedResolutions.po';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -18,7 +18,7 @@ const notEditorExamples = {
     localEngineer: usersTestData.localEngineer,
 };
 
-describe('Administartion:', () => {
+describe('Administartion: Project Settings:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
@@ -87,14 +87,15 @@ describe('Administartion:', () => {
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {
-                return expect((await projectList.menuBar.user()).isAdministrationExists())
-                    .toBe(false, `Administartion should not be visible for ${description}`);
+                await (await projectList.menuBar.user()).administration();
+                return expect(projectSettingsAdministration.sidebar.isProjectSettingsExist())
+                    .toBe(false, `Project Settings should not be visible for ${description}`);
             });
 
             it('I can not Open Project Settings page using url', async () => {
                 await projectSettingsAdministration.navigateTo();
                 await expect(projectSettingsAdministration.isOpened()).toBe(false, `Project Settings page is opened for ${description}`);
-                return expect(notFound.isOpened()).toBe(true, `404 page is not opened for ${description}`);
+                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
             });
         });
     });

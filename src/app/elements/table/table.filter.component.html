@@ -193,14 +193,14 @@
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 [config]="{empty:'Add ' + col?.name}"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
-                                [maxLength]="col.creation.creationLength ? col.creation.creationLength : '100'" [name]="col.property"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
                                 type="text" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
 
                             <inline-editor [placeholder]="col?.name" *ngIf="(col.type === 'textarea')"
-                                [maxLength]="col.creation.creationLength ? col.creation.creationLength : '100'" [name]="col.property"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
                                 [saveOnEnter]=false type="textarea" trim="blur" [config]="{empty:'Add...'}"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">

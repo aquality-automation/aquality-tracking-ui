@@ -46,7 +46,7 @@ export class ManageColumns extends BaseElement {
     }
 
     async openManageColumns() {
-        const ismanageColumnsButtonExist = await this.manageColumnsButton.isPresent()
+        const ismanageColumnsButtonExist = await this.manageColumnsButton.isPresent();
         if (ismanageColumnsButtonExist) {
             return this.manageColumnsButton.click();
         }

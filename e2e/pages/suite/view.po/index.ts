@@ -38,6 +38,14 @@ class SuiteView extends BasePage {
     return elements.moveTestBtn.click();
   }
 
+  async clickSync() {
+    return elements.syncBtn.click();
+  }
+
+  async isSyncButtonPresent() {
+    return elements.syncBtn.isPresent();
+  }
+
   openTest(testName: string) {
     return elements.testsTable.clickRow(testName, columns.name);
   }
