@@ -25,7 +25,7 @@ export const importTypes = {
   PHPCodeception: 'PHPCodeception',
   NUnit_v2: 'NUnit_v2',
   NUnit_v3: 'NUnit_v3',
-  JUnit5: 'JUnit5'
+  JUnit: 'JUnit'
 };
 
 export class ImportParameters {

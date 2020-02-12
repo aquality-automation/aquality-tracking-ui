@@ -58,7 +58,7 @@ export class ImportComponent {
     { name: 'MSTest (.trx)', key: importTypes.MSTest },
     { name: 'Robot (.xml)', key: importTypes.Robot },
     { name: 'TestNG (.xml)', key: importTypes.TestNG },
-    { name: 'JUnit (.xml)', key: importTypes.JUnit5 },
+    { name: 'JUnit (.xml)', key: importTypes.JUnit },
     { name: 'Cucumber (.json)', key: importTypes.Cucumber },
     { name: 'PHP Codeception (.xml)', key: importTypes.PHPCodeception },
     { name: 'NUnit v2 (.xml)', key: importTypes.NUnit_v2 },
@@ -218,7 +218,7 @@ export class ImportComponent {
   IsTestNameValid() {
     if (this.format.key === importTypes.MSTest) {
       return this.testNameOptions.testClassName || this.testNameOptions.testName || this.testNameOptions.testDescription;
-    } else if (this.format.key === importTypes.TestNG || this.format.key === importTypes.JUnit5) {
+    } else if (this.format.key === importTypes.TestNG || this.format.key === importTypes.JUnit) {
       return this.testNameOptions.testClassName || this.testNameOptions.testName;
     } else if (this.format.key === importTypes.NUnit_v3) {
       return this.testNameOptions.testClassName || this.testNameOptions.featureTest;
