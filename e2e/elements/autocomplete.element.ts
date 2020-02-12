@@ -28,8 +28,12 @@ export class Autocomplete extends BaseElement implements WithSearch {
         return this.element.element(by.xpath(`.//*[contains(@class, "selector-suggestions")]//li[@title="${value}"]`));
     }
 
-    public getValue() {
-        return this.input.getValue();
+    public async getValue() {
+        if (await this.input.isPresent()) {
+            return this.input.getValue();
+        }
+
+        return this.disabledElement.getText();
     }
 
     public async createAndSelect(value) {
@@ -37,7 +41,7 @@ export class Autocomplete extends BaseElement implements WithSearch {
         await this.findOption('Add').click();
     }
 
-    async isEditable() {
+    async isEnabled() {
         return !(await this.disabledElement.isPresent());
     }
 }

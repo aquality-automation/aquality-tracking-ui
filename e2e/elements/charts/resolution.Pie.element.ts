@@ -9,11 +9,11 @@ export class ResolutionPieChart extends PieChartBase {
         super(locator);
     }
 
-    public clickNotAssigned() {
+    public clickNotAssigned(): Promise<string> {
         return this.clickChartSection(lookupOptions.notAssigned);
     }
 
-    public clickTestIssue() {
+    public clickTestIssue(): Promise<string> {
         return this.clickChartSection(lookupOptions.testIssue);
     }
 }

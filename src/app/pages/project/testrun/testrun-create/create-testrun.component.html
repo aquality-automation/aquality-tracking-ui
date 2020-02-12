@@ -1,4 +1,4 @@
-<div class="panel-heading">
+<div id="create-test-run" class="panel-heading">
   <h2>Create New Test Run</h2>
 </div>
 <div class="panel-body">
@@ -9,16 +9,16 @@
         <label for="build_name">Build Name*:</label>
         <input autofocus id="build_name" name="name" [(ngModel)]="newBuildName" type="text" trim="blur"
           class="form-control" placeholder="build name" required>
-        <label for="milestoneSelector">Milestone:</label>
-        <lookup-autocomplete id="milestoneSelector" [cutLongText]="true" [propertiesToShow]="['name']" [array]="milestones"
+        <label for="milestone_selector">Milestone:</label>
+        <lookup-autocomplete id="milestone_selector" [cutLongText]="true" [propertiesToShow]="['name']" [array]="milestones"
           placeholder="Not Assigneed" [model]="milestone" [allowCreation]="true" [allowEmptyValue]="true" (searchText)="createMilestone($event)"
           (modelChange)="milestoneChange($event)" required="true">
         </lookup-autocomplete>
       </div>
 
       <div class="col-sm-6">
-        <label for="testsuiteSelector">Test Suite*:</label>
-        <lookup-autocomplete [cutLongText]="true" [propertiesToShow]="['name']" [array]="testSuites"
+        <label for="suite_selector">Test Suite*:</label>
+        <lookup-autocomplete id="suite_selector" [cutLongText]="true" [propertiesToShow]="['name']" [array]="testSuites"
           placeholder="Select Suite" [model]="testSuite" [allowCreation]="true" (searchText)="createTestSuite($event)"
           (modelChange)="testSuiteChange($event)" required="true">
         </lookup-autocomplete>
@@ -30,7 +30,7 @@
 
     <div class="row panel-padding">
       <div class="form-group">
-        <button type="submit" class="btn btn-primary" [disabled]="form.invalid"
+        <button type="submit" class="btn btn-primary" [disabled]="!canCreate()"
           id="create-test-run-button">Create</button>
       </div>
     </div>

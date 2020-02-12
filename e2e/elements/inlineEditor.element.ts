@@ -31,6 +31,11 @@ export class InlineEditor extends BaseElement {
         }
     }
 
+    public async isEnabled(): Promise<boolean> {
+        await this.element.click();
+        return this.inlineForm.isDisplayed();
+    }
+
     public async changeAndSetValue(value: string) {
         await this.openEditor();
         await this.typeText(value);

@@ -56,6 +56,7 @@ export class CreateTestRunComponent implements OnInit {
       test_suite_id: this.testSuite.id,
       execution_environment: this.executionEnvironment,
       start_time: new Date(),
+      label_id: 2,
       project_id: this.projectId,
       debug: 0
     };
@@ -76,5 +77,9 @@ export class CreateTestRunComponent implements OnInit {
     await this.milestoneService.createMilestone({ name, project_id: this.projectId });
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
     this.milestone = this.milestones.find(x => x.name === name);
+  }
+
+  canCreate(): boolean {
+    return this.newBuildName && this.testSuite !== undefined;
   }
 }

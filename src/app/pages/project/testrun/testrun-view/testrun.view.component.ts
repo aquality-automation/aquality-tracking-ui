@@ -13,6 +13,7 @@ import { ResultResolutionsChartsComponent } from '../../../../elements/charts/re
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
+import { PermissionsService } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -28,6 +29,7 @@ import { ResultResolution } from '../../../../shared/models/result_resolution';
 export class TestRunViewComponent implements OnInit {
   @ViewChild(ResultResolutionsChartsComponent) resultResolutionsCharts: ResultResolutionsChartsComponent;
   users: LocalPermissions[];
+  projectId: number;
   hideNotifyModal = true;
   hidePrintModal = true;
   testResultTempalte: TestResult;
@@ -48,35 +50,30 @@ export class TestRunViewComponent implements OnInit {
     private route: ActivatedRoute,
     public userService: UserService,
     private emailSettingService: EmailSettingsService,
-    private router: Router
+    private router: Router,
+    private permissions: PermissionsService
   ) { }
 
-  ngOnInit() {
-    this.emailSettingService.getEmailsStatus().subscribe(res => {
-      this.canSendEmail = res.enabled;
+  async ngOnInit() {
+    this.canSendEmail = !!(await this.emailSettingService.getEmailsStatus()).enabled;
+    this.projectId = this.route.snapshot.params.projectId;
+    this.canEdit = await this.permissions.isProjectEditor(this.projectId);
+    this.testRun = (await this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId }))[0];
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
+    this.testResults = this.testRun.testResults;
+
+    await this.setTestRunsToCompare();
+  }
+
+  async setTestRunsToCompare() {
+    this.testRuns = await this.testRunService.getTestRun({
+      project_id: this.projectId,
+      test_suite: { id: this.testRun.test_suite.id }
     });
-    this.userService.HaveAnyLocalPermissionsExceptViewer(this.route.snapshot.params['projectId']).then(resolve =>
-      this.canEdit = this.userService.IsManager() || resolve);
-    this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params['testRunId'] }).then(result => {
-      this.testRun = result[0];
-      this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
-        this.milestones = res;
-      });
-      this.testResultTempalte = { test_run_id: this.testRun.id };
-      this.testResults = this.testRun.testResults;
-      if (this.testRun.test_suite) {
-        this.testRunService.getTestRun({
-          project_id: this.route.snapshot.params['projectId'],
-          test_suite: { id: this.testRun.test_suite.id }
-        }).then(testRuns => {
-          this.testRuns = testRuns;
-          const curTR = this.testRuns.findIndex(x => x.id === this.testRun.id);
-          this.nextTR = this.testRuns[curTR - 1] ? this.testRuns[curTR - 1].id : undefined;
-          this.prevTR = this.testRuns[curTR + 1] ? this.testRuns[curTR + 1].id : undefined;
-          this.latestTR = curTR !== 0 ? this.testRuns[0].id : undefined;
-        });
-      }
-    });
+    const currentTR = this.testRuns.findIndex(x => x.id === this.testRun.id);
+    this.nextTR = this.testRuns[currentTR - 1] ? this.testRuns[currentTR - 1].id : undefined;
+    this.prevTR = this.testRuns[currentTR + 1] ? this.testRuns[currentTR + 1].id : undefined;
+    this.latestTR = currentTR !== 0 ? this.testRuns[0].id : undefined;
   }
 
   calculateDuration(): string {
@@ -102,7 +99,7 @@ export class TestRunViewComponent implements OnInit {
   }
 
   sendReport() {
-    this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(res => {
+    this.userService.getProjectUsers(this.projectId).subscribe(res => {
       this.users = res;
       this.hideNotifyModal = false;
     });
@@ -122,24 +119,23 @@ export class TestRunViewComponent implements OnInit {
     this.hidePrintModal = true;
   }
 
-  testRunUpdate() {
-    if (!this.testRun.ci_build) {
-      this.testRun.ci_build = '$blank';
+  async testRunUpdate() {
+    let testUpdatedTestRun = { ...this.testRun };
+    if (!testUpdatedTestRun.author) {
+      testUpdatedTestRun.author = '$blank';
     }
-    if (!this.testRun.execution_environment) {
-      this.testRun.execution_environment = '$blank';
+    if (!testUpdatedTestRun.ci_build) {
+      testUpdatedTestRun.ci_build = '$blank';
     }
-    if (this.testRun.milestone) {
-      this.testRun.milestone_id = this.testRun.milestone.id;
+    if (!testUpdatedTestRun.execution_environment) {
+      testUpdatedTestRun.execution_environment = '$blank';
     }
-    this.testRunService.createTestRun(this.testRun).then(() => {
-      if (this.testRun.ci_build === '$blank') {
-        this.testRun.ci_build = '';
-      }
-      if (this.testRun.execution_environment === '$blank') {
-        this.testRun.execution_environment = '';
-      }
-    });
+    if (testUpdatedTestRun.milestone) {
+      testUpdatedTestRun.milestone_id = testUpdatedTestRun.milestone.id;
+    } else {
+      testUpdatedTestRun.milestone_id = 0;
+    }
+    testUpdatedTestRun = await this.testRunService.createTestRun(testUpdatedTestRun);
   }
 
   updateResult($event: TestResult) {
@@ -159,29 +155,39 @@ export class TestRunViewComponent implements OnInit {
 
   finalResultChartClick(result: FinalResult) {
     this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      [`/project/${this.projectId}/testrun/${this.testRun.id}`],
       { queryParams: { f_final_result_opt: result.id } });
   }
 
   resolutionChartClick(resolution: ResultResolution) {
     this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      [`/project/${this.projectId}/testrun/${this.testRun.id}`],
       { queryParams: { f_test_resolution_opt: resolution.id } });
   }
 
+  canFinish() {
+    return this.testRun.label_id === 2;
+  }
+
+  isFinished() {
+    return this.testRun.finish_time
+      ? this.testRun.start_time !== this.testRun.finish_time
+      : false;
+  }
+
   async reopenTestRun() {
-    await this.testRunService.createTestRun({
-      id: this.testRun.id,
-      finish_time: undefined,
-      project_id: this.testRun.project_id
-    });
+    this.updateFinishTime(this.testRun.start_time);
   }
 
   async finishTestRun() {
-    await this.testRunService.createTestRun({
+    this.updateFinishTime(new Date());
+  }
+
+  async updateFinishTime(finish_time: Date | string) {
+    this.testRun.finish_time = (await this.testRunService.createTestRun({
       id: this.testRun.id,
-      finish_time: new Date(),
+      finish_time: finish_time,
       project_id: this.testRun.project_id
-    });
+    })).finish_time;
   }
 }
