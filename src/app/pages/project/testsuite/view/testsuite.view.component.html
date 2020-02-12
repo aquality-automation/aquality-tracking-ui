@@ -25,7 +25,7 @@
         <button (click)="openTestCreation()"
           *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
           class="btn btn-primary">Add Test</button>
-        <button (click)="syncSuite()"
+        <button id="sync-btn" (click)="syncSuite()"
           *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
           class="btn btn-primary">Sync</button>
       </div>

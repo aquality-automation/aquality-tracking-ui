@@ -71,20 +71,23 @@ describe('Predefined Resolution:', () => {
                 await predefinedResolutions.openCreation();
                 await predefinedResolutions.fillComment(create.comment);
                 await predefinedResolutions.fillExpression(create.expression);
-                return expect(await predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                await expect(predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                return expect(predefinedResolutions.isCreateEnabled()).toBe(false, 'Creation is not Disabled');
             });
 
             it('I can not create Predefined Resolution without Resolution', async () => {
                 await predefinedResolutions.selectResolution(create.resolution.name);
                 await predefinedResolutions.fillComment('');
-                return expect(await predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                await expect(predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                return expect(predefinedResolutions.isCreateEnabled()).toBe(false, 'Creation is not Disabled');
             });
 
             it('I can not create Predefined Resolution without Resolution', async () => {
                 await predefinedResolutions.selectResolution(create.resolution.name);
                 await predefinedResolutions.fillComment(create.comment);
                 await predefinedResolutions.fillExpression('');
-                return expect(await predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                await expect(predefinedResolutions.getCreationError()).toBe(creationError, 'Error is not shown on creation!');
+                return expect(predefinedResolutions.isCreateEnabled()).toBe(false, 'Creation is not Disabled');
             });
 
             it('I can create Predefined Resolution without Assignee', async () => {
@@ -154,7 +157,9 @@ describe('Predefined Resolution:', () => {
                 await expect(predefinedResolutions.modal.isPresent())
                     .toBe(true, 'Confirmation modal is not shown!');
                 await predefinedResolutions.modal.clickYes();
-                return predefinedResolutions.notification.assertIsSuccess('Predefined Resolution was removed!');
+                await predefinedResolutions.notification.assertIsSuccess('Predefined Resolution was removed!');
+                return expect(predefinedResolutions.isResolutionPresent(edit.expression))
+                    .toBe(false, 'Predefined Resolution was not removed!')
             });
         });
     });

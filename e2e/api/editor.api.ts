@@ -3,7 +3,7 @@ import { Test } from '../../src/app/shared/models/test';
 import { Step, StepToTest } from '../../src/app/shared/models/steps';
 import { TestRun } from '../../src/app/shared/models/testRun';
 import { Milestone } from '../../src/app/shared/models/milestone';
-import { sendPost, sendGet } from '../utils/aqualityTrackingAPI.util';
+import { sendPost, sendGet, sendDelete } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { Project } from '../../src/app/shared/models/project';
 
@@ -81,4 +81,7 @@ export class EditorAPI {
         return sendGet(Endpoints.testrun, testrun, this.token, this.project.id);
     }
 
+    public async removeTestRun(testRunId: number) {
+        return sendDelete(Endpoints.testrun, { id: testRunId, projectId: this.project.id}, null, this.token, this.project.id);
+    }
 }

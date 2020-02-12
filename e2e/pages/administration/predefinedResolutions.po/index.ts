@@ -1,4 +1,4 @@
-import { browser } from 'protractor';
+import { browser, promise } from 'protractor';
 import { elements, baseUrl, names, columns } from './constants';
 import { AdministrationBase } from '../base.po';
 
@@ -59,6 +59,10 @@ class PredefinedResolutions extends AdministrationBase {
 
   isResolutionEditable(expression: string): Promise<boolean> {
     return elements.resolutionsTable.isRowEditableByValue(expression, columns.expression);
+  }
+
+  isCreateEnabled(): promise.Promise<boolean> {
+    return elements.resolutionsTable.isCreateActionEnabled();
   }
 }
 
