@@ -8,6 +8,9 @@ Features:
   - Milestone View: Add functionality that displays the latest results of the tests from the test runs -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/11)
   - List of predefined Resolutions -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/26)
 
+Bugfixes:
+  - Test Runs: Filter by Start Time date From doesn't work -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/38)
+
 ## 0.3.4 (2019-12-10)
 
 Features:
