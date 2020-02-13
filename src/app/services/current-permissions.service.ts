@@ -19,6 +19,11 @@ export enum EGlobalPermissions {
     head = 'head'
 }
 
+enum LocalStorageKeys {
+    permissions_update = 'permissions-update',
+    permissions = 'permissions'
+}
+
 @Injectable()
 export class PermissionsService extends UserService {
 
@@ -48,12 +53,13 @@ export class PermissionsService extends UserService {
     }
 
     private async hasProjectLocalPermissions(projectId: number, anyOf: ELocalPermissions[]): Promise<boolean> {
-        const permissions: LocalPermissions[] = await this.getProjectUsers(projectId).toPromise();
+        let permissions: LocalPermissions[] = await this.getLocalPermissions();
+        permissions = permissions.filter(permission => permission.project_id === projectId);
         return this.searchForLocalPermissions(anyOf, permissions);
     }
 
     private async hasLocalPermissions(anyOf: ELocalPermissions[]): Promise<boolean> {
-        const permissions: LocalPermissions[] = await this.getUserProjects(this.currentUser().id);
+        const permissions: LocalPermissions[] = await this.getLocalPermissions();
         return this.searchForLocalPermissions(anyOf, permissions);
     }
 
@@ -113,5 +119,22 @@ export class PermissionsService extends UserService {
     public isProjectViewer(projectId: number): Promise<boolean> {
         return this.hasProjectLocalPermissions(projectId,
             [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.viewer]);
+    }
+
+    private async getLocalPermissions(): Promise<LocalPermissions[]> {
+        if (localStorage.getItem(LocalStorageKeys.permissions_update) !== null) {
+            const update: Date = new Date(localStorage.getItem(LocalStorageKeys.permissions_update));
+            const expiration: Date = new Date();
+            expiration.setMinutes(expiration.getMinutes() - 5);
+
+            if (update > expiration) {
+                return JSON.parse(localStorage.getItem(LocalStorageKeys.permissions));
+            }
+        }
+
+        const newPermissions: LocalPermissions[] = await this.getUserProjects(this.currentUser().id);
+        localStorage.setItem(LocalStorageKeys.permissions, JSON.stringify(newPermissions));
+        localStorage.setItem(LocalStorageKeys.permissions_update, new Date().toString());
+        return JSON.parse(localStorage.getItem(LocalStorageKeys.permissions));
     }
 }

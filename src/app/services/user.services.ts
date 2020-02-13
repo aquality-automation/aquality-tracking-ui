@@ -115,24 +115,6 @@ export class UserService extends SimpleRequester {
     return isLogged;
   }
 
-  IsAdmin(): boolean {
-    if (this.globaldata.currentUser) {
-      if (this.globaldata.currentUser.admin) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  IsAuditor(): boolean {
-    if (this.globaldata.currentUser) {
-      if (this.globaldata.currentUser.auditor) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   IsAuditAdmin(): boolean {
     if (this.globaldata.currentUser) {
       if (this.globaldata.currentUser.audit_admin) {

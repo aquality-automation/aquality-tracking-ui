@@ -231,6 +231,7 @@ export class AppComponent {
   }
 
   async Logout() {
+    localStorage.clear();
     this.cookieService.remove('iio78');
     this.isLogged = false;
     this.globaldata.Clear();
