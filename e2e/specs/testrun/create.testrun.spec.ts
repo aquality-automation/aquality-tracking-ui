@@ -39,7 +39,7 @@ describe('Create Test Run:', () => {
     });
 
     afterAll(async () => {
-        await projectHelper.dispose();
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
@@ -47,7 +47,7 @@ describe('Create Test Run:', () => {
 
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
-                await projectHelper.openProject();
+                return projectHelper.openProject();
             });
 
             it('Can open Create Test run Page', async () => {

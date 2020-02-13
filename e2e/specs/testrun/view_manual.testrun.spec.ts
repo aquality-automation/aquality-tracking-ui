@@ -37,11 +37,11 @@ describe('View Manual Test Run:', () => {
         });
         milestone = await projectHelper.editorAPI.createMilestone(milestone);
         suite = await projectHelper.editorAPI.createSuite(suite);
-        await projectHelper.importer.executeCucumberImport(suite.name, [cucumberImport], [`build_1.json`]);
+        return projectHelper.importer.executeCucumberImport(suite.name, [cucumberImport], [`build_1.json`]);
     });
 
     afterAll(async () => {
-        await projectHelper.dispose();
+        return projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
@@ -55,7 +55,7 @@ describe('View Manual Test Run:', () => {
                     start_time: new Date()
                 });
                 await logIn.logInAs(user.user_name, user.password);
-                await projectHelper.openProject();
+                return projectHelper.openProject();
             });
 
             it('Can open View Test Run Page', async () => {
@@ -185,7 +185,7 @@ describe('View Manual Test Run:', () => {
                     .toBe(false, `Executor should not be editable for ${description}`);
                 await expect(testRunView.isExecutionEnvironmentEditable())
                     .toBe(false, `Execution Environment should not be editable for ${description}`);
-                await expect(testRunView.isDebugEditable())
+                return expect(testRunView.isDebugEditable())
                     .toBe(false, `Debug should not be editable for ${description}`);
             });
         });
