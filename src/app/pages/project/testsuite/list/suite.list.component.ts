@@ -8,7 +8,7 @@ import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
-  templateUrl: './testsuite.component.html',
+  templateUrl: './suite.list.component.html',
   providers: [
     TestSuiteService,
     SimpleRequester

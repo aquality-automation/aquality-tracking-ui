@@ -29,7 +29,7 @@ import { CreateMilestoneComponent } from './milestone/create/create-milestone.co
 import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.component';
 import { CreateTestSuiteComponent } from './testsuite/create/create-testsuite.component';
 import { CreateTestComponent } from './test/test-create/create-test.component';
-import { TestSuiteComponent } from './testsuite/list/testsuite.component';
+import { TestSuiteComponent } from './testsuite/list/suite.list.component';
 import { TestSuiteViewComponent } from './testsuite/view/testsuite.view.component';
 import { TestViewComponent } from './test/test-view/test.view.component';
 import { ResultGridComponent } from './results/results-grid/results.grid.component';
