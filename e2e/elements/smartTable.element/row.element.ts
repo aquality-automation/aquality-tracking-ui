@@ -124,7 +124,7 @@ export class Row extends BaseElement {
             return rowElements.lookup().isEnabled();
         }
         if (await rowElements.autocomplete().element.isPresent()) {
-            return rowElements.autocomplete().isEditable();
+            return rowElements.autocomplete().isEnabled();
         }
         if (await rowElements.coloredLookup().element.isPresent()) {
             return rowElements.coloredLookup().isEnabled();

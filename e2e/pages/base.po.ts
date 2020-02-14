@@ -30,11 +30,17 @@ export class BasePage {
         return browser.wait(EC.visibilityOf(this.uniqueElement), 5000, `Page ${this.pageName} was not opened`);
     }
 
-    async refresh() {
+    refresh() {
         return browser.refresh();
     }
 
-    async back() {
+    async refreshByBackButton() {
+        await this.menuBar.clickLogo();
+        await browser.waitForAngular();
+        return this.back();
+    }
+
+    back() {
         return browser.navigate().back();
     }
 

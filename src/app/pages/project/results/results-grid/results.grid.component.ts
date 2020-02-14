@@ -73,7 +73,7 @@ export class ResultGridComponent implements OnInit {
           result['testrun'] = testruns.find(x => x.id === result.test_run_id);
         });
         this.allColumns = [
-          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.text, class: 'fit' },
+          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
           {
             name: 'Build Name', property: 'testrun.build_name', filter: true,
             sorting: true, type: TFColumnType.text, class: 'ft-width-150'
