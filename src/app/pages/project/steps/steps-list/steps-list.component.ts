@@ -4,6 +4,7 @@ import { Step, StepType } from '../../../../shared/models/steps';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.services';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   selector: 'app-steps-list',
@@ -15,16 +16,21 @@ export class StepsListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private stepService: StepsService,
-    private userService: UserService
+    private userService: UserService,
+    private permissions: PermissionsService
   ) { }
 
   public steps: Step[];
   public stepTypes: StepType[];
-  public allowDelete = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
-  public allowCreate = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
   public columns: TFColumn[];
+  public allowDelete: boolean;
+  public allowCreate: boolean;
+  public projectId: number = this.route.snapshot.params.projectId;
 
   async ngOnInit() {
+    this.allowDelete = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
+    this.allowCreate = this.allowDelete;
     this.stepTypes = await this.stepService.getStepTypes({});
     this.steps = await this.getSteps();
     this.columns = this.getСolumns();
@@ -42,7 +48,7 @@ export class StepsListComponent implements OnInit {
   }
 
   private async createOrUpdateStep(step: Step) {
-    step.project_id = this.route.snapshot.params['projectId'];
+    step.project_id = this.projectId;
     step.type_id = step.type.id;
     await this.stepService.createStep(step);
     this.steps = await this.getSteps();
@@ -51,13 +57,13 @@ export class StepsListComponent implements OnInit {
   private async deleteStep(step: Step) {
     await this.stepService.removeStep({
       id: step.id,
-      project_id: this.route.snapshot.params['projectId']
+      project_id: this.projectId
     });
     this.steps = await this.getSteps();
   }
 
   private async getSteps(): Promise<Step[]> {
-    const steps = await this.stepService.getSteps({ project_id: this.route.snapshot.params['projectId'] });
+    const steps = await this.stepService.getSteps({ project_id: this.projectId });
     steps.forEach(step => step.type = this.stepTypes.find(type => type.id === step.type_id));
     return steps;
   }

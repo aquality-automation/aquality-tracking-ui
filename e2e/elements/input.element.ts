@@ -7,13 +7,16 @@ export class Input extends BaseElement {
         super(locatorOrElement);
     }
     public async typeText(value: string) {
-        await this.element.clear();
-        return this.element.sendKeys(value);
+        await this.clear();
+        if (value) {
+            return this.element.sendKeys(value);
+        }
+        return;
     }
 
     public async clear() {
         await this.element.sendKeys(Key.chord(Key.CONTROL, 'a'));
-        await this.element.sendKeys(Key.DELETE);
+        return this.element.sendKeys(Key.DELETE);
     }
 
     getValue() {

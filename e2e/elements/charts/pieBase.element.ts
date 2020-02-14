@@ -20,7 +20,7 @@ export class PieChartBase extends BaseElement {
         super(locator);
     }
 
-    protected async clickChartSection(section: PieChartSection) {
+    protected async clickChartSection(section: PieChartSection): Promise<string> {
         await browser.executeScript(this.clickSectionScript, this.element, section.index);
         logger.info(`${section.name} section of Pie Chart was clicked.`);
         return section.name;

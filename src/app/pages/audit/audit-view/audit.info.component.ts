@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Audit, AuditAttachment, AuditComment, Service } from '../../../shared/models/audit';
 import { AuditService } from '../../../services/audits.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,7 @@ import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
 import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../../services/transformations.service';
 import BlobUtils from '../../../shared/utils/blob.utils';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './audit.info.component.html',
@@ -19,13 +20,17 @@ import BlobUtils from '../../../shared/utils/blob.utils';
     UserService
   ]
 })
-export class AuditInfoComponent {
+
+export class AuditInfoComponent implements OnInit {
   editorConfig: { spellcheck: boolean; placeholder: string; };
   services: Service[];
   public audit: Audit;
   public attachments: AuditAttachment[];
 
-  canEdit = false;
+  canEdit: boolean;
+  global: boolean;
+  local: boolean;
+  isAuditAdmin: boolean;
 
   removingInProgress = false;
   hideModal = true;
@@ -48,73 +53,72 @@ export class AuditInfoComponent {
     public route: ActivatedRoute,
     private router: Router,
     public userService: UserService,
-    public auditService: AuditService
-  ) {
-    this.URL = `/audit/attachment?audit_id=${this.route.snapshot.params['auditId']}`;
-    this.userService.getUsers({ auditor: 1 }).subscribe(users => {
-      this.auditors = users;
-      this.auditService.getServices().subscribe(services => this.services = services);
-      this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(audits => {
-        if (audits.length === 0) {
-          this.router.navigate(['**']);
-        }
-        this.audit = audits[0];
+    public auditService: AuditService,
+    private permissions: PermissionsService
+  ) { }
 
-        const global = (!this.userService.IsAuditor() && !this.userService.IsAuditAdmin() && !this.userService.IsManager());
+  async ngOnInit() {
+    const auditId = this.route.snapshot.params.auditId;
+    this.URL = `/audit/attachment?audit_id=${auditId}`;
+    this.auditors = await this.userService.getUsers({ auditor: 1 }).toPromise();
+    this.auditService.getServices().subscribe(services => this.services = services);
+    const audits = await this.auditService.getAudits({ id: auditId }).toPromise();
 
-        this.userService.IsLocalAdminById(this.audit.project.id).then(isAdmin => {
-          const admin = isAdmin;
-          this.userService.IsLocalManagerById(this.audit.project.id).then(isManager => {
-            const manager = isManager;
-            this.disableComments = global && !admin && !manager;
-          });
-        });
+    if (audits.length === 0) {
+      this.router.navigate(['**']);
+      return;
+    }
 
-        if (!this.audit.due_date) {
-          this.audit.due_date = new Date();
-        } else {
-          this.audit.due_date = new Date(this.audit.due_date);
-        }
+    this.audit = audits[0];
 
-        this.updateCanEdit();
-        this.getAttachments();
+    if (!this.audit.due_date) {
+      this.audit.due_date = new Date();
+    } else {
+      this.audit.due_date = new Date(this.audit.due_date);
+    }
 
-        this.editorConfig = {
-          spellcheck: false,
-          placeholder: 'Enter text here...'
-        };
-      }, () => {
-        this.router.navigate([`**`]);
-      });
-    });
+    this.isAuditAdmin = await this.permissions
+      .hasPermissions([EGlobalPermissions.audit_admin]);
+    this.global = await this.permissions
+      .hasPermissions([EGlobalPermissions.auditor, EGlobalPermissions.audit_admin, EGlobalPermissions.manager]);
+    this.local = await this.permissions.hasProjectPermissions(this.audit.project.id, undefined,
+      [ELocalPermissions.admin, ELocalPermissions.manager]);
+    this.disableComments = !this.global && !this.local;
+
+    await this.updateCanEdit();
+    await this.updateAttachments();
+
+    this.editorConfig = {
+      spellcheck: false,
+      placeholder: 'Enter text here...'
+    };
   }
 
-  updateCanEdit() {
-    this.canEdit = (this.userService.IsAuditAdmin() || this.isAuditorOfAudit()) && this.audit.status.id !== 4;
+  async updateCanEdit() {
+    this.canEdit = this.isAuditAdmin || this.isAuditorOfAudit() && this.audit.status.id !== 4;
+    console.log(this.canEdit)
   }
 
   isAuditorOfAudit() {
     return this.audit.auditors.find(x => x.id === this.userService.currentUser().id) ? true : false;
   }
 
-  getAttachments() {
-    this.auditService.getAuditAttachments(this.audit.id, this.audit.project.id).subscribe(res => {
-      this.attachments = res;
-    });
+  async updateAttachments() {
+    this.attachments = await this.auditService.getAuditAttachments(this.audit.id, this.audit.project.id).toPromise();
   }
 
-  removeAttachment(id) {
+  removeAttachment(id: number) {
     this.removingInProgress = true;
     this.auditService.removeAuditAttachment(id).subscribe(res => {
-      this.getAttachments();
+      this.updateAttachments();
       this.removingInProgress = false;
     });
   }
 
-  downloadAttach(attach) {
+  downloadAttach(attach: AuditAttachment) {
     this.auditService.downloadAuditAttachment(attach.id, this.audit.project.id).subscribe(blob => {
       BlobUtils.download(blob, this.getAttachName(attach));
-    }, () => this.getAttachments());
+    }, () => this.updateAttachments());
   }
 
   getAttachName(attach: AuditAttachment) {

@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './list-milestone.component.html',
@@ -15,7 +16,8 @@ export class ListMilestoneComponent implements OnInit {
     public userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
-    private milestoneService: MilestoneService
+    private milestoneService: MilestoneService,
+    private permissions: PermissionsService
   ) { }
 
   hideModal = true;
@@ -32,7 +34,8 @@ export class ListMilestoneComponent implements OnInit {
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
     this.milestones = await this.getMilestones();
-    this.canEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
     this.columns = [
       {
         name: 'Id',

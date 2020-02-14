@@ -37,6 +37,7 @@
   </div>
   <div class="right-side no-padding clearfix">
     <table-filter *ngIf="customer" [data]="customer.projects" [columns]="columns" [defaultSortBy]="defSort" [queryParams]="true"
-      (rowClick)="rowClicked($event)" (dataChange)="updateProj($event)" rowsOnPage="10" [allowCreate]="userService.IsAdmin() || userService.IsManager()" (action)="handleAction($event)"></table-filter>
+      (rowClick)="rowClicked($event)" (dataChange)="updateProj($event)" rowsOnPage="10" 
+      [allowCreate]="allowCreate" (action)="handleAction($event)"></table-filter>
   </div>
 </div>

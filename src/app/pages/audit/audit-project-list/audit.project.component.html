@@ -5,7 +5,7 @@
     </div>
   </div>
 </div>
-<div id="create" *ngIf="userService.IsAuditAdmin()" class="btn-group col-sm-1 pull-right no-padding margin-bottom-10">
+<div id="create" *ngIf="isAuditAdmin" class="btn-group col-sm-1 pull-right no-padding margin-bottom-10">
   <a class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</a>
 </div>
 <div class="col-sm-12 no-padding">

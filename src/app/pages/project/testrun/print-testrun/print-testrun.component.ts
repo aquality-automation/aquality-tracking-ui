@@ -262,7 +262,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         });
     }
 
-    getPoints(step, value, property, startValue) {
+    getPoints(step, value, property, startValue): {startStep: number, startValue: number}[] {
         let reversed = [];
         reversed = reversed.concat(this.testRunStats);
         if (reversed.length > this.testRunsToShow) {
@@ -273,7 +273,8 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         const points = [];
         reversed.forEach(element => {
             startStep = startStep + step;
-            points.push([startStep, startValue - element[property] * value]);
+            const endValue = element[property] ? element[property] : 0;
+            points.push([startStep, startValue - endValue * value]);
         });
 
         return points;

@@ -6,7 +6,7 @@
     <div class="pull-left">
       <h2>Customers Dashboard</h2>
     </div>
-    <div *ngIf="userService.IsHead() || userService.IsUnitCoordinator()" class="btn-group pull-right">
+    <div *ngIf="allowCreate" class="btn-group pull-right">
       <a class="btn btn-primary pull-right" routerLink="/customer/create">New Customer</a>
     </div>
   </div>
@@ -14,5 +14,5 @@
 
 <div class="col-sm-12 no-padding">
     <table-filter *ngIf="customers && columns" [data]="customers" [columns]="columns" [defaultSortBy]="defSort"
-      (action)="handleAction($event)" [allowDelete]="userService.IsHead() || userService.IsUnitCoordinator()" [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20" ></table-filter>
+      (action)="handleAction($event)" [allowDelete]="allowCreate" [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20" ></table-filter>
 </div>

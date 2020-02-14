@@ -1,5 +1,4 @@
-import { Directive, ElementRef, AfterViewChecked, Input, Output, HostListener, Renderer2, EventEmitter } from '@angular/core';
-import { forEach } from '@angular/router/src/utils/collection';
+import { Directive, ElementRef, AfterViewChecked, Input, Renderer2 } from '@angular/core';
 
 @Directive({
   selector: '[disabledInline]'

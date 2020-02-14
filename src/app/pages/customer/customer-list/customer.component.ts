@@ -5,6 +5,7 @@ import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../shared/models/customer';
 import { User } from '../../../shared/models/user';
 import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
     templateUrl: 'customer.component.html',
@@ -21,15 +22,18 @@ export class CustomerComponent implements OnInit {
     hideModal = true;
     removeModalTitle: string;
     removeModalMessage: string;
+    allowCreate: boolean;
 
     constructor(
         public route: ActivatedRoute,
         private router: Router,
         public userService: UserService,
-        public customerService: CustomerService
+        public customerService: CustomerService,
+        private permissions: PermissionsService
     ) { }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.allowCreate = await this.permissions.hasPermissions([EGlobalPermissions.head, EGlobalPermissions.unit_coordinator]);
         this.customerService.getCustomer(undefined, true).subscribe(res => {
             this.customers = res;
             this.userService.getUsers({}).subscribe(result => {

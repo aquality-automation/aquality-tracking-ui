@@ -19,14 +19,14 @@
         <button class="btn btn-primary" routerLink="/project/{{testSuite.project_id}}/testrun/matrix"
           [queryParams]="{suite:testSuite.id}">Suite Matrix</button>
         <button id="move-test-btn"
-          *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+          *ngIf="allowMove"
           class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
         <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn">Export to CSV</button>
         <button (click)="openTestCreation()"
-          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+          *ngIf="allowCreation"
           class="btn btn-primary">Add Test</button>
         <button id="sync-btn" (click)="syncSuite()"
-          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+          *ngIf="allowCreation"
           class="btn btn-primary">Sync</button>
       </div>
     </div>
@@ -37,7 +37,7 @@
         <div class="pull-left">
           <inline-editor id="name" name="name" type="text" trim="blur" empty="not set" max="50" min="4"
             [(ngModel)]="testSuite.name" (onError)="nameError()" (onSave)="updateSuite()"
-            [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+            [disabledInline]="!allowEdit">
           </inline-editor>
         </div>
       </div>

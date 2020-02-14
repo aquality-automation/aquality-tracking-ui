@@ -31,7 +31,7 @@ export class Importer {
         this.editorAPI = new EditorAPI(this.project, this.token);
     }
 
-    public async executeImport(importParameters: ImportParams, files: string[], fileNames: string[]) {
+    public async executeImport(importParameters: ImportParams, files: string[], fileNames: string[]): Promise<TestRun[]> {
         importParameters.projectId = this.project.id;
         const buildNames = fileNames.map(fileName => fileName.split('.').slice(0, -1).join('.'));
         const result = await this.doImport(importParameters, files, fileNames);
@@ -39,8 +39,8 @@ export class Importer {
             throw Error('Import Failed!');
         }
 
-        return new Promise(async (resolve) => {
-            let imported = await this.isAllBuildsAreImported(buildNames);
+        return new Promise<TestRun[]>(async (resolve) => {
+            let imported: TestRun[]  = await this.isAllBuildsAreImported(buildNames);
             if (imported.length > 0) {
                 logger.info(`Import was finished Successfully`);
                 resolve(imported);
@@ -62,7 +62,7 @@ export class Importer {
         });
     }
 
-    public async executeCucumberImport(suiteName: string, files: object[], fileNames: string[]): Promise<any> {
+    public async executeCucumberImport(suiteName: string, files: object[], fileNames: string[]): Promise<TestRun[]> {
         const filesAsStringArray = files.map(file => JSON.stringify(file));
         return this.executeImport({
             projectId: this.project.id,
