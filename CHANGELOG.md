@@ -12,6 +12,7 @@ Features:
 
 Bugfixes:
   - Cannot remove milestone from TestRun -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/50)
+  - Refactored Permissions service
 
 ## 0.3.4 (2019-12-10)
 
