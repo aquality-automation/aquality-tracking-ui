@@ -210,7 +210,7 @@ export class ResultGridComponent implements OnInit {
     const queryParam = {};
     queryParam['selectedResult'] = testResultId;
     this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' }).then(() => {
-      this.router.navigate(['/project/' + this.projectId + '/testresult/' + testResultId]);
+      this.router.navigate([`/project/${this.projectId}/testresult/${testResultId}`]);
     });
   }
 
