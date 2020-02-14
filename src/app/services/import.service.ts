@@ -24,7 +24,8 @@ export const importTypes = {
   Cucumber: 'Cucumber',
   PHPCodeception: 'PHPCodeception',
   NUnit_v2: 'NUnit_v2',
-  NUnit_v3: 'NUnit_v3'
+  NUnit_v3: 'NUnit_v3',
+  JUnit: 'JUnit'
 };
 
 export class ImportParameters {
