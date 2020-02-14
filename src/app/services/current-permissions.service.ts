@@ -45,53 +45,6 @@ export class PermissionsService extends UserService {
         throw new Error(`You are not logged in!`);
     }
 
-    public async isProjectEditor(projectId: number) {
-        return this.hasProjectPermissions(projectId, [EGlobalPermissions.manager],
-            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]);
-    }
-
-    public isGlobalAdmin(): boolean {
-        return !!this.currentUser().admin;
-    }
-
-    public isGlobalManager(): boolean {
-        return !!this.currentUser().manager;
-    }
-
-    public isLocalAdmin(): Promise<boolean> {
-        return this.hasLocalPermissions([ELocalPermissions.admin]);
-    }
-
-    public isLocalManager(): Promise<boolean> {
-        return this.hasLocalPermissions([ELocalPermissions.manager]);
-    }
-
-    public isLocalEngineer(): Promise<boolean> {
-        return this.hasLocalPermissions([ELocalPermissions.manager, ELocalPermissions.engineer]);
-    }
-
-    public isLocalViewer(): Promise<boolean> {
-        return this.hasLocalPermissions([ELocalPermissions.admin, ELocalPermissions.manager,
-        ELocalPermissions.engineer, ELocalPermissions.viewer]);
-    }
-
-    public isProjectAdmin(projectId: number): Promise<boolean> {
-        return this.hasProjectLocalPermissions(projectId, [ELocalPermissions.admin]);
-    }
-
-    public isProjectManager(projectId: number): Promise<boolean> {
-        return this.hasProjectLocalPermissions(projectId, [ELocalPermissions.manager]);
-    }
-
-    public isProjectEngineer(projectId: number): Promise<boolean> {
-        return this.hasProjectLocalPermissions(projectId, [ELocalPermissions.manager, ELocalPermissions.engineer]);
-    }
-
-    public isProjectViewer(projectId: number): Promise<boolean> {
-        return this.hasProjectLocalPermissions(projectId,
-            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.viewer]);
-    }
-
     private hasGlobalPermissions(anyOf: EGlobalPermissions[]) {
         if (!anyOf) {
             return false;
