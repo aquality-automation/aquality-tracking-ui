@@ -9,7 +9,7 @@ export class ResultPieChart extends PieChartBase {
         super(locator);
     }
 
-    public clickPassed() {
+    public clickPassed(): Promise<string> {
         return this.clickChartSection(results.passed);
     }
 }

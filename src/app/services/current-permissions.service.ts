@@ -45,38 +45,9 @@ export class PermissionsService extends UserService {
         throw new Error(`You are not logged in!`);
     }
 
-    private hasGlobalPermissions(anyOf: EGlobalPermissions[]) {
-        if (!anyOf) {
-            return false;
-        }
-        return anyOf.find(x => !!this.currentUser()[x] === true) !== undefined;
-    }
-
-    private async hasProjectLocalPermissions(projectId: number, anyOf: ELocalPermissions[]): Promise<boolean> {
-        let permissions: LocalPermissions[] = await this.getLocalPermissions();
-        permissions = permissions.filter(permission => permission.project_id === Number.parseInt(`${projectId}`));
-        return this.searchForLocalPermissions(anyOf, permissions);
-    }
-
-    private async hasLocalPermissions(anyOf: ELocalPermissions[]): Promise<boolean> {
-        const permissions: LocalPermissions[] = await this.getLocalPermissions();
-        return this.searchForLocalPermissions(anyOf, permissions);
-    }
-
-    private searchForLocalPermissions(anyOf: ELocalPermissions[], permissions: LocalPermissions[]): boolean {
-        if (!anyOf) {
-            return false;
-        }
-        return permissions.find(permission => {
-            let result = false;
-            anyOf.forEach(name => {
-                if (permission[name] === 1) {
-                    result = true;
-                    return;
-                }
-            });
-            return result;
-        }) !== undefined;
+    public async isProjectEditor(projectId: number) {
+        return this.hasProjectPermissions(projectId, [EGlobalPermissions.manager],
+            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]);
     }
 
     public isGlobalAdmin(): boolean {
@@ -119,6 +90,40 @@ export class PermissionsService extends UserService {
     public isProjectViewer(projectId: number): Promise<boolean> {
         return this.hasProjectLocalPermissions(projectId,
             [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.viewer]);
+    }
+
+    private hasGlobalPermissions(anyOf: EGlobalPermissions[]) {
+        if (!anyOf) {
+            return false;
+        }
+        return anyOf.find(x => !!this.currentUser()[x] === true) !== undefined;
+    }
+
+    private async hasProjectLocalPermissions(projectId: number, anyOf: ELocalPermissions[]): Promise<boolean> {
+        let permissions: LocalPermissions[] = await this.getLocalPermissions();
+        permissions = permissions.filter(permission => permission.project_id === Number.parseInt(`${projectId}`));
+        return this.searchForLocalPermissions(anyOf, permissions);
+    }
+
+    private async hasLocalPermissions(anyOf: ELocalPermissions[]): Promise<boolean> {
+        const permissions: LocalPermissions[] = await this.getLocalPermissions();
+        return this.searchForLocalPermissions(anyOf, permissions);
+    }
+
+    private searchForLocalPermissions(anyOf: ELocalPermissions[], permissions: LocalPermissions[]): boolean {
+        if (!anyOf) {
+            return false;
+        }
+        return permissions.find(permission => {
+            let result = false;
+            anyOf.forEach(name => {
+                if (permission[name] === 1) {
+                    result = true;
+                    return;
+                }
+            });
+            return result;
+        }) !== undefined;
     }
 
     private async getLocalPermissions(): Promise<LocalPermissions[]> {
