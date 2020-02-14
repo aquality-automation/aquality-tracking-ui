@@ -23,6 +23,10 @@ export class BaseElement {
         return this.element.isPresent();
     }
 
+    async isEnabled(): Promise<boolean> {
+        return this.element.isEnabled();
+    }
+
     async dragAndDrop(moveTo: BaseElement) {
         return browser.actions()
             .mouseDown(this.element)

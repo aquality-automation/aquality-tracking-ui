@@ -23,7 +23,7 @@ class SuiteView extends BasePage {
   }
 
   getNameOfTestSuite() {
-    return elements.nameOfTestSuite.getText();
+    return elements.nameOfTestSuite.getValue();
   }
 
   getManualDurationeTestSuite() {

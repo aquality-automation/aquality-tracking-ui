@@ -43,6 +43,10 @@ export class MenuBar {
         return new CreateOptions();
     }
 
+    isCreateExist() {
+        return element(by.css('#Create > a')).isPresent();
+    }
+
     testRuns() {
         return element(by.id('Test Runs')).click();
     }

@@ -1,26 +1,17 @@
 import { by, element } from 'protractor';
+import { Autocomplete } from '../../../elements/autocomplete.element';
+import { Input } from '../../../elements/input.element';
 
-export const baseUrl = '/create/testsuite';
+export const baseUrl = (projectId: number) => `#/project/${projectId}/create/testrun`;
 
 export const elements = {
     uniqueElement: element(by.id('create-test-run')),
     createButton: element(by.id('create-test-run-button')),
-    buildNameField: element(by.id('build_name')),
-    testSuiteCombobox: element(by.id('testsuiteSelector')),
-    testSuiteComboboxOption: function (text) {
-        return element(by.xpath(`//select[@id='testsuiteSelector']//option[contains(text(), '${text}')]`));
-    },
-    milestoneCombobox: element(by.id('milestoneSelector')),
-    milestoneComboboxOption: function (text) {
-        return element(by.xpath(`//select[@id='milestoneSelector']//option[contains(text(), '${text}')]`));
-    },
-    startDateField: element(by.id('dateLabel'))
+    buildNameField: new Input(by.id('build_name')),
+    testSuiteCombobox: new Autocomplete(by.id('suite_selector')),
+    milestoneCombobox: new Autocomplete(by.id('milestone_selector')),
 };
 
 export const names = {
     pageName: 'Create Test Run Page'
-};
-
-export const regexps = {
-  startDateRegexp: '(?<day>(\\d{2}))\\/(?<month>(\\d{2}))\\/(?<year>(\\d{4}))\\s(?<hours>(\\d{2})):(?<minutes>(\\d{2}))'
 };

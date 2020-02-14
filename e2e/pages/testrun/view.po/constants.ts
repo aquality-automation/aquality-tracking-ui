@@ -3,8 +3,11 @@ import { SmartTable } from '../../../elements/smartTable.element';
 import { ResultSearcher } from '../../../elements/searcher';
 import { ResolutionPieChart } from '../../../elements/charts/resolution.Pie.element';
 import { ResultPieChart } from '../../../elements/charts/resultPie.element';
+import { InlineEditor } from '../../../elements/inlineEditor.element';
+import { Autocomplete } from '../../../elements/autocomplete.element';
+import { Checkbox } from '../../../elements/checkbox.element';
 
-export const baseUrl = function (projectId, testRunId) {
+export const baseUrl = function (projectId: number, testRunId: number) {
     return `#/project/${projectId}/testrun/${testRunId}`;
 };
 
@@ -18,14 +21,21 @@ export const names = {
 
 export const elements = {
     uniqueElement: element(by.id('test-run-view')),
-    buildNameLink: element(by.xpath(`//li[.//label[contains(text(), '${names.buildNameLabel}')]]//a`)),
-    milestoneField: element(by.xpath(`//li[.//label[contains(text(), '${names.milestoneLabel}')]]//input`)),
-    testSuiteLink: element(by.xpath(`//li[.//label[contains(text(), '${names.testSuiteLabel}')]]//a`)),
+    buildName: new InlineEditor(by.id(`build_name`)),
+    milestoneField: new Autocomplete(by.id(`milestone`)),
+    executor: new InlineEditor(by.id(`executor`)),
+    executionEnvironment: new InlineEditor(by.id(`execution_environment`)),
+    testSuiteLink: element(by.id(`suite_link`)),
     startTimeLabel: element(by.xpath(`//li[.//label[contains(text(), '${names.startTimeLabel}')]]//p`)),
     resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
     resultSearcher: new ResultSearcher(by.id('resultSearcher')),
     resultsChart: new ResultPieChart(by.id('finalResultsChart')),
     resolutionsChart: new ResolutionPieChart(by.id('resultResolutionsChart')),
+    ciBuildContainer: element(by.id('ci_build_container')),
+    finish: element(by.id('finish')),
+    reopen: element(by.id('reopen')),
+    duration: element(by.id('duration')),
+    debug: new Checkbox(by.id('debug'))
 };
 
 export const regexps = {
