@@ -58,18 +58,11 @@ export class AuditInfoComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.isAuditAdmin = await this.permissions
-      .hasPermissions([EGlobalPermissions.audit_admin]);
-    this.global = await this.permissions
-      .hasPermissions([EGlobalPermissions.auditor, EGlobalPermissions.audit_admin, EGlobalPermissions.manager]);
-    this.local = await this.permissions.hasProjectPermissions(this.audit.project.id, undefined,
-      [ELocalPermissions.admin, ELocalPermissions.manager]);
-    this.disableComments = !this.global && !this.local;
-
-    this.URL = `/audit/attachment?audit_id=${this.route.snapshot.params.auditId}`;
+    const auditId = this.route.snapshot.params.auditId;
+    this.URL = `/audit/attachment?audit_id=${auditId}`;
     this.auditors = await this.userService.getUsers({ auditor: 1 }).toPromise();
     this.auditService.getServices().subscribe(services => this.services = services);
-    const audits = await this.auditService.getAudits({ id: this.route.snapshot.params.auditId }).toPromise();
+    const audits = await this.auditService.getAudits({ id: auditId }).toPromise();
 
     if (audits.length === 0) {
       this.router.navigate(['**']);
@@ -84,6 +77,14 @@ export class AuditInfoComponent implements OnInit {
       this.audit.due_date = new Date(this.audit.due_date);
     }
 
+    this.isAuditAdmin = await this.permissions
+      .hasPermissions([EGlobalPermissions.audit_admin]);
+    this.global = await this.permissions
+      .hasPermissions([EGlobalPermissions.auditor, EGlobalPermissions.audit_admin, EGlobalPermissions.manager]);
+    this.local = await this.permissions.hasProjectPermissions(this.audit.project.id, undefined,
+      [ELocalPermissions.admin, ELocalPermissions.manager]);
+    this.disableComments = !this.global && !this.local;
+
     await this.updateCanEdit();
     await this.updateAttachments();
 
@@ -94,8 +95,8 @@ export class AuditInfoComponent implements OnInit {
   }
 
   async updateCanEdit() {
-    const isAuditor = await this.permissions.hasPermissions([EGlobalPermissions.audit_admin, EGlobalPermissions.auditor]);
-    this.canEdit = isAuditor && this.isAuditorOfAudit() && this.audit.status.id !== 4;
+    this.canEdit = this.isAuditAdmin || this.isAuditorOfAudit() && this.audit.status.id !== 4;
+    console.log(this.canEdit)
   }
 
   isAuditorOfAudit() {

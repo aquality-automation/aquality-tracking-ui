@@ -54,7 +54,7 @@ export class PermissionsService extends UserService {
 
     private async hasProjectLocalPermissions(projectId: number, anyOf: ELocalPermissions[]): Promise<boolean> {
         let permissions: LocalPermissions[] = await this.getLocalPermissions();
-        permissions = permissions.filter(permission => permission.project_id === projectId);
+        permissions = permissions.filter(permission => permission.project_id === Number.parseInt(`${projectId}`));
         return this.searchForLocalPermissions(anyOf, permissions);
     }
 

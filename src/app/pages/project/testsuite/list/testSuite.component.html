@@ -17,8 +17,8 @@
     [data]="testSuites" 
     [columns]="tbCols"
     [defaultSortBy]="{ property: 'name', order: 'desc' }" 
-    [allowDelete]="userService.IsLocalManager() || userService.IsManager()"
-    [allowCreate]="userService.IsLocalManager() || userService.IsManager()"
+    [allowDelete]="allowCreateDelete"
+    [allowCreate]="allowCreateDelete"
     (rowClick)="openTestSuite($event.id)"
     (dataChange)="suiteUpdate($event)" 
     (action)="handleAction($event)"></table-filter>

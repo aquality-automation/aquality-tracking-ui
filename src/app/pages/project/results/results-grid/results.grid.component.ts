@@ -13,6 +13,7 @@ import { FinalResult } from '../../../../shared/models/final-result';
 import { FinalResultService } from '../../../../services/final_results.service';
 import { TestRunService } from '../../../../services/testRun.service';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   selector: 'results-grid',
@@ -43,6 +44,7 @@ export class ResultGridComponent implements OnInit {
   public tbHiddenCols: TFColumn[];
   public allColumns: TFColumn[];
   canEdit: boolean;
+  projectId: number;
 
   constructor(
     private resultResolutionService: ResultResolutionService,
@@ -51,13 +53,15 @@ export class ResultGridComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public userService: UserService,
-    private finalResultService: FinalResultService
+    private finalResultService: FinalResultService,
+    private permissions: PermissionsService
   ) {
   }
 
-  ngOnInit() {
-    this.userService.HaveAnyLocalPermissionsExceptViewer(this.route.snapshot.params['projectId']).then(resolve =>
-      this.canEdit = this.userService.IsManager() || resolve);
+  async ngOnInit() {
+    this.projectId = this.route.snapshot.params.projectId;
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager]);
     this.resultResolutionService.getResolution().subscribe(async resolutions => {
       this.testResults.forEach(result => {
         if (result.final_result.color === 5) { result.test_resolution = undefined; }
@@ -65,8 +69,8 @@ export class ResultGridComponent implements OnInit {
       });
       this.listOfResolutions = resolutions;
       this.finalResults = await this.finalResultService.getFinalResult({});
-      const testruns = await this.testRunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] });
-      this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(projectUsers => {
+      const testruns = await this.testRunService.getTestRun({ project_id: this.projectId });
+      this.userService.getProjectUsers(this.projectId).subscribe(projectUsers => {
         this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
         this.testResults.forEach(result => {
           result['developer'] = this.users.find(x => x.user_id === result.test.developer_id);
@@ -177,7 +181,7 @@ export class ResultGridComponent implements OnInit {
   }
 
   rowClicked($event) {
-    window.open(`#/project/${this.route.snapshot.params['projectId']}/testresult/${$event.id}`);
+    window.open(`#/project/${this.projectId}/testresult/${$event.id}`);
   }
 
   async resultUpdate(result: TestResult) {
@@ -206,7 +210,7 @@ export class ResultGridComponent implements OnInit {
     const queryParam = {};
     queryParam['selectedResult'] = testResultId;
     this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' }).then(() => {
-      this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/testresult/' + testResultId]);
+      this.router.navigate(['/project/' + this.projectId + '/testresult/' + testResultId]);
     });
   }
 

@@ -5,9 +5,10 @@ import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { UserService } from '../../../../services/user.services';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
-  templateUrl: './testSuite.component.html',
+  templateUrl: './testsuite.component.html',
   providers: [
     TestSuiteService,
     SimpleRequester
@@ -21,16 +22,24 @@ export class TestSuiteComponent implements OnInit {
   testSuite: TestSuite;
   testSuites: TestSuite[];
   tbCols: TFColumn[];
+  projectId: number;
+  allowCreateDelete: boolean;
 
   constructor(
     private testSuiteService: TestSuiteService,
     private route: ActivatedRoute,
     public userService: UserService,
-    private router: Router
+    private router: Router,
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {
-    this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
+    this.projectId = this.route.snapshot.params.projectId;
+    this.testSuite = { project_id: this.projectId };
+    const canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
+    this.allowCreateDelete = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager]);
     await this.updateSuites();
 
     this.tbCols = [
@@ -46,7 +55,7 @@ export class TestSuiteComponent implements OnInit {
         filter: true,
         sorting: true,
         type: TFColumnType.text,
-        editable: this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer(),
+        editable: canEdit,
         creation: {
           creationLength: 500,
           required: true
@@ -64,7 +73,7 @@ export class TestSuiteComponent implements OnInit {
   }
 
   openTestSuite(id: number) {
-    this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/tests`], { queryParams: { suite: id } });
+    this.router.navigate([`/project/${this.projectId}/tests`], { queryParams: { suite: id } });
   }
 
   handleAction(event: { action: string, entity: TestSuite }) {
@@ -94,7 +103,7 @@ export class TestSuiteComponent implements OnInit {
   }
 
   async createSuite(suite: TestSuite) {
-    suite.project_id = this.route.snapshot.params['projectId'];
+    suite.project_id = this.projectId;
     await this.testSuiteService.createTestSuite(suite);
     await this.updateSuites();
     this.testSuiteService.handleSuccess(`Suite '${suite.name}' was created!`);

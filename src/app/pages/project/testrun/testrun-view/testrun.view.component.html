@@ -18,7 +18,7 @@
         <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
           <span class="glyphicon glyphicon-modal-window"></span>
         </button>
-        <button *ngIf="canEdit && canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
+        <button *ngIf="canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
           <span class="glyphicon glyphicon-send"></span>
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
@@ -55,7 +55,7 @@
           <label class="label-inline pull-left">Build Name:</label>
           <div class="pull-left">
             <inline-editor
-              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              [disabledInline]="!canEdit"
               maxLength="500" [name]="buildName" (onError)="buildNameError($event)" min="3" placeholder="Build Name"
               type="text" trim="blur" [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()" [required]="true">
             </inline-editor>
@@ -67,12 +67,12 @@
             routerLink="/project/{{testRun.project_id}}/testsuite/{{testRun.test_suite.id}}">{{testRun.test_suite.name}}</a>
         </li>
         <li
-          *ngIf="testRun.milestone || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          *ngIf="testRun.milestone || canEdit"
           class="col-md-6">
           <label class="label-inline pull-left">Milestone:</label>
           <div class="pull-left">
             <lookup-autocomplete
-              [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              [disabled]="!canEdit"
               (searchText)="createMilestone($event)" [allowCreation]="true" id="suite" name="milestone"
               [(model)]="testRun.milestone" (modelChange)="testRunUpdate()" [allowEmptyValue]="true" [inline]="true"
               [small]="true" [propertiesToShow]="['name']" [array]="milestones" placeholder="Not Selected">
@@ -80,23 +80,23 @@
           </div>
         </li>
         <li
-          *ngIf="testRun.execution_environment || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          *ngIf="testRun.execution_environment || canEdit"
           class="col-md-6">
           <label class="label-inline pull-left">Execution Environment:</label>
           <div class="pull-left">
             <inline-editor
-              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              [disabledInline]="!canEdit"
               maxLength="500" [name]="ExecutionEnvironment" placeholder="Execution Environment" type="text" trim="blur"
               [(ngModel)]="testRun.execution_environment" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
           </div>
         </li>
         <li
-          *ngIf="testRun.author || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          *ngIf="testRun.author || canEdit"
           class="col-md-6">
           <label class="label-inline pull-left">Executor:</label>
           <div class="pull-left">
             <inline-editor
-              [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+              [disabledInline]="!canEdit"
               maxLength="500" [name]="Executor" placeholder="Executor" type="text" trim="blur"
               [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
           </div>
@@ -109,7 +109,7 @@
           <label class="label-inline">Debug Testrun:
             <input (change)="changeDebugState($event.srcElement)" type="checkbox" name="isActive"
               [(ngModel)]="testRun.debug"
-              [disabled]="!userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() && !userService.IsManager()">
+              [disabled]="!canEdit">
           </label>
         </li>
         <li class="col-md-6">
@@ -117,13 +117,13 @@
           <p class="label-inline pull-left">{{testRun?.start_time | date:'dd/MM/yy hh:mm:ss a'}}</p>
         </li>
         <li
-          *ngIf="testRun.ci_build || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+          *ngIf="testRun.ci_build || canEdit"
           class="col-md-6">
           <label *ngIf="!testRun.ci_build" class="label-inline pull-left">CI Build: </label>
           <a *ngIf="testRun.ci_build" class="label-inline pull-left ci-link" [href]="testRun.ci_build">CI Build</a>
           <div class="pull-left">
             <inline-editor
-              *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+              *ngIf="canEdit"
               maxLength="500" [name]="Executor" placeholder="CI Build" type="text" trim="blur"
               [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}"></inline-editor>
           </div>

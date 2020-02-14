@@ -43,6 +43,7 @@ export class CustomerInfoComponent implements OnInit {
 
     async ngOnInit() {
         this.URL = `/customer/attachment?customer_id=${this.route.snapshot.params.customer_id}`;
+        const isAdmin = await this.permissions.hasPermissions([EGlobalPermissions.admin]);
         this.userService.getUsers({ unit_coordinator: 1 }).subscribe(result => {
             this.coordinators = result.filter(x => x.unit_coordinator === 1);
         });
@@ -54,7 +55,7 @@ export class CustomerInfoComponent implements OnInit {
             this.columns = [
                 {
                     name: 'Name', property: 'name', filter: true,
-                    sorting: true, type: TFColumnType.text, editable: this.userService.IsAdmin(),
+                    sorting: true, type: TFColumnType.text, editable: isAdmin,
                     creation: {
                         required: true
                     }

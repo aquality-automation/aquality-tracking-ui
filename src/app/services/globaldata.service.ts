@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { User } from '../shared/models/user';
-import { LocalPermissions } from '../shared/models/LocalPermissions';
 import { Project } from '../shared/models/project';
 import { Subject } from 'rxjs/Subject';
 
@@ -9,9 +8,7 @@ export class GlobalDataService {
   private currentProjectSource = new Subject<Project>();
   currentUser: User;
   auditModule: boolean;
-  localPermissions: LocalPermissions;
   loading = false;
-  anyLocalPermissions: LocalPermissions[];
   public requestQuery = 0;
   public returnURL: string;
   public teamMember: boolean;
@@ -33,12 +30,10 @@ export class GlobalDataService {
     this.currentProjectSource.next(project);
   }
 
-  Clear() {
+  clear() {
     this.currentUser = undefined;
     this.auditModule = undefined;
-    this.localPermissions = undefined;
     this.loading = false;
-    this.anyLocalPermissions = undefined;
     this.requestQuery = 0;
     this.returnURL = undefined;
     this.teamMember = undefined;

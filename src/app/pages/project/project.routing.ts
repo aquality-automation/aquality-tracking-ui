@@ -9,7 +9,7 @@ import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.
 import { CreateTestSuiteComponent } from './testsuite/create/create-testsuite.component';
 import { CreateTestComponent } from './test/test-create/create-test.component';
 import { TestSuiteComponent } from './testsuite/list/testsuite.component';
-import { TestSuiteViewComponent } from './testsuite/view/testsuite-view.component';
+import { TestSuiteViewComponent } from './testsuite/view/testsuite.view.component';
 import { TestViewComponent } from './test/test-view/test.view.component';
 import { ImportComponent } from './import/import.component';
 import { TestResultViewComponent } from './results/results-view/testresult.view.component';

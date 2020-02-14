@@ -13,6 +13,7 @@ import { ResultResolutionsChartsComponent } from '../../../../elements/charts/re
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -41,6 +42,7 @@ export class TestRunViewComponent implements OnInit {
   showTableResults: boolean;
   canEdit: boolean;
   canSendEmail: boolean;
+  projectId: number;
 
   constructor(
     private milestoneService: MilestoneService,
@@ -48,25 +50,28 @@ export class TestRunViewComponent implements OnInit {
     private route: ActivatedRoute,
     public userService: UserService,
     private emailSettingService: EmailSettingsService,
-    private router: Router
+    private router: Router,
+    private permissions: PermissionsService
   ) { }
 
-  ngOnInit() {
-    this.emailSettingService.getEmailsStatus().subscribe(res => {
-      this.canSendEmail = res.enabled;
-    });
-    this.userService.HaveAnyLocalPermissionsExceptViewer(this.route.snapshot.params['projectId']).then(resolve =>
-      this.canEdit = this.userService.IsManager() || resolve);
-    this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params['testRunId'] }).then(result => {
+  async ngOnInit() {
+    this.projectId = this.route.snapshot.params.projectId;
+    this.canSendEmail = !!(await this.emailSettingService.getEmailsStatus()).enabled
+      && await this.permissions.hasProjectPermissions(this.projectId,
+        [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
+
+    this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId}).then(result => {
       this.testRun = result[0];
-      this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] }).then(res => {
+      this.milestoneService.getMilestone({ project_id: this.projectId }).then(res => {
         this.milestones = res;
       });
       this.testResultTempalte = { test_run_id: this.testRun.id };
       this.testResults = this.testRun.testResults;
       if (this.testRun.test_suite) {
         this.testRunService.getTestRun({
-          project_id: this.route.snapshot.params['projectId'],
+          project_id: this.projectId,
           test_suite: { id: this.testRun.test_suite.id }
         }).then(testRuns => {
           this.testRuns = testRuns;
@@ -102,7 +107,7 @@ export class TestRunViewComponent implements OnInit {
   }
 
   sendReport() {
-    this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(res => {
+    this.userService.getProjectUsers(this.projectId).subscribe(res => {
       this.users = res;
       this.hideNotifyModal = false;
     });
@@ -159,13 +164,13 @@ export class TestRunViewComponent implements OnInit {
 
   finalResultChartClick(result: FinalResult) {
     this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      [`/project/${this.projectId}/testrun/${this.route.snapshot.params['testRunId']}`],
       { queryParams: { f_final_result_opt: result.id } });
   }
 
   resolutionChartClick(resolution: ResultResolution) {
     this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
+      [`/project/${this.projectId}/testrun/${this.route.snapshot.params['testRunId']}`],
       { queryParams: { f_test_resolution_opt: resolution.id } });
   }
 }
