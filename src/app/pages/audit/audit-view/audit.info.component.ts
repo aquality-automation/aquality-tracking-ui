@@ -96,7 +96,6 @@ export class AuditInfoComponent implements OnInit {
 
   async updateCanEdit() {
     this.canEdit = this.isAuditAdmin || this.isAuditorOfAudit() && this.audit.status.id !== 4;
-    console.log(this.canEdit)
   }
 
   isAuditorOfAudit() {

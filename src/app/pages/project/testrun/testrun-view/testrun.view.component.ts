@@ -60,7 +60,7 @@ export class TestRunViewComponent implements OnInit {
       && await this.permissions.hasProjectPermissions(this.projectId,
         [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
-      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
 
     this.testRun = (await this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId }))[0];
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });

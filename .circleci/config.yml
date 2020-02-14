@@ -49,7 +49,7 @@ jobs:
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            export TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM})"
+            export TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM}_${CIRCLE_BRANCH})"
             export TESTRUNID=${TESTRUNID##*$'\n'}
             echo $TESTRUNID
             echo "export TESTRUNID=$TESTRUNID" >> $BASH_ENV
