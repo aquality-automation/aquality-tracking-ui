@@ -69,7 +69,7 @@ describe('Audit:', () => {
                     await auditInfo.setResult(result);
                     await auditInfo.notification.assertIsSuccess();
                     await expect(auditInfo.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
-                    await browser.refresh();
+                    await auditInfo.refresh();
                     await expect(auditInfo.getResult()).toBe(result, 'Result is not updatet');
                 });
 
@@ -79,7 +79,7 @@ describe('Audit:', () => {
                     await auditInfo.clickSaveSummary();
                     await auditInfo.notification.assertIsSuccess();
                     await expect(auditInfo.isFinishProgressEnabled()).toBe(false, 'Finish progress should not be availabe!');
-                    await browser.refresh();
+                    await auditInfo.refresh();
                     await expect(auditInfo.getSummary()).toBe(summary, 'Summary is not updatet');
                 });
 

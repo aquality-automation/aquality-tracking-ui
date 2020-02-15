@@ -13,6 +13,7 @@ import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 
 @Component({
@@ -43,6 +44,9 @@ export class TestSuiteViewComponent implements OnInit {
   users: LocalPermissions[];
   tbCols: TFColumn[];
   allowEdit: boolean;
+  projectId: number;
+  allowCreation: boolean;
+  allowMove: boolean;
 
   constructor(
     private testRunService: TestRunService,
@@ -52,23 +56,32 @@ export class TestSuiteViewComponent implements OnInit {
     private router: Router,
     public userService: UserService,
     private listTocsv: ListToCsvService,
-    private transformationsService: TransformationsService
+    private transformationsService: TransformationsService,
+    private permissions: PermissionsService
   ) { }
 
   @ViewChild('table')
   private child: TableFilterComponent;
 
   async ngOnInit() {
-    const suiteId: number = +this.route.snapshot.queryParams.suite;
-    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
-    this.getTestsInfo(suiteId);
+    const suiteId = +this.route.snapshot.queryParams.suite;
+    this.projectId = this.route.snapshot.params.projectId;
+    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
+    await this.getTestsInfo(suiteId);
     if (suiteId) {
       this.selectedTestSuite = this.testSuites.find(x => x.id === suiteId);
     }
 
-    this.allowEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    this.allowEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
 
-    this.userService.getProjectUsers(this.route.snapshot.params['projectId'])
+    this.allowCreation = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.admin]);
+
+    this.allowMove = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
+
+    this.userService.getProjectUsers(this.projectId)
       .subscribe(res => {
         this.users = res;
         this.tbCols = [
@@ -133,7 +146,7 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   suiteChange(selectedSuite: TestSuite) {
-    const url = `/project/${this.route.snapshot.params.projectId}/tests`;
+    const url = `/project/${this.projectId}/tests`;
     this.router.navigate([url], { queryParams: { suite: selectedSuite ? selectedSuite.id : undefined } });
     this.getTestsInfo(selectedSuite ? selectedSuite.id : undefined);
   }
@@ -148,8 +161,8 @@ export class TestSuiteViewComponent implements OnInit {
       };
       this.testRuns = await this.testRunService.getTestRun(this.testRun);
     } else {
-      this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
-      this.testSuite.tests = await this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] });
+      this.testSuite = { project_id: this.projectId };
+      this.testSuite.tests = await this.testService.getTest({ project_id: this.projectId });
       this.calculateManualDuration();
     }
   }
@@ -205,11 +218,11 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   rowClicked($event: { id: string; }) {
-    this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/test/${$event.id}`]);
+    this.router.navigate([`/project/${this.projectId}/test/${$event.id}`]);
   }
 
   openTestCreation() {
-    this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/create/test`],
+    this.router.navigate([`/project/${this.projectId}/create/test`],
       { queryParams: { testSuite: this.testSuite.id } });
   }
 

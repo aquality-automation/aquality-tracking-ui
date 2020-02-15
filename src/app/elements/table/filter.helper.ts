@@ -34,7 +34,9 @@ export class FilterHelper {
     }
 
     updateAppliedFilters = (appliedFilters: Filter[], filter: Filter) => {
-        appliedFilters = appliedFilters.filter((x: Filter) => x.property !== filter.property);
+        appliedFilters = appliedFilters.filter((x: Filter) => x.property !== filter.property &&
+            (x.from === undefined || filter.from === undefined ) ||
+            (x.to === undefined || filter.to === undefined));
         if (filter.value || filter.state !== undefined || filter.options || filter.range || filter.from || filter.to) {
             appliedFilters.push(filter);
         }
@@ -100,7 +102,7 @@ export class FilterHelper {
         } else { return data; }
     }
 
-    filterDate(data: any[], filter) {
+    filterDate(data: any[], filter: Filter): any[] {
         const from = filter.from;
         const to = filter.to;
         if (!from && !to) {
@@ -162,9 +164,11 @@ export class FilterHelper {
         return data;
     }
 
-    applyNewFilter = (data: any[], appliedFilters: Filter[], newFilter: Filter, queryParams: boolean): { filteredData: any[], newFilters: Filter[] } => {
+    applyNewFilter = (data: any[], appliedFilters: Filter[], newFilter: Filter, queryParams: boolean): {
+        filteredData: any[],
+        newFilters: Filter[]
+    } => {
         const newFilters = this.updateAppliedFilters(appliedFilters, newFilter);
-
         if (queryParams) {
             this.addParams(newFilter);
         }

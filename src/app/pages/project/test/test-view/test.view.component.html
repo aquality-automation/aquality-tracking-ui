@@ -11,7 +11,7 @@
       <h2 class="pull-left inline-page-label">Test: </h2>
       <div class="name-field clearfix">
         <inline-editor
-          [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+          [disabledInline]="!canEdit"
           maxLength="500" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur"
           [(ngModel)]="test.name" (onSave)="testUpdate()" [required]="true"></inline-editor>
       </div>
@@ -19,7 +19,7 @@
     <div class="col-sm-2">
       <div class="btn-group pull-right">
         <button *ngIf="showSteps" id="copy-scenario" class="btn btn-primary" (click)="copyScenario()">Copy Scenario</button>
-        <button *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+        <button *ngIf="canEdit"
           class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
       </div>
     </div>
@@ -36,11 +36,11 @@
         <input id="manualDuration" class="form-control input-sm ft-duration-input" name="manualDuration" type="text"
           [textMask]="{mask:durationMask}" [ngModel]="transformation.calculateDuration(test.manual_duration)"
           (blur)="saveManualDuration($event)"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()" />
+          [disabled]="!canEdit" />
       </div>
     </div>
     <div
-      *ngIf="selectedDeveloper || userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"
+      *ngIf="selectedDeveloper || canEdit"
       class="col-sm-4 clearfix">
       <div class="pull-left margin-right-10">
         <label class="label-inline pull-left" for="selectedDeveloper">Developer: </label>
@@ -48,7 +48,7 @@
       <div class="pull-left">
         <lookup-autocomplete id="selectedDeveloper" [small]="true"
           [propertiesToShow]="['user.first_name', 'user.second_name']" [array]="users" [model]="selectedDeveloper"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()"
+          [disabled]="!canEdit"
           (modelChange)="setNewDeveloper($event)"></lookup-autocomplete>
       </div>
     </div>
@@ -65,7 +65,7 @@
     <div class="col-sm-12">
         <label class="label-inline pull-left">Steps:</label>
     </div>
-    <steps-container #steps [editable]="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()"></steps-container>
+    <steps-container #steps [editable]="canEdit"></steps-container>
   </div>
 
   <hr class="col-sm-12 no-padding">

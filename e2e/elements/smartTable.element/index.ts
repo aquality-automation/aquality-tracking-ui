@@ -39,11 +39,15 @@ export class SmartTable extends BaseElement {
         const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
         if (comparisonResult.missedFromActual.length > 0) {
             result.result = false;
-            result.message = `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}`;
+            result.message = `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}\n
+            ========================================\n
+            ${expectedTableCSV}`;
         }
         if (comparisonResult.missedFromExpected.length > 0) {
             result.result = false;
-            result.message = `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}`;
+            result.message = `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}\n
+            ========================================\n
+            ${actualTableCSV}`;
         }
 
         return result;

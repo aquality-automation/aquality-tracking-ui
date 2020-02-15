@@ -6,6 +6,7 @@ import { User } from '../../../shared/models/user';
 import { UserService } from '../../../services/user.services';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './audit.component.html',
@@ -41,15 +42,17 @@ export class AuditComponent implements OnInit {
     private router: Router,
     public auditService: AuditService,
     public userService: UserService,
+    private permissions: PermissionsService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
+    const isAuditAdmin = await this.permissions.hasPermissions([EGlobalPermissions.audit_admin]);
     this.auditService.getAuditStats().subscribe(res => {
       this.stats = res;
       this.userService.getUsers({ unit_coordinator: 1 }).subscribe(users => this.coordinators = users);
       this.userService.getUsers({ auditor: 1}).subscribe(users => {
         this.auditors = users;
-        this.userService.IsAuditAdmin() ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
+        isAuditAdmin ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
         this.stats.forEach(stat => {
           if (stat.last_submitted_date || stat.last_created_due_date) {
             stat.last_created_due_date = stat.last_submitted_id !== stat.last_created_id
@@ -63,7 +66,7 @@ export class AuditComponent implements OnInit {
             stat['next_action'] = { text: stat.status_name, link: `/audit/${stat.id}/info/${stat.last_created_id}` };
             if (stat.status_name !== 'Open') { stat['hasOpened'] = true; }
             if (!this.linkNames.includes(stat.status_name) && stat.status_name) { this.linkNames.push(stat.status_name); }
-          } else if (this.userService.IsAuditAdmin()) {
+          } else if (isAuditAdmin) {
             stat['next_action'] = { text: 'Create New', link: `/audit/${stat.id}/create` };
           } else {
             stat['next_action'] = { text: 'Not created' };
@@ -136,7 +139,6 @@ export class AuditComponent implements OnInit {
               sorting: true,
               type: TFColumnType.date,
               format: 'dd/MM/yy',
-              editable: false,
               class: 'fit'
             },
             {

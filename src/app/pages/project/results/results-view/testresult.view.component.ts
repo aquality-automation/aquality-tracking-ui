@@ -15,6 +15,7 @@ import { StepsService } from '../../../../services/steps.service';
 import { StepType, StepResult } from '../../../../shared/models/steps';
 import { $ } from 'protractor';
 import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testresult.view.component.html',
@@ -48,7 +49,8 @@ export class TestResultViewComponent implements OnInit {
     private resultResolutionService: ResultResolutionService,
     private finalResultService: FinalResultService,
     private testResultService: TestResultService,
-    private stepService: StepsService
+    private stepService: StepsService,
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {
@@ -58,7 +60,8 @@ export class TestResultViewComponent implements OnInit {
     this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
     this.users = this.users.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
     this.types = await this.stepService.getStepTypes({});
-    this.canEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
     await this.refreshResult();
   }
 

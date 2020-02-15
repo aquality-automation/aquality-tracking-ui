@@ -6,6 +6,7 @@ import { AuditService } from '../../../services/audits.service';
 import { Audit, Service } from '../../../shared/models/audit';
 import { UserService } from '../../../services/user.services';
 import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './audit.project.component.html',
@@ -18,6 +19,7 @@ export class AuditProjectComponent implements OnInit {
   services: Service[];
   project: Project;
   redirect: any;
+  isAuditAdmin: boolean;
   public data: Audit[];
   public columns: TFColumn[];
   public defSort = { property: 'created', order: 'asc' };
@@ -27,11 +29,12 @@ export class AuditProjectComponent implements OnInit {
     public auditService: AuditService,
     private projectService: ProjectService,
     private route: ActivatedRoute,
-    public userService: UserService
+    private permissions: PermissionsService
   ) { }
 
-  ngOnInit() {
-    this.project = { id: this.route.snapshot.params['projectId'] };
+  async ngOnInit() {
+    this.isAuditAdmin = await this.permissions.hasPermissions([EGlobalPermissions.audit_admin]);
+    this.project = { id: this.route.snapshot.params.projectId };
     this.projectService.getProjects(this.project).subscribe(projects => {
       this.project = projects[0];
       this.auditService.getServices().subscribe(services => {
@@ -55,7 +58,7 @@ export class AuditProjectComponent implements OnInit {
                 },
                 class: 'fit'
               },
-              { name: 'Status', property: 'status.name', type: TFColumnType.text},
+              { name: 'Status', property: 'status.name', type: TFColumnType.text },
               { name: 'Created', property: 'created', sorting: true, type: TFColumnType.date },
               { name: 'Started', property: 'started', sorting: true, type: TFColumnType.date },
               { name: 'Progress Finished', property: 'progress_finished', sorting: true, type: TFColumnType.date },
@@ -83,13 +86,14 @@ export class AuditProjectComponent implements OnInit {
     });
   }
 
-  rowClicked($event) {
-    if ($event.status.id === 3
-      || $event.status.id === 4
-      || this.userService.IsAuditor()
-      || this.userService.IsAuditAdmin()
-      || this.userService.IsManager()) {
-      this.router.navigate([`/audit/${this.project.id}/info/${$event.id}`]);
+  async rowClicked(audit: Audit) {
+    const canNavigate =
+      (await this.permissions.hasPermissions([EGlobalPermissions.auditor, EGlobalPermissions.audit_admin, EGlobalPermissions.manager]))
+      || audit.status.id === 3
+      || audit.status.id === 4;
+
+    if (canNavigate) {
+      this.router.navigate([`/audit/${this.project.id}/info/${audit.id}`]);
     } else {
       this.auditService.handleWarning('Access denied', 'You can only see audits having Submitted and In Review statuses.');
     }

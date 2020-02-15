@@ -14,6 +14,7 @@ import { TestResultStat } from '../../../../shared/models/test-result';
 import { UserService } from '../../../../services/user.services';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testruns.component.html',
@@ -28,6 +29,7 @@ import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 })
 
 export class TestRunsComponent implements OnInit {
+  allowDelete: boolean;
   labels: TestRunLabel[];
   hideModal = true;
   removeModalTitle: string;
@@ -52,13 +54,16 @@ export class TestRunsComponent implements OnInit {
     private testSuiteService: TestSuiteService,
     private milestoneService: MilestoneService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {
     this.testRun = {
       project_id: this.route.snapshot.params.projectId
     };
+    this.allowDelete = await this.permissions.hasProjectPermissions(this.testRun.project_id,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId });
     this.labels = await this.testrunService.getTestsRunLabels(0).toPromise();
     this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
@@ -87,8 +92,22 @@ export class TestRunsComponent implements OnInit {
         editable: true,
         class: 'fit'
       },
-      { name: 'Start Time', property: 'start_time', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-      { name: 'Build', property: 'build_name', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-350' },
+      {
+        name: 'Start Time',
+        property: 'start_time',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        class: 'fit'
+      },
+      {
+        name: 'Build',
+        property: 'build_name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.text,
+        class: 'ft-width-350'
+      },
       {
         name: 'Test Suite',
         property: 'test_suite.name',

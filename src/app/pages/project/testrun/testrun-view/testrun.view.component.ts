@@ -13,7 +13,7 @@ import { ResultResolutionsChartsComponent } from '../../../../elements/charts/re
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { PermissionsService } from '../../../../services/current-permissions.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -55,9 +55,13 @@ export class TestRunViewComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.canSendEmail = !!(await this.emailSettingService.getEmailsStatus()).enabled;
     this.projectId = this.route.snapshot.params.projectId;
-    this.canEdit = await this.permissions.isProjectEditor(this.projectId);
+    this.canSendEmail = !!(await this.emailSettingService.getEmailsStatus()).enabled
+      && await this.permissions.hasProjectPermissions(this.projectId,
+        [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
+
     this.testRun = (await this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId }))[0];
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
     this.testResults = this.testRun.testResults;

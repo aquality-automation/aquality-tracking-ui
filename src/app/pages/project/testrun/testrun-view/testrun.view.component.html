@@ -24,7 +24,7 @@
         <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
           <span class="glyphicon glyphicon-modal-window"></span>
         </button>
-        <button *ngIf="canEdit && canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
+        <button *ngIf="canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
           <span class="glyphicon glyphicon-send"></span>
         </button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
