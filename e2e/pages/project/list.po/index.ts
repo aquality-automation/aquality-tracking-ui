@@ -2,7 +2,7 @@ import { browser } from 'protractor';
 import { baseUrl, elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 
-export class ProjectList extends BasePage {
+class ProjectList extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -37,3 +37,5 @@ export class ProjectList extends BasePage {
         return this.modal.clickYes();
     }
 }
+
+export const projectList = new ProjectList();

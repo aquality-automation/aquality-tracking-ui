@@ -9,6 +9,7 @@ import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.util';
+import { TFColumn, TFColumnType } from './tfColumn';
 
 @Component({
   selector: 'table-filter',
@@ -24,8 +25,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() hideFilter = false;
   @Input() data: any[];
   @Input() columnManagement = true;
-  @Input() columns: any[];
-  @Input() hiddenColumns: any[] = [];
+  @Input() columns: TFColumn[];
+  @Input() hiddenColumns: TFColumn[] = [];
   @Input() defaultSortBy: { property: string, order: string };
   @Input() rowsOnPage = 10;
   @Input() queryParams: boolean;
@@ -115,10 +116,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
 
     if (this.allowDelete || this.allowCreate || this.allowBulkUpdate) {
-      this.columns.push({ name: 'Action', property: 'action', type: 'button', editable: true });
+      this.columns.push({ name: 'Action', property: 'action', type: TFColumnType.button, editable: true });
     }
     if (this.allowBulkUpdate || this.withSelector) {
-      this.columns.unshift({ name: 'Selector', property: 'ft_select', type: 'selector', editable: true, class: 'fit' });
+      this.columns.unshift({ name: 'Selector', property: 'ft_select', type: TFColumnType.selector, editable: true, class: 'fit' });
     }
   }
 
@@ -324,11 +325,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   getLookupFilterValue(col: any) {
     const filter = this.appliedFilters.find(x => {
-      if (col.objectWithId) {
-        return x.property === col.objectWithId;
+      if (col.lookup.objectWithId) {
+        return x.property === col.lookup.objectWithId;
       }
-      if (col.entity) {
-        return x.property === col.entity;
+      if (col.lookup.entity) {
+        return x.property === col.lookup.entity;
       }
       return x.property === col.property;
     });
@@ -336,7 +337,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     let selectedOpts = [];
     if (filter && filter.options) {
       const selectedOptIds = filter.options.split(',');
-      selectedOpts = col.values.filter(x => {
+      selectedOpts = col.lookup.values.filter(x => {
         return selectedOptIds.find(y => (x.id ? x.id : this.transformationsService.getPropertyValue(x, filter.property).id) === +y);
       });
     }
@@ -346,6 +347,17 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   textFilterData(property: string) {
     const filter = this.appliedFilters.find(x => x.property === property);
     return filter ? filter.value : '';
+  }
+
+  booleanFilterData(property: string): number {
+    const filter = this.appliedFilters.find(x => x.property === property);
+    return filter
+      ? filter.state === true
+        ? 1
+        : filter.state === false
+          ? 2
+          : 3
+      : 3;
   }
 
   toggleCreation() {
@@ -436,20 +448,20 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   isNewEntityValid() {
     let messages: string[] = [];
     this.columns.forEach(column => {
-      if (!column.excludeCreation) {
+      if (column.creation) {
         switch (column.type) {
-          case 'text':
-            messages.push(this.isTextValid(column.property));
+          case TFColumnType.text:
+            messages.push(this.isTextValid(column));
             break;
-          case 'lookup-autocomplete':
-          case 'lookup-colored':
-            messages.push(this.isLookupValid(column.property));
+          case TFColumnType.autocomplete:
+          case TFColumnType.colored:
+            messages.push(this.isLookupValid(column));
             break;
-          case 'email':
-            messages.push(this.isEmailValid(column.property));
+          case TFColumnType.email:
+            messages.push(this.isEmailValid(column));
             break;
-          case 'password':
-            messages.push(this.isPasswordValid(column.property));
+          case TFColumnType.password:
+            messages.push(this.isPasswordValid(column));
             break;
         }
       }
@@ -461,18 +473,18 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.errorMessage === '';
   }
 
-  isTextValid(property: string): string {
-    if (this.newEntity[property]) {
-      if (this.newEntity[property] !== '') {
+  isTextValid(column: TFColumn): string {
+    if (this.newEntity[column.property]) {
+      if (this.newEntity[column.property] !== '' || !column.creation.required) {
         return '';
       }
     }
     return this.emptyFieldError;
   }
 
-  isPasswordValid(property: string): string {
-    if (this.newEntity[property] && this.newEntity[property] !== '') {
-      if (this.newEntity[property] === this.confirm) {
+  isPasswordValid(column: TFColumn): string {
+    if (this.newEntity[column.property] && this.newEntity[column.property] !== '') {
+      if (this.newEntity[column.property] === this.confirm) {
         return '';
       }
       return this.passwordError;
@@ -480,18 +492,18 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.emptyFieldError;
   }
 
-  isEmailValid(property: string): string {
-    const value = this.transformationsService.getPropertyValue(this.newEntity, property);
+  isEmailValid(column: TFColumn): string {
+    const value = this.transformationsService.getPropertyValue(this.newEntity, column.property);
     if (value && value !== '') {
       const regExp = new RegExp('(.+@.+[.][A-z]+)');
-      return regExp.test(this.newEntity[property]) ? '' : this.emailFieldError;
+      return regExp.test(this.newEntity[column.property]) ? '' : this.emailFieldError;
     }
     return this.emptyFieldError;
   }
 
-  isLookupValid(property: string): string {
-    const value = this.transformationsService.getPropertyValue(this.newEntity, property);
-    if (value && value !== '') {
+  isLookupValid(column: TFColumn): string {
+    const value = this.transformationsService.getPropertyValue(this.newEntity, column.property);
+    if ((value && value !== '') || !column.creation.required) {
       return '';
     }
     return this.emptyFieldError;
@@ -499,6 +511,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   handleFilterChange(col, $event) {
     const newFilter: Filter = { property: col.property, value: $event };
+    this.filterChange(newFilter);
+  }
+
+  handleBooleanFilterChange(col: any, value: number) {
+    const newFilter: Filter = { property: col.property, state: value === 1 ? true : value === 2 ? false : undefined };
     this.filterChange(newFilter);
   }
 
@@ -583,7 +600,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  wasClosed($event) {
+  wasClosed() {
     this.hideManageColumnsModal = true;
   }
 

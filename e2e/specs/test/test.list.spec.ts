@@ -1,22 +1,10 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { SuiteView } from '../../pages/suite/view.po';
-import { prepareProject, setProjectPermissions, prepareTest, prepareSuite } from '../project.hooks';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { ProjectSettingsAdministration } from '../../pages/administration/projectSettings.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
+import { suiteView } from '../../pages/suite/view.po';
 import { Test } from '../../../src/app/shared/models/test';
-import projects from '../../data/projects.json';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
-
-const logIn = new LogIn();
-const projectList = new ProjectList();
-const userAdministration: UserAdministration = new UserAdministration();
-const projectSettingsAdministration: ProjectSettingsAdministration = new ProjectSettingsAdministration();
-const projectView = new ProjectView();
-const suiteView = new SuiteView();
+import { ProjectHelper } from '../../helpers/project.helper';
 
 let test: Test = { name: 'Project can be opened from Projects list' };
 let suite1: Test = { name: 'First Suite' };
@@ -34,42 +22,30 @@ const notEditorExamples = {
 };
 
 describe('Tests List:', () => {
-    const project: Project = projects.customerOnly;
-    project.name = new Date().getTime().toString();
-    let importToken: string;
-    let projectId: number;
+    const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await (await projectList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             viewer: usersTestData.viewer
         });
 
-        test = await prepareTest(test, importToken, projectId);
-        suite1 = await prepareSuite(suite1, importToken, projectId);
-        suite2 = await prepareSuite(suite2, importToken, projectId);
-
-        return projectSettingsAdministration.menuBar.clickLogOut();
+        test = await projectHelper.editorAPI.createTest(test);
+        suite1 = await projectHelper.editorAPI.createSuite(suite1);
+        suite2 = await projectHelper.editorAPI.createSuite(suite2);
     });
 
     afterAll(async () => {
-        await logIn.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectList.isOpened();
-        await projectList.removeProject(project.name);
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logIn.logIn(user.user_name, user.password);
-                await projectList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                await projectHelper.openProject();
                 return (await projectList.menuBar.tests()).all();
             });
 
@@ -98,8 +74,8 @@ describe('Tests List:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logIn.logIn(user.user_name, user.password);
-                await projectList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                await projectHelper.openProject();
                 return (await projectList.menuBar.tests()).all();
             });
 

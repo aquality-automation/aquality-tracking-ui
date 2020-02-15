@@ -3,7 +3,7 @@ import { statuses } from '../view.po/constants';
 import { BasePage } from '../../base.po';
 import { browser } from 'protractor';
 
-export class ProjectAudits extends BasePage {
+class ProjectAudits extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -22,3 +22,5 @@ export class ProjectAudits extends BasePage {
         return elements.auditsTable.clickRow(status, columns.status);
     }
 }
+
+export const projectAudits = new ProjectAudits();

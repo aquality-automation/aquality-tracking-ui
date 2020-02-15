@@ -5,20 +5,26 @@ import { APITokenComponent } from '../projects/api-token/api-token.component';
 import { AdministrationPermissionsComponent } from '../projects/permissions/administration.permissions.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
-import { AdministrationProjectGuard, AdministrationGlobalGuard } from '../../../shared/guards/administration-guard.service';
+import {
+  AdministrationProjectManagerGuard,
+  AdministrationGlobalGuard,
+  AdministrationProjectGuard
+} from '../../../shared/guards/administration-guard.service';
 import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
+import { PredefinedResolutionComponent } from '../projects/predefinedResolution/predefinedResolution.component';
 
 
 const administrationChildsRoutes: Routes = [
-  { path: '', redirectTo: 'global/users'},
+  { path: '', redirectTo: 'global/users' },
   {
     path: 'project', canActivate: [AdministrationProjectGuard],
     children: [
-      { path: 'permissions', component: AdministrationPermissionsComponent },
-      { path: 'resolutions', component: AdministrationResolutionsComponent },
-      { path: 'importBodyPatterns', component: ImportBodyPatternsComponent },
-      { path: 'apiToken', component: APITokenComponent },
-      { path: 'projectSettings', component: AdministrationProjectSettingsComponent}
+      { path: 'permissions', component: AdministrationPermissionsComponent, canActivate: [AdministrationProjectManagerGuard]},
+      { path: 'resolutions', component: AdministrationResolutionsComponent, canActivate: [AdministrationProjectManagerGuard]},
+      { path: 'importBodyPatterns', component: ImportBodyPatternsComponent, canActivate: [AdministrationProjectManagerGuard]},
+      { path: 'apiToken', component: APITokenComponent, canActivate: [AdministrationProjectManagerGuard]},
+      { path: 'projectSettings', component: AdministrationProjectSettingsComponent, canActivate: [AdministrationProjectManagerGuard]},
+      { path: 'predefined-resolutions', component: PredefinedResolutionComponent, canActivate: [AdministrationProjectGuard]}
     ]
   }, {
     path: 'global', canActivate: [AdministrationGlobalGuard],
@@ -28,6 +34,5 @@ const administrationChildsRoutes: Routes = [
     ]
   }
 ];
-
 
 export const administrationChildsRouting = RouterModule.forChild(administrationChildsRoutes);

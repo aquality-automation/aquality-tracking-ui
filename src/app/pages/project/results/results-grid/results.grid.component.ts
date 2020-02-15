@@ -12,6 +12,8 @@ import { ResultSearcherComponent } from '../results-searcher/results.searcher.co
 import { FinalResult } from '../../../../shared/models/final-result';
 import { FinalResultService } from '../../../../services/final_results.service';
 import { TestRunService } from '../../../../services/testRun.service';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   selector: 'results-grid',
@@ -38,10 +40,11 @@ export class ResultGridComponent implements OnInit {
   public showSearcher = false;
   public searcherText = '';
   redirect: { url: string, property: string };
-  public tbCols: any[];
-  public tbHiddenCols: any[];
-  public allColumns: any[];
+  public tbCols: TFColumn[];
+  public tbHiddenCols: TFColumn[];
+  public allColumns: TFColumn[];
   canEdit: boolean;
+  projectId: number;
 
   constructor(
     private resultResolutionService: ResultResolutionService,
@@ -50,13 +53,15 @@ export class ResultGridComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public userService: UserService,
-    private finalResultService: FinalResultService
+    private finalResultService: FinalResultService,
+    private permissions: PermissionsService
   ) {
   }
 
-  ngOnInit() {
-    this.userService.HaveAnyLocalPermissionsExceptViewer(this.route.snapshot.params['projectId']).then(resolve =>
-      this.canEdit = this.userService.IsManager() || resolve);
+  async ngOnInit() {
+    this.projectId = this.route.snapshot.params.projectId;
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager]);
     this.resultResolutionService.getResolution().subscribe(async resolutions => {
       this.testResults.forEach(result => {
         if (result.final_result.color === 5) { result.test_resolution = undefined; }
@@ -64,23 +69,25 @@ export class ResultGridComponent implements OnInit {
       });
       this.listOfResolutions = resolutions;
       this.finalResults = await this.finalResultService.getFinalResult({});
-      const testruns = await this.testRunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] });
-      this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(projectUsers => {
+      const testruns = await this.testRunService.getTestRun({ project_id: this.projectId });
+      this.userService.getProjectUsers(this.projectId).subscribe(projectUsers => {
         this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
         this.testResults.forEach(result => {
           result['developer'] = this.users.find(x => x.user_id === result.test.developer_id);
           result['testrun'] = testruns.find(x => x.id === result.test_run_id);
         });
         this.allColumns = [
-          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Build Name', property: 'testrun.build_name', filter: true, sorting: true, type: 'text', class: 'ft-width-150' },
+          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+          {
+            name: 'Build Name', property: 'testrun.build_name', filter: true,
+            sorting: true, type: TFColumnType.text, class: 'ft-width-150'
+          },
           {
             name: 'Test Name',
             property: 'test.name',
             filter: true,
             sorting: true,
-            type: 'text',
-            editable: false,
+            type: TFColumnType.text,
             class: 'ft-width-150'
           },
           {
@@ -88,8 +95,7 @@ export class ResultGridComponent implements OnInit {
             property: 'fail_reason',
             filter: true,
             sorting: true,
-            type: 'long-text',
-            editable: false,
+            type: TFColumnType.longtext,
             listeners: ['contextmenu'],
             class: 'ft-width-250'
           },
@@ -98,10 +104,12 @@ export class ResultGridComponent implements OnInit {
             property: 'final_result.name',
             filter: true,
             sorting: true,
-            type: 'lookup-colored',
-            entity: 'final_result',
-            values: this.finalResults,
-            editable: false,
+            type: TFColumnType.colored,
+            lookup: {
+              entity: 'final_result',
+              values: this.finalResults,
+              propToShow: ['name']
+            },
             class: 'fit'
           },
           {
@@ -109,10 +117,12 @@ export class ResultGridComponent implements OnInit {
             property: 'test_resolution.name',
             filter: true,
             sorting: true,
-            type: 'lookup-colored',
-            entity: 'test_resolution',
-            allowEmpty: false,
-            values: this.listOfResolutions,
+            type: TFColumnType.colored,
+            lookup: {
+              entity: 'test_resolution',
+              values: this.listOfResolutions,
+              propToShow: ['name']
+            },
             editable: this.canEdit,
             bulkEdit: true,
             class: 'fit'
@@ -121,14 +131,15 @@ export class ResultGridComponent implements OnInit {
             name: 'Assignee',
             property: 'assigned_user.user',
             filter: true,
-            sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'assigned_user',
-            allowEmpty: true,
+            type: TFColumnType.autocomplete,
+            lookup: {
+              propToShow: ['user.first_name', 'user.second_name'],
+              entity: 'assigned_user',
+              allowEmpty: true,
+              objectWithId: 'assigned_user.user',
+              values: this.users,
+            },
             nullFilter: true,
-            objectWithId: 'assigned_user.user',
-            values: this.users,
             editable: this.canEdit,
             bulkEdit: true,
             class: 'fit'
@@ -138,7 +149,7 @@ export class ResultGridComponent implements OnInit {
             property: 'comment',
             filter: true,
             sorting: false,
-            type: 'textarea',
+            type: TFColumnType.textarea,
             editable: this.canEdit,
             bulkEdit: true,
             class: 'ft-width-150'
@@ -148,19 +159,20 @@ export class ResultGridComponent implements OnInit {
             property: 'developer.user',
             filter: true,
             sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'developer',
+            type: TFColumnType.autocomplete,
+            lookup: {
+              propToShow: ['user.first_name', 'user.second_name'],
+              entity: 'developer',
+              objectWithId: 'developer.user',
+              values: this.users,
+            },
             nullFilter: true,
-            objectWithId: 'developer.user',
-            values: this.users,
-            editable: false,
             class: 'fit'
           },
-          { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Updated', property: 'updated', filter: true, sorting: true, type: 'date', editable: false, class: 'fit' },
-          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', editable: false, class: 'fit' },
-          { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: this.canEdit, class: 'fit' }
+          { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+          { name: 'Updated', property: 'updated', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' },
+          { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' }
         ];
         this.tbCols = this.allColumns.filter(x => this.showOnly.includes(x.name));
         this.tbHiddenCols = this.allColumns.filter(x => !this.showOnly.includes(x.name));
@@ -169,7 +181,7 @@ export class ResultGridComponent implements OnInit {
   }
 
   rowClicked($event) {
-    window.open(`#/project/${this.route.snapshot.params['projectId']}/testresult/${$event.id}`);
+    window.open(`#/project/${this.projectId}/testresult/${$event.id}`);
   }
 
   async resultUpdate(result: TestResult) {
@@ -198,7 +210,7 @@ export class ResultGridComponent implements OnInit {
     const queryParam = {};
     queryParam['selectedResult'] = testResultId;
     this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' }).then(() => {
-      this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/testresult/' + testResultId]);
+      this.router.navigate([`/project/${this.projectId}/testresult/${testResultId}`]);
     });
   }
 
@@ -240,7 +252,7 @@ export class ResultGridComponent implements OnInit {
   }
 
   hideVal(entity: TestResult, property: string) {
-    if ((property === 'test_resolution.name' || property === 'assigned_user.user.user_name') && entity.final_result.color === 5) {
+    if ((property === 'test_resolution.name' || property === 'assigned_user.user') && entity.final_result.color === 5) {
       return true;
     }
     return false;

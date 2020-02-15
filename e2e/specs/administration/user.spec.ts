@@ -1,16 +1,11 @@
-import { LogIn } from '../../pages/login.po';
-
+import { logIn } from '../../pages/login.po';
 import users from '../../data/users.json';
 import { User } from '../../../src/app/shared/models/user';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { userAdministration } from '../../pages/administration/users.po';
+import { projectList } from '../../pages/project/list.po';
 import { browser } from 'protractor';
 
 describe('Full Admin Administartion User Flow', () => {
-
-    const logInPage: LogIn = new LogIn();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const projectList: ProjectList = new ProjectList();
     const userToCreate: User = users.creationTest;
 
     const validateUser = async () => {
@@ -36,13 +31,13 @@ describe('Full Admin Administartion User Flow', () => {
     };
 
     beforeAll(async () => {
-        await logInPage.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
         return (await projectList.menuBar.user()).administration();
     });
 
     afterAll(async () => {
-        if (await logInPage.menuBar.isLogged()) {
-            return logInPage.menuBar.clickLogOut();
+        if (await logIn.menuBar.isLogged()) {
+            return logIn.menuBar.clickLogOut();
         }
     });
 
@@ -101,10 +96,10 @@ describe('Full Admin Administartion User Flow', () => {
 
         it('I can login as new user', async () => {
             await userAdministration.menuBar.clickLogOut();
-            await logInPage.logIn(userToCreate.user_name, userToCreate.password);
+            await logIn.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logInPage.logIn(users.admin.user_name, users.admin.password);
+            await logIn.logInAs(users.admin.user_name, users.admin.password);
             return (await projectList.menuBar.user()).administration();
         });
     });
@@ -166,10 +161,10 @@ describe('Full Admin Administartion User Flow', () => {
             await userAdministration.clickResetPassword(userToCreate.user_name);
             userToCreate.password = '123456';
             await userAdministration.menuBar.clickLogOut();
-            await logInPage.logIn(userToCreate.user_name, userToCreate.password);
+            await logIn.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logInPage.logIn(users.admin.user_name, users.admin.password);
+            await logIn.logInAs(users.admin.user_name, users.admin.password);
             return (await projectList.menuBar.user()).administration();
         });
     });

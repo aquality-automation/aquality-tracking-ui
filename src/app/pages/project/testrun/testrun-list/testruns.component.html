@@ -1,6 +1,6 @@
 <div class="panel-body">
   <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
-    (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+    (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
   <div class="row">
     <div class="col-sm-12">
       <testrun-result-timeline *ngIf="testRunStatsFiltered" [testRunsStat]="testRunStatsFiltered"></testrun-result-timeline>
@@ -13,7 +13,7 @@
       <br>
       <br>
       <div class="col-sm-12">
-        <table-filter *ngIf="tbCols && labels" [allowDelete]="userService.IsManager() || userService.IsLocalManager() || userService.IsLocalAdmin()"
+        <table-filter #testRunsTable *ngIf="tbCols && labels" [allowDelete]="allowDelete"
           [allowExport]="true" [data]="testRuns" (shownData)="tableDataUpdate($event)" [columns]="tbCols" [hiddenColumns]="hiddenCols" [defaultSortBy]="sortBy"
           [queryParams]="true" (rowClick)="rowClicked($event)" (dataChange)="testRunUpdate($event)" (action)="handleAction($event)"></table-filter>
       </div>

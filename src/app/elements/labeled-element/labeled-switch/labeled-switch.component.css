@@ -1,5 +1,4 @@
 .label-element {
-    width: 75px;
     display: block;
     margin-right: 5px; 
 }
@@ -11,7 +10,7 @@
 }
 
 .switch-element {
-    width: 60px;
+    width: 35px;
     height: 25px;
     display: inline-block;
 }

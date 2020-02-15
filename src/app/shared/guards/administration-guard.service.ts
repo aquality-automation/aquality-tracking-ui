@@ -1,74 +1,62 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { UserService } from '../../services/user.services';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ELocalPermissions, EGlobalPermissions } from '../../services/current-permissions.service';
+import { GuardService } from './guard.service';
 
 
 @Injectable()
 export class AdministrationGlobalGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    public userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.admin]
+    }, ['/administration/project/permissions']);
+  }
+}
 
-    if (this.userService.IsAdmin()) {
-      return true;
-    }
-    this.router.navigate(['/administration/project/permissions']);
-    return false;
+@Injectable()
+export class AdministrationProjectManagerGuard implements CanActivate {
+  constructor(
+    private guardService: GuardService
+  ) { }
+
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.admin, EGlobalPermissions.manager],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager]
+    }, ['/administration/project/predefined-resolutions']);
   }
 }
 
 @Injectable()
 export class AdministrationProjectGuard implements CanActivate {
   constructor(
-    private router: Router,
-    public userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    await this.userService.AnyLocalPermissions();
-    if (this.userService.IsManager()
-      || this.userService.IsAdmin()
-      || this.userService.AnyLocalAdmin()
-      || this.userService.AnyLocalManager()) {
-      return true;
-    }
-    this.router.navigate(['**']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.manager],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]
+    }, ['**']);
   }
 }
 
 @Injectable()
 export class AdministrationGuard implements CanActivate {
   constructor(
-    private router: Router,
-    public userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    await this.userService.AnyLocalPermissions();
-    if (this.userService.IsAdmin()
-      || this.userService.IsManager()
-      || this.userService.AnyLocalAdmin()
-      || this.userService.AnyLocalManager()) {
-      return true;
-    }
-    this.router.navigate(['**']);
-    return false;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.manager, EGlobalPermissions.admin],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]
+    }, ['**']);
   }
 }

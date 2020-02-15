@@ -6,10 +6,13 @@ import { testData } from '../../utils/testData.util';
 import { rightClick } from '../../utils/click.util';
 import { Paginator } from './paginator.element';
 import { Row, CellElements } from './row.element';
+import { ManageColumns } from './manageCollumns.element';
+import { compareCSVStrings } from '../../utils/csv.util';
 
 const EC = protractor.ExpectedConditions;
 
 export class SmartTable extends BaseElement {
+    public manageColumns: ManageColumns;
     private paginator: Paginator;
     private creationRow = new Row(this.element.element(by.css('.ft-creation-row')));
     private bulkEditRow = new Row(this.element.element(by.css('.ft-bulk-edit-row')));
@@ -23,6 +26,31 @@ export class SmartTable extends BaseElement {
     constructor(locator: Locator) {
         super(locator);
         this.paginator = new Paginator(locator);
+        this.manageColumns = new ManageColumns(locator);
+    }
+
+    public async checkIfTableEqualToCSv(pathToCSV: string): Promise<{ result: boolean, message: string }> {
+        const result = {
+            result: true,
+            message: ''
+        };
+        const actualTableCSV = await this.getCSV();
+        const expectedTableCSV = await testData.readAsString(pathToCSV);
+        const comparisonResult = compareCSVStrings(actualTableCSV, expectedTableCSV, true);
+        if (comparisonResult.missedFromActual.length > 0) {
+            result.result = false;
+            result.message = `Not all actual results are in expected list:\n${comparisonResult.missedFromActual.join('\n')}\n
+            ========================================\n
+            ${expectedTableCSV}`;
+        }
+        if (comparisonResult.missedFromExpected.length > 0) {
+            result.result = false;
+            result.message = `Not all expected results are in actual list:\n${comparisonResult.missedFromExpected.join('\n')}\n
+            ========================================\n
+            ${actualTableCSV}`;
+        }
+
+        return result;
     }
 
     public async getRow(value: string | number, columnName: string): Promise<Row> {
@@ -128,11 +156,15 @@ export class SmartTable extends BaseElement {
         throw Error('Creation Row is not opened');
     }
 
-    public async clickCreateAction() {
+    public clickCreateAction(): promise.Promise<void> {
         return this.creationRow.clickAction();
     }
 
-    public async clickBulkAction() {
+    public isCreateActionEnabled(): promise.Promise<boolean> {
+        return this.creationRow.isActionEnabled();
+    }
+
+    public clickBulkAction() {
         return this.bulkEditRow.clickAction();
     }
 
@@ -200,7 +232,7 @@ export class SmartTable extends BaseElement {
         return cell.getText();
     }
 
-    public async getCellValue(column: string, searchValue: string | number, searchColumn: string): Promise<string|string[]> {
+    public async getCellValue(column: string, searchValue: string | number, searchColumn: string): Promise<string | string[]> {
         const columnIndex = await this.getColumnIndex(column);
         const row = await this.getRow(searchValue, searchColumn);
         return row.getRowCellValue(columnIndex);

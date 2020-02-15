@@ -9,6 +9,7 @@ import { TestSuiteService } from '../../../services/testSuite.service';
 import { TestRun } from '../../../shared/models/testRun';
 import { TestRunService } from '../../../services/testRun.service';
 import { Import } from '../../../shared/models/import';
+import { TFColumnType, TFColumn } from '../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './import.component.html',
@@ -43,7 +44,7 @@ export class ImportComponent {
   bodyPatterns: ImportBodyPattern[];
   format: { name: string, key: string };
   importResults: Import[];
-  resultsColumnsToShow: any[];
+  resultsColumnsToShow: TFColumn[];
   timerToken: any;
   statuses: { name: string, color: number }[] = [{
     name: 'Finished',
@@ -57,6 +58,7 @@ export class ImportComponent {
     { name: 'MSTest (.trx)', key: importTypes.MSTest },
     { name: 'Robot (.xml)', key: importTypes.Robot },
     { name: 'TestNG (.xml)', key: importTypes.TestNG },
+    { name: 'JUnit (.xml)', key: importTypes.JUnit },
     { name: 'Cucumber (.json)', key: importTypes.Cucumber },
     { name: 'PHP Codeception (.xml)', key: importTypes.PHPCodeception },
     { name: 'NUnit v2 (.xml)', key: importTypes.NUnit_v2 },
@@ -96,16 +98,18 @@ export class ImportComponent {
           property: 'status.name',
           filter: true,
           sorting: true,
-          type: 'lookup-colored',
-          entity: 'status',
-          values: this.statuses,
-          editable: false,
+          type: TFColumnType.colored,
+          lookup: {
+            entity: 'status',
+            values: this.statuses,
+            propToShow: ['name']
+          },
           class: 'fit'
         },
-        { name: 'Test Run ID', property: 'testrun_id', filter: false, sorting: true, type: 'text', class: 'fit' },
-        { name: 'Started', property: 'started', filter: true, sorting: true, type: 'date', class: 'fit' },
-        { name: 'Finished', property: 'finished', filter: true, sorting: true, type: 'date', class: 'fit' },
-        { name: 'Logs', property: 'log', filter: true, sorting: true, type: 'long-text', editable: false, class: 'ft-width-250' }
+        { name: 'Test Run ID', property: 'testrun_id', sorting: true, type: TFColumnType.text, class: 'fit' },
+        { name: 'Started', property: 'started', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+        { name: 'Finished', property: 'finished', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+        { name: 'Logs', property: 'log', filter: true, sorting: true, type: TFColumnType.longtext, class: 'ft-width-250' }
       ];
     });
   }
@@ -214,7 +218,7 @@ export class ImportComponent {
   IsTestNameValid() {
     if (this.format.key === importTypes.MSTest) {
       return this.testNameOptions.testClassName || this.testNameOptions.testName || this.testNameOptions.testDescription;
-    } else if (this.format.key === importTypes.TestNG) {
+    } else if (this.format.key === importTypes.TestNG || this.format.key === importTypes.JUnit) {
       return this.testNameOptions.testClassName || this.testNameOptions.testName;
     } else if (this.format.key === importTypes.NUnit_v3) {
       return this.testNameOptions.testClassName || this.testNameOptions.featureTest;

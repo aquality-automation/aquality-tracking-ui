@@ -8,6 +8,8 @@ import { UserService } from '../../../services/user.services';
 import { Project } from '../../../shared/models/project';
 import { ProjectService } from '../../../services/project.service';
 import { TransformationsService } from '../../../services/transformations.service';
+import { TFColumnType, TFColumn } from '../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
     templateUrl: 'customer-info.component.html',
@@ -26,10 +28,12 @@ export class CustomerInfoComponent implements OnInit {
     URL;
     canEdit: boolean;
     users: User[];
-    public columns;
+    allowCreate: boolean;
+    public columns: TFColumn[];
     public defSort = { property: 'name', order: 'desc' };
 
     constructor(
+        private permissions: PermissionsService,
         private userService: UserService,
         public route: ActivatedRoute,
         private router: Router,
@@ -37,22 +41,32 @@ export class CustomerInfoComponent implements OnInit {
         private projectService: ProjectService
     ) { }
 
-    ngOnInit() {
-        this.URL = `/customer/attachment?customer_id=${this.route.snapshot.params['customer_id']}`;
+    async ngOnInit() {
+        this.URL = `/customer/attachment?customer_id=${this.route.snapshot.params.customer_id}`;
+        const isAdmin = await this.permissions.hasPermissions([EGlobalPermissions.admin]);
         this.userService.getUsers({ unit_coordinator: 1 }).subscribe(result => {
             this.coordinators = result.filter(x => x.unit_coordinator === 1);
         });
         this.userService.getUsers({}).subscribe(result => {
             this.users = result;
         });
-        this.customerService.getCustomer(+this.route.snapshot.params['customer_id'], true).subscribe(res => {
+        this.customerService.getCustomer(+this.route.snapshot.params.customer_id, true).subscribe(res => {
             this.customer = res[0];
             this.columns = [
-                { name: 'Name', property: 'name', filter: true, sorting: true, type: 'text', editable: this.userService.IsAdmin() },
-                { name: 'Created', property: 'created', filter: true, sorting: true, type: 'date', editable: false, class: 'ft-date-width' }
+                {
+                    name: 'Name', property: 'name', filter: true,
+                    sorting: true, type: TFColumnType.text, editable: isAdmin,
+                    creation: {
+                        required: true
+                    }
+                },
+                {
+                    name: 'Created', property: 'created', filter: true, sorting: true, type: TFColumnType.date, class: 'ft-date-width'
+                }
             ];
         });
-        this.canEdit = this.userService.IsUnitCoordinator() || this.userService.IsHead();
+        this.canEdit = await this.permissions.hasPermissions([EGlobalPermissions.unit_coordinator, EGlobalPermissions.head]);
+        this.allowCreate = await this.permissions.hasPermissions([EGlobalPermissions.admin, EGlobalPermissions.manager]);
     }
 
     handleAction($event) {

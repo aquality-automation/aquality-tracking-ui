@@ -6,4 +6,5 @@ export class Navigation {
   show: boolean;
   routerOptions?: any;
   children?: Navigation[];
+  params?: object;
 }

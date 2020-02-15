@@ -3,7 +3,7 @@ import { elements, baseUrl, names, columns } from './constants';
 import { User } from '../../../../src/app/shared/models/user';
 import { AdministrationBase } from '../base.po';
 
-export class UserAdministration extends AdministrationBase {
+class UserAdministration extends AdministrationBase {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
@@ -123,3 +123,5 @@ export class UserAdministration extends AdministrationBase {
     await this.modal.clickYes();
   }
 }
+
+export const userAdministration = new UserAdministration();

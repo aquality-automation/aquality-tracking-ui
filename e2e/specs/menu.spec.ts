@@ -1,20 +1,13 @@
-import { LogIn } from '../pages/login.po';
-import { ProjectList } from '../pages/project/list.po';
-
+import { logIn } from '../pages/login.po';
+import { projectList } from '../pages/project/list.po';
 import users from '../data/users.json';
 import { browser } from 'protractor';
 
 describe('Report an Issue', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
     const githubUrl = 'https://github.com/aquality-automation/aquality-tracking/issues';
 
-    beforeAll(() => {
-        logIn.navigateTo();
-    });
-
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
     });
 
     afterAll(async () => {

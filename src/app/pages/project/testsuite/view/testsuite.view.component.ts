@@ -12,6 +12,8 @@ import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
+import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 
 @Component({
@@ -40,8 +42,11 @@ export class TestSuiteViewComponent implements OnInit {
   testRun: TestRun;
   totalManualDuration: string;
   users: LocalPermissions[];
-  tbCols: any[];
+  tbCols: TFColumn[];
   allowEdit: boolean;
+  projectId: number;
+  allowCreation: boolean;
+  allowMove: boolean;
 
   constructor(
     private testRunService: TestRunService,
@@ -51,23 +56,32 @@ export class TestSuiteViewComponent implements OnInit {
     private router: Router,
     public userService: UserService,
     private listTocsv: ListToCsvService,
-    private transformationsService: TransformationsService
+    private transformationsService: TransformationsService,
+    private permissions: PermissionsService
   ) { }
 
   @ViewChild('table')
   private child: TableFilterComponent;
 
   async ngOnInit() {
-    const suiteId: number = +this.route.snapshot.queryParams.suite;
-    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
-    this.getTestsInfo(suiteId);
+    const suiteId = +this.route.snapshot.queryParams.suite;
+    this.projectId = this.route.snapshot.params.projectId;
+    this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
+    await this.getTestsInfo(suiteId);
     if (suiteId) {
       this.selectedTestSuite = this.testSuites.find(x => x.id === suiteId);
     }
 
-    this.allowEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    this.allowEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
 
-    this.userService.getProjectUsers(this.route.snapshot.params['projectId'])
+    this.allowCreation = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.admin]);
+
+    this.allowMove = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
+
+    this.userService.getProjectUsers(this.projectId)
       .subscribe(res => {
         this.users = res;
         this.tbCols = [
@@ -76,21 +90,25 @@ export class TestSuiteViewComponent implements OnInit {
             property: 'name',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: this.allowEdit,
-            creationLength: '500'
+            creation: {
+              required: true,
+              creationLength: 500
+            }
           },
           {
             name: 'Developer',
             property: 'developer',
-            objectWithId: 'developer.user',
             filter: true,
-            sorting: false,
-            type: 'lookup-autocomplete',
-            propToShow: ['user.first_name', 'user.second_name'],
-            entity: 'developer',
-            allowEmpty: true,
-            values: this.users,
+            type: TFColumnType.autocomplete,
+            lookup: {
+              entity: 'developer',
+              propToShow: ['user.first_name', 'user.second_name'],
+              allowEmpty: true,
+              values: this.users,
+              objectWithId: 'developer.user'
+            },
             nullFilter: true,
             editable: this.allowEdit,
             bulkEdit: true,
@@ -99,12 +117,13 @@ export class TestSuiteViewComponent implements OnInit {
           {
             name: 'Suites',
             property: 'suites',
-            entity: 'suites',
             filter: true,
-            sorting: false,
-            type: 'multiselect',
-            propToShow: ['name'],
-            values: this.testSuites,
+            type: TFColumnType.multiselect,
+            lookup: {
+              entity: 'suites',
+              propToShow: ['name'],
+              values: this.testSuites,
+            },
             editable: this.allowEdit,
             bulkEdit: true,
             class: 'ft-width-250'
@@ -112,9 +131,8 @@ export class TestSuiteViewComponent implements OnInit {
           {
             name: 'Manual Duration',
             property: 'manual_duration',
-            filter: false,
             sorting: true,
-            type: 'time',
+            type: TFColumnType.time,
             editable: this.allowEdit,
             bulkEdit: true,
             class: 'fit'
@@ -128,7 +146,7 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   suiteChange(selectedSuite: TestSuite) {
-    const url = `/project/${this.route.snapshot.params.projectId}/tests`;
+    const url = `/project/${this.projectId}/tests`;
     this.router.navigate([url], { queryParams: { suite: selectedSuite ? selectedSuite.id : undefined } });
     this.getTestsInfo(selectedSuite ? selectedSuite.id : undefined);
   }
@@ -143,8 +161,8 @@ export class TestSuiteViewComponent implements OnInit {
       };
       this.testRuns = await this.testRunService.getTestRun(this.testRun);
     } else {
-      this.testSuite = { project_id: this.route.snapshot.params['projectId'] };
-      this.testSuite.tests = await this.testService.getTest({ project_id: this.route.snapshot.params['projectId'] }).toPromise();
+      this.testSuite = { project_id: this.projectId };
+      this.testSuite.tests = await this.testService.getTest({ project_id: this.projectId });
       this.calculateManualDuration();
     }
   }
@@ -200,11 +218,11 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   rowClicked($event: { id: string; }) {
-    this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/test/${$event.id}`]);
+    this.router.navigate([`/project/${this.projectId}/test/${$event.id}`]);
   }
 
   openTestCreation() {
-    this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/create/test`],
+    this.router.navigate([`/project/${this.projectId}/create/test`],
       { queryParams: { testSuite: this.testSuite.id } });
   }
 
@@ -263,8 +281,8 @@ export class TestSuiteViewComponent implements OnInit {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   moveTestOpen() {
@@ -292,7 +310,7 @@ export class TestSuiteViewComponent implements OnInit {
     this.testService.handleSimpleError('Name is invalid', 'Test Suite name can\'t be empty or less than 4 symbols!');
   }
 
-  moveToWasClosed($event) {
+  moveTowasClosed() {
     this.hideMoveModal = true;
   }
 

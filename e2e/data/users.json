@@ -3,6 +3,19 @@
         "user_name": "admin",
         "password": "123456"
     },
+    "autoAdmin":{
+        "user_name": "auto.admin",
+        "password": "123456",
+        "first_name": "Auto",
+        "second_name": "Admin",
+        "email": "a.admin@example.com",
+        "admin":1,
+        "manager":0,
+        "auditor":0,
+        "audit_admin":0,
+        "unit_coordinator":0,
+        "account_manager":0
+    },
     "creationTest":{
         "user_name": "n.user",
         "password": "newUser",

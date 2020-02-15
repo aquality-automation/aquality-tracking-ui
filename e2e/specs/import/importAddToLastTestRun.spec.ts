@@ -1,23 +1,17 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { Import } from '../../pages/import.po';
-import { Project } from '../../../src/app/shared/models/project';
-import { prepareProject, executeCucumberImport, executeImport } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { logIn } from '../../pages/login.po';
+import { projectView } from '../../pages/project/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { importPage } from '../../pages/import.po';
+import { ProjectHelper } from '../../helpers/project.helper';
+import { testRunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
+
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
+import cucumberImport from '../../data/import/cucumber.json';
+import { ImportFormats } from '../../api/importer.api';
 
 describe('Import Test Run: Add to Last Testrun', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
-    const importPage = new Import();
-    const project: Project = projects.testRunResultSearcherProject;
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const ui = {
         buildName: 'cucumber',
         suiteName: 'UIImport'
@@ -30,20 +24,15 @@ describe('Import Test Run: Add to Last Testrun', () => {
         cucumber: '/import/cucumber.json',
         mstest: '/import/mstest.trx'
     };
-    let apiToken: string;
-    let projectId: number;
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
-        apiToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
+        await projectHelper.init();
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.openProject();
     });
 
     afterAll(async () => {
-        await projectList.removeProject(project.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHelper.dispose();
     });
 
     it('You can import results into Last Test Run via UI', async () => {
@@ -81,19 +70,15 @@ describe('Import Test Run: Add to Last Testrun', () => {
     it('You can import into Last Test Run via API', async () => {
         await projectView.menuBar.import();
         let lastImportDate: Date = await importPage.getLatestImportedTestRunDate();
-        await executeCucumberImport(projectId, api.suiteName, apiToken,
-            [await testData.readAsString(importFiles.cucumber)], [`${api.buildName}.json`]);
+        await projectHelper.importer.executeCucumberImport(api.suiteName, [cucumberImport], [`${api.buildName}.json`]);
         await expect(importPage.waitForNewImportResult(lastImportDate)).toBe(true, 'Cucumber was not imported as first test run');
         lastImportDate = await importPage.getLatestImportedTestRunDate();
-        await executeImport({
-            projectId,
+        await projectHelper.importer.executeImport({
             suite: api.suiteName,
-            importToken: apiToken,
-            format: 'MSTest',
+            format: ImportFormats.msTest,
             addToLastTestRun: true,
             testNameKey: 'descriptionNode'
-        },
-            [await testData.readAsString(importFiles.mstest)], ['mstest.trx']);
+        }, [await testData.readAsString(importFiles.mstest)], ['mstest.trx']);
         await expect(importPage.waitForNewImportResult(lastImportDate)).toBe(true, 'Trx Was not imported as second test run');
         const lastImportedTestRunID = await importPage.getTestRunIdFromImportRow(0);
         const previousImportedTestRunID = await importPage.getTestRunIdFromImportRow(1);

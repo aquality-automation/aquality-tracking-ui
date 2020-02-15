@@ -9,8 +9,10 @@ import { Test } from '../shared/models/test';
 export class TestSuiteService extends SimpleRequester {
 
   getTestSuite(testsuite: TestSuite, overlay: boolean = true): Promise<TestSuite[]> {
-    testsuite.project_id = this.route.snapshot.params['projectId'];
-    return this.doGet('/suite', testsuite, overlay).map(res => res.json()).toPromise<TestSuite[]>();
+    if (!testsuite.project_id) {
+      testsuite.project_id = this.route.snapshot.params['projectId'];
+    }
+    return this.doGet('/suite', testsuite, overlay).map(res => res.json()).toPromise();
   }
 
   getTestSuiteWithChilds(testsuite: TestSuite): Promise<TestSuite[]> {

@@ -1,11 +1,10 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
+import { logIn } from '../../pages/login.po';
+import { projectList } from '../../pages/project/list.po';
 import { Project } from '../../../src/app/shared/models/project';
-import { UserAdministration } from '../../pages/administration/users.po';
-import { prepareProject, setProjectPermissions } from '../project.hooks';
-import { PermissionsAdministration } from '../../pages/administration/permissions.po';
-import { NotFound } from '../../pages/notFound.po';
-
+import { userAdministration } from '../../pages/administration/users.po';
+import { permissionsAdministration } from '../../pages/administration/permissions.po';
+import { predefinedResolutions } from '../../pages/administration/predefinedResolutions.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import projects from '../../data/projects.json';
@@ -22,46 +21,34 @@ const notEditorExamples = {
 };
 
 describe('Administartion:', () => {
-    const logInPage: LogIn = new LogIn();
-    const projectsList: ProjectList = new ProjectList();
-    const userAdministration: UserAdministration = new UserAdministration();
-    const permissionsAdministration: PermissionsAdministration = new PermissionsAdministration();
-    const notFound: NotFound = new NotFound();
-
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const project: Project = projects.customerOnly;
     project.name = new Date().getTime().toString();
 
     beforeAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await prepareProject(project);
-        await (await projectsList.menuBar.user()).administration();
-        await userAdministration.sidebar.permissions();
-        await setProjectPermissions(project, {
+        await projectHelper.init({
             admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager
         });
-        return permissionsAdministration.menuBar.clickLogOut();
     });
 
     afterAll(async () => {
-        await logInPage.logIn(usersTestData.admin.user_name, usersTestData.admin.password);
-        await projectsList.isOpened();
-        await projectsList.removeProject(project.name);
+        await projectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             const tempUser = usersTestData.projectTemp;
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
-                await projectsList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                await projectHelper.openProject();
             });
 
             it('I can open Permissions page', async () => {
-                await (await projectsList.menuBar.user()).administration();
+                await (await projectList.menuBar.user()).administration();
                 await userAdministration.sidebar.permissions();
                 return expect(permissionsAdministration.isOpened()).toBe(true, `Permissions page is not opened for ${description}`);
             });
@@ -73,10 +60,7 @@ describe('Administartion:', () => {
                 await permissionsAdministration.setAdmin(true);
                 await permissionsAdministration.setManager(true);
                 await permissionsAdministration.clickCreate();
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on create!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe('Permissions were updated.', 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await expect(permissionsAdministration.isUserDisplayed(tempUser.user_name)).toBe(true, 'User was not added!');
                 const data = await permissionsAdministration.getPermissionData(tempUser);
                 await expect(data[permissionsAdministration.columns.admin]).toBe(true,
@@ -90,10 +74,7 @@ describe('Administartion:', () => {
             it('I can edit Permission', async () => {
                 await permissionsAdministration.updateUser(false, permissionsAdministration.columns.admin,
                     tempUser.user_name, permissionsAdministration.columns.username);
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on update!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe('Permissions were updated.', 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await permissionsAdministration.updateUser(false, permissionsAdministration.columns.manager,
                     tempUser.user_name, permissionsAdministration.columns.username);
                 await permissionsAdministration.updateUser(true, permissionsAdministration.columns.engineer,
@@ -113,10 +94,8 @@ describe('Administartion:', () => {
             it('I can remove Permission', async () => {
                 await permissionsAdministration.clickRemoveUserButton(tempUser.user_name);
                 await permissionsAdministration.modal.clickYes();
-                await expect(permissionsAdministration.notification.isSuccess()).toBe(true, 'Success meessage is not shown on create!');
-                await expect(permissionsAdministration.notification.getContent())
-                    .toBe(`Permissions for '${tempUser.first_name} ${tempUser.second_name}' were deleted.`, 'Success meessage is wrong!');
-                await permissionsAdministration.notification.close();
+                await permissionsAdministration.notification
+                    .assertIsSuccess(`Permissions for '${tempUser.first_name} ${tempUser.second_name}' were deleted.`);
                 return expect(permissionsAdministration.isUserDisplayed(tempUser.user_name)).toBe(false, 'User was not removed!');
             });
         });
@@ -125,19 +104,20 @@ describe('Administartion:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                await logInPage.logIn(user.user_name, user.password);
-                return projectsList.openProject(project.name);
+                await logIn.logInAs(user.user_name, user.password);
+                return projectHelper.openProject();
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                return expect((await projectsList.menuBar.user()).isAdministrationExists())
-                    .toBe(false, `Administartion should not be visible for ${description}`);
+                await (await projectList.menuBar.user()).administration();
+                return expect(permissionsAdministration.sidebar.isPermissionsExist())
+                    .toBe(false, `Permissions should not be visible for ${description}`);
             });
 
             it('I can not Open Permissions page using url', async () => {
                 await permissionsAdministration.navigateTo();
                 await expect(permissionsAdministration.isOpened()).toBe(false, `Permissions page is opened for ${description}`);
-                return expect(notFound.isOpened()).toBe(true, `404 page is not opened for ${description}`);
+                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
             });
         });
     });

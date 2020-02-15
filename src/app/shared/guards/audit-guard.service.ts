@@ -1,27 +1,20 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { UserService } from '../../services/user.services';
+import { EGlobalPermissions, ELocalPermissions } from '../../services/current-permissions.service';
+import { GuardService } from './guard.service';
 
 @Injectable()
 export class AuditCreateGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    private userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    if ((!this.userService.handleIsLogged() || !this.userService.IsAuditAdmin())) {
-      this.router.navigate(['**']);
-      return false;
-    }
-
-    return true;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.audit_admin]
+    }, ['**']);
   }
 }
 
@@ -29,21 +22,13 @@ export class AuditCreateGuard implements CanActivate {
 export class AuditDashboardGuard implements CanActivate {
 
   constructor(
-    private router: Router,
-    public userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
-    if (!this.userService.IsAuditor() && !this.userService.IsManager() && !this.userService.IsAuditAdmin()) {
-      this.router.navigate(['**']);
-      return false;
-    }
-
-    return true;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.audit_admin, EGlobalPermissions.manager, EGlobalPermissions.auditor]
+    }, ['**']);
   }
 }
 
@@ -52,31 +37,18 @@ export class AuditProjectGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    public userService: UserService
+    private guardService: GuardService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let islogged = false;
-    await this.userService.handleIsLogged().then(res => islogged = res);
-    if (!islogged) { return false; }
-
     if (isNaN(+route.params['projectId'])) {
       this.router.navigate(['**']);
       return false;
     }
 
-    let hasLocalPermissions: boolean;
-
-    await this.userService.HaveAnyLocalPermissions(+route.params['projectId']).then(res => {
-      hasLocalPermissions = res;
-    });
-
-    if (!this.userService.IsAuditor() && !this.userService.IsManager() && !hasLocalPermissions && !this.userService.IsAuditAdmin()) {
-      this.router.navigate(['**']);
-      return false;
-    }
-
-    return true;
+    return this.guardService.redirect({
+      global: [EGlobalPermissions.manager, EGlobalPermissions.auditor, EGlobalPermissions.audit_admin],
+      local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.viewer]
+    }, ['**']);
   }
-
 }

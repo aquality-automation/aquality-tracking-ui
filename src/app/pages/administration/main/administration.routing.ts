@@ -1,7 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
 import { AdministrationComponent } from './administration.component';
 import { AdministrationGuard } from '../../../shared/guards/administration-guard.service';
-import { AuthGuard } from '../../../shared/guards/auth-guard.service';
+import { AuthGuard } from '../../../shared/guards/login-guard.service';
 
 
 const administrationRoutes: Routes = [

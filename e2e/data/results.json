@@ -1,22 +1,31 @@
 {
+    "none":{
+        "name": "None",
+        "index": -1
+    },
     "notExecuted":{
         "name": "Not Executed",
-        "color": "Primary"
+        "color": "Primary",
+        "index": 2
     },
     "failed":{
         "name": "Failed",
-        "color": "Danger"
+        "color": "Danger",
+        "index": 0
     },
     "inProgress":{
         "name": "In Progress",
-        "color": "Warning"
+        "color": "Warning",
+        "index": 3
     },
     "passed":{
         "name": "Passed",
-        "color": "Success"
+        "color": "Success",
+        "index": 1
     },
     "pending":{
         "name": "Pending",
-        "color": "Info"
+        "color": "Info",
+        "index": 4
     }
 }

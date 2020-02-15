@@ -14,6 +14,7 @@ import { TestRun, TestRunLabel } from '../../../../shared/models/testRun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { DatePipe } from '@angular/common';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
+import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: 'testrun-matrix.component.html',
@@ -35,7 +36,7 @@ export class TestrunMatrixComponent implements OnInit {
     resultsNumber = '20';
     resultNumbers: string[] = ['5', '10', '20', '30', 'All'];
     tests: Test[];
-    tbCols: any[] = [];
+    tbCols: TFColumn[] = [];
     dataToshow: any[] = [];
     testRuns: TestRun[];
     finalResults: FinalResult[];
@@ -81,7 +82,7 @@ export class TestrunMatrixComponent implements OnInit {
         this.tests = await this.testService.getTest({
             test_suite_id: this.selectedSuite.id,
             project_id: this.selectedSuite.project_id
-        }).toPromise();
+        });
         this.refreshDataToShow();
         this.refreshTable(this.showResolutions);
     }
@@ -154,7 +155,7 @@ export class TestrunMatrixComponent implements OnInit {
             property: 'testName',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: false,
             class: 'ft-width-180',
             link: { template: `/project/${this.route.snapshot.params['projectId']}/test/{id}`, properties: ['id'] }
@@ -162,14 +163,16 @@ export class TestrunMatrixComponent implements OnInit {
         this.testRuns.forEach(testRun => {
             this.tbCols.push({
                 name: `${testRun.id} | ${testRun.label.name} | ${this.datepipe.transform(new Date(testRun.start_time), 'MM/dd/yy')}`,
-                title: [`${testRun.id}.comment`],
-                property: state ? [`${testRun.id}_resolution.name`] : [`${testRun.id}_result.name`],
+                title: `${testRun.id}_result.comment`,
+                property: state ? `${testRun.id}_resolution.name` : `${testRun.id}_result.name`,
                 filter: true,
                 sorting: true,
-                type: 'lookup-colored',
-                entity: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
-                values: this.filterValues,
-                editable: false,
+                type: TFColumnType.colored,
+                lookup: {
+                    entity: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
+                    values: this.filterValues,
+                    propToShow: ['name']
+                },
                 class: 'fit',
                 headerlink: `/project/${this.route.snapshot.params['projectId']}/testrun/${testRun.id}`
             });

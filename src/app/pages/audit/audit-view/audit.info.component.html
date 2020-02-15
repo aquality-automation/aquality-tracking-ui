@@ -1,19 +1,22 @@
 <div id="audit-info-page" *ngIf="audit" class="panel-heading">
   <simple-popup *ngIf="!hideModal" [title]="modalTitle" [message]="modalMessage" [type]="'warning'" [buttons]="buttons"
-    (execute)="execute($event)" (closed)="wasClosed($event)"></simple-popup>
+    (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
   <div class="row">
     <div class="col-md-9">
       <h2>Audit Info - {{audit.project.name}}</h2>
     </div>
     <div *ngIf="canEdit" class="col-md-3 no-padding">
       <div class="btn-group pull-right no-padding">
-        <button id="audit-cancel" *ngIf="(audit.status.id === 1 || audit.status.id === 2) && userService.IsAuditAdmin()" class="btn btn-danger btn-secondary"
-          (click)="cancelAudit()">Cancel Audit</button>
-        <button id="audit-start" *ngIf="audit.status.id === 1 && canEdit" [disabled]="!audit.due_date || audit.auditors.length < 1" class="btn btn-warning btn-secondary"
+        <button id="audit-cancel" *ngIf="(audit.status.id === 1 || audit.status.id === 2) && isAuditAdmin"
+          class="btn btn-danger btn-secondary" (click)="cancelAudit()">Cancel Audit</button>
+        <button id="audit-start" *ngIf="audit.status.id === 1 && canEdit"
+          [disabled]="!audit.due_date || audit.auditors.length < 1" class="btn btn-warning btn-secondary"
           (click)="startProgress()">Start Progress</button>
-        <button id="audit-finish" *ngIf="audit.status.id === 2 && canEdit" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
+        <button id="audit-finish" *ngIf="audit.status.id === 2 && canEdit"
+          [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length === 0 || audit.auditors.length < 1"
           class="btn btn-warning btn-secondary" (click)="finishProgress()">Finish Progress</button>
-        <button id="audit-submit" *ngIf="audit.status.id === 3 && userService.IsAuditAdmin()" [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length < 1"
+        <button id="audit-submit" *ngIf="audit.status.id === 3 && isAuditAdmin"
+          [disabled]="!this.audit.result || !this.audit.summary || !this.attachments || this.attachments.length < 1"
           class="btn btn-success btn-secondary" (click)="submitAudit()">Submit</button>
       </div>
     </div>
@@ -35,8 +38,9 @@
             <label *ngIf="audit.due_date">Due Date:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <ng-datepicker id="due-date" name="due-date" [ngModel]="audit.due_date" (ngModelChange)="dateUpdate($event,'due_date')" [options]="DateOpts"
-              [disabled]="!userService.IsAuditAdmin()"></ng-datepicker>
+            <ng-datepicker id="due-date" name="due-date" [ngModel]="audit.due_date"
+              (ngModelChange)="dateUpdate($event,'due_date')" [options]="DateOpts" [disabled]="!isAuditAdmin">
+            </ng-datepicker>
           </div>
         </div>
         <div class="col-sm-12 no-padding">
@@ -44,8 +48,9 @@
             <label>Created:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <ng-datepicker id="created-date" name="created-date" [ngModel]="audit.created" (ngModelChange)="dateUpdate($event,'created')" [options]="DateOpts"
-              [disabled]="!userService.IsAuditAdmin()"></ng-datepicker>
+            <ng-datepicker id="created-date" name="created-date" [ngModel]="audit.created"
+              (ngModelChange)="dateUpdate($event,'created')" [options]="DateOpts" [disabled]="!isAuditAdmin">
+            </ng-datepicker>
           </div>
         </div>
         <div *ngIf="audit.started" class="col-sm-12 no-padding">
@@ -53,8 +58,9 @@
             <label>Started:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <ng-datepicker id="started-date" name="started-date" [ngModel]="audit.started" (ngModelChange)="dateUpdate($event,'started')" [options]="DateOpts"
-              [disabled]="!userService.IsAuditAdmin()"></ng-datepicker>
+            <ng-datepicker id="started-date" name="started-date" [ngModel]="audit.started"
+              (ngModelChange)="dateUpdate($event,'started')" [options]="DateOpts" [disabled]="!isAuditAdmin">
+            </ng-datepicker>
           </div>
         </div>
         <div *ngIf="audit.progress_finished" class="col-sm-12 no-padding">
@@ -62,8 +68,9 @@
             <label>Finished:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <ng-datepicker id="progress_finished-date" name="progress_finished-date" [ngModel]="audit.progress_finished" (ngModelChange)="dateUpdate($event,'progress_finished')"
-              [options]="DateOpts" [disabled]="!userService.IsAuditAdmin()"></ng-datepicker>
+            <ng-datepicker id="progress_finished-date" name="progress_finished-date" [ngModel]="audit.progress_finished"
+              (ngModelChange)="dateUpdate($event,'progress_finished')" [options]="DateOpts" [disabled]="!isAuditAdmin">
+            </ng-datepicker>
           </div>
         </div>
         <div *ngIf="audit.submitted" class="col-sm-12 no-padding">
@@ -71,8 +78,9 @@
             <label>Submitted:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <ng-datepicker id="submitteddate" name="submitted-date" [ngModel]="audit.submitted" (ngModelChange)="dateUpdate($event,'submitted')" [options]="DateOpts"
-              [disabled]="!userService.IsAuditAdmin()"></ng-datepicker>
+            <ng-datepicker id="submitteddate" name="submitted-date" [ngModel]="audit.submitted"
+              (ngModelChange)="dateUpdate($event,'submitted')" [options]="DateOpts" [disabled]="!isAuditAdmin">
+            </ng-datepicker>
           </div>
         </div>
         <div *ngIf="audit.service" class="col-sm-12 no-padding">
@@ -80,9 +88,9 @@
             <label class="label-inline">Service:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <lookup-colored id="service" *ngIf="audit" [propertiesToShow]="['name']" [array]="services" [small]="true" [(model)]="audit.service"
-              (modelChange)="updateService()" colorProperty="color" [disabled]="!userService.IsAuditAdmin() || audit.status.id !== 1"
-              placeholder="Select Auditor"></lookup-colored>
+            <lookup-colored id="service" *ngIf="audit" [propertiesToShow]="['name']" [array]="services" [small]="true"
+              [(model)]="audit.service" (modelChange)="updateService()" colorProperty="color"
+              [disabled]="!isAuditAdmin || audit.status.id !== 1" placeholder="Select Auditor"></lookup-colored>
           </div>
         </div>
         <div class="col-sm-12 no-padding">
@@ -91,13 +99,14 @@
         <div class="col-sm-12 no-padding">
           <div class="col-sm-6">
             <label [ngClass]="{
-              'label-inline': (audit.status.id === 1 || (audit.status.id === 2 && canEdit)) && userService.IsAuditor()
+              'label-inline': (audit.status.id === 1 || audit.status.id === 2 ) && canEdit
             }">Auditors:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <lookup-autocomplete-multiselect id="auditors" *ngIf="userService.IsAuditAdmin() && audit.status.id !== 4" placeholder="Select Auditor"
-              [propertiesToShow]="['first_name','second_name']" [array]="auditors" [model]="audit.auditors" (onClosed)="auditorsChange($event)"></lookup-autocomplete-multiselect>
-            <div *ngIf="!userService.IsAuditAdmin() || audit.status.id === 4">
+            <lookup-autocomplete-multiselect id="auditors" *ngIf="isAuditAdmin && audit.status.id !== 4"
+              placeholder="Select Auditor" [propertiesToShow]="['first_name','second_name']" [array]="auditors"
+              [model]="audit.auditors" (onClosed)="auditorsChange($event)"></lookup-autocomplete-multiselect>
+            <div *ngIf="!isAuditAdmin || audit.status.id === 4">
               {{getAuditorsString()}}
             </div>
           </div>
@@ -109,19 +118,23 @@
             }">Audit Result:</label>
           </div>
           <div class="col-sm-6 no-padding">
-            <inline-editor [disabledInline]="!canEdit" [config]="{saveOnBlur: true, placeholder: 'Set Result'}" *ngIf="canEdit" id="result" size="3" empty="Set Result"
-              type="number" min="1" max="100" name="result" [(ngModel)]="audit.result" (onSave)="updateResult()" (onError)="resultError($event)"></inline-editor>
+            <inline-editor [disabledInline]="!canEdit" [config]="{saveOnBlur: true, placeholder: 'Set Result'}"
+              *ngIf="canEdit" id="result" size="3" empty="Set Result" type="number" min="1" max="100" name="result"
+              [(ngModel)]="audit.result" (onSave)="updateResult()" (onError)="resultError($event)"></inline-editor>
             <div *ngIf="!canEdit">{{audit.result}}</div>
           </div>
         </div>
       </div>
     </div>
-    <div *ngIf="audit.status.id !== 1 && (audit.summary || canEdit)" class="inline summary-panel panel panel-default no-padding bot-margin-0">
+    <div *ngIf="audit.status.id !== 1 && (audit.summary || canEdit)"
+      class="inline summary-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Summary
-        <button id="save-summary" *ngIf="canEdit" class="btn btn-heading btn-success pull-right" (click)="update()">Save</button>
+        <button id="save-summary" *ngIf="canEdit" class="btn btn-heading btn-success pull-right"
+          (click)="update()">Save</button>
       </div>
       <div class="panel-body no-padding" fit-editor-into-parent>
-        <app-ngx-editor id="summary-editor" clickableLinks *ngIf="canEdit" [config]="editorConfig" [showToolbar]="canEdit" [height]="150" [(ngModel)]="audit.summary"></app-ngx-editor>
+        <app-ngx-editor *ngIf="canEdit && editorConfig" id="summary-editor" clickableLinks [config]="editorConfig"
+          [showToolbar]="canEdit" [height]="150" [(ngModel)]="audit.summary"></app-ngx-editor>
         <div *ngIf="audit.summary && !canEdit" class="summaryShow" [showHtml]="audit.summary"></div>
       </div>
     </div>
@@ -133,10 +146,12 @@
     <div class="inline comments-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Comments</div>
       <div class="panel-body no-padding">
-        <comments-block id="comments" [comments]="audit.comments" height="280px" (addComment)="addComment($event)" [disabled]="disableComments"></comments-block>
+        <comments-block id="comments" [comments]="audit.comments" height="280px" (addComment)="addComment($event)"
+          [disabled]="disableComments"></comments-block>
       </div>
     </div>
-    <div *ngIf="canEdit || (attachments && attachments.length > 0)" class="inline attachments-panel panel panel-default no-padding bot-margin-0">
+    <div *ngIf="canEdit || (attachments && attachments.length > 0)"
+      class="inline attachments-panel panel panel-default no-padding bot-margin-0">
       <div class="panel-heading">Attachments</div>
       <div class="panel-body no-padding">
         <div>
@@ -147,7 +162,8 @@
                   <a class="clickable-element fileLink" (click)=downloadAttach(attach)>{{getAttachName(attach)}}</a>
                 </td>
                 <td class="fit">
-                  <button *ngIf="canEdit" type="button" class="btn btn-danger btn-xs" (click)="removeAttachment(attach.id)" [disabled]="removingInProgress">
+                  <button *ngIf="canEdit" type="button" class="btn btn-danger btn-xs"
+                    (click)="removeAttachment(attach.id)" [disabled]="removingInProgress">
                     <span class="glyphicon glyphicon-trash"></span> Remove
                   </button>
                 </td>
@@ -155,7 +171,8 @@
             </tbody>
           </table>
         </div>
-        <file-uploader id="attachments" *ngIf="URL && canEdit" [URL]="URL" (uploaded)="getAttachments()"></file-uploader>
+        <file-uploader id="attachments" *ngIf="URL && canEdit" [URL]="URL" (uploaded)="updateAttachments()">
+        </file-uploader>
       </div>
     </div>
   </div>

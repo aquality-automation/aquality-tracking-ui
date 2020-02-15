@@ -14,6 +14,8 @@ import { NotificationsService } from 'angular2-notifications';
 import { StepsService } from '../../../../services/steps.service';
 import { StepType, StepResult } from '../../../../shared/models/steps';
 import { $ } from 'protractor';
+import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testresult.view.component.html',
@@ -38,7 +40,7 @@ export class TestResultViewComponent implements OnInit {
   canClose: Promise<boolean>;
   canEdit: boolean;
   public types: StepType[];
-  public tbCols: any[];
+  public tbCols: TFColumn[];
 
   constructor(
     private route: ActivatedRoute,
@@ -47,7 +49,8 @@ export class TestResultViewComponent implements OnInit {
     private resultResolutionService: ResultResolutionService,
     private finalResultService: FinalResultService,
     private testResultService: TestResultService,
-    private stepService: StepsService
+    private stepService: StepsService,
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {
@@ -57,7 +60,8 @@ export class TestResultViewComponent implements OnInit {
     this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
     this.users = this.users.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
     this.types = await this.stepService.getStepTypes({});
-    this.canEdit = this.userService.IsLocalManager() || this.userService.IsManager() || this.userService.IsEngineer();
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
     await this.refreshResult();
   }
 
@@ -113,8 +117,8 @@ export class TestResultViewComponent implements OnInit {
     this.canClose = $event;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   timeout(ms) {
@@ -174,25 +178,23 @@ export class TestResultViewComponent implements OnInit {
 
   private createColumns() {
     this.tbCols = [
-      { name: 'Type', property: 'type.name', filter: false, sorting: false, type: 'text', editable: false, class: 'fit' },
-      { name: 'Step', property: 'name', filter: false, sorting: false, type: 'text', editable: false },
+      { name: 'Type', property: 'type.name', type: TFColumnType.text,  class: 'fit' },
+      { name: 'Step', property: 'name', type: TFColumnType.text },
       {
         name: 'Fail Reason',
         property: 'log',
-        filter: false,
-        sorting: false,
-        type: 'long-text',
-        editable: false,
+        type: TFColumnType.longtext,
         class: 'ft-width-250'
       },
       {
         name: 'Result',
         property: 'final_result.name',
-        filter: false,
-        sorting: false,
-        type: 'lookup-colored',
-        entity: 'final_result',
-        values: this.listOfFinalResults,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'final_result',
+          values: this.listOfFinalResults,
+          propToShow: ['name']
+        },
         editable: this.canEdit,
         bulkEdit: true,
         class: 'fit'
@@ -200,9 +202,7 @@ export class TestResultViewComponent implements OnInit {
       {
         name: 'Comment',
         property: 'comment',
-        filter: false,
-        sorting: false,
-        type: 'textarea',
+        type: TFColumnType.textarea,
         editable: this.canEdit,
         bulkEdit: true,
         class: 'ft-width-250'
@@ -210,9 +210,7 @@ export class TestResultViewComponent implements OnInit {
       {
         name: 'Attachment',
         property: 'attachment',
-        filter: false,
-        sorting: false,
-        type: 'file',
+        type: TFColumnType.file,
         editable: this.canEdit,
         class: 'fit'
       }

@@ -15,6 +15,7 @@ import { copyToClipboard } from '../../../../shared/utils/clipboard.util';
 import { GlobalDataService } from '../../../../services/globaldata.service';
 // tslint:disable-next-line: import-blacklist
 import { Subscription } from 'rxjs';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './test.view.component.html',
@@ -48,6 +49,8 @@ export class TestViewComponent implements OnInit {
   canleavePage: Promise<boolean>;
   showSteps: boolean;
   projectSubscription: Subscription;
+  public canEdit: boolean;
+  projectId: number;
 
   constructor(
     private testSuiteService: TestSuiteService,
@@ -56,30 +59,35 @@ export class TestViewComponent implements OnInit {
     private testService: TestService,
     private globalData: GlobalDataService,
     public userService: UserService,
-    public transformation: TransformationsService
+    public transformation: TransformationsService,
+    private permissions: PermissionsService
   ) { }
 
-  ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.test = {
-        project_id: params['projectId'],
-        id: params['testId']
-      };
+  async ngOnInit() {
+    this.projectId = this.route.snapshot.params.projectId;
+    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
 
-      this.testService.getTest(this.test, true).subscribe(result => {
-        this.userService.getProjectUsers(this.route.snapshot.params['projectId'])
-          .subscribe(res => {
-            this.users = res;
-            this.selectedDeveloper = this.test.developer;
-          });
-        this.testSuiteService.getTestSuite({ id: this.test.test_suite_id }).then(res => {
-          this.suite = res[0];
+
+    this.test = {
+      project_id: this.projectId,
+      id: this.route.snapshot.params.testId
+    };
+
+    this.testService.getTest(this.test, true).then(result => {
+      this.userService.getProjectUsers(this.projectId)
+        .subscribe(res => {
+          this.users = res;
+          this.selectedDeveloper = this.test.developer;
         });
-        this.test = result[0];
-        this.testResultTempalte = { test_id: this.test.id };
-        this.testResults = this.test.results;
-      }, error => console.log(error));
-    });
+      this.testSuiteService.getTestSuite({ id: this.test.test_suite_id }).then(res => {
+        this.suite = res[0];
+      });
+      this.test = result[0];
+      this.testResultTempalte = { test_id: this.test.id };
+      this.testResults = this.test.results;
+    }, error => console.log(error));
+
     this.projectSubscription = this.globalData.currentProject$.subscribe(project => {
       this.showSteps = project ? !!project.steps : false;
     });
@@ -101,7 +109,7 @@ export class TestViewComponent implements OnInit {
   }
 
   moveTestOpen() {
-    this.testService.getTest({ project_id: this.test.project_id }).subscribe(res => {
+    this.testService.getTest({ project_id: this.test.project_id }).then(res => {
       this.tests = res;
       this.hideMoveModal = false;
     });

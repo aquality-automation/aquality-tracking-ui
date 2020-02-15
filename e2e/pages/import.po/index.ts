@@ -4,7 +4,7 @@ import { BasePage } from '../base.po';
 import { waiter } from '../../utils/wait.util';
 import { importHelper } from './helpers';
 
-export class Import extends BasePage {
+class Import extends BasePage {
   constructor() {
     super(elements.selectImportTypeLookup.element, names.pageName);
   }
@@ -130,3 +130,5 @@ export class Import extends BasePage {
     }, 5, 3000);
   }
 }
+
+export const importPage = new Import();

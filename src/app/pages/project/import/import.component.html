@@ -80,9 +80,15 @@
           [(ngModel)]="importParameters.addToLastTestRun"></ui-switch>
       </label>
     </div>
+    <div *ngIf="!testRun" class="col-md-3 checbox-section">
+      <label for="markAsDebug" title="Mark this Test Run as Debug.">Mark as Debug:
+        <ui-switch id="markAsDebug" name="markAsDebug" class="pull-right" size="small"
+          [(ngModel)]="importParameters.debug"></ui-switch>
+      </label>
+    </div>
   </div>
   <div
-    *ngIf="fileListArray?.length > 0 && (format.name === 'MSTest (.trx)' || format.name === 'TestNG (.xml)' || format.name === 'NUnit v3 (.xml)')"
+    *ngIf="fileListArray?.length > 0 && (format.name === 'MSTest (.trx)' || format.name === 'TestNG (.xml)' || format.name === 'JUnit (.xml)' ||format.name === 'NUnit v3 (.xml)')"
     class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
     <div>
       <p>What do you want to use as test name?*</p>

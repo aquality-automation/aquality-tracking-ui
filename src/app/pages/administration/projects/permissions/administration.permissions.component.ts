@@ -5,11 +5,11 @@ import { ProjectService } from '../../../../services/project.service';
 import { UserService } from '../../../../services/user.services';
 import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { User } from '../../../../shared/models/user';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './administration.permissions.component.html',
   providers: [
-    ProjectService,
     SimpleRequester
   ]
 })
@@ -23,7 +23,7 @@ export class AdministrationPermissionsComponent implements OnInit {
   public selectedProject: Project;
   public users: LocalPermissions[];
   public externalUsers: User[];
-  public tbCols: any[];
+  public tbCols: TFColumn[];
 
   constructor(
     private projectService: ProjectService,
@@ -42,15 +42,34 @@ export class AdministrationPermissionsComponent implements OnInit {
         property: 'user.user_name',
         filter: true,
         sorting: true,
-        type: 'lookup-autocomplete',
-        propToShow: ['user_name'],
-        entity: 'user',
-        values: this.externalUsers,
-        editable: false
+        type: TFColumnType.autocomplete,
+        lookup: {
+          entity: 'user',
+          propToShow: ['user_name'],
+          values: this.externalUsers,
+        },
+        creation: {
+          required: true
+        }
       },
-      { name: 'Admin', property: 'admin', filter: false, sorting: true, type: 'checkbox', editable: true },
-      { name: 'Manager', property: 'manager', filter: false, sorting: true, type: 'checkbox', editable: true },
-      { name: 'Engineer', property: 'engineer', filter: false, sorting: true, type: 'checkbox', editable: true }
+      {
+        name: 'Admin', property: 'admin', filter: true, sorting: true, type: TFColumnType.checkbox, editable: true,
+        creation: {
+          required: true
+        }
+      },
+      {
+        name: 'Manager', property: 'manager', filter: true, sorting: true, type: TFColumnType.checkbox, editable: true,
+        creation: {
+          required: true
+        }
+      },
+      {
+        name: 'Engineer', property: 'engineer', filter: true, sorting: true, type: TFColumnType.checkbox, editable: true,
+        creation: {
+          required: true
+        }
+      }
     ];
   }
 
@@ -123,7 +142,7 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 }

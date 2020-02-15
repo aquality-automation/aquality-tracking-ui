@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestRunService } from '../../../../services/testRun.service';
@@ -12,6 +12,9 @@ import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TestResultService } from '../../../../services/test-result.service';
 import { TestResultStat } from '../../../../shared/models/test-result';
 import { UserService } from '../../../../services/user.services';
+import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testruns.component.html',
@@ -26,6 +29,7 @@ import { UserService } from '../../../../services/user.services';
 })
 
 export class TestRunsComponent implements OnInit {
+  allowDelete: boolean;
   labels: TestRunLabel[];
   hideModal = true;
   removeModalTitle: string;
@@ -37,9 +41,10 @@ export class TestRunsComponent implements OnInit {
   testRun: TestRun;
   milestones: Milestone[];
   suites: TestSuite[];
-  tbCols: any[];
+  tbCols: TFColumn[];
   hiddenCols: any[];
   sortBy: { property: 'start_time', order: 'desc' };
+  @ViewChild(TableFilterComponent) testRunsTable: TableFilterComponent;
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -49,18 +54,21 @@ export class TestRunsComponent implements OnInit {
     private testSuiteService: TestSuiteService,
     private milestoneService: MilestoneService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {
     this.testRun = {
-      project_id: this.route.snapshot.params['projectId']
+      project_id: this.route.snapshot.params.projectId
     };
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params['projectId'] });
+    this.allowDelete = await this.permissions.hasProjectPermissions(this.testRun.project_id,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId });
     this.labels = await this.testrunService.getTestsRunLabels(0).toPromise();
-    this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
-    this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params['projectId'] });
-    this.testRuns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] });
+    this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
+    this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params.projectId });
+    this.testRuns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params.projectId });
     this.testRuns.forEach(run => {
       if (run.finish_time && run.start_time) {
         run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
@@ -75,25 +83,43 @@ export class TestRunsComponent implements OnInit {
         property: 'label.name',
         filter: true,
         sorting: true,
-        type: 'lookup-colored',
-        entity: 'label',
-        values: this.labels,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'label',
+          values: this.labels,
+          propToShow: ['name']
+        },
         editable: true,
         class: 'fit'
       },
-      { name: 'Start Time', property: 'start_time', filter: true, sorting: true, type: 'date', class: 'fit' },
-      { name: 'Build', property: 'build_name', filter: true, sorting: true, type: 'text', editable: false, class: 'ft-width-350' },
+      {
+        name: 'Start Time',
+        property: 'start_time',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        class: 'fit'
+      },
+      {
+        name: 'Build',
+        property: 'build_name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.text,
+        class: 'ft-width-350'
+      },
       {
         name: 'Test Suite',
         property: 'test_suite.name',
         filter: true,
         sorting: true,
-        type: 'lookup-autocomplete',
-        values: this.suites,
-        propToShow: ['name'],
-        entity: 'test_suite',
-        allowEmpty: false,
-        editable: false,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          values: this.suites,
+          propToShow: ['name'],
+          entity: 'test_suite',
+          allowEmpty: true
+        },
         class: 'fit'
       },
       {
@@ -101,11 +127,13 @@ export class TestRunsComponent implements OnInit {
         property: 'milestone.name',
         filter: true,
         sorting: true,
-        type: 'lookup-autocomplete',
-        values: this.milestones,
-        propToShow: ['name'],
-        entity: 'milestone',
-        allowEmpty: true,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          values: this.milestones,
+          propToShow: ['name'],
+          entity: 'milestone',
+          allowEmpty: true
+        },
         editable: false,
         class: 'fit'
       },
@@ -114,38 +142,37 @@ export class TestRunsComponent implements OnInit {
         property: 'execution_environment',
         filter: true,
         sorting: true,
-        type: 'text',
-        editable: false,
+        type: TFColumnType.text,
         class: 'fit'
       }, {
         name: 'Executor',
         property: 'author',
         filter: true,
         sorting: true,
-        type: 'text',
-        editable: false,
+        type: TFColumnType.text,
         class: 'fit'
       },
-      { name: 'Total', property: 'totalTests', filter: false, sorting: true, type: 'text', class: 'fit' },
+      { name: 'Total', property: 'totalTests', sorting: true, type: TFColumnType.text, class: 'fit' },
       {
         name: 'No Resolution',
         property: 'not_assigned',
         filter: true,
         sorting: true,
-        type: 'percent',
+        type: TFColumnType.percent,
         editable: false,
         link: {
-          template: `/project/${this.route.snapshot.params['projectId']}/testrun/{id}`,
-          properties: ['id'], params: { f_test_resolution_opt: 1 }
+          template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
+          properties: ['id'],
+          params: { f_test_resolution_opt: 1 }
         },
         class: 'ft-width-250'
       },
-      { name: 'Pass Rate, %', property: 'passrate', filter: false, sorting: true, type: 'text', class: 'fit' },
-      { name: 'Duration', property: 'duration', filter: true, sorting: true, type: 'time', class: 'fit' }
+      { name: 'Pass Rate, %', property: 'passrate', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' }
     ];
     this.hiddenCols = [
-      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: 'date' },
-      { name: 'Debug', property: 'debug', filter: false, sorting: true, type: 'checkbox', editable: false }
+      { name: 'Debug', property: 'debug', filter: true, sorting: true, type: TFColumnType.checkbox, editable: true },
+      { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: TFColumnType.date }
     ];
   }
 
@@ -154,7 +181,7 @@ export class TestRunsComponent implements OnInit {
   }
 
   tableDataUpdate($event: TestRun[]) {
-    this.testRunStatsFiltered = this.testRunStats.filter(x => $event.find(y => y.id === x.id));
+    this.testRunStatsFiltered = this.testRunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
   }
 
   rowClicked($event: TestRun) {
@@ -170,8 +197,13 @@ export class TestRunsComponent implements OnInit {
     this.hideModal = false;
   }
 
-  testRunUpdate($event) {
-    this.testrunService.createTestRun($event).then();
+  async testRunUpdate(testrun: TestRun) {
+    await this.testrunService.createTestRun({
+      id: testrun.id,
+      label_id: testrun.label.id,
+      debug: testrun.debug
+    });
+    this.tableDataUpdate(this.testRunsTable.filteredData);
   }
 
   async execute($event) {
@@ -183,8 +215,8 @@ export class TestRunsComponent implements OnInit {
     this.hideModal = true;
   }
 
-  wasClosed($event) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   uploadResults() {
@@ -204,7 +236,7 @@ export class TestRunsComponent implements OnInit {
       ? new Date(this.route.snapshot.queryParamMap.get('f_start_time_to')).toISOString()
       : '';
     let data: TestResultStat[];
-    this.testResultsService.getTestResultsStat(this.route.snapshot.params['projectId'], from, to).then(res => {
+    this.testResultsService.getTestResultsStat(this.route.snapshot.params.projectId, from, to).then(res => {
       data = res;
       this.downloadCSV(data, columns);
     });
@@ -215,7 +247,7 @@ export class TestRunsComponent implements OnInit {
     if (csv === null) { return; }
     const a = document.createElement('a');
     const mimeType = 'text/csv';
-    const projectId = this.route.snapshot.params['projectId'];
+    const projectId = this.route.snapshot.params.projectId;
     const from = this.route.snapshot.queryParamMap.get('f_start_time_from')
       ? `_from_${this.route.snapshot.queryParamMap.get('f_start_time_from')}`
       : '';

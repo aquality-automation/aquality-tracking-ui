@@ -1,9 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from '../../shared/guards/auth-guard.service';
 import { CustomerDashboardGuard, CustomerCreateGuard } from '../../shared/guards/can-activate-customers';
 import { CustomerComponent } from './customer-list/customer.component';
 import { CustomerCreateComponent } from './customer-create/customer-create.component';
 import { CustomerInfoComponent } from './customer-info/customer-info.component';
+import { AuthGuard } from '../../shared/guards/login-guard.service';
 
 
 const customerRoutes: Routes = [

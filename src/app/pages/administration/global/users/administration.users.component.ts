@@ -5,6 +5,7 @@ import { User } from '../../../../shared/models/user';
 import { Md5 } from 'ts-md5/dist/md5';
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { EmailSettings } from '../../../../shared/models/appSettings';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: './administration.users.component.html',
@@ -25,59 +26,98 @@ export class AdministrationUsersComponent implements OnInit {
     private md5 = new Md5();
     public inProgress = false;
     public clickedUser: User;
-    public tbCols: any[] = [
+    public tbCols: TFColumn[] = [
         {
             name: 'LDAP',
             property: 'ldap_user',
-            filter: false,
             sorting: true,
-            type: 'checkbox',
-            editable: false,
-            excludeCreation: true
+            type: TFColumnType.checkbox
         },
         {
             name: 'First Name',
             property: 'first_name',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: true,
-            notEditableByProperty: 'ldap_user'
+            notEditableByProperty: 'ldap_user',
+            creation: {
+                required: true
+            }
         },
         {
             name: 'Last Name',
             property: 'second_name',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: true,
-            notEditableByProperty: 'ldap_user'
+            notEditableByProperty: 'ldap_user',
+            creation: {
+                required: true
+            }
         },
         {
             name: 'Username',
             property: 'user_name',
             filter: true,
             sorting: true,
-            type: 'text',
+            type: TFColumnType.text,
             editable: true,
             pattern: '[first_name] [second_name]',
-            notEditableByProperty: 'ldap_user'
+            notEditableByProperty: 'ldap_user',
+            creation: {
+                required: true
+            }
         },
         {
             name: 'Email',
             property: 'email',
             filter: true,
             sorting: true,
-            type: 'email',
+            type: TFColumnType.email,
             editable: true,
-            notEditableByProperty: 'ldap_user'
+            notEditableByProperty: 'ldap_user',
+            creation: {
+                required: true
+            }
         },
-        { name: 'Password', property: 'password', filter: false, type: 'password', listeners: ['click'], editable: false },
-        { name: 'Unit Coordinator', property: 'unit_coordinator', filter: false, sorting: true, type: 'checkbox', editable: true },
-        { name: 'Admin', property: 'admin', filter: false, sorting: true, type: 'checkbox', editable: true },
-        { name: 'Coordinator', property: 'manager', filter: false, sorting: true, type: 'checkbox', editable: true },
-        { name: 'Auditor', property: 'auditor', filter: false, sorting: true, type: 'checkbox', editable: true },
-        { name: 'Audit Admin', property: 'audit_admin', filter: false, sorting: true, type: 'checkbox', editable: true }
+        {
+            name: 'Password', property: 'password', type: TFColumnType.password, listeners: ['click'],
+            creation: {
+                required: true
+            }
+        },
+        {
+            name: 'Unit Coordinator', property: 'unit_coordinator', sorting: true, type: TFColumnType.checkbox, editable: true,
+            creation: {
+                required: true
+            }
+        },
+        {
+            name: 'Admin', property: 'admin', sorting: true, type: TFColumnType.checkbox, editable: true,
+            creation: {
+                required: true
+            }
+        },
+        {
+            name: 'Coordinator', property: 'manager', sorting: true, type: TFColumnType.checkbox, editable: true,
+            creation: {
+                required: true
+            }
+        },
+        {
+            name: 'Auditor', property: 'auditor', sorting: true, type: TFColumnType.checkbox, editable: true,
+            creation: {
+                required: true
+            }
+        },
+        {
+            name: 'Audit Admin', property: 'audit_admin', sorting: true, type: TFColumnType.checkbox, editable: true,
+            creation: {
+                required: true
+            }
+        }
     ];
     public defSort = { property: 'first_name', order: 'asc' };
 

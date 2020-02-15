@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ViewChild} from '@angular/core';
+import { Component, Input, OnChanges, ViewChild, EventEmitter, Output} from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
@@ -19,6 +19,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class ResultResolutionsChartsComponent implements OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
+  @Output() clickedResult = new EventEmitter<ResultResolution>();
   includeNotExecuted = false;
   shownTestResults: TestResult[];
   listOfResultResolutions: ResultResolution[];
@@ -115,12 +116,12 @@ export class ResultResolutionsChartsComponent implements OnChanges {
     this.chartColors = [{ backgroundColor: colors }];
   }
 
-  chartClicked(e: any): void {
-    const dataIndex = e.active[0]._index;
-    const label: string = this.chart.labels[dataIndex].toString();
-    const clickedResolution = this.listOfResultResolutions.find(x => label.startsWith(x.name));
-    this.router.navigate(
-      [`/project/${this.route.snapshot.params['projectId']}/testrun/${this.route.snapshot.params['testRunId']}`],
-       { queryParams: { f_test_resolution_opt: clickedResolution.id} });
+  chartClicked(event: any): void {
+    if (event.active[0]) {
+      const dataIndex = event.active[0]._index;
+      const label: string = this.chart.labels[dataIndex].toString();
+      const clickedResolution = this.listOfResultResolutions.find(x => label.startsWith(x.name));
+      this.clickedResult.emit(clickedResolution);
+    }
   }
 }

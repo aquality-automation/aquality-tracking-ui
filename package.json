@@ -31,6 +31,7 @@
     "@angular/router": "^5.0.2",
     "@fortawesome/angular-fontawesome": "^0.1.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.25",
+    "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.11.2",
     "@qontu/ngx-inline-editor": "^0.2.0-alpha.12",
     "@swimlane/ngx-charts": "^7.0.1",

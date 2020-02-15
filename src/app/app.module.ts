@@ -6,13 +6,12 @@ import { HttpModule, BrowserXhr } from '@angular/http';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CookieService, CookieOptions } from 'angular2-cookie/core';
 import { appRouting } from './app.routing';
-import { AuthGuard } from './shared/guards/auth-guard.service';
 import { AppComponent } from './app.component';
 import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
 import { AdministrationModule } from './pages/administration/main/administration.module';
 import { NotFoundComponent } from './pages/general/not-found/not-found.component';
 import { LoginComponent } from './pages/general/authorization/Login.component';
-import { LoginGuard } from './shared/guards/login-guard.service';
+import { LoginGuard, AuthGuard } from './shared/guards/login-guard.service';
 import { GlobalDataService } from './services/globaldata.service';
 import { SimpleRequester } from './services/simple-requester';
 import { UserService } from './services/user.services';
@@ -26,6 +25,7 @@ import { UserSettingsComponent } from './pages/general/user-settings/user-settin
 import { CustomerModule } from './pages/customer/customer.module';
 import { CustomerService } from './services/customer.service';
 import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.service';
+import { GuardService } from './shared/guards/guard.service';
 
 @NgModule({
   imports: [
@@ -51,6 +51,7 @@ import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.se
   ],
   providers: [
     ResultViewCanDeactivate,
+    GuardService,
     AuthGuard,
     CookieService,
     LoginGuard,

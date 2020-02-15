@@ -3,7 +3,7 @@ import { elements, baseUrl, names, services } from './constants';
 import { BasePage } from '../../base.po';
 import { User } from '../../../../src/app/shared/models/user';
 
-export class CreateAudit extends BasePage {
+class CreateAudit extends BasePage {
     constructor() {
         super(elements.uniqueElement, names.pageName);
     }
@@ -39,3 +39,5 @@ export class CreateAudit extends BasePage {
         return this.clickCreate();
     }
 }
+
+export const createAudit = new CreateAudit();

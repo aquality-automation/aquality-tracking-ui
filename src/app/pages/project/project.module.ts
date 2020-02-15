@@ -14,8 +14,9 @@ import {
   CreateTestGuard,
   TestGuard,
   TestResultGuard,
-  ProjectImportGuard
-} from '../../shared/guards/auth-guard.service';
+  ProjectImportGuard,
+  MilestoneGuard
+} from '../../shared/guards/project-guard.service';
 import { ProjectService } from '../../services/project.service';
 import { projectRouting } from './project.routing';
 import { UserService } from '../../services/user.services';
@@ -24,12 +25,12 @@ import { CreateProjectComponent } from './project-create/create-project.componen
 import { ProjectViewComponent } from './project-view/project-veiw.component';
 import { TestRunsComponent } from './testrun/testrun-list/testruns.component';
 import { TestRunViewComponent } from './testrun/testrun-view/testrun.view.component';
-import { CreateMilestoneComponent } from './milestone/create-milestone.component';
+import { CreateMilestoneComponent } from './milestone/create/create-milestone.component';
 import { CreateTestRunComponent } from './testrun/testrun-create/create-testrun.component';
 import { CreateTestSuiteComponent } from './testsuite/create/create-testsuite.component';
 import { CreateTestComponent } from './test/test-create/create-test.component';
-import { TestSuiteComponent } from './testsuite/list/testsuite.component';
-import { TestSuiteViewComponent } from './testsuite/view/testsuite-view.component';
+import { TestSuiteComponent } from './testsuite/list/suite.list.component';
+import { TestSuiteViewComponent } from './testsuite/view/testsuite.view.component';
 import { TestViewComponent } from './test/test-view/test.view.component';
 import { ResultGridComponent } from './results/results-grid/results.grid.component';
 import { TestResultViewComponent } from './results/results-view/testresult.view.component';
@@ -55,6 +56,15 @@ import { StepsService } from '../../services/steps.service';
 import { StepsContainerComponent } from './test/steps-container/steps-container.component';
 import { TestViewCanDeactivate } from '../../shared/guards/can-deactivate-guard.service';
 import { SyncSuiteModalComponent } from './testsuite/sync-suite-modal/sync-suite-modal.component';
+import { ListMilestoneComponent } from './milestone/list-milestone/list-milestone.component';
+import { MilestoneService } from '../../services/milestones.service';
+import { ViewMilestoneComponent } from './milestone/view-milestone/view-milestone.component';
+import { TestRunService } from '../../services/testRun.service';
+import { TestService } from '../../services/test.service';
+import { FinalResultService } from '../../services/final_results.service';
+import { ResultResolutionService } from '../../services/result-resolution.service';
+import { TransformationsService } from '../../services/transformations.service';
+import { TestSuiteService } from '../../services/testSuite.service';
 
 @NgModule({
   imports: [
@@ -84,6 +94,8 @@ import { SyncSuiteModalComponent } from './testsuite/sync-suite-modal/sync-suite
     ResultResolutionsChartsComponent,
     FinalResultsTimelineComponent,
     TestRunsResultsTimelineComponent,
+    ListMilestoneComponent,
+    ViewMilestoneComponent,
     ImportComponent,
     TestDurationComponent,
     ResultSearcherComponent,
@@ -105,9 +117,17 @@ import { SyncSuiteModalComponent } from './testsuite/sync-suite-modal/sync-suite
     DatePipe,
     UserService,
     ListToCsvService,
+    MilestoneService,
+    TestRunService,
+    TestService,
+    FinalResultService,
+    ResultResolutionService,
+    TransformationsService,
+    TestSuiteService,
     ProjectGuard, CreateProjectGuard, TestRunGuard, CreateTestRunGuard,
     CreateMilestoneGuard, TestSuiteGuard, CreateTestSuiteGuard,
-    CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard, TestViewCanDeactivate]
+    CreateTestGuard, TestGuard, TestResultGuard, ProjectImportGuard, TestViewCanDeactivate,
+    MilestoneGuard]
 })
 
 export class ProjectModule { }

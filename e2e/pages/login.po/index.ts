@@ -1,14 +1,16 @@
 import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { BasePage } from '../base.po';
+import { projectList } from '../project/list.po';
 
-export class LogIn extends BasePage {
+class LogIn extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
 
-  navigateTo() {
-    return browser.get(baseUrl);
+  async navigateTo() {
+    await browser.get(baseUrl);
+    return this.waitForIsOpened();
   }
 
   async setUserName(text: string) {
@@ -21,14 +23,15 @@ export class LogIn extends BasePage {
     return elements.passwordField.sendKeys(text);
   }
 
-  async logIn(userName: string, password: string) {
+  async logInAs(userName: string, password: string) {
     await this.menuBar.clickLogo();
     if (await this.menuBar.isLogged()) {
       await this.menuBar.clickLogOut();
     }
     await this.setUserName(userName);
     await this.setPassword(password);
-    return this.clickLogIn();
+    await this.clickLogIn();
+    return projectList.waitForIsOpened();
   }
 
   clickLogIn() {
@@ -39,3 +42,5 @@ export class LogIn extends BasePage {
     return elements.logInButton.isEnabled();
   }
 }
+
+export const logIn = new LogIn();

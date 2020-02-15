@@ -4,6 +4,7 @@ import { TransformationsService } from '../../services/transformations.service';
 export class Filter {
     property: string;
     value?: string;
+    state?: boolean;
     from?: Date;
     to?: Date;
     options?: string;
@@ -23,18 +24,20 @@ export class FilterHelper {
     getOrCreateFilter(property: string, appliedFilters: Filter[]): Filter {
         let filter: Filter;
         if (appliedFilters.length > 0) {
-          filter = appliedFilters.find(x => x.property === property);
+            filter = appliedFilters.find(x => x.property === property);
         }
         if (!filter) {
-          filter = { property };
+            filter = { property };
         }
 
         return filter;
     }
 
     updateAppliedFilters = (appliedFilters: Filter[], filter: Filter) => {
-        appliedFilters = appliedFilters.filter((x: Filter) => x.property !== filter.property);
-        if (filter.value || filter.options || filter.range || filter.from || filter.to) {
+        appliedFilters = appliedFilters.filter((x: Filter) => x.property !== filter.property &&
+            (x.from === undefined || filter.from === undefined ) ||
+            (x.to === undefined || filter.to === undefined));
+        if (filter.value || filter.state !== undefined || filter.options || filter.range || filter.from || filter.to) {
             appliedFilters.push(filter);
         }
         return appliedFilters;
@@ -44,6 +47,8 @@ export class FilterHelper {
         const queryParam = {};
         if (filter.value) {
             queryParam[`f_${filter.property}`] = filter.value;
+        } else if (filter.state !== undefined) {
+            queryParam[`f_${filter.property}_st`] = String(filter.state);
         } else if (filter.from || filter.to) {
             filter.from
                 ? queryParam[`f_${filter.property}_from`] = new Date(filter.from).toISOString()
@@ -71,7 +76,7 @@ export class FilterHelper {
     }
 
     filterData = (data: any[], filter: Filter) => {
-        if (filter.property !== '' && filter.value !== '') {
+        if (filter.property !== '') {
             if (filter.hasOwnProperty('value')) {
                 return data.filter(x => {
                     const val = this.transformations.getPropertyValue(x, filter.property);
@@ -89,13 +94,15 @@ export class FilterHelper {
                 return this.filterMS(data, filter);
             } else if (filter.hasOwnProperty('range')) {
                 return this.filterRange(data, filter);
+            } else if (filter.hasOwnProperty('state')) {
+                return this.filterState(data, filter);
             } else {
                 return data;
             }
         } else { return data; }
     }
 
-    filterDate(data: any[], filter) {
+    filterDate(data: any[], filter: Filter): any[] {
         const from = filter.from;
         const to = filter.to;
         if (!from && !to) {
@@ -143,10 +150,25 @@ export class FilterHelper {
         return data;
     }
 
-    applyNewFilter = (data: any[], appliedFilters: Filter[],
-        newFilter: Filter, queryParams: boolean): { filteredData: any[], newFilters: Filter[] } => {
-        const newFilters = this.updateAppliedFilters(appliedFilters, newFilter);
+    filterState(filteredData: any[], filter: Filter) {
+        let data = filteredData;
+        if (filter.state !== undefined) {
+            data = filteredData.filter(x => {
+                const value = x[filter.property];
+                if (typeof value === 'number') {
+                    return filter.state === !!value;
+                }
+                return filter.state === value;
+            });
+        }
+        return data;
+    }
 
+    applyNewFilter = (data: any[], appliedFilters: Filter[], newFilter: Filter, queryParams: boolean): {
+        filteredData: any[],
+        newFilters: Filter[]
+    } => {
+        const newFilters = this.updateAppliedFilters(appliedFilters, newFilter);
         if (queryParams) {
             this.addParams(newFilter);
         }
@@ -162,45 +184,49 @@ export class FilterHelper {
         return filteredData;
     }
 
-  readFilterParams(queryParams): Filter[] {
-    let filters: Filter[] = [];
-    if (queryParams) {
-        const filterKeys = Object.keys(queryParams);
-        filterKeys.forEach(param => {
-            filters = this.readFilterParam(queryParams, param, filters);
-        });
+    readFilterParams(queryParams): Filter[] {
+        let filters: Filter[] = [];
+        if (queryParams) {
+            const filterKeys = Object.keys(queryParams);
+            filterKeys.forEach(param => {
+                filters = this.readFilterParam(queryParams, param, filters);
+            });
+        }
+
+        return filters;
     }
 
-    return filters;
-  }
+    readFilterParam(parameters, parameter, filters: Filter[]) {
+        const dateFrom = /f_(.+)_from/;
+        const dateTo = /f_(.*)_to/;
+        const options = /f_(.*)_opt/;
+        const range = /f_(.*)_rng/;
+        const state = /f_(.*)_st/;
+        const value = /f_(.*)/;
+        const filter: Filter = new Filter();
 
-  readFilterParam(parameters, parameter, filters: Filter[]) {
-    const dateFrom = /f_(.+)_from/;
-    const dateTo = /f_(.*)_to/;
-    const options = /f_(.*)_opt/;
-    const range = /f_(.*)_rng/;
-    const value = /f_(.*)/;
-    const filter: Filter = new Filter();
+        if (dateFrom.test(parameter)) {
+            filter.property = parameter.match(dateFrom)[1];
+            filter.from = parameters[parameter];
+        } else if (dateTo.test(parameter)) {
+            filter.property = parameter.match(dateTo)[1];
+            filter.to = parameters[parameter];
+        } else if (options.test(parameter)) {
+            filter.property = parameter.match(options)[1];
+            filter.options = parameters[parameter];
+        } else if (range.test(parameter)) {
+            filter.property = parameter.match(range)[1];
+            filter.range = parameters[parameter];
+        } else if (state.test(parameter)) {
+            filter.property = parameter.match(state)[1];
+            filter.state = parameters[parameter] === 'true' ? true : parameters[parameter] === 'false' ? false : undefined;
+        } else if (value.test(parameter)) {
+            filter.property = parameter.match(value)[1];
+            filter.value = parameters[parameter];
+        }
 
-    if (dateFrom.test(parameter)) {
-      filter.property = parameter.match(dateFrom)[1];
-      filter.from = parameters[parameter];
-    } else if (dateTo.test(parameter)) {
-      filter.property = parameter.match(dateTo)[1];
-      filter.to = parameters[parameter];
-    } else if (options.test(parameter)) {
-      filter.property = parameter.match(options)[1];
-      filter.options = parameters[parameter];
-    } else if (range.test(parameter)) {
-      filter.property = parameter.match(range)[1];
-      filter.range = parameters[parameter];
-    } else if (value.test(parameter)) {
-      filter.property = parameter.match(value)[1];
-      filter.value = parameters[parameter];
+        if (filter) {
+            return this.updateAppliedFilters(filters, filter);
+        }
     }
-
-    if (filter) {
-      return this.updateAppliedFilters(filters, filter);
-    }
-  }
 }

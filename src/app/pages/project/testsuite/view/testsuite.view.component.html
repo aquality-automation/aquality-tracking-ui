@@ -1,10 +1,10 @@
 <div *ngIf="testSuite" class="panel-heading">
   <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
-    (closed)="wasClosed($event)"></simple-popup>
+    (closed)="wasClosed()"></simple-popup>
   <move-test-modal *ngIf="!hideMoveModal" [title]="MoveModalTitle" [tests]="testSuite.tests"
     [buttons]="[{name:'Move', execute:true }, {name:'Cancel', execute:false}]" (execute)="moveToExecute($event)"
-    (closed)="moveToWasClosed($event)"></move-test-modal>
+    (closed)="moveTowasClosed()"></move-test-modal>
   <sync-suite-modal *ngIf="syncTestsModal" [suites]="testSuites" (execute)="syncTests($event)"
     (closed)="syncSuiteClosed($event)" [suite]="selectedTestSuite"></sync-suite-modal>
   <div class="row">
@@ -19,14 +19,14 @@
         <button class="btn btn-primary" routerLink="/project/{{testSuite.project_id}}/testrun/matrix"
           [queryParams]="{suite:testSuite.id}">Suite Matrix</button>
         <button id="move-test-btn"
-          *ngIf="userService.IsLocalAdmin() || userService.IsLocalManager() || userService.IsManager()"
+          *ngIf="allowMove"
           class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
         <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn">Export to CSV</button>
         <button (click)="openTestCreation()"
-          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+          *ngIf="allowCreation"
           class="btn btn-primary">Add Test</button>
-        <button (click)="syncSuite()"
-          *ngIf="userService.HaveAnyLocalPermissionsExceptViewerWithoutPUpdating() || userService.IsManager()"
+        <button id="sync-btn" (click)="syncSuite()"
+          *ngIf="allowCreation"
           class="btn btn-primary">Sync</button>
       </div>
     </div>
@@ -37,7 +37,7 @@
         <div class="pull-left">
           <inline-editor id="name" name="name" type="text" trim="blur" empty="not set" max="50" min="4"
             [(ngModel)]="testSuite.name" (onError)="nameError()" (onSave)="updateSuite()"
-            [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+            [disabledInline]="!allowEdit">
           </inline-editor>
         </div>
       </div>

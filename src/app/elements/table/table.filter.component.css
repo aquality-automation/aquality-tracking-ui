@@ -96,3 +96,7 @@
   transition: all ease-in 0.2s ;
   font-weight: bold;
 }
+
+.ft-tristate-filter {
+  padding-top: 15px;
+}

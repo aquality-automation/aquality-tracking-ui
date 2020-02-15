@@ -1,32 +1,24 @@
-import { LogIn } from '../../pages/login.po';
-import { ProjectList } from '../../pages/project/list.po';
-import { ProjectView } from '../../pages/project/view.po';
-import { TestRunView } from '../../pages/testrun/view.po';
-import { Project } from '../../../src/app/shared/models/project';
-
+import { logIn } from '../../pages/login.po';
+import { projectView } from '../../pages/project/view.po';
+import { testRunView } from '../../pages/testrun/view.po';
+import { ProjectHelper } from '../../helpers/project.helper';
 import cucumberImport from '../../data/import/cucumber.json';
 import users from '../../data/users.json';
-import projects from '../../data/projects.json';
-import { prepareProject, executeCucumberImport } from '../project.hooks';
-import { TestRunList } from '../../pages/testrun/list.po';
+import { testRunList } from '../../pages/testrun/list.po';
 
 describe('Test Run Result Searcher', () => {
-    const logIn = new LogIn();
-    const projectList = new ProjectList();
-    const projectView = new ProjectView();
-    const testRunView = new TestRunView();
-    const testRunList = new TestRunList();
-    const project: Project = projects.testRunResultSearcherProject;
-    let importToken: string;
-    let projectId: number;
+    const projectHelper: ProjectHelper = new ProjectHelper();
     const builds = { build_1: 'Build_1', build_2: 'Build_2' };
 
     beforeAll(async () => {
-        await logIn.logIn(users.admin.user_name, users.admin.password);
-        importToken = await prepareProject(project);
-        projectId = await projectView.getCurrentProjectId();
-        await executeCucumberImport(projectId, 'Test Suite', importToken,
-            [JSON.stringify(cucumberImport), JSON.stringify(cucumberImport)], [`${builds.build_1}.json`, `${builds.build_2}.json`]);
+        await projectHelper.init();
+        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.openProject();
+        await projectHelper.importer.executeCucumberImport(
+            'Test Suite',
+            [cucumberImport, cucumberImport],
+            [`${builds.build_1}.json`,
+            `${builds.build_2}.json`]);
         await projectView.menuBar.testRuns();
         const isTestRunAppear = await testRunList.waitForTestRun(builds.build_2);
         expect(isTestRunAppear).toBe(true, 'Import was not finished!');
@@ -34,10 +26,7 @@ describe('Test Run Result Searcher', () => {
     });
 
     afterAll(async () => {
-        await projectList.removeProject(project.name);
-        if (await projectList.menuBar.isLogged()) {
-            return projectList.menuBar.clickLogOut();
-        }
+        await projectHelper.dispose();
     });
 
     it('Can be opened', async () => {

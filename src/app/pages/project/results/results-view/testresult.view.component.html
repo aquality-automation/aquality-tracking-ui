@@ -1,13 +1,13 @@
 <simple-popup *ngIf="!hideModal" title="Are you sure you want to leave?"
   message="There is pending work. Sure you want to leave?" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="wasExecuted($event)"
-  (closed)="wasClosed($event)"></simple-popup>
+  (closed)="wasClosed()"></simple-popup>
 
 <div class="panel-heading clearfix">
   <h2 class="col-sm-10 no-padding" id="test-result-view">Test Result: {{currentState?.id}}</h2>
   <div class="col-sm-2 no-padding">
     <button id="save-test-result"
-      *ngIf="userService.IsLocalManager() || userService.IsManager() || userService.IsEngineer()" (click)="Update()"
+      *ngIf="canEdit" (click)="Update()"
       class="btn btn-success pull-right">Save</button>
   </div>
 </div>
@@ -32,7 +32,7 @@
         <label for="debug">Debug Result:</label>
         <input (change)="changeDebugState($event.srcElement)" id="debug" type="checkbox" name="debug"
           [(ngModel)]="currentState.debug"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+          [disabled]="!canEdit">
       </div>
     </div>
 
@@ -42,7 +42,7 @@
         <lookup-colored id="testResultSelector" *ngIf="listOfFinalResults.length" [colorProperty]="'color'"
           [propertiesToShow]="['name']" [array]="listOfFinalResults" [model]="currentState.final_result"
           (modelChange)="setNewResult($event)"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+          [disabled]="!canEdit">
         </lookup-colored>
       </div>
       <div *ngIf="listOfResolutions && currentState.final_result.id !== 2" class="col-sm-4 margin-y-sm">
@@ -51,7 +51,7 @@
           *ngIf="listOfResolutions.length && currentState.final_result.id !== 2" [colorProperty]="'color'"
           [propertiesToShow]="['name']" [array]="listOfResolutions" [model]="currentState.test_resolution"
           (modelChange)="resolutionUpdate($event)"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+          [disabled]="!canEdit">
         </lookup-colored>
       </div>
       <div *ngIf="users && currentState" class="col-sm-4 margin-y-sm">
@@ -59,7 +59,7 @@
         <lookup-autocomplete id="assigned_user" [propertiesToShow]="['user.first_name', 'user.second_name']"
           [array]="users" [(model)]="currentState.assigned_user" [allowEmptyValue]="true"
           (modelChange)="testAssigneeUpdate($event)"
-          [disabled]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+          [disabled]="!canEdit">
         </lookup-autocomplete>
       </div>
     </div>
@@ -77,7 +77,7 @@
       </div>
       <inline-editor id="comment" [placeholder]="'Comment'" empty="No comment yet." name="comment" cols="150"
         type="textarea" [(ngModel)]="currentState.comment"
-        [disabledInline]="!userService.IsLocalManager() && !userService.IsManager() && !userService.IsEngineer()">
+        [disabledInline]="!canEdit">
       </inline-editor>
     </div>
 
