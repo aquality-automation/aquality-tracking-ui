@@ -32,7 +32,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
         await projectHelper.editorAPI.createTestRun({ build_name: testruns.build1.build_name, test_suite_id: suite.id });
 
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await (await projectList.menuBar.user()).administration();
+        await projectList.menuBar.administration();
         return resolutionAdministration.sidebar.resolutions();
     });
 
@@ -79,7 +79,7 @@ describe('Full Admin Administartion Resolution Flow', () => {
     describe('Update', () => {
         it('I can update created resolution', async () => {
             const newName = new Date().getTime().toString();
-            await (await projectList.menuBar.user()).administration();
+            await projectList.menuBar.administration();
             await resolutionAdministration.sidebar.resolutions();
             await resolutionAdministration.selectProject(projectHelper.project.name);
             await resolutionAdministration.updateResolution(newName, resolutionAdministration.columns.name,

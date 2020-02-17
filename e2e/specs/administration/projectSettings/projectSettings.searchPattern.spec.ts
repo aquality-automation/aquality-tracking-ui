@@ -48,7 +48,7 @@ describe('Administartion: Project Settings:', () => {
         beforeAll(async () => {
             await logIn.logInAs(localManager.user_name, localManager.password);
             await projectHelper.openProject();
-            await (await projectList.menuBar.user()).administration();
+            await projectList.menuBar.administration();
             await userAdministration.sidebar.projectSettings();
             await projectHelper.importer.executeCucumberImport('Regex', [importFiles.firstError], [`${builds.build_1}.json`]);
         });

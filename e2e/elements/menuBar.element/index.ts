@@ -6,6 +6,7 @@ import { AuditsOptions } from './audits.options';
 
 export class MenuBar {
     private auditsButton = element(by.css('#Audits > a'));
+    private administrationOption = element(by.id('administration-nav'));
 
     clickLogo() {
         return element(by.css('.navbar-brand')).click();
@@ -60,12 +61,23 @@ export class MenuBar {
         return new TestsOptions();
     }
 
-    async user() {
-        await element(by.id('user-mb')).click();
-        return new UserOptions();
-    }
-
     isAuditTabExists(): promise.Promise<boolean> {
         return this.auditsButton.isPresent();
+    }
+
+    administration() {
+        return this.administrationOption.click();
+    }
+
+    isAdministrationExists() {
+        return this.administrationOption.isPresent();
+    }
+
+    editAccount() {
+        return element(by.id('user-mb')).click();
+    }
+
+    reportIssue() {
+        return element(by.id('bug-nav')).click();
     }
 }

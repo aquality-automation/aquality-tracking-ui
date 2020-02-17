@@ -43,7 +43,7 @@ describe('Administartion: Project Settings:', () => {
             });
 
             it('I can open Project Settings page', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 await userAdministration.sidebar.projectSettings();
                 return expect(projectSettingsAdministration.isOpened())
                     .toBe(true, `Project Settings page is not opened for ${description}`);
@@ -87,7 +87,7 @@ describe('Administartion: Project Settings:', () => {
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 return expect(projectSettingsAdministration.sidebar.isProjectSettingsExist())
                     .toBe(false, `Project Settings should not be visible for ${description}`);
             });
