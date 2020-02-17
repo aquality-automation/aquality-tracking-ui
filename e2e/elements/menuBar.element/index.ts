@@ -1,7 +1,6 @@
 import { by, element, promise } from 'protractor';
 import { CreateOptions } from './create.options';
 import { TestsOptions } from './tests.options';
-import { UserOptions } from './user.options';
 import { AuditsOptions } from './audits.options';
 
 export class MenuBar {
@@ -70,7 +69,7 @@ export class MenuBar {
     }
 
     isAdministrationExists() {
-        return this.administrationOption.isPresent();
+        return this.administrationOption.element(by.tagName('a')).isPresent();
     }
 
     editAccount() {
