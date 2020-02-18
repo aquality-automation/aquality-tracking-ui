@@ -35,7 +35,7 @@ export class TestSuiteService extends SimpleRequester {
   }
 
   removeTestSuite(testSuite: TestSuite): Promise<void> {
-    return this.doDelete(`/suite?id=${testSuite.id}&projectId=${testSuite.project_id}`)
+    return this.doDelete(`/suite?id=${testSuite.id}&project_id=${testSuite.project_id}`)
       .map(() => this.handleSuccess(`Test Suite '${testSuite.name}' was deleted.`)).toPromise();
   }
 

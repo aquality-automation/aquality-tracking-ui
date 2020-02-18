@@ -13,9 +13,9 @@ export class ResultResolutionService extends SimpleRequester {
   getResolution(projectId?: number) {
     let pr = '';
     if (projectId) {
-      pr = `projectId=${projectId}`;
+      pr = `project_id=${projectId}`;
     } else if (this.route.snapshot.params['projectId']) {
-      pr = `projectId=${this.route.snapshot.params['projectId']}`;
+      pr = `project_id=${this.route.snapshot.params['projectId']}`;
     }
     return this.doGet(`/result_resolution?${pr}`).map(res => res.json());
   }
@@ -25,7 +25,7 @@ export class ResultResolutionService extends SimpleRequester {
   }
 
   removeResolution(resolution: ResultResolution) {
-    return this.doDelete(`/result_resolution?id=${resolution.id}&projectId=${resolution.project_id}`).map(res => {
+    return this.doDelete(`/result_resolution?id=${resolution.id}&project_id=${resolution.project_id}`).map(res => {
       this.handleSuccess(`Resolution '${resolution.name}' was deleted.`);
       return res;
     });

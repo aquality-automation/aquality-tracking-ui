@@ -66,6 +66,7 @@ export class ListMilestoneComponent implements OnInit {
   }
 
   async updateMilestone(milestone: Milestone) {
+    milestone.project_id = this.projectId;
     await this.milestoneService.createMilestone(milestone);
     return this.milestoneService.handleSuccess(`The milestone '${milestone.name}' was updated.`);
   }

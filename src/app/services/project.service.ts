@@ -31,7 +31,7 @@ export class ProjectService extends SimpleRequester {
   }
 
   getImportBodyPatterns(bodyPattern: ImportBodyPattern) {
-    return this.doGet(`/body_pattern?projectId=${bodyPattern.project_id}`).map(res => res.json());
+    return this.doGet(`/body_pattern?project_id=${bodyPattern.project_id}`).map(res => res.json());
   }
 
   createImportBodyPattern(bodyPattern: ImportBodyPattern) {
@@ -39,7 +39,7 @@ export class ProjectService extends SimpleRequester {
   }
 
   removeImportBodyPattern(bodyPattern: ImportBodyPattern) {
-    return this.doDelete(`/body_pattern?id=${bodyPattern.id}&projectId=${bodyPattern.project_id}`)
+    return this.doDelete(`/body_pattern?id=${bodyPattern.id}&project_id=${bodyPattern.project_id}`)
       .map(() => this.handleSuccess(`Unique Body Pattern '${bodyPattern.name}' successfully removed.`));
   }
 
