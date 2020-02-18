@@ -1,0 +1,9 @@
+.label:empty {
+    display: inline;
+}
+
+.label {
+    margin: 1px;
+    padding: .2em .8em .3em;
+    border-radius: 1em;
+}

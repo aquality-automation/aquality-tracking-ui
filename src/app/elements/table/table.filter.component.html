@@ -37,7 +37,7 @@
                 </tr>
                 <tr class="names-header">
                     <th *ngFor="let col of columns" [setClass]="col.class"
-                        [sorter]="col.sorting ? {order:'desc', property:col.property} : undefined"
+                        [sorter]="col.sorting ? col.sorter ? col.sorter : getDefaultSorter(col.property) : undefined"
                         (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
                             'fit': col.type === 'checkbox' || col.property === 'action',
                             'percent':col.type === 'percent'
@@ -116,6 +116,12 @@
                             [model]="getLookupFilterValue(col)"
                             (modelChange)="handleLookupFilterChange(col.property, $event)">
                         </lookup-autocomplete-multiselect>
+
+                        <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
+                            [propertiesToShow]="col.dotsFilter.propToShow"
+                            [model]="getDotFilterValue(col)" *ngIf="col.type === 'dots' && col.filter"
+                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.dotsFilter.values"
+                            (modelChange)="handleDotFilterChange(col, $event)"></lookup>
                     </td>
                 </tr>
             </thead>
@@ -354,6 +360,9 @@
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 (modelChange)="setPropertyValue(entity, col.property, $event)"
                                 [editable]="col.editable"></attachment-inline>
+                                
+                            <app-color-dots *ngIf="col.type === 'dots'"
+                            [numericColors]="transformationsService.getPropertyValue(entity, col.property)"></app-color-dots>
                         </div>
 
                         <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow"

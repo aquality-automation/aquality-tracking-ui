@@ -46,7 +46,7 @@
 
         <div class="table-holder panel-body">
             <table-filter id="sync-test-table" *ngIf="cols" #syncTestTable [rowsOnPage]="10" [queryParams]="false"
-                [data]="tests" [columns]="cols" [defaultSortBy]="{ property: 'name', order: 'desc' }"
+                [data]="tests" [columns]="cols" [defaultSortBy]="sortBy"
                 [columnManagement]="false" [rowsOnPageSet]="[10]" [withSelector]="true">
             </table-filter>
         </div>

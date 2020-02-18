@@ -1,5 +1,5 @@
 import { NgModule} from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BasePopupComponent } from '../elements/modals/basePopup.component';
 import { CommonModule } from '@angular/common';
 import { TableFilterComponent } from '../elements/table/table.filter.component';
@@ -44,10 +44,12 @@ import { AttachmentInlineComponent } from '../elements/attachment-inline/attachm
 import { LabeledInputComponent } from '../elements/labeled-element/labeled-input/labeled-input.component';
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
+import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
 
 @NgModule({
   imports: [
     FormsModule,
+    ReactiveFormsModule,
     DataTableModule,
     CommonModule,
     InlineEditorModule,
@@ -96,7 +98,8 @@ import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristat
     AttachmentInlineComponent,
     LabeledInputComponent,
     LabeledBaseComponent,
-    TristateCheckboxComponent
+    TristateCheckboxComponent,
+    ColorDotsComponent
   ],
   exports: [
     ClickableLinks,
@@ -105,6 +108,7 @@ import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristat
     TableSorterDerective,
     DisabledInlineDerective,
     FormsModule,
+    ReactiveFormsModule,
     InlineEditorModule,
     DataTableModule,
     BasePopupComponent,
@@ -145,7 +149,8 @@ import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristat
     AttachmentInlineComponent,
     LabeledInputComponent,
     LabeledBaseComponent,
-    TristateCheckboxComponent
+    TristateCheckboxComponent,
+    ColorDotsComponent
   ]
 })
 export class SharedModule {}

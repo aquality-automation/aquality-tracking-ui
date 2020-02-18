@@ -2,13 +2,14 @@ import {
   Directive, ElementRef, AfterViewChecked,
   Input, Output, Renderer, EventEmitter
 } from '@angular/core';
+import { TFSorting, TFOrder } from '../elements/table/tfColumn';
 
 @Directive({
   selector: '[sorter]'
 })
 export class TableSorterDerective implements AfterViewChecked {
   @Input()
-  sorter: {order: string, property: string};
+  sorter: TFSorting;
   @Output()
   sorted = new EventEmitter();
 
@@ -46,15 +47,17 @@ export class TableSorterDerective implements AfterViewChecked {
     icon.classList.remove('glyphicon-triangle-top');
     icon.classList.remove('glyphicon');
 
-    if (this.sorter.order === 'asc') {
-      this.sorter = {order: 'desc', property: this.sorter.property};
-      icon.classList.add('glyphicon');
-      icon.classList.add('glyphicon-triangle-top');
-    } else if (this.sorter.order === 'desc') {
-      this.sorter = {order: 'asc', property: this.sorter.property};
-      icon.classList.add('glyphicon');
-      icon.classList.add('glyphicon-triangle-bottom');
+    switch (this.sorter.order) {
+      case TFOrder.asc:
+        this.sorter.order = TFOrder.desc;
+        break;
+      case TFOrder.desc:
+        this.sorter.order = TFOrder.asc;
+        break;
     }
+
+    icon.classList.add('glyphicon');
+    icon.classList.add('glyphicon-triangle-bottom');
     this.sorted.emit(this.sorter);
   }
 }

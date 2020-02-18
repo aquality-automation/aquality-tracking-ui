@@ -10,18 +10,32 @@
                 (modelChange)="onProjectChange($event)"></lookup-autocomplete>
         </div>
     </div>
-</div>
 
 
-<div *ngIf="projectToSave" class="panel panel-default">
-    <div class="panel-heading">Features
-        <button id="save-features" class="btn btn-success btn-sm pull-right panel-button" (click)="save()">Save</button>
-    </div>
-    <div class="panel-body">
-        <labeled-switch *ngIf="projectToSave" [(ngModel)]="projectToSave.steps" label="Steps" id="steps-feature">
-        </labeled-switch>
-        
-        <labeled-input *ngIf="projectToSave" [(ngModel)]="projectToSave.compare_result_pattern" label="Import Compare Results Pattern" id="compare-result-pattern-feature">
-        </labeled-input>
+    <div class="col-md-12 top-padding-md">
+        <div *ngIf="projectToSave" class="panel panel-default">
+            <div class="panel-heading">Features
+                <button id="save-features" class="btn btn-success btn-sm pull-right panel-button"
+                    (click)="save()">Save</button>
+            </div>
+            <div class="panel-body">
+
+                <div class="col-sm-4 no-padding">
+                    <labeled-switch *ngIf="projectToSave" [(ngModel)]="projectToSave.steps" label="Steps"
+                        id="steps-feature">
+                    </labeled-switch>
+                </div>
+
+                <labeled-input *ngIf="projectToSave" [(ngModel)]="projectToSave.compare_result_pattern"
+                    label="Import Compare Results Pattern" id="compare-result-pattern-feature">
+                </labeled-input>
+
+                <div class="col-sm-4 no-padding">
+                    <labeled-input *ngIf="projectToSave" type="number" min="3" max="25" [(ngModel)]="projectToSave.stability_count"
+                        label="Number of results to track stability" id="stability_count">
+                    </labeled-input>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

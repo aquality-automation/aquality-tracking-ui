@@ -5,7 +5,7 @@
   message="You have unsaved changes. Are you sure want to leave this page?" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="leavePage($event)"
   (closed)="leavePageWasClosed()"></simple-popup>
-<div id="test-page" class="panel-heading page result-search-margin">
+<div *ngIf="test" id="test-page" class="panel-heading page result-search-margin">
   <div class="row clearfix">
     <div class="col-sm-10 page-title">
       <h2 class="pull-left inline-page-label">Test: </h2>
@@ -26,7 +26,7 @@
   </div>
 </div>
 <hr class="col-sm-12 no-padding">
-<div class="container">
+<div *ngIf="test" class="container">
   <div class="col-sm-12 no-padding clearfix header-info">
     <div class="col-sm-4 clearfix">
       <div class="pull-left">
@@ -87,7 +87,7 @@
 </div>
 <div class="panel-body">
   <div class="row">
-    <results-grid *ngIf="testResultTempalte" [testResults]="testResults" [showOnly]="columns"
-      [sortBy]="{ property: 'start_date', order: 'asc' }">Loading...</results-grid>
+    <results-grid *ngIf="testResults" [testResults]="testResults" [showOnly]="columns"
+      [sortBy]="resultSorter">Loading...</results-grid>
   </div>
 </div>

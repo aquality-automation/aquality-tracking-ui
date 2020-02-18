@@ -16,7 +16,7 @@
     [queryParams]="true"
     [data]="testSuites" 
     [columns]="tbCols"
-    [defaultSortBy]="{ property: 'name', order: 'desc' }" 
+    [defaultSortBy]="sortBy" 
     [allowDelete]="allowCreateDelete"
     [allowCreate]="allowCreateDelete"
     (rowClick)="openTestSuite($event.id)"

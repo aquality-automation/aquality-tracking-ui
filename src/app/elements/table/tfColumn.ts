@@ -2,12 +2,13 @@ export class TFColumn {
     name: string;
     type: TFColumnType;
     property: string;
-    sorting? = false;
+    sorting?= false;
+    sorter?: TFSorting;
     headerlink?: string;
-    filter? = false;
+    filter?= false;
     lookup?: TFLookup;
     class?: string;
-    editable? = false;
+    editable?= false;
     notEditableByProperty?: string;
     link?: FTLink;
     title?: string;
@@ -15,9 +16,10 @@ export class TFColumn {
     nullFilter?: boolean;
     bulkEdit?: boolean;
     format?: string;
-    values?: string [];
+    values?: string[];
     pattern?: string;
     creation?: TFCreation;
+    dotsFilter?: TFDots;
 }
 
 export class FTLink {
@@ -29,6 +31,7 @@ export class FTLink {
 export class TFSorting {
     order: TFOrder;
     property: string;
+    weights?: { value: any, weight: number }[];
 }
 
 export class TFCreation {
@@ -42,12 +45,17 @@ export class TFLookup {
     objectWithId?: string;
     placeholder?: string;
     propToShow: string[];
-    allowEmpty? = false;
+    allowEmpty?= false;
+}
+
+export class TFDots {
+    values: { name: string, only?: number[], contains?: number[] }[];
+    propToShow: string[];
 }
 
 export enum TFOrder {
     desc = 'desc',
-    asc =  'asc'
+    asc = 'asc'
 }
 
 export enum TFColumnType {
@@ -66,5 +74,6 @@ export enum TFColumnType {
     selector = 'selector',
     date = 'date',
     link = 'link',
-    file = 'file'
+    file = 'file',
+    dots = 'dots'
 }

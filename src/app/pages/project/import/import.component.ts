@@ -9,7 +9,7 @@ import { TestSuiteService } from '../../../services/testSuite.service';
 import { TestRun } from '../../../shared/models/testRun';
 import { TestRunService } from '../../../services/testRun.service';
 import { Import } from '../../../shared/models/import';
-import { TFColumnType, TFColumn } from '../../../elements/table/tfColumn';
+import { TFColumnType, TFColumn, TFOrder } from '../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './import.component.html',
@@ -53,7 +53,7 @@ export class ImportComponent {
     name: 'In Progress',
     color: 2
   }];
-  sortBy = { order: 'asc', property: 'started' };
+  sortBy = { order: TFOrder.asc, property: 'started' };
   imports: { name: string, key: string }[] = [
     { name: 'MSTest (.trx)', key: importTypes.MSTest },
     { name: 'Robot (.xml)', key: importTypes.Robot },

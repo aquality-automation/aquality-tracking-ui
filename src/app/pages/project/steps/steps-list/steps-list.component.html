@@ -12,7 +12,7 @@
 [queryParams]="true"
 [data]="steps" 
 [columns]="columns"
-[defaultSortBy]="{ property: 'name', order: 'desc' }" 
+[defaultSortBy]="sortBy" 
 [allowDelete]="allowDelete"
 [allowCreate]="allowCreate"
 (dataChange)="createOrUpdateStep($event)" 

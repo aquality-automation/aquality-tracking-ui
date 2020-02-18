@@ -17,7 +17,7 @@ import { TransformationsService } from '../../../../services/transformations.ser
 import { ResultResolutionsChartsComponent } from '../../../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { FinalResultChartsComponent } from '../../../../elements/charts/finalResults/finalResults.charts.component';
 import { TestSuiteService } from '../../../../services/testSuite.service';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './view-milestone.component.html',
@@ -51,7 +51,7 @@ export class ViewMilestoneComponent implements OnInit {
   tests: Test[];
   columns: TFColumn[];
   stackSuites = false;
-  sortBy = { order: 'desc', property: 'result.final_result.name' };
+  sortBy = { order: TFOrder.desc, property: 'result.final_result.name' };
 
   async ngOnInit() {
     this.route.params.subscribe(params => {
@@ -94,7 +94,7 @@ export class ViewMilestoneComponent implements OnInit {
       this.resultResolutionService.getResolution(this.milestone.project_id).toPromise(),
       this.finalResultService.getFinalResult({}),
       this.milestoneService.getMilestoneResults(this.milestone),
-      this.testService.getTest({ project_id: this.milestone.project_id }, false)
+      this.testService.getTest({ project_id: this.milestone.project_id })
     ]);
   }
 
@@ -136,7 +136,7 @@ export class ViewMilestoneComponent implements OnInit {
         return result.test_id === test.id && suiteRuns.find(run => run.id === result.test_run_id) !== undefined;
       });
     } else {
-      this.transformationsService.sort(results, { order: 'asc', property: 'finish_date' });
+      this.transformationsService.sort(results, { order: TFOrder.asc, property: 'finish_date' });
       latest = results.find(result => result.test_id === test.id);
     }
 

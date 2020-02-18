@@ -9,7 +9,7 @@ import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.util';
-import { TFColumn, TFColumnType } from './tfColumn';
+import { TFColumn, TFColumnType, TFOrder, TFSorting } from './tfColumn';
 
 @Component({
   selector: 'table-filter',
@@ -80,7 +80,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   durationMask = [/\d/, /\d/, ':', /\d/, /\d/, ':', /\d/, /\d/];
   filteredData: any[];
   showCreation = false;
-  appliedFilters: any[] = [];
+  appliedFilters: Filter[] = [];
   newEntity: {} = {};
   bulkChangeEntity: {} = {};
   confirm: string;
@@ -144,6 +144,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     clearInterval(this.timerToken);
   }
 
+  getDefaultSorter(property: string): TFSorting {
+    return { order: TFOrder.desc, property: property };
+  }
+
   applyFilters() {
     if (this.data) {
       this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
@@ -152,8 +156,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  sort(sorter: { property: string, order: string }) {
+  sort(sorter: { property: string, order: string, weights?: { value: any, weight: number }[] }) {
     if (sorter) {
+      if (sorter.hasOwnProperty('weights')) {
+        this.transformationsService.sortArrayByWeight(this.filteredData, sorter);
+      }
       this.defaultSortBy = sorter;
       this.transformationsService.sort(this.filteredData, sorter);
     }
@@ -323,7 +330,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return filter ? filter[value] : undefined;
   }
 
-  getLookupFilterValue(col: any) {
+  getLookupFilterValue(col: TFColumn) {
     const filter = this.appliedFilters.find(x => {
       if (col.lookup.objectWithId) {
         return x.property === col.lookup.objectWithId;
@@ -342,6 +349,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       });
     }
     return selectedOpts;
+  }
+
+  getDotFilterValue(col: TFColumn) {
+    const filter = this.appliedFilters.find(x => x.property === col.property);
+    return filter ? col.dotsFilter.values.find(x => x.name === filter.dots.name) : '';
   }
 
   textFilterData(property: string) {
@@ -509,8 +521,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.emptyFieldError;
   }
 
-  handleFilterChange(col, $event) {
-    const newFilter: Filter = { property: col.property, value: $event };
+  handleDotFilterChange(col: TFColumn, value: { name: string, only?: number[], contains?: number[] }) {
+    const newFilter: Filter = { property: col.property, dots: value };
+    this.filterChange(newFilter);
+  }
+
+  handleFilterChange(col: TFColumn, event: any) {
+    const newFilter: Filter = { property: col.property, value: event };
     this.filterChange(newFilter);
   }
 

@@ -192,7 +192,9 @@ export class AppComponent {
           link: `/audit/${this.projectId}`,
           show: (await this.permissionsService.hasPermissions(undefined,
             [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]))
-            && this.projectId && this.globaldata.auditModule,
+            && this.projectId && this.globaldata.auditModule &&
+            !(await this.permissionsService.hasPermissions([EGlobalPermissions.manager, EGlobalPermissions.auditor,
+              EGlobalPermissions.audit_admin])),
           routerOptions: { exact: true }
         }, {
           name: 'Audits',
