@@ -32,7 +32,7 @@ export class TestRunService extends SimpleRequester {
   }
 
   removeTestRun(testRun: TestRun): Promise<void> {
-    return this.doDelete(`/testrun`, { id: testRun.id, projectId: testRun.project_id })
+    return this.doDelete(`/testrun`, { id: testRun.id, project_id: testRun.project_id })
       .map(() => this.handleSuccess(`Test run '${testRun.build_name}/${testRun.start_time}' was deleted.`)).toPromise();
   }
 

@@ -55,10 +55,12 @@ export class TestSuiteService extends SimpleRequester {
   }
 
   syncSuite(tests: Test[], suiteId: number, removeNotExecutedResults: boolean) {
-    return this.doPost(`/suite/sync`, tests, { suiteId, removeNotExecutedResults }, true).map(res => res).toPromise();
+    const project_id = this.route.snapshot.params['projectId'];
+    return this.doPost(`/suite/sync`, tests, { project_id, suiteId, removeNotExecutedResults }, true).map(res => res).toPromise();
   }
 
   findTestToSync(notExecutedFor: number, suiteId: number): Promise<Test[]> {
-    return this.doGet('/suite/sync', { notExecutedFor, suiteId }, true).map(res => res.json()).toPromise();
+    const project_id = this.route.snapshot.params['projectId'];
+    return this.doGet('/suite/sync', { project_id, notExecutedFor, suiteId }, true).map(res => res.json()).toPromise();
   }
 }
