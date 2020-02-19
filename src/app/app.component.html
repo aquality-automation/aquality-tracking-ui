@@ -35,8 +35,8 @@
             class="nav-link dropdown-toggle">{{navigation.name}}
             <span *ngIf="navigation.children" class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li class="dropdown-item" *ngFor="let child of navigation.children">
-              <a *ngIf="child.show" [routerLink]="child.link" [queryParams]="child.params">{{child.name}}</a>
+            <li *ngFor="let child of navigation.children">
+              <a class="dropdown-item" *ngIf="child.show" [routerLink]="child.link" [queryParams]="child.params">{{child.name}}</a>
             </li>
           </ul>
         </li>
@@ -46,7 +46,7 @@
         <li class="nav-item" [id]="navigation.id" *ngFor="let navigation of rightNavigations"
           [ngClass]="{'dropdown': navigation.children}">
 
-          <a class="nav-link"*ngIf="navigation.show && !navigation.children && !navigation.icon && navigation.link"
+          <a class="nav-link" *ngIf="navigation.show && !navigation.children && !navigation.icon && navigation.link"
             [routerLink]="navigation.link" [queryParams]="navigation.params"
             [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
           <a class="nav-link" *ngIf="navigation.show && !navigation.children && navigation.icon && navigation.link"
@@ -69,9 +69,9 @@
             <span *ngIf="navigation.children" class="caret"></span></a>
           <ul class="dropdown-menu">
             <li *ngFor="let child of navigation.children">
-              <a *ngIf="child.show && child.link" [routerLink]="child.link"
+              <a class="dropdown-item" *ngIf="child.show && child.link" [routerLink]="child.link"
                 [queryParams]="child.params">{{child.name}}</a>
-              <a *ngIf="child.show && child.href" [href]="child.href">{{child.name}}</a>
+              <a class="dropdown-item" *ngIf="child.show && child.href" [href]="child.href">{{child.name}}</a>
             </li>
           </ul>
         </li>

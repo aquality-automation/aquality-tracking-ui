@@ -37,9 +37,11 @@
         placeholder="Environment" />
     </div>
     <div class="col-md-3">
-      <label for="pattern">
-        <span title="Put regular expression pattern here, to identify if test was created before by matches in body."
-          class="glyphicon glyphicon-info-sign clickable-element"></span> Unique body pattern:
+      <label for="pattern"> Unique body pattern:
+        <fa-icon class="icon clickable-element"
+          title="Put regular expression pattern here, to identify if test was created before by matches in body."
+          [icon]="icons.faInfoCircle">
+        </fa-icon>
       </label>
       <lookup-autocomplete (searchText)="createBodyPattern($event)" [allowCreation]="true" id="pattern" name="pattern"
         [(model)]="importParameters.pattern" [allowEmptyValue]="true" [propertiesToShow]="['name']"
@@ -123,7 +125,7 @@
       </label>
     </div>
   </div>
-  
+
   <div *ngIf="fileListArray?.length > 0" class="col-md-12 panel panel-default no-padding import-results-panel clearfix">
     <div class="table table-hover">
       <tbody id="filesToImport">

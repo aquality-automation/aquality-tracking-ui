@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestService } from '../../../../services/test.service';
@@ -29,7 +29,7 @@ import { TFOrder, TFSorting } from '../../../../elements/table/tfColumn';
   ],
   styleUrls: ['./test.view.component.css']
 })
-export class TestViewComponent implements OnInit {
+export class TestViewComponent implements OnInit, OnDestroy {
   @ViewChild('steps') steps: StepsContainerComponent;
   descriptionHeight = 40;
   hideMoveModal = true;
@@ -71,13 +71,10 @@ export class TestViewComponent implements OnInit {
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
 
-
     this.test = {
       project_id: this.projectId,
       id: this.route.snapshot.params.testId
     };
-
-
 
     this.test = (await this.testService.getTest(this.test))[0];
     this.selectedDeveloper = this.test.developer;
@@ -85,11 +82,15 @@ export class TestViewComponent implements OnInit {
     this.suite = (await this.testSuiteService.getTestSuite({ id: this.test.test_suite_id }))[0];
 
     this.testResultTempalte = { test_id: this.test.id };
-    this.testResults = await this.resultsService.getTestResult({project_id: this.projectId, test_id: this.test.id});
+    this.testResults = await this.resultsService.getTestResult({ project_id: this.projectId, test_id: this.test.id });
 
     this.projectSubscription = this.globalData.currentProject$.subscribe(project => {
       this.showSteps = project ? !!project.steps : false;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.projectSubscription.unsubscribe();
   }
 
   async saveManualDuration(event) {

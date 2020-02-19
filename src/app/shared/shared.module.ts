@@ -45,7 +45,6 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
-import { ResultPopoverComponent } from '../elements/result-popover/result-popover.component';
 import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 
 @NgModule({
@@ -104,8 +103,7 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     LabeledInputComponent,
     LabeledBaseComponent,
     TristateCheckboxComponent,
-    ColorDotsComponent,
-    ResultPopoverComponent
+    ColorDotsComponent
   ],
   exports: [
     ClickableLinks,
@@ -157,7 +155,6 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     LabeledBaseComponent,
     TristateCheckboxComponent,
     ColorDotsComponent,
-    ResultPopoverComponent,
     BsDropdownModule,
     TooltipModule,
     ModalModule

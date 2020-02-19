@@ -17,7 +17,7 @@
             [ngClass]="{'btn-secondary': !isRegexSearch, 'btn-success': isRegexSearch}">(.*)</button>
           <button id="startResultsSearch" (click)="getResults()" type="submit" class="btn btn-success"
             title="Search for last {{limit}} results.">Search
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <fa-icon class="icon" [icon]="icons.faSearch"></fa-icon>
           </button>
         </div>
       </div>
@@ -31,9 +31,5 @@
   <div id="resultSearcherOpener" class="header-tools-opener text-center" (click)="toggleTools()">
     <fa-icon *ngIf="toggledOn =='out'" class="icon" [icon]="icons.faAngleDown"></fa-icon>
     <fa-icon *ngIf="toggledOn =='in'" class="icon" [icon]="icons.faAngleUp"></fa-icon>
-    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" [ngClass]="{
-        'glyphicon-chevron-up': toggledOn =='in',
-        'glyphicon-chevron-down': toggledOn =='out'
-      }"></span>
   </div>
 </div>

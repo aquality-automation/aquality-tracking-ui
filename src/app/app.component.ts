@@ -91,7 +91,6 @@ export class AppComponent {
     } else {
       this.currentProject = undefined;
     }
-
     this.globaldata.announceCurrentProject(this.currentProject);
   }
 

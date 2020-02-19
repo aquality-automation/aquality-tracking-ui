@@ -8,7 +8,7 @@ import { UserService } from '../../../../services/user.services';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
-import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+import { faAngleDown, faAngleUp, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'results-searcher',
@@ -45,7 +45,8 @@ export class ResultSearcherComponent {
   pendingSearch = false;
   icons = {
     faAngleDown,
-    faAngleUp
+    faAngleUp,
+    faSearch
   };
 
   constructor(

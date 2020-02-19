@@ -17,17 +17,17 @@
       <div class="btn-group pull-right margin-right-cut-md">
         <button *ngIf="canEdit && !isFinished() && canFinish()" id="finish" class="btn btn-success"
           (click)="finishTestRun()">Finish
-          <span class="glyphicon glyphicon-stop"></span>
+          <fa-icon class="icon" [icon]="icons.faStop"></fa-icon>
         </button>
         <button *ngIf="canEdit && isFinished() && canFinish()" id="reopen" class="btn btn-success"
           (click)="reopenTestRun()">Reopen
-          <span class="glyphicon glyphicon-play"></span>
+          <fa-icon class="icon" [icon]="icons.faPlay"></fa-icon>
         </button>
         <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
-          <span class="glyphicon glyphicon-modal-window"></span>
+          <fa-icon class="icon" [icon]="icons.faFilePdf"></fa-icon>
         </button>
         <button *ngIf="canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
-          <span class="glyphicon glyphicon-send"></span>
+          <fa-icon class="icon" [icon]="icons.faPaperPlane"></fa-icon>
         </button>
         <div class="btn-group" role="group">
           <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -49,17 +49,17 @@
       </div>
     </div>
   </div>
-  
+
   <div class="dropdown-divider"></div>
-  
+
   <div class="col-sm-12">
-      
+
     <div class="form-row">
       <div class="form-group col-md-4">
         <label for="build_name">Build Name:</label>
         <inline-editor id='build_name' [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500"
-          [name]="buildName" (onError)="buildNameError($event)" min="3" placeholder="Build Name" type="text"
-          trim="blur" [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()" [required]="true">
+          [name]="buildName" (onError)="buildNameError($event)" min="3" placeholder="Build Name" type="text" trim="blur"
+          [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()" [required]="true">
         </inline-editor>
       </div>
       <div *ngIf="testRun.test_suite" class="form-group col-md-4">
@@ -74,9 +74,9 @@
 
       <div *ngIf="testRun.author || canEdit" class="form-group col-md-4">
         <label for="executor">Executor:</label>
-        <inline-editor id="executor" [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500"
-          [name]="Executor" placeholder="Executor" type="text" trim="blur" [(ngModel)]="testRun.author"
-          (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}">
+        <inline-editor id="executor" [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500" [name]="Executor"
+          placeholder="Executor" type="text" trim="blur" [(ngModel)]="testRun.author" (onSave)="testRunUpdate()"
+          [required]="false" [config]="{empty:'Add...'}">
         </inline-editor>
       </div>
       <div *ngIf="testRun.execution_environment || canEdit" class="form-group col-md-4">
@@ -101,9 +101,8 @@
       <div *ngIf="(testRun.ci_build || canEdit) && testRun.label_id !== 2" class="form-group col-md-4">
         <label>CI Build:</label>
         <a *ngIf="testRun.ci_build" class="ci-link" [href]="testRun.ci_build">CI Build</a>
-        <inline-editor *ngIf="canEdit" maxLength="500" [name]="Executor" placeholder="CI Build" type="text"
-          trim="blur" [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false"
-          [config]="{empty:'Add...'}">
+        <inline-editor *ngIf="canEdit" maxLength="500" [name]="Executor" placeholder="CI Build" type="text" trim="blur"
+          [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}">
         </inline-editor>
       </div>
       <div *ngIf="testRun.milestone || canEdit" class="form-group col-md-4 row">
@@ -120,7 +119,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="dropdown-divider"></div>
 
   <div class="row">

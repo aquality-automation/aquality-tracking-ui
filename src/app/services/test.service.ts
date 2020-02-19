@@ -65,7 +65,7 @@ export class TestService extends SimpleRequester {
   }
 
   public getLastResultsId(entity: LastResulColors): number[] {
-    if (entity.result_ids) {
+    if (entity && entity.result_ids) {
       return JSON.parse(`[${entity.result_ids}]`) as number[];
     }
 
@@ -74,7 +74,7 @@ export class TestService extends SimpleRequester {
 
   public combineLastResults(entity: LastResulColors): number[] {
     const combinedColors: number[] = [];
-    if (entity.resolution_colors && entity.result_colors) {
+    if (entity && entity.resolution_colors && entity.result_colors) {
       const resolutionColors = entity.resolution_colors.split(',');
       const resultColors = entity.result_colors.split(',');
       for (let i = 0; i < resultColors.length; i++) {

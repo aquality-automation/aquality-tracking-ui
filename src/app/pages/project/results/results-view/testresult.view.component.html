@@ -63,13 +63,11 @@
         </lookup-autocomplete>
       </div>
     </div>
-
-    <div *ngIf="currentState.steps && currentState.steps.length > 0" id="tr-steps-line" class="row line">
-      <table-filter id="steps-grid" *ngIf="tbCols" [allowExport]="true" [data]="currentState.steps"
-        [rowsOnPage]="1000" [columns]="tbCols" [hideFilter]="true" [hidePageSets]="true"
-        [allowBulkUpdate]="canEdit" (bulkChanges)="bulkUpdateStepResults($event)"
-        (dataChange)="stepResultUpdate($event)" (action)="handleAction($event)" (bulkChanges)="bulkResultUpdate($event)"></table-filter>
-    </div>
+    
+    <table-filter id="steps-grid" *ngIf="tbCols && currentState.steps && currentState.steps.length > 0" [allowExport]="true" [data]="currentState.steps"
+    [rowsOnPage]="1000" [columns]="tbCols" [hideFilter]="true" [hidePageSets]="true"
+    [allowBulkUpdate]="canEdit" (bulkChanges)="bulkUpdateStepResults($event)"
+    (dataChange)="stepResultUpdate($event)" (action)="handleAction($event)" (bulkChanges)="bulkResultUpdate($event)"></table-filter>
 
     <div id="commentBox" class="row panel-padding">
       <div class="col-sm-12 padding-0">

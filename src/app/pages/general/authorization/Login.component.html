@@ -38,12 +38,11 @@
 			</svg>
 		</div>
 
-		<div *ngIf="appSettings && appSettings.ldap_auth === 1 && appSettings.base_auth === 1"
-			class="row justify-content-center align-items-center">
+		<div class="row justify-content-center align-items-center">
 
 			<div id="login-column" class="col-md-4">
 				<div id="login-box" class="col-md-12">
-					<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<ul *ngIf="appSettings && appSettings.ldap_auth === 1 && appSettings.base_auth === 1" class="nav nav-tabs" id="myTab" role="tablist">
 						<li class="nav-item" (click)="setLdap(true)">
 							<a class="nav-link" id="ldap-tab" data-toggle="tab" href="#ldap" role="tab"
 								[ngClass]="{'active': ldapLogin}" aria-controls="ldap" aria-selected="true">LDAP</a>
