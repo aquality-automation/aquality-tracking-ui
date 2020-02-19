@@ -3,6 +3,10 @@
   min-width: 70px !important;
 }
 
+.ft-wrapper-overflow tr:first {
+  border-radius: .5rem;
+}
+
 .ft-margin-top {
   margin-top: 25px;
 }
@@ -99,4 +103,8 @@
 
 .ft-tristate-filter {
   padding-top: 15px;
+}
+
+.sorter {
+  margin: 2px;
 }

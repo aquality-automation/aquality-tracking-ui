@@ -7,6 +7,7 @@ import { TestRunService } from '../../../services/testRun.service';
 import { TestRunStat } from '../../../shared/models/testrunStats';
 import { TransformationsService } from '../../../services/transformations.service';
 import { BaseChartDirective } from 'ng2-charts';
+import { faChevronRight, faChevronLeft, faTimes, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-suite-dashboard',
@@ -62,6 +63,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
       }
     }
   };
+  icons = { faChevronRight, faChevronLeft, faTimes, faSyncAlt };
 
   ngOnInit() {
     this.generateChartsData(this.detailed);

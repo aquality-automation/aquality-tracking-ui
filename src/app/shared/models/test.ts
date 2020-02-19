@@ -19,4 +19,5 @@ export class Test {
 export class LastResulColors {
   resolution_colors: string;
   result_colors: string;
+  result_ids: string;
 }

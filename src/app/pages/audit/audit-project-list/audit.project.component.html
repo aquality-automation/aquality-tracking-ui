@@ -1,12 +1,10 @@
-<div *ngIf="project" id="project-audits" class="panel-heading">
-  <div class="row">
+<div *ngIf="project" id="project-audits" class="panel-heading form-row">
     <div class="col-sm-6">
       <h2>Project Audits - {{project.name}}</h2>
     </div>
-  </div>
-</div>
-<div id="create" *ngIf="isAuditAdmin" class="btn-group col-sm-1 pull-right no-padding margin-bottom-10">
-  <a class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</a>
+    <div id="create" *ngIf="isAuditAdmin" class="col-sm-6">
+      <button class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</button>
+    </div>
 </div>
 <div class="col-sm-12 no-padding">
     <table-filter id="audits-list" *ngIf="data" [data]="data" [columns]="columns" [defaultSortBy]="defSort" [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>

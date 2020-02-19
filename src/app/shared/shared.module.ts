@@ -5,10 +5,10 @@ import { CommonModule } from '@angular/common';
 import { TableFilterComponent } from '../elements/table/table.filter.component';
 import { DataTableModule } from 'angular2-datatable';
 import { TableSorterDerective } from '../derectives/mfTableSorter.derective';
-import { LookupAutocompleteComponent } from '../elements/lookup/lookupAutocomplete.component';
+import { LookupAutocompleteComponent } from '../elements/lookup/autocomplete/lookupAutocomplete.component';
 import { LargeTextContainerComponent } from '../elements/containers/largeTextContainer.component';
-import { LookupColorsComponent } from '../elements/lookup/lookupColors.component';
-import { LookupComponent } from '../elements/lookup/lookup.component';
+import { LookupColorsComponent } from '../elements/lookup/colored/lookupColors.component';
+import { LookupComponent } from '../elements/lookup/simple/lookup.component';
 import { SetClassDirective } from '../derectives/setClass.derective';
 import { CustomEventListener } from '../derectives/customEventListener.derective';
 import { CommentsComponent } from '../elements/comments/comments.component';
@@ -16,7 +16,7 @@ import { NgxEditorModule } from 'ngx-editor';
 import { PanelsRowDirective } from '../derectives/panels-row.derective';
 import { FileUploadModule } from 'ng2-file-upload';
 import { UploaderComponent } from '../elements/file-uploader/uploader.element';
-import { LookupAutocompleteMultiselectComponent } from '../elements/lookup/lookupAutocompleteMultiselect.component';
+import { LookupAutocompleteMultiselectComponent } from '../elements/lookup/multiselect/lookupAutocompleteMultiselect.component';
 import { RouterModule } from '@angular/router';
 import { SetHTMLDirective } from '../derectives/show-html-data.derective';
 import { AutofocusDirective } from '../derectives/auto-focus.derective';
@@ -45,6 +45,8 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
+import { ResultPopoverComponent } from '../elements/result-popover/result-popover.component';
+import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
@@ -69,7 +71,10 @@ import { ColorDotsComponent } from '../elements/color-dots/color-dots.component'
     MatIconModule,
     MatListModule,
     MatButtonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    BsDropdownModule.forRoot(),
+    TooltipModule.forRoot(),
+    ModalModule.forRoot()
   ],
   declarations: [
     ClickableLinks,
@@ -99,7 +104,8 @@ import { ColorDotsComponent } from '../elements/color-dots/color-dots.component'
     LabeledInputComponent,
     LabeledBaseComponent,
     TristateCheckboxComponent,
-    ColorDotsComponent
+    ColorDotsComponent,
+    ResultPopoverComponent
   ],
   exports: [
     ClickableLinks,
@@ -150,7 +156,11 @@ import { ColorDotsComponent } from '../elements/color-dots/color-dots.component'
     LabeledInputComponent,
     LabeledBaseComponent,
     TristateCheckboxComponent,
-    ColorDotsComponent
+    ColorDotsComponent,
+    ResultPopoverComponent,
+    BsDropdownModule,
+    TooltipModule,
+    ModalModule
   ]
 })
 export class SharedModule {}

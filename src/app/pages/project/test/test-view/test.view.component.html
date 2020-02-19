@@ -5,6 +5,7 @@
   message="You have unsaved changes. Are you sure want to leave this page?" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="leavePage($event)"
   (closed)="leavePageWasClosed()"></simple-popup>
+
 <div *ngIf="test" id="test-page" class="panel-heading page result-search-margin">
   <div class="row clearfix">
     <div class="col-sm-10 page-title">
@@ -25,9 +26,11 @@
     </div>
   </div>
 </div>
+
 <hr class="col-sm-12 no-padding">
-<div *ngIf="test" class="container">
-  <div class="col-sm-12 no-padding clearfix header-info">
+
+<div *ngIf="test" class="row">
+  <div class="col-sm-12 form-row">
     <div class="col-sm-4 clearfix">
       <div class="pull-left">
         <label class="label-inline pull-left margin-right-10" for="manualDuration">Manual Duration: </label>
@@ -70,11 +73,11 @@
 
   <hr class="col-sm-12 no-padding">
 
-  <div class="col-sm-12 no-padding">
-    <div *ngIf="testResults?.length >1" class="col-sm-6 margin-bottom-10">
+  <div class="col-sm-12 no-padding form-row">
+    <div *ngIf="testResults?.length > 1" class="col-sm-6 margin-bottom-10">
       <result-timeline [testResults]="testResults">Loading...</result-timeline>
     </div>
-    <div *ngIf="testResults?.length >1" class="col-sm-6 margin-bottom-10">
+    <div *ngIf="testResults?.length > 1" class="col-sm-6 margin-bottom-10">
       <test-duration-chart [testResults]="testResults">Loading...</test-duration-chart>
     </div>
   </div>
@@ -85,9 +88,7 @@
     </div>
   </div>
 </div>
-<div class="panel-body">
-  <div class="row">
-    <results-grid *ngIf="testResults" [testResults]="testResults" [showOnly]="columns"
-      [sortBy]="resultSorter">Loading...</results-grid>
-  </div>
+<div class="form-rowы">
+  <results-grid *ngIf="testResults" [testResults]="testResults" [showOnly]="columns"
+    [sortBy]="resultSorter">Loading...</results-grid>
 </div>

@@ -24,17 +24,20 @@ export class CalcHeightsDirective implements AfterViewChecked {
   calculateHeight(el: HTMLElement) {
     this.innerHeight = (window.screen.height) + 'px';
     let parent: HTMLElement = document.documentElement;
-    const headerHeight =  parent.getElementsByTagName('nav')[0].getBoundingClientRect().height;
-    parent = parent.getElementsByTagName('body')[0];
-    parent.style.paddingTop = `${headerHeight - 50}px`;
-    if (parent.offsetHeight > +innerHeight && parent.offsetHeight < +innerHeight + 4) {
-      if (!parent.classList.contains('additionalHeight')) {
-        parent.classList.add('additionalHeight"');
-        parent.setAttribute('style', `height:${+parent.offsetHeight + 10}`);
+    const header = parent.getElementsByTagName('nav')[0];
+    if (header) {
+      const headerHeight = header.getBoundingClientRect().height;
+      parent = parent.getElementsByTagName('body')[0];
+      parent.style.paddingTop = `${headerHeight - 50}px`;
+      if (parent.offsetHeight > +innerHeight && parent.offsetHeight < +innerHeight + 4) {
+        if (!parent.classList.contains('additionalHeight')) {
+          parent.classList.add('additionalHeight"');
+          parent.setAttribute('style', `height:${+parent.offsetHeight + 10}`);
+        }
+      } else if (parent.offsetHeight < +innerHeight + 7 && parent.offsetHeight > +innerHeight + 13) {
+        parent.classList.remove('additionalHeight"');
+        parent.setAttribute('style', ``);
       }
-    } else if (parent.offsetHeight < +innerHeight + 7 && parent.offsetHeight > +innerHeight + 13) {
-      parent.classList.remove('additionalHeight"');
-      parent.setAttribute('style', ``);
     }
   }
 }

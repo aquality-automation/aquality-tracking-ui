@@ -9,3 +9,11 @@
 .ma-notifications{
   min-width: 200px;
 }
+
+.help-block { 
+  color: var(--danger);
+}
+
+.form-row:not(:last-child) {
+  margin-bottom: 10px;
+}

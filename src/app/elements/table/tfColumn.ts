@@ -20,6 +20,7 @@ export class TFColumn {
     pattern?: string;
     creation?: TFCreation;
     dotsFilter?: TFDots;
+    entitiesIdproperty?: string;
 }
 
 export class FTLink {

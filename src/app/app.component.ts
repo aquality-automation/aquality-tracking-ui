@@ -127,8 +127,7 @@ export class AppComponent {
           name: 'Test Runs',
           link: `/project/${this.projectId}/testrun`,
           params: { 'f_debug_st': false },
-          show: this.isLogged
-            && this.projectId !== undefined,
+          show: this.isLogged && this.projectId !== undefined,
           routerOptions: { exact: false }
         }, {
           name: 'Milestones',

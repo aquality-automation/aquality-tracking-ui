@@ -2,7 +2,8 @@
     <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
         [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
         (closed)="wasClosed()"></simple-popup>
-    <div *ngIf="projects" class="col-md-12 vert-aligned">
+
+    <div *ngIf="projects" class="col-md-12 form-row">
         <label class="col-md-2 label-inline control-label">Select Project:</label>
         <div class="col-sm-3">
             <lookup-autocomplete id="project-selector" placeholder="Select Project" [allowEmptyValue]="false"
@@ -10,11 +11,12 @@
                 (modelChange)="onProjectChange($event)"></lookup-autocomplete>
         </div>
     </div>
+</div>
 
-
-    <div class="col-md-12 top-padding-md">
-        <div *ngIf="projectToSave" class="panel panel-default">
-            <div class="panel-heading">Features
+<div class="col-md-12 top-padding-md">
+    <div *ngIf="projectToSave" class="card">
+        <div class="card-body">
+            <div class="card-title">Features
                 <button id="save-features" class="btn btn-success btn-sm pull-right panel-button"
                     (click)="save()">Save</button>
             </div>

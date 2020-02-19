@@ -2,6 +2,15 @@
   display: block;
 }
 
+.show-modal {
+  opacity: 1;
+}
+
+.modal-dialog {
+  margin: 9rem auto !important;
+  max-width: 600px !important;
+}
+
 .mt-icon-horizontal{
   height: 34px;
   width: 8%;

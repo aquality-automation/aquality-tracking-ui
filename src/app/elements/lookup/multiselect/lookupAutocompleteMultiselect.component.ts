@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
-import { BaseLookupComponent } from './baseLookup';
+import { BaseLookupComponent } from '../baseLookup';
 import { faMinus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'lookup-autocomplete-multiselect',
   templateUrl: './lookupAutocompleteMultiselect.component.html',
-  styleUrls: ['./lookupAutocompleteMultiselect.component.css'],
+  styleUrls: ['./lookupAutocompleteMultiselect.component.css', '../baseLookup.css'],
   providers: [
   ]
 })

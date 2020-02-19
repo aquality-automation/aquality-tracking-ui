@@ -1,30 +1,30 @@
-<form #form="ngForm" class="panel-heading no-padding">
-  <div class="col-md-12">
-    <div class="col-md-6">
-      <h2>Import Test Results</h2>
-    </div>
-    <div class="col-md-6">
-      <div class="col-md-6">
-        <lookup id="select-import-type" [propertiesToShow]="['name']" [array]="imports"
-          [disabled]="fileListArray?.length > 0" [(model)]="format" [allowEmptyValue]="false"
-          placeholder="Select Import Type"></lookup>
-      </div>
-      <div class="pull-right col-md-6 btn-group">
-        <label for="file-upload" type="button" class="btn btn-primary" [ngClass]="{
-            'disabled': !format 
-          }">Add Files</label>
-        <button type="submit" *ngIf="fileListArray?.length > 0" id="import-all" class="btn btn-success"
-          [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
-          (click)="uploadAll($event)">Import All</button>
-        <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">Remove
-          All</button>
-      </div>
-      <input [disabled]="!format" id="file-upload" type="file" (change)="fileChange($event)"
-        multiple accept=".xml, .trx, .json" />
-    </div>
+<form #form="ngForm" class="panel-heading no-padding form-row">
+
+  <div class="col-md-6">
+    <h2>Import Test Results</h2>
   </div>
+  <div class="col-md-6 form-row">
+    <div class="col-md-6">
+      <lookup id="select-import-type" [propertiesToShow]="['name']" [array]="imports"
+        [disabled]="fileListArray?.length > 0" [(model)]="format" [allowEmptyValue]="false"
+        placeholder="Select Import Type"></lookup>
+    </div>
+    <div class="col-md-6 btn-group">
+      <label for="file-upload" type="button" class="btn btn-primary" [ngClass]="{
+          'disabled': !format 
+        }">Add Files</label>
+      <button type="submit" *ngIf="fileListArray?.length > 0" id="import-all" class="btn btn-success"
+        [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
+        (click)="uploadAll($event)">Import All</button>
+      <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">Remove
+        All</button>
+    </div>
+    <input [disabled]="!format" id="file-upload" type="file" (change)="fileChange($event)" multiple
+      accept=".xml, .trx, .json" />
+  </div>
+
   <div *ngIf="fileListArray?.length > 0"
-    class="panel panel-default col-md-12 form-group import-results-panel it-test-import-options clearfix">
+    class="col-md-12 form-group import-results-panel it-test-import-options clearfix form-row">
     <div class="col-md-3">
       <label for="env">Test Suite Name{{reqMark('suite') ? '*' : ''}}:</label>
       <lookup-autocomplete (searchText)="createTestSuite($event)" [allowCreation]="true" id="suite" name="suite"
@@ -66,7 +66,8 @@
         class="form-control" placeholder="CI Build Link" max="500" />
     </div>
   </div>
-  <div *ngIf="fileListArray?.length > 0" class="panel panel-default col-md-12 form-group import-results-panel clearfix">
+
+  <div *ngIf="fileListArray?.length > 0" class="form-row col-md-12 form-group import-results-panel clearfix">
     <div *ngIf="!importParameters.addToLastTestRun" class="col-md-3 checbox-section">
       <label for="singleTestrunToggler" title="All selected files will be Imported in one testrun.">One Test Run:
         <ui-switch id="singleTestrunToggler" name="singleTestrun" class="pull-right" size="small"
@@ -122,6 +123,7 @@
       </label>
     </div>
   </div>
+  
   <div *ngIf="fileListArray?.length > 0" class="col-md-12 panel panel-default no-padding import-results-panel clearfix">
     <div class="table table-hover">
       <tbody id="filesToImport">

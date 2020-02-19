@@ -54,14 +54,22 @@ export class TestService extends SimpleRequester {
       .map(() => this.handleSuccess(`Test '${test.name}' was deleted.`));
   }
 
-  public getResultWeights(): { value: number, weight: number}[] {
+  public getResultWeights(): { value: number, weight: number }[] {
     return [
       { value: 5, weight: 0 },
       { value: 1, weight: 2 },
       { value: 2, weight: 4 },
       { value: 3, weight: 4 },
       { value: 4, weight: 1 },
-    ]
+    ];
+  }
+
+  public getLastResultsId(entity: LastResulColors): number[] {
+    if (entity.result_ids) {
+      return JSON.parse(`[${entity.result_ids}]`) as number[];
+    }
+
+    return [];
   }
 
   public combineLastResults(entity: LastResulColors): number[] {

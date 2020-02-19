@@ -1,9 +1,10 @@
 <div class="color-dots-container">
-  <span *ngFor="let color of numericColors" class="label" [ngClass]="{
-    'label-danger': color === 1,
-    'label-primary': color === 3,
-    'label-warning': color === 2,
-    'label-info': color === 4,
-    'label-success': color === 5
-  }"></span>
+  <span *ngFor="let color of numericColors; let i=index" class="badge" [ngClass]="{
+    'badge-danger': color === 1,
+    'badge-primary': color === 3,
+    'badge-warning': color === 2,
+    'badge-info': color === 4,
+    'badge-success': color === 5
+  }" ><app-result-popover class="pop-over" [resultId]="entitiesId[i]"></app-result-popover></span>
+  
 </div>

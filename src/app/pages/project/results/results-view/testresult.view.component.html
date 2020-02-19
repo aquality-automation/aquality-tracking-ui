@@ -3,9 +3,9 @@
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="wasExecuted($event)"
   (closed)="wasClosed()"></simple-popup>
 
-<div class="panel-heading clearfix">
-  <h2 class="col-sm-10 no-padding" id="test-result-view">Test Result: {{currentState?.id}}</h2>
-  <div class="col-sm-2 no-padding">
+<div class="panel-heading clearfix row">
+  <h2 class="col-sm-10" id="test-result-view">Test Result: {{currentState?.id}}</h2>
+  <div class="col-sm-2">
     <button id="save-test-result"
       *ngIf="canEdit" (click)="Update()"
       class="btn btn-success pull-right">Save</button>
@@ -83,8 +83,8 @@
 
 
     <div *ngIf="currentState.log || currentState.fail_reason" class="row panel-padding">
-      <label for="log">Logs:</label>
-      <pre class="logs-form">
+      <label for="log col-sm-12">Logs:</label>
+      <pre class="logs-form col-sm-12">
 <b *ngIf="currentState.log">Fail Reason:</b>
 {{currentState?.fail_reason}}
         

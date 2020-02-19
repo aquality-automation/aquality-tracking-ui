@@ -1,9 +1,17 @@
-.label:empty {
+.badge:empty {
     display: inline;
 }
 
-.label {
+.badge {
     margin: 1px;
-    padding: .2em .8em .3em;
-    border-radius: 1em;
+    padding: .8em;
+    border-radius: .5rem;
+}
+
+.pop-over {
+    display: none;
+}
+
+.badge:hover > .pop-over {
+    display: inline-block;
 }

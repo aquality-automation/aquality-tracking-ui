@@ -9,7 +9,9 @@ import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.util';
-import { TFColumn, TFColumnType, TFOrder, TFSorting } from './tfColumn';
+import { TFColumn, TFColumnType, TFSorting } from './tfColumn';
+import { faColumns, faCheck, faTimes, faArrowUp,
+  faArrowDown, faSyncAlt, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'table-filter',
@@ -27,7 +29,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() columnManagement = true;
   @Input() columns: TFColumn[];
   @Input() hiddenColumns: TFColumn[] = [];
-  @Input() defaultSortBy: { property: string, order: string };
+  @Input() defaultSortBy: TFSorting;
   @Input() rowsOnPage = 10;
   @Input() queryParams: boolean;
   @Input() allowCreate = false;
@@ -94,6 +96,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   prevent = false;
   selectAll = false;
   filterHelper: FilterHelper;
+  icons = {
+    faColumns,
+    faCheck,
+    faTimes,
+    faArrowUp,
+    faArrowDown,
+    faSyncAlt,
+    faChevronUp,
+    faChevronDown
+  };
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -145,7 +157,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   getDefaultSorter(property: string): TFSorting {
-    return { order: TFOrder.desc, property: property };
+    return this.defaultSortBy;
   }
 
   applyFilters() {
@@ -156,13 +168,14 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  sort(sorter: { property: string, order: string, weights?: { value: any, weight: number }[] }) {
+  sort(sorter: TFSorting) {
     if (sorter) {
+      this.defaultSortBy = sorter;
       if (sorter.hasOwnProperty('weights')) {
         this.transformationsService.sortArrayByWeight(this.filteredData, sorter);
+      } else {
+        this.transformationsService.sort(this.filteredData, sorter);
       }
-      this.defaultSortBy = sorter;
-      this.transformationsService.sort(this.filteredData, sorter);
     }
   }
 

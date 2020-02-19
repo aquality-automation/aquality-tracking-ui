@@ -7,6 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ColorDotsComponent implements OnInit {
   @Input() numericColors: number[];
+  @Input() entitiesId: number[];
 
   constructor() { }
 

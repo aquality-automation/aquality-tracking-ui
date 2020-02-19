@@ -3,7 +3,7 @@
     (execute)="execute($event)" (closed)="wasClosed()"></manage-columns-modal>
 
 <div class="ft-wrapper-overflow">
-    <div *ngIf="columns" overflowParent class="no-padding panel panel-default ft-content-overflow">
+    <div *ngIf="columns" overflowParent class="no-padding ft-content-overflow">
         <table [mfData]="filteredData" #mf="mfDataTable" class="no-padding table table-hover"
             [(mfRowsOnPage)]="rowsOnPage" [(mfActivePage)]="activePage" id="datatable">
             <thead>
@@ -12,25 +12,28 @@
                         <mfBootstrapPaginator class="pull-left"></mfBootstrapPaginator>
                         <p class="pull-left ft-total-label">Total Rows: {{filteredData?.length}} ({{data?.length}})</p>
                         <div class="btn-group pull-right" role="group">
-                            <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-default"
+                            <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-secondary"
                                 [matMenuTriggerFor]="appMenu">Get CSV</button>
                             <mat-menu #appMenu="matMenu" xPosition="before">
                                 <button id="getSCV-Download" mat-menu-item (click)="downloadCSV()">Download</button>
                                 <button id="getSCV-Copy" mat-menu-item (click)="copyCSV()">Copy to Clipboard</button>
                             </mat-menu>
                             <button *ngIf="columnManagement && !allowCreate"
-                                class="btn btn-sm btn-default ft-header-button manage-columns-opener"
-                                title="Manage Columns" (click)="manageColumns()"><span
-                                    class="glyphicon glyphicon-th"></span></button>
+                                class="btn btn-sm btn-secondary ft-header-button manage-columns-opener"
+                                title="Manage Columns" (click)="manageColumns()">
+                                <fa-icon class="icon" [icon]="icons.faColumns"></fa-icon>
+                            </button>
                             <button *ngIf="allowRefresh" class="btn btn-sm ft-header-button ft-refresh"
                                 title="Refresh (double click to enable)" (click)="hitRefresh()"
                                 (dblclick)="refreshAlways()" [ngClass]="{
                                 'btn-success' : animate,
-                                'btn-default' : !animate
+                                'btn-secondary' : !animate
                             }">
-                                <span class="glyphicon glyphicon-refresh" [ngClass]="{
+
+                                <fa-icon class="icon" [icon]="icons.faSyncAlt" [ngClass]="{
                                     'glyphicon-refresh-animate' : animate
-                                }"></span>
+                                }">
+                                </fa-icon>
                             </button>
                         </div>
                     </td>
@@ -42,6 +45,8 @@
                             'fit': col.type === 'checkbox' || col.property === 'action',
                             'percent':col.type === 'percent'
                         }">
+                        <fa-icon class="icon up sorter" [icon]="icons.faArrowUp" style="display: none"></fa-icon>
+                        <fa-icon class="icon down sorter" [icon]="icons.faArrowDown" style="display: none"></fa-icon>
                         <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
                         <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;"
                             (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}</a>
@@ -107,8 +112,8 @@
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
                                 [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" max="100"
                                 (keyup)="rangeKeyUp($event)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"
-                                (click)="removeRangeFilter(col.property)"></span>
+                            <fa-icon class="icon" [icon]="icons.faTimes" (click)="removeRangeFilter(col.property)">
+                            </fa-icon>
                         </div>
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
@@ -118,9 +123,9 @@
                         </lookup-autocomplete-multiselect>
 
                         <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
-                            [propertiesToShow]="col.dotsFilter.propToShow"
-                            [model]="getDotFilterValue(col)" *ngIf="col.type === 'dots' && col.filter"
-                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.dotsFilter.values"
+                            [propertiesToShow]="col.dotsFilter.propToShow" [model]="getDotFilterValue(col)"
+                            *ngIf="col.type === 'dots' && col.filter" placeholder="{{col?.name}} Filter"
+                            [allowEmptyValue]="true" [array]="col.dotsFilter.values"
                             (modelChange)="handleDotFilterChange(col, $event)"></lookup>
                     </td>
                 </tr>
@@ -140,8 +145,9 @@
                         <input
                             *ngIf="col.creation && (col.type === 'text' || col.type === 'email' || col.type=='percent')"
                             trim="blur" class="form-control input-sm" cols="150"
-                            [attr.maxlength]="col.creation.creationLength ? col.creation.creationLength : 100" [name]="new + col.property"
-                            type="text" [ngModel]="transformationsService.getPropertyValue(newEntity, col.property)"
+                            [attr.maxlength]="col.creation.creationLength ? col.creation.creationLength : 100"
+                            [name]="new + col.property" type="text"
+                            [ngModel]="transformationsService.getPropertyValue(newEntity, col.property)"
                             (ngModelChange)="setPropertyValue(newEntity, col.property, $event, true)"
                             [placeholder]="col?.name" />
 
@@ -176,20 +182,18 @@
 
                         <button *ngIf="col.property === 'action'" (click)="createAction()"
                             class="btn btn-sm btn-success row-action-button" [disabled]="!isNewEntityValid()">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <fa-icon class="icon" [icon]="icons.faCheck"></fa-icon>
                         </button>
                     </td>
                 </tr>
-                <tr *ngIf="showCreation && allowCreate && !isNewEntityValid()" class="danger ft-create-error">
+                <tr *ngIf="showCreation && allowCreate && !isNewEntityValid()" class="alert-danger ft-create-error">
                     <td class="text-center" [attr.colspan]="columns.length">{{errorMessage}}</td>
                 </tr>
                 <tr class="ft-create-toggler" *ngIf="allowCreate">
                     <td (click)="toggleCreation()" class="text-center clickable-element"
                         [attr.colspan]="columns.length">Add new
-                        <span class="glyphicon" aria-hidden="true" [ngClass]="{
-                            'glyphicon-menu-down':!showCreation,
-                            'glyphicon-menu-up':showCreation
-                        }"></span>
+                        <fa-icon *ngIf="showCreation" class="icon" [icon]="icons.faChevronUp"></fa-icon>
+                        <fa-icon *ngIf="!showCreation" class="icon" [icon]="icons.faChevronDown"></fa-icon>
                     </td>
                 </tr>
                 <tr *ngIf="allowBulkUpdate && hasSelectedRows()" class="ft-bulk-edit-row">
@@ -199,15 +203,16 @@
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 [config]="{empty:'Add ' + col?.name}"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
-                                type="text" trim="blur"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" type="text" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
 
                             <inline-editor [placeholder]="col?.name" *ngIf="(col.type === 'textarea')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
-                                [saveOnEnter]=false type="textarea" trim="blur" [config]="{empty:'Add...'}"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
+                                [config]="{empty:'Add...'}"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
@@ -248,7 +253,7 @@
 
                         <button *ngIf="col.property === 'action'" (click)="bulkUpdate()"
                             class="btn btn-sm btn-success row-action-button">
-                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            <fa-icon class="icon" [icon]="icons.faCheck"></fa-icon>
                         </button>
                     </td>
                 </tr>
@@ -263,16 +268,17 @@
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
-                                type="text" trim="blur"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" type="text" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>
 
                             <inline-editor [placeholder]="col?.name"
                                 *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'" [name]="col.property"
-                                [saveOnEnter]=false type="textarea" trim="blur" [config]="{empty:'Add...'}"
+                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
+                                [config]="{empty:'Add...'}"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>
@@ -360,14 +366,16 @@
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 (modelChange)="setPropertyValue(entity, col.property, $event)"
                                 [editable]="col.editable"></attachment-inline>
-                                
+
                             <app-color-dots *ngIf="col.type === 'dots'"
-                            [numericColors]="transformationsService.getPropertyValue(entity, col.property)"></app-color-dots>
+                                [numericColors]="transformationsService.getPropertyValue(entity, col.property)"
+                                [entitiesId]="transformationsService.getPropertyValue(entity, col.entitiesIdproperty)">
+                            </app-color-dots>
                         </div>
 
                         <button *ngIf="col.property === 'action' && allowDelete && !entity.constantRow"
                             (click)="removeAction(entity)" class="btn btn-sm btn-danger row-action-button">
-                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            <fa-icon class="icon" [icon]="icons.faTimes"></fa-icon>
                         </button>
                     </td>
                 </tr>

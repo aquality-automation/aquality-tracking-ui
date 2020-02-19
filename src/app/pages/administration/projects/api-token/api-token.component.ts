@@ -6,6 +6,7 @@ import { environment } from '../../../../../environments/environment';
 
 @Component({
   templateUrl: 'api-token.component.html',
+  styleUrls: ['../../global/app-settings/app-settings.component.css'],
   providers: [
     ProjectService,
     SimpleRequester
