@@ -9,9 +9,11 @@ import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.util';
-import { TFColumn, TFColumnType, TFSorting } from './tfColumn';
-import { faColumns, faCheck, faTimes, faArrowUp,
-  faArrowDown, faSyncAlt, faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { TFColumn, TFColumnType, TFSorting, TFOrder } from './tfColumn';
+import {
+  faColumns, faCheck, faTimes, faArrowUp,
+  faArrowDown, faSyncAlt, faChevronUp, faChevronDown
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'table-filter',
@@ -156,8 +158,14 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     clearInterval(this.timerToken);
   }
 
-  getDefaultSorter(property: string): TFSorting {
-    return this.defaultSortBy;
+  getDefaultSorter(col: TFColumn): TFSorting {
+    if (col.sorting) {
+      return col.sorter
+        ? col.sorter
+        : { property: col.property, order: TFOrder.desc };
+    }
+
+    return undefined;
   }
 
   applyFilters() {

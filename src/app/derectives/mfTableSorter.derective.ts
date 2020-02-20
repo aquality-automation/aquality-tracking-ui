@@ -3,7 +3,6 @@ import {
   Input, Output, Renderer, EventEmitter
 } from '@angular/core';
 import { TFSorting, TFOrder } from '../elements/table/tfColumn';
-import { faArrowUp, faArrowDown} from '@fortawesome/free-solid-svg-icons';
 
 @Directive({
   selector: '[sorter]'
@@ -41,20 +40,34 @@ export class TableSorterDerective implements AfterViewChecked {
 
     const up: Element = element.getElementsByClassName('up')[0];
     const down: Element = element.getElementsByClassName('down')[0];
-    this.hide(element);
 
-    switch (this.sorter.order) {
+
+    switch (this.getCurrentSortOrder(up, down)) {
       case TFOrder.asc:
         this.sorter.order = TFOrder.desc;
+        this.hide(element);
         this.show(down);
         break;
       case TFOrder.desc:
-        this.show(up);
         this.sorter.order = TFOrder.asc;
+        this.hide(element);
+        this.show(up);
         break;
     }
 
     this.sorted.emit(this.sorter);
+  }
+
+  getCurrentSortOrder(up: Element, down: Element) {
+    if (up.getAttribute('style') === 'display: inline-table') {
+      return TFOrder.asc;
+    }
+
+    if (down.getAttribute('style') === 'display: inline-table') {
+      return TFOrder.desc;
+    }
+
+    return TFOrder.asc;
   }
 
   show(element: Element) {

@@ -2,8 +2,8 @@
     <div class="col-sm-6">
       <h2>Project Audits - {{project.name}}</h2>
     </div>
-    <div id="create" *ngIf="isAuditAdmin" class="col-sm-6">
-      <button class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</button>
+    <div *ngIf="isAuditAdmin" class="col-sm-6">
+      <button id="create" class="btn btn-primary pull-right" routerLink="/audit/{{project.id}}/create">New Audit</button>
     </div>
 </div>
 <div class="col-sm-12 no-padding">

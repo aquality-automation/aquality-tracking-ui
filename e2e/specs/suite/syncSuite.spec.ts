@@ -103,7 +103,8 @@ describe('Sync Test Suite', () => {
 
       it('Select suite for sync', async () => {
         await syncSuite.selectSuite(testSuite);
-        return expect(syncSuite.isSyncButtonEnabled()).toBe(true, 'Sync button should be enable if suite is selected');
+        await expect(syncSuite.isSyncButtonEnabled()).toBe(true, 'Sync button should be enable if suite is selected');
+        return syncSuite.cancel();
       });
 
       it('Check default fields if suite was chosen', async () => {

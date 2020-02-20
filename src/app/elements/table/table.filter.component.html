@@ -39,14 +39,15 @@
                     </td>
                 </tr>
                 <tr class="names-header">
-                    <th *ngFor="let col of columns" [setClass]="col.class"
-                        [sorter]="col.sorting ? col.sorter ? col.sorter : getDefaultSorter(col.property) : undefined"
+                    <th *ngFor="let col of columns" [setClass]="col.class" [id]="'tf_header_' + col.property"
+                        [sorter]="getDefaultSorter(col)"
                         (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
                             'fit': col.type === 'checkbox' || col.property === 'action',
                             'percent':col.type === 'percent'
                         }">
                         <fa-icon class="icon up sorter" [icon]="icons.faArrowUp" style="display: none"></fa-icon>
                         <fa-icon class="icon down sorter" [icon]="icons.faArrowDown" style="display: none"></fa-icon>
+
                         <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
                         <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;"
                             (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}</a>

@@ -26,7 +26,7 @@ export const elements = {
     executor: new InlineEditor(by.id(`executor`)),
     executionEnvironment: new InlineEditor(by.id(`execution_environment`)),
     testSuiteLink: element(by.id(`suite_link`)),
-    startTimeLabel: element(by.xpath(`//li[.//label[contains(text(), '${names.startTimeLabel}')]]//p`)),
+    startTimeLabel: element(by.id(`start-time`)),
     resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
     resultSearcher: new ResultSearcher(by.id('resultSearcher')),
     resultsChart: new ResultPieChart(by.id('finalResultsChart')),
