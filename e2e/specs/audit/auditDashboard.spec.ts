@@ -25,7 +25,7 @@ const getLastSubmittedAuditsfileName = (): string => {
     return `Aquality_Tracking_Last_Submitted_Audits_${dateUtil.getDateFormat()}.xlsx`;
 };
 
-fdescribe('Audits Dashboard:', () => {
+describe('Audits Dashboard:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`${description} role:`, () => {
             it(`Is not available for role ${description}`, async () => {
