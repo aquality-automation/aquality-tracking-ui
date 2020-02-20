@@ -42,14 +42,16 @@
 
 			<div id="login-column" class="col-md-4">
 				<div id="login-box" class="col-md-12">
-					<ul *ngIf="appSettings && appSettings.ldap_auth === 1 && appSettings.base_auth === 1" class="nav nav-tabs" id="myTab" role="tablist">
+					<ul *ngIf="appSettings && appSettings.ldap_auth === 1 && appSettings.base_auth === 1"
+						class="nav nav-tabs" id="myTab" role="tablist">
 						<li class="nav-item" (click)="setLdap(true)">
 							<a class="nav-link" id="ldap-tab" data-toggle="tab" href="#ldap" role="tab"
 								[ngClass]="{'active': ldapLogin}" aria-controls="ldap" aria-selected="true">LDAP</a>
 						</li>
 						<li class="nav-item" (click)="setLdap(false)">
 							<a class="nav-link" id="standard-tab" data-toggle="tab" href="#standard" role="tab"
-								[ngClass]="{'active': !ldapLogin}" aria-controls="standard" aria-selected="false">Standard</a>
+								[ngClass]="{'active': !ldapLogin}" aria-controls="standard"
+								aria-selected="false">Standard</a>
 						</li>
 					</ul>
 					<br>
@@ -57,8 +59,8 @@
 						'has-error': login.invalid && login.touched,
 						'has-success': login.valid && login.touched
 						}">
-						<input autofocus maxlength="100" id="login" name="login" [(ngModel)]="userName" type="text" trim="blur"
-							class="form-control" placeholder="User Name" required #login="ngModel">
+						<input autofocus maxlength="100" id="login" name="login" [(ngModel)]="userName" type="text"
+							trim="blur" class="form-control" placeholder="User Name" required #login="ngModel">
 					</div>
 					<div class="form-group" [ngClass]="{
 						'has-error': password.invalid && password.touched,
@@ -72,55 +74,6 @@
 					</div>
 				</div>
 			</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		</div>
 	</form>
 </div>
-
-
-<!-- <div class="row">
-	<div class="col-sm-5"></div>
-	<div class="col-sm-2">
-		<div class="form-group" [ngClass]="{
-			'has-error': login.invalid && login.touched,
-			'has-success': login.valid && login.touched
-			}">
-			<input autofocus maxlength="100" id="login" name="login" [(ngModel)]="userName" type="text"
-				trim="blur" class="col-10 form-control" placeholder="User Name" required #login="ngModel">
-		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-sm-5"></div>
-	<div class="col-sm-2">
-		<div class="form-group" [ngClass]="{
-			'has-error': password.invalid && password.touched,
-			'has-success': password.valid && password.touched
-			}">
-			<input maxlength="100" id="password" name="password" [(ngModel)]="userPassword" type="password"
-				class="form-control" placeholder="Password" required #password="ngModel">
-		</div>
-	</div>
-	<div class="col-sm-12">
-		<button type="submit" class="btn btn-primary" [disabled]="form.invalid">Log in</button>
-	</div>
-</div> -->
