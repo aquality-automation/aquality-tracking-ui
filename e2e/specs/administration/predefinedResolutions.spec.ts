@@ -61,7 +61,7 @@ describe('Predefined Resolution:', () => {
             });
 
             it('I can open Predefined Resolution page', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 await userAdministration.sidebar.predefinedResolutions();
                 return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolution page is not opened for ${description}`);
             });
@@ -172,7 +172,7 @@ describe('Predefined Resolution:', () => {
             });
 
             it('I can not open Predefined Resolution page using Menu Bar', async () => {
-                return expect((await projectList.menuBar.user()).isAdministrationExists())
+                return expect(projectList.menuBar.isAdministrationExists())
                     .toBe(false, `Administartion should not be visible for ${description}`);
             });
 

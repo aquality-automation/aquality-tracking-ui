@@ -23,7 +23,7 @@ beforeAll(async () => {
     }
     await logIn.navigateTo();
     await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-    await (await projectList.menuBar.user()).administration();
+    await projectList.menuBar.administration();
     await userAdministration.create(usersTestData.autoAdmin);
     await userAdministration.create(usersTestData.localAdmin);
     await userAdministration.create(usersTestData.auditAdmin);
@@ -46,7 +46,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
     await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-    await (await projectList.menuBar.user()).administration();
+    await projectList.menuBar.administration();
     await userAdministration.remove(usersTestData.localAdmin.user_name);
     await userAdministration.remove(usersTestData.autoAdmin.user_name);
     await userAdministration.remove(usersTestData.localManager.user_name);

@@ -41,7 +41,7 @@ describe('API Token:', () => {
             });
 
             it('I can open API Token page', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 await userAdministration.sidebar.apiToken();
                 return expect(apiTokenAdministration.isOpened()).toBe(true, `API Token page is not opened for ${description}`);
             });
@@ -81,7 +81,7 @@ describe('API Token:', () => {
             });
 
             it('I can not Open API Token page using Menu Bar', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 return expect(apiTokenAdministration.sidebar.isApiTokenExist())
                     .toBe(false, `API Token should not be visible for ${description}`);
             });

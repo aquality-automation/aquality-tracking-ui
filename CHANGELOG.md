@@ -3,6 +3,7 @@
 ## 0.3.6 (unreleased)
 
 Features:
+  - Move Administration to main Menu bar to make it more visible -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/58)
 
 Bugfixes:
   - Fixed for downloading audits results from Audits Dashboard -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/51)
@@ -20,8 +21,6 @@ Features:
 Bugfixes:
   - Cannot remove milestone from TestRun -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/50)
   - Refactored Permissions service
-
-Bugfixes:
   - Test Runs: Filter by Start Time date From doesn't work -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/38)
 
 ## 0.3.4 (2019-12-10)

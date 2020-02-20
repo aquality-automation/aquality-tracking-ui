@@ -108,7 +108,7 @@ export class AuditInfoComponent implements OnInit {
 
   removeAttachment(id: number) {
     this.removingInProgress = true;
-    this.auditService.removeAuditAttachment(id).subscribe(res => {
+    this.auditService.removeAuditAttachment(id, this.audit.project.id).subscribe(() => {
       this.updateAttachments();
       this.removingInProgress = false;
     });

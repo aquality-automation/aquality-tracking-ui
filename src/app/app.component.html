@@ -51,15 +51,28 @@
         </ul>
 
         <ul class="nav navbar-nav pull-right">
-          <li *ngIf="isLogged" id="logout">
-            <a routerLink="/" (click)="Logout()">Log out</a>
+          <li *ngIf="isLogged" id="logout" class="logout-nav">
+            <a routerLink="/" (click)="Logout()"><fa-icon class="icon" [icon]="faSignOutAlt" title="Log out"></fa-icon></a>
           </li>
         </ul>
         <ul *ngIf="isLogged" class="nav navbar-nav pull-right" id="navigation-right-side">
           <li [id]="navigation.id" *ngFor="let navigation of rightNavigations"
             [ngClass]="{'dropdown': navigation.children}">
-            <a *ngIf="navigation.show && !navigation.children" [routerLink]="navigation.link" [queryParams]="navigation.params"
+
+            <a *ngIf="navigation.show && !navigation.children && !navigation.icon && navigation.link" [routerLink]="navigation.link" [queryParams]="navigation.params"
               [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">{{navigation.name}}</a>
+            <a *ngIf="navigation.show && !navigation.children && navigation.icon && navigation.link" [routerLink]="navigation.link" [queryParams]="navigation.params"
+              [routerLinkActiveOptions]="navigation.routerOptions" routerLinkActive="active">
+              <fa-icon class="icon" [icon]="navigation.icon" [title]="navigation.name"></fa-icon>
+            </a>
+
+            <a *ngIf="navigation.show && !navigation.children && !navigation.icon && navigation.href" [href]="navigation.href">
+              {{navigation.name}}</a>
+            <a *ngIf="navigation.show && !navigation.children && navigation.icon && navigation.href" [href]="navigation.href">
+              <fa-icon class="icon" [icon]="navigation.icon" [title]="navigation.name"></fa-icon>
+            </a>
+
+
             <a *ngIf="navigation.show && navigation.children" data-toggle="dropdown" href=""
               class="dropdown-toggle">{{navigation.name}}
               <span *ngIf="navigation.children" class="caret"></span></a>

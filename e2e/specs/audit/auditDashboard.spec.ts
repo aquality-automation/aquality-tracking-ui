@@ -6,7 +6,6 @@ import { dateUtil } from '../../utils/date.util';
 import using from 'jasmine-data-provider';
 import users from '../../data/users.json';
 
-
 const editorExamples = {
     auditAdmin: users.auditAdmin,
     manager: users.manager

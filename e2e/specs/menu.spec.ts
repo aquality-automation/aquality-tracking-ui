@@ -17,9 +17,8 @@ describe('Report an Issue', () => {
     });
 
     it('After clicking the option the github page is opened', async () => {
-        const options = await projectList.menuBar.user();
         browser.ignoreSynchronization = true;
-        await options.reportIssue();
+        await projectList.menuBar.reportIssue();
         await expect(browser.getCurrentUrl()).toBe(githubUrl, 'Should be navigated to github!');
         browser.ignoreSynchronization = false;
     });
