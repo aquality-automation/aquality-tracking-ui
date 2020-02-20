@@ -3,6 +3,10 @@
   min-width: 70px !important;
 }
 
+.ft-wrapper-overflow tr:first {
+  border-radius: .5rem;
+}
+
 .ft-margin-top {
   margin-top: 25px;
 }
@@ -75,10 +79,6 @@
   height: 30px;
 }
 
-.ft-header-button .glyphicon {
-  margin-bottom: 2px;
-}
-
 .tf-overflow {
   overflow: auto
 }
@@ -99,4 +99,8 @@
 
 .ft-tristate-filter {
   padding-top: 15px;
+}
+
+.sorter {
+  margin: 2px;
 }

@@ -6,7 +6,8 @@
         (click)="toggle()" (blur)="toggleOff()" [disabled]="disabled" [ngClass]="{
       'lookup-selector-sm': small,
       'inner-text-placeholder' : selectedItemText === placeholder
-    }">{{selectedItemText}}<span class="caret caret-custom"></span></button>
+    }">{{selectedItemText}}
+    <fa-icon class="icon pull-right caret" [icon]="icons.faCaretDown" ></fa-icon></button>
     <div [hidden]="hidden" class="selector-suggestions" *ngIf="filteredArray" [ngClass]="{
       'cut-long-text': cutLongText
     }">

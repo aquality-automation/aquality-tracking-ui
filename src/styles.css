@@ -29,10 +29,6 @@ html, header {
   min-width: 1024px;
 }
 
-main {
-  padding-top: 50px;
-}
-
 a {
   color: #3379b7;
   text-decoration: underline;
@@ -48,6 +44,7 @@ a:hover {
 
 ng-component>.panel-heading {
   margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .simple-modal>.panel-heading {
@@ -92,7 +89,7 @@ ul {
 }
 
 .panel-padding {
-  padding: 15px !important;
+  padding: 25px !important;
 }
 
 .column-selectbox {
@@ -248,8 +245,8 @@ simple-popup>.overlay {
   left: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  z-index: 10 !important;
-  background-color: rgba(134, 121, 121, 0.7) !important;
+  z-index: 1000 !important;
+  background-color: rgba(108, 117, 125, 0.7) !important;
 }
 
 input[type="file"] {
@@ -276,20 +273,6 @@ table {
   padding-top: 5px;
 }
 
-.nav-tabs>li>a {
-  text-decoration: none;
-  color: black;
-  background-color: transparent;
-}
-
-.nav-tabs>li.active>a {
-  background-color: #fff4f4;
-}
-
-.nav-tabs>li.active>a:hover {
-  background-color: #fff4f4;
-}
-
 .page-info-line-height {
   min-height: 25px;
 }
@@ -301,60 +284,6 @@ td.wrap {
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   hyphens: auto;
-}
-
-.header-tools-opener {
-  border-top: 1px solid black;
-  -webkit-transition: all 3s cubic-bezier(0.175, 0.885, 0.320, 1);
-  /* older webkit */
-  -webkit-transition: all 3s cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  -moz-transition: all 3s cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  -o-transition: all 3s cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  transition: all 3s cubic-bezier(0.175, 0.885, 0.320, 1.275);
-  /* easeOutBack */
-  height: 20px;
-  width: 100%;
-  background: #333;
-  -webkit-box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-}
-
-.header-tools-opener>span {
-  color: white;
-}
-
-.header-tools-opener:hover {
-  background: black;
-  cursor: pointer;
-  -webkit-box-shadow: 0px 11px 133px -1px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 11px 133px -1px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 11px 133px -1px rgba(0, 0, 0, 0.75);
-}
-
-.flying-panel>.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.flying-panel {
-  background: white;
-  display: block;
-  position: fixed;
-  z-index: 10;
-  left: 0;
-  top: 50px;
-  width: 100%;
-  max-height: 388px;
-  overflow: auto;
-  -webkit-box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
-}
-
-.before-table-header {
-  background: #333 !important;
-  color: white !important;
 }
 
 .non-clickable {
@@ -527,7 +456,7 @@ ul.spinner>li {
 }
 
 .inline {
-  display: inline-block;
+  display: inline-block !important;
 }
 
 .tf-column .wc-date-container {
@@ -535,60 +464,8 @@ ul.spinner>li {
   float: none !important;
 }
 
-.selector-container {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  min-width: 135px;
-  margin-bottom: 0px;
-}
-
-.lookup-selector-sm {
-  font-size: 12px !important;
-  height: 30px;
-}
-
-.width100 .selector-container {
-  min-width: 100px !important;
-  width: 100px !important;
-}
-
-.selector-suggestions {
-  max-height: 200px;
-  position: absolute;
-  z-index: 9;
-  left: 0;
-  width: 100%;
-  background-color: transparent;
-}
-
-.selector-suggestions ul {
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border: 1px solid gainsboro;
-  overflow-y: auto;
-  max-height: 200px;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.selector-suggestions li {
-  padding: 5px;
-  border-bottom: 1px solid gainsboro;
-  width: 100%;
-}
-
-.selector-suggestions li:hover {
-  cursor: pointer;
-}
-
 .width-200 {
   width: 200px;
-}
-
-.selector-button {
-  text-align: left;
 }
 
 .caret-custom {
@@ -769,17 +646,6 @@ td input.form-control {
   margin-top: 40px !important;
 }
 
-.alert-text {
-  float: left;
-  margin-top: 6px;
-}
-
-.alert-icon {
-  float: left;
-  font-size: 30;
-  margin-right: 10px;
-}
-
 .margin-right-cut-md {
   margin-right: -15px;
 }
@@ -911,10 +777,6 @@ angular2-date-picker .wc-date-container>i.fa-calendar {
   width: 70px !important;
 }
 
-li.default-option {
-  background-color: whitesmoke;
-}
-
 comments-block .comment-editor {
   margin-left: -15px;
   margin-right: -15px;
@@ -1016,7 +878,7 @@ textarea.form-control {
   min-height: calc(100vh - 50px);
 }
 
-.glyphicon-refresh-animate {
+.glyphicon-refresh-animate > svg {
   -webkit-animation: spin2 .7s infinite linear;
   animation: spin2 .7s infinite linear;
 }
@@ -1050,4 +912,14 @@ textarea.form-control {
   to {
     transform: scale(1) rotate(360deg);
   }
+}
+
+.paginator-bottom .pagination {
+  float: left;
+}
+
+pre {
+  background-color: var(--light);
+  padding: 20px;
+  border-radius: .5rem;
 }

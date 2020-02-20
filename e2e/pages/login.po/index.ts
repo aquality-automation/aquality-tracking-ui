@@ -24,7 +24,6 @@ class LogIn extends BasePage {
   }
 
   async logInAs(userName: string, password: string) {
-    await this.menuBar.clickLogo();
     if (await this.menuBar.isLogged()) {
       await this.menuBar.clickLogOut();
     }

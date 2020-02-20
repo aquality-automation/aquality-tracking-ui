@@ -4,7 +4,7 @@ import { TestSuite } from '../../../../shared/models/testSuite';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { UserService } from '../../../../services/user.services';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFSorting, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
@@ -24,6 +24,7 @@ export class TestSuiteComponent implements OnInit {
   tbCols: TFColumn[];
   projectId: number;
   allowCreateDelete: boolean;
+  sortBy: TFSorting = { property: 'name', order: TFOrder.desc };
 
   constructor(
     private testSuiteService: TestSuiteService,

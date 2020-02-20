@@ -8,7 +8,7 @@ import { UserService } from '../../../services/user.services';
 import { Project } from '../../../shared/models/project';
 import { ProjectService } from '../../../services/project.service';
 import { TransformationsService } from '../../../services/transformations.service';
-import { TFColumnType, TFColumn } from '../../../elements/table/tfColumn';
+import { TFColumnType, TFColumn, TFOrder } from '../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class CustomerInfoComponent implements OnInit {
     users: User[];
     allowCreate: boolean;
     public columns: TFColumn[];
-    public defSort = { property: 'name', order: 'desc' };
+    public defSort = { property: 'name', order: TFOrder.desc };
 
     constructor(
         private permissions: PermissionsService,

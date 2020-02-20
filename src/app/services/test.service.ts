@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { Test } from '../shared/models/test';
+import { Test, LastResulColors } from '../shared/models/test';
 import { TestSuite } from '../shared/models/testSuite';
 
 
 @Injectable()
 export class TestService extends SimpleRequester {
 
-  getTest(test: Test, withChildren: boolean = false, numberOfResults: number = 10000): Promise<Test[]> {
+  getTest(test: Test, numberOfResults: number = 10000): Promise<Test[]> {
     const params: { [key: string]: any | any[]; } = {
       id: test.id,
       project_id: test.project_id,
       test_suite_id: test.test_suite_id,
       name: test.name,
       developer_id: test.developer_id,
-      withChildren: withChildren ? 1 : 0,
       numberOfResults
     };
     return this.doGet('/test', params).map(res => res.json()).toPromise();
@@ -53,5 +52,41 @@ export class TestService extends SimpleRequester {
   removeTest(test: Test) {
     return this.doDelete(`/test?id=${test.id}&project_id=${test.project_id}`)
       .map(() => this.handleSuccess(`Test '${test.name}' was deleted.`));
+  }
+
+  public getResultWeights(): { value: number, weight: number }[] {
+    return [
+      { value: 5, weight: 0 },
+      { value: 1, weight: 2 },
+      { value: 2, weight: 4 },
+      { value: 3, weight: 4 },
+      { value: 4, weight: 1 },
+    ];
+  }
+
+  public getLastResultsId(entity: LastResulColors): number[] {
+    if (entity && entity.result_ids) {
+      return JSON.parse(`[${entity.result_ids}]`) as number[];
+    }
+
+    return [];
+  }
+
+  public combineLastResults(entity: LastResulColors): number[] {
+    const combinedColors: number[] = [];
+    if (entity && entity.resolution_colors && entity.result_colors) {
+      const resolutionColors = entity.resolution_colors.split(',');
+      const resultColors = entity.result_colors.split(',');
+      for (let i = 0; i < resultColors.length; i++) {
+        const resultColor = resultColors[i];
+        if (+resultColor === 5) {
+          combinedColors.push(+resultColor);
+        } else {
+          combinedColors.push(+resolutionColors[i]);
+        }
+      }
+    }
+
+    return combinedColors;
   }
 }

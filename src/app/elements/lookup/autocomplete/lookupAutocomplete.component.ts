@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit} from '@angular/core';
-import { BaseLookupComponent } from './baseLookup';
-import { TransformationsService } from '../../services/transformations.service';
+import { BaseLookupComponent } from '../baseLookup';
+import { TransformationsService } from '../../../services/transformations.service';
 
 @Component({
   selector: 'lookup-autocomplete',
   templateUrl: 'lookupAutocomplete.component.html',
-  styleUrls: ['./lookup.css'],
+  styleUrls: ['../baseLookup.css'],
   providers: [
     TransformationsService
   ]

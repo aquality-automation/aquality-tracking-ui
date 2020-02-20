@@ -35,3 +35,22 @@
 .email-pattern-hint .lt-container-shown{
   margin-top: -20px;
 }
+
+.card {
+  margin-top: 15px;
+}
+
+.card-title {
+  padding-bottom: 10px;
+  border-bottom: solid 1px var(--main-border-color);
+}
+
+.form-row:not(:last-child) {
+  border-bottom: solid 1px var(--light);
+  margin-bottom: 10px;
+}
+
+.email-pattern-hint {
+  margin-top: 0px;
+  margin-bottom: 15px;
+}

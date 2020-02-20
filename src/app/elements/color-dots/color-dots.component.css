@@ -1,0 +1,17 @@
+.badge:empty {
+    display: inline;
+}
+
+.badge {
+    margin: 1px;
+    padding: .2em .8em;
+    border-radius: .5rem;
+}
+
+.pop-over {
+    display: none;
+}
+
+.badge:hover > .pop-over {
+    display: inline-block;
+}

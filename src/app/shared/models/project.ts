@@ -11,6 +11,7 @@ export class Project {
   customer?: Customer;
   steps?: boolean | number;
   compare_result_pattern?: string;
+  stability_count?: number;
 }
 
 export class ImportBodyPattern {

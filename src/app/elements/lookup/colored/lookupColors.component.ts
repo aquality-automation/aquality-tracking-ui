@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { BaseLookupComponent } from './baseLookup';
+import { BaseLookupComponent } from '../baseLookup';
 
 @Component({
   selector: 'lookup-colored',
   templateUrl: './lookupColors.component.html',
-  styleUrls: ['./lookupColors.component.css']
+  styleUrls: ['./lookupColors.component.css', '../baseLookup.css']
 })
 export class LookupColorsComponent extends BaseLookupComponent {
   @Input() colorProperty: string;

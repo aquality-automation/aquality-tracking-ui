@@ -3,6 +3,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 @Component({
   selector: 'simple-popup',
   templateUrl: './basePopup.component.html',
+  styleUrls: ['./basePopup.component.css'],
   providers: [
   ]
 })

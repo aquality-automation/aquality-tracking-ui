@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../shared/models/user';
 import { UserService } from '../../../services/user.services';
 import BlobUtils from '../../../shared/utils/blob.utils';
-import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class AuditComponent implements OnInit {
   coordinators: User[];
   stats: AuditStat[];
   auditors: User[];
-  defSort = { property: 'last_created_due_date', order: 'desc' };
+  defSort = { property: 'last_created_due_date', order: TFOrder.desc };
   rowColors: any[] = [{
     property: 'last_created_due_date',
     color: 'warning',

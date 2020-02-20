@@ -3,7 +3,7 @@ import { StepsService } from '../../../../services/steps.service';
 import { Step, StepType } from '../../../../shared/models/steps';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.services';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFSorting, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class StepsListComponent implements OnInit {
   public allowDelete: boolean;
   public allowCreate: boolean;
   public projectId: number = this.route.snapshot.params.projectId;
+  public sortBy: TFSorting = { property: 'name', order: TFOrder.desc };
 
   async ngOnInit() {
     this.allowDelete = await this.permissions.hasProjectPermissions(this.projectId,

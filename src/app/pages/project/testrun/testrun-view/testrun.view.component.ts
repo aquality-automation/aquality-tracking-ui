@@ -14,6 +14,7 @@ import { EmailSettingsService } from '../../../../services/emailSettings.service
 import { FinalResult } from '../../../../shared/models/final-result';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
+import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -43,6 +44,7 @@ export class TestRunViewComponent implements OnInit {
   showTableResults: boolean;
   canEdit: boolean;
   canSendEmail: boolean;
+  icons = { faPlay, faStop, faPaperPlane, faFilePdf };
 
   constructor(
     private milestoneService: MilestoneService,

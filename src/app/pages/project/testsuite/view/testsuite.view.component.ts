@@ -12,12 +12,13 @@ import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
-import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { TFColumnType, TFColumn, TFOrder, TFSorting } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 
 @Component({
   templateUrl: './testsuite.view.component.html',
+  styleUrls: ['./testsuite.view.component.css'],
   providers: [
     TestService,
     SimpleRequester,
@@ -47,6 +48,7 @@ export class TestSuiteViewComponent implements OnInit {
   projectId: number;
   allowCreation: boolean;
   allowMove: boolean;
+  sortBy: TFSorting;
 
   constructor(
     private testRunService: TestRunService,
@@ -64,6 +66,7 @@ export class TestSuiteViewComponent implements OnInit {
   private child: TableFilterComponent;
 
   async ngOnInit() {
+    this.sortBy = { property: 'combinedLastResults', order: TFOrder.asc, weights: this.testService.getResultWeights() };
     const suiteId = +this.route.snapshot.queryParams.suite;
     this.projectId = this.route.snapshot.params.projectId;
     this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
@@ -81,64 +84,9 @@ export class TestSuiteViewComponent implements OnInit {
     this.allowMove = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
 
-    this.userService.getProjectUsers(this.projectId)
-      .subscribe(res => {
-        this.users = res;
-        this.tbCols = [
-          {
-            name: 'Name',
-            property: 'name',
-            filter: true,
-            sorting: true,
-            type: TFColumnType.text,
-            editable: this.allowEdit,
-            creation: {
-              required: true,
-              creationLength: 500
-            }
-          },
-          {
-            name: 'Developer',
-            property: 'developer',
-            filter: true,
-            type: TFColumnType.autocomplete,
-            lookup: {
-              entity: 'developer',
-              propToShow: ['user.first_name', 'user.second_name'],
-              allowEmpty: true,
-              values: this.users,
-              objectWithId: 'developer.user'
-            },
-            nullFilter: true,
-            editable: this.allowEdit,
-            bulkEdit: true,
-            class: 'fit'
-          },
-          {
-            name: 'Suites',
-            property: 'suites',
-            filter: true,
-            type: TFColumnType.multiselect,
-            lookup: {
-              entity: 'suites',
-              propToShow: ['name'],
-              values: this.testSuites,
-            },
-            editable: this.allowEdit,
-            bulkEdit: true,
-            class: 'ft-width-250'
-          },
-          {
-            name: 'Manual Duration',
-            property: 'manual_duration',
-            sorting: true,
-            type: TFColumnType.time,
-            editable: this.allowEdit,
-            bulkEdit: true,
-            class: 'fit'
-          }
-        ];
-      });
+    this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
+
+    this.createColumns();
   }
 
   ngOnChange() {
@@ -165,6 +113,11 @@ export class TestSuiteViewComponent implements OnInit {
       this.testSuite.tests = await this.testService.getTest({ project_id: this.projectId });
       this.calculateManualDuration();
     }
+
+    this.testSuite.tests.forEach(test => {
+      test['combinedLastResults'] = this.testService.combineLastResults(test.lastResultColors);
+      test['entitiesId'] = this.testService.getLastResultsId(test.lastResultColors);
+    });
   }
 
   ExportToCSV() {
@@ -325,5 +278,85 @@ export class TestSuiteViewComponent implements OnInit {
   async syncTests(answer) {
     await answer;
     this.syncSuiteClosed();
+  }
+
+  private createColumns() {
+    this.tbCols = [
+      {
+        name: 'Name',
+        property: 'name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.text,
+        editable: this.allowEdit,
+        creation: {
+          required: true,
+          creationLength: 500
+        }
+      },
+      {
+        name: 'Last Results',
+        property: 'combinedLastResults',
+        type: TFColumnType.dots,
+        class: 'fit',
+        filter: true,
+        sorting: true,
+        sorter: {
+          order: TFOrder.desc,
+          property: 'combinedLastResults',
+          weights: this.testService.getResultWeights()
+        },
+        entitiesIdproperty: 'entitiesId',
+        dotsFilter: {
+          values: [
+            { name: 'Stable', only: [5] },
+            { name: 'Unstable', contains: [1, 2, 3, 4] },
+            { name: 'Passed or App Issue', only: [1, 5] },
+            { name: 'Has Test Issues', contains: [2, 3, 4] }
+          ],
+          propToShow: ['name']
+        }
+      },
+      {
+        name: 'Developer',
+        property: 'developer',
+        filter: true,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          entity: 'developer',
+          propToShow: ['user.first_name', 'user.second_name'],
+          allowEmpty: true,
+          values: this.users,
+          objectWithId: 'developer.user'
+        },
+        nullFilter: true,
+        editable: this.allowEdit,
+        bulkEdit: true,
+        class: 'fit'
+      },
+      {
+        name: 'Suites',
+        property: 'suites',
+        filter: true,
+        type: TFColumnType.multiselect,
+        lookup: {
+          entity: 'suites',
+          propToShow: ['name'],
+          values: this.testSuites,
+        },
+        editable: this.allowEdit,
+        bulkEdit: true,
+        class: 'ft-width-250'
+      },
+      {
+        name: 'Manual Duration',
+        property: 'manual_duration',
+        sorting: true,
+        type: TFColumnType.time,
+        editable: this.allowEdit,
+        bulkEdit: true,
+        class: 'fit'
+      }
+    ];
   }
 }

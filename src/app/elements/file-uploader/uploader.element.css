@@ -37,6 +37,8 @@
 
 .uploader-button {
   height: 22px;
+  font-size: 12;
+  padding: 2px 3px 3px 8px;
 }
 
 .uploader-fileName {
@@ -44,4 +46,8 @@
   max-width: 210px;
   text-overflow: ellipsis;
   word-wrap: break-word;
+}
+
+.icon {
+  margin-right: 5px;
 }
