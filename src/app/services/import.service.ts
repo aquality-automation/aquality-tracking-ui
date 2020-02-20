@@ -12,7 +12,7 @@ export class ImportService extends SimpleRequester {
   }
 
   importResults(projectId: number) {
-    return this.doGet(`/import/results?projectId=${projectId}`)
+    return this.doGet(`/import/results?project_id=${projectId}`)
       .map(res => res.json());
   }
 }

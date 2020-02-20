@@ -27,11 +27,11 @@ export class UserService extends SimpleRequester {
   }
 
   getPermissionsForProject(projectId: number) {
-    return this.doGet('/users/permissions?projectId=' + projectId).map(res => res.json());
+    return this.doGet('/users/permissions?project_id=' + projectId).map(res => res.json());
   }
 
   getProjectUsers(projectId: number) {
-    return this.doGet('/project/users?projectId=' + projectId).map(res => res.json());
+    return this.doGet('/project/users?project_id=' + projectId).map(res => res.json());
   }
 
   getUserProjects(userId: number): Promise<LocalPermissions[]> {
@@ -47,7 +47,7 @@ export class UserService extends SimpleRequester {
   }
 
   removeProjectUser(user: LocalPermissions) {
-    return this.doDelete(`/users/permissions?projectId=${user.project_id}&userId=${user.user.id}`).map(res => {
+    return this.doDelete(`/users/permissions?project_id=${user.project_id}&userId=${user.user.id}`).map(res => {
       this.handleSuccess(`Permissions for '${user.user.first_name} ${user.user.second_name}' were deleted.`);
       return res;
     });

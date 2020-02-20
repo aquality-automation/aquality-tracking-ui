@@ -35,23 +35,23 @@ export class TestService extends SimpleRequester {
   }
 
   addTestToTestSuite(test: Test, suite: TestSuite) {
-    return this.doPost(`/testToSuite?testId=${test.id}&suiteId=${suite.id}&projectId=${suite.project_id}`).map(() => {
+    return this.doPost(`/testToSuite?testId=${test.id}&suiteId=${suite.id}&project_id=${suite.project_id}`).map(() => {
       this.handleSuccess(`Test '${test.name}' was added to '${suite.name}' suite.`);
     });
   }
 
   removeTestFromTestSuite(test: Test, suite: TestSuite) {
-    return this.doDelete(`/testToSuite?testId=${test.id}&suiteId=${suite.id}&projectId=${suite.project_id}`).map(() => {
+    return this.doDelete(`/testToSuite?testId=${test.id}&suiteId=${suite.id}&project_id=${suite.project_id}`).map(() => {
       this.handleSuccess(`Test '${test.name}' was removed from '${suite.name}' suite.`);
     });
   }
 
   moveTest(from: Test, to: Test, remove: boolean, project_id: number) {
-    return this.doGet(`/test/move?from=${from.id}&to=${to.id}&remove=${remove}&projectId=${project_id}`).map(() => { });
+    return this.doGet(`/test/move?from=${from.id}&to=${to.id}&remove=${remove}&project_id=${project_id}`).map(() => { });
   }
 
   removeTest(test: Test) {
-    return this.doDelete(`/test?id=${test.id}&projectId=${test.project_id}`)
+    return this.doDelete(`/test?id=${test.id}&project_id=${test.project_id}`)
       .map(() => this.handleSuccess(`Test '${test.name}' was deleted.`));
   }
 }

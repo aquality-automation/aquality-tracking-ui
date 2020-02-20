@@ -59,8 +59,9 @@ export class AuditService extends SimpleRequester {
     return this.doGet(`/audit/attachment?audit_id=${audit_id}&project_id=${project_id}`).map(res => res.json());
   }
 
-  removeAuditAttachment(id: number) {
-    return this.doDelete(`/audit/attachment?id=${id}`).map(res => this.handleSuccess(`Audit attachment was deleted.`));
+  removeAuditAttachment(id: number, project_id: number) {
+    return this.doDelete(`/audit/attachment?id=${id}&project_id=${project_id}`).
+      map(res => this.handleSuccess(`Audit attachment was deleted.`));
   }
 
   downloadAuditAttachment(id: number, project_id: number): Observable<Blob> {

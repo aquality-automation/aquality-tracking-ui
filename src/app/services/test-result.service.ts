@@ -31,7 +31,7 @@ export class TestResultService extends SimpleRequester {
   }
 
   removeTestResult(testresult: TestResult): Promise<void> {
-    return this.doDelete(`/testrun?id=${testresult.id}&projectId=${testresult.project_id}`)
+    return this.doDelete(`/testrun?id=${testresult.id}&project_id=${testresult.project_id}`)
       .map(() => this.handleSuccess(`Test result '${testresult.id}' was deleted.`)).toPromise();
   }
 
