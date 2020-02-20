@@ -48,7 +48,7 @@ describe('Administartion:', () => {
             });
 
             it('I can open Permissions page', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 await userAdministration.sidebar.permissions();
                 return expect(permissionsAdministration.isOpened()).toBe(true, `Permissions page is not opened for ${description}`);
             });
@@ -109,7 +109,7 @@ describe('Administartion:', () => {
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                await (await projectList.menuBar.user()).administration();
+                await projectList.menuBar.administration();
                 return expect(permissionsAdministration.sidebar.isPermissionsExist())
                     .toBe(false, `Permissions should not be visible for ${description}`);
             });

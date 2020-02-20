@@ -87,7 +87,7 @@ export class ProjectHelper {
     }
 
     private async setSteps(stepsState: boolean) {
-        await (await projectList.menuBar.user()).administration();
+        await projectList.menuBar.administration();
         await permissionsAdministration.sidebar.projectSettings();
         return projectSettingsAdministration.setStepsForProject(this.project, { stepsState });
     }
@@ -100,13 +100,13 @@ export class ProjectHelper {
     }
 
     private async createToken(project: Project): Promise<string> {
-        await (await projectList.menuBar.user()).administration();
+        await projectList.menuBar.administration();
         await apiTokenAdministration.sidebar.apiToken();
         return apiTokenAdministration.generateToken(project.name);
     }
 
     private async assigneProjectPermissions(project: Project, users: { [key: string]: User; }): Promise<void> {
-        await (await projectList.menuBar.user()).administration();
+        await projectList.menuBar.administration();
         await permissionsAdministration.sidebar.permissions();
         await permissionsAdministration.selectProject(project.name);
         const keys = Object.keys(users);
