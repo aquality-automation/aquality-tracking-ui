@@ -3,8 +3,9 @@
   width: 100px !important;
 }
 
-.margin-top-6px{
+.switch-label > label{
   margin-top: 6px;
+  padding-left: 6px;
 }
 
 .greyout{

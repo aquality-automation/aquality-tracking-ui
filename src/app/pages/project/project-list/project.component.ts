@@ -8,7 +8,7 @@ import { User } from '../../../shared/models/user';
 import { Customer } from '../../../shared/models/customer';
 import { CustomerService } from '../../../services/customer.service';
 import { GlobalDataService } from '../../../services/globaldata.service';
-import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class ProjectComponent implements OnInit {
   projectToRemove: Project;
   columns: TFColumn[];
   users: User[];
-  public defSort = { property: 'name', order: 'desc' };
+  public defSort = { property: 'name', order: TFOrder.desc };
 
   constructor(
     private permissions: PermissionsService,
@@ -46,8 +46,6 @@ export class ProjectComponent implements OnInit {
     this.users = await this.userService.getUsers({ unit_coordinator: 1 }).toPromise();
     await this.buildColumns();
   }
-
-
 
   rowClicked(project: Project) {
     this.router.navigate([`/project/${project.id}`]);

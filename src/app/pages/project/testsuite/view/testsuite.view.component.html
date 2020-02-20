@@ -7,6 +7,8 @@
     (closed)="moveTowasClosed()"></move-test-modal>
   <sync-suite-modal *ngIf="syncTestsModal" [suites]="testSuites" (execute)="syncTests($event)"
     (closed)="syncSuiteClosed($event)" [suite]="selectedTestSuite"></sync-suite-modal>
+
+
   <div class="row">
     <div class="col-sm-4">
       <h2 class="pull-left" id="suite-view">Test Suite:</h2>
@@ -18,20 +20,22 @@
       <div class="btn-group pull-right" role="group">
         <button class="btn btn-primary" routerLink="/project/{{testSuite.project_id}}/testrun/matrix"
           [queryParams]="{suite:testSuite.id}">Suite Matrix</button>
-        <button id="move-test-btn"
-          *ngIf="allowMove"
-          class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
-        <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn">Export to CSV</button>
+        <button [disabled]="!testSuite.tests" (click)="ExportToCSV()" class="btn btn-secondary">Export to CSV</button>
         <button (click)="openTestCreation()"
           *ngIf="allowCreation"
-          class="btn btn-primary">Add Test</button>
+          class="btn btn-success">Add Test</button>
         <button id="sync-btn" (click)="syncSuite()"
           *ngIf="allowCreation"
-          class="btn btn-primary">Sync</button>
+          class="btn btn-warning">Sync</button>
+        <button id="move-test-btn"
+          *ngIf="allowMove"
+          class="btn btn-warning" (click)="moveTestOpen()">Move Test</button>
       </div>
     </div>
+
     <hr class="col-sm-12 no-padding">
-    <div class="col-sm-12">
+
+    <div class="col-sm-12 form-row">
       <div *ngIf="testSuite && testSuite.name" class="col-md-6">
         <label class="pull-left label-inline">Name: </label>
         <div class="pull-left">
@@ -59,7 +63,7 @@
 <div class="panel-body">
   <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]"
     [rowsOnPage]="20" [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
-    [defaultSortBy]="{ property: 'name', order: 'desc' }" [allowDelete]="allowEdit" [allowBulkUpdate]="allowEdit"
+    [defaultSortBy]="sortBy" [allowDelete]="allowEdit" [allowBulkUpdate]="allowEdit"
     (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)" (action)="handleAction($event)"
     (bulkChanges)="bulkUpdate($event)"></table-filter>
 </div>

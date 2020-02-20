@@ -91,7 +91,6 @@ export class AppComponent {
     } else {
       this.currentProject = undefined;
     }
-
     this.globaldata.announceCurrentProject(this.currentProject);
   }
 
@@ -127,8 +126,7 @@ export class AppComponent {
           name: 'Test Runs',
           link: `/project/${this.projectId}/testrun`,
           params: { 'f_debug_st': false },
-          show: this.isLogged
-            && this.projectId !== undefined,
+          show: this.isLogged && this.projectId !== undefined,
           routerOptions: { exact: false }
         }, {
           name: 'Milestones',
@@ -192,7 +190,9 @@ export class AppComponent {
           link: `/audit/${this.projectId}`,
           show: (await this.permissionsService.hasPermissions(undefined,
             [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]))
-            && this.projectId && this.globaldata.auditModule,
+            && this.projectId && this.globaldata.auditModule &&
+            !(await this.permissionsService.hasPermissions([EGlobalPermissions.manager, EGlobalPermissions.auditor,
+              EGlobalPermissions.audit_admin])),
           routerOptions: { exact: true }
         }, {
           name: 'Audits',

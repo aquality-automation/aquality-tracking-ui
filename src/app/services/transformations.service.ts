@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TFOrder } from '../elements/table/tfColumn';
 
 @Injectable()
 export class TransformationsService {
@@ -24,17 +25,17 @@ export class TransformationsService {
     return val;
   }
 
-  sort(data: any[], by: {order: string, property: string}) {
+  sort(data: any[], by: { order: string, property: string }) {
     const propVal = data.filter(x => this.getPropertyValue(x, by.property));
     if (propVal.length > 0) {
       if (typeof this.getPropertyValue(propVal[0], by.property) === 'string') {
-        if (by.order === 'asc') {
+        if (by.order === TFOrder.asc) {
           data.sort((a, b) => {
             const aVal = `${this.getPropertyValue(a, by.property)}`;
             const bVal = `${this.getPropertyValue(b, by.property)}`;
             return 0 - (aVal.toLowerCase() > bVal.toLowerCase() ? 1 : -1);
           });
-        } else if (by.order === 'desc') {
+        } else if (by.order === TFOrder.desc) {
           data.sort((a, b) => {
             const aVal = `${this.getPropertyValue(a, by.property)}`;
             const bVal = `${this.getPropertyValue(b, by.property)}`;
@@ -42,13 +43,13 @@ export class TransformationsService {
           });
         }
       } else if (typeof this.getPropertyValue(propVal[0], by.property) === 'number') {
-        if (by.order === 'asc') {
+        if (by.order === TFOrder.asc) {
           data.sort((a, b) => {
             const aProp = this.getPropertyValue(a, by.property) ? this.getPropertyValue(a, by.property) : 0;
             const bProp = this.getPropertyValue(b, by.property) ? this.getPropertyValue(b, by.property) : 0;
             return 0 - (aProp - bProp > 0 ? 1 : -1);
           });
-        } else if (by.order === 'desc') {
+        } else if (by.order === TFOrder.desc) {
           data.sort((a, b) => {
             const aProp = this.getPropertyValue(a, by.property) ? this.getPropertyValue(a, by.property) : 0;
             const bProp = this.getPropertyValue(b, by.property) ? this.getPropertyValue(b, by.property) : 0;
@@ -56,13 +57,13 @@ export class TransformationsService {
           });
         }
       } else if (typeof this.getPropertyValue(propVal[0], by.property) === 'object') {
-        if (by.order === 'asc') {
+        if (by.order === TFOrder.asc) {
           data.sort((a, b) => {
             const aProp = this.getPropertyValue(a, by.property) ? this.getPropertyValue(a, by.property) : 0;
             const bProp = this.getPropertyValue(b, by.property) ? this.getPropertyValue(b, by.property) : 0;
             return 0 - (aProp - bProp > 0 ? 1 : -1);
           });
-        } else if (by.order === 'desc') {
+        } else if (by.order === TFOrder.desc) {
           data.sort((a, b) => {
             const aProp = this.getPropertyValue(a, by.property) ? this.getPropertyValue(a, by.property) : 0;
             const bProp = this.getPropertyValue(b, by.property) ? this.getPropertyValue(b, by.property) : 0;
@@ -71,6 +72,36 @@ export class TransformationsService {
         }
       }
     }
+  }
+
+  sortArrayByWeight(data: any[], by: { order: string, property: string, weights?: { value: any, weight: number }[] }) {
+    if (by.order === TFOrder.asc) {
+      data.sort((a, b) => {
+        const aProp = this.getPropertyValue(a, by.property) ? this.getWeight(this.getPropertyValue(a, by.property), by.weights) : 0;
+        const bProp = this.getPropertyValue(b, by.property) ? this.getWeight(this.getPropertyValue(b, by.property), by.weights) : 0;
+        return 0 - (aProp - bProp > 0 ? 1 : -1);
+      });
+    } else if (by.order === TFOrder.desc) {
+      data.sort((a, b) => {
+        const aProp = this.getPropertyValue(a, by.property) ? this.getWeight(this.getPropertyValue(a, by.property), by.weights) : 0;
+        const bProp = this.getPropertyValue(b, by.property) ? this.getWeight(this.getPropertyValue(b, by.property), by.weights) : 0;
+        return 0 - (aProp - bProp < 0 ? 1 : -1);
+      });
+    }
+  }
+
+  private getWeight(value: any[], weights: { value: any, weight: number }[]): number {
+    let weight = 0;
+    value.forEach(x => {
+      const valueWieght = weights.find(y => y.value === x);
+      if (valueWieght) {
+        weight += valueWieght.weight;
+      } else {
+        console.log(`${value} is not described in ${JSON.stringify(weights)}`);
+      }
+    });
+
+    return weight;
   }
 
   calculateDuration(duration) {

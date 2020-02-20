@@ -29,3 +29,7 @@ ui-switch{
   padding-top: 10px;
   padding-bottom: 4px;
 }
+
+label.btn {
+  margin: 0;
+}

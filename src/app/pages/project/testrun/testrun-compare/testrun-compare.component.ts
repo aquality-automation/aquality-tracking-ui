@@ -15,7 +15,7 @@ import { ResultResolutionService } from '../../../../services/result-resolution.
 import { FinalResultService } from '../../../../services/final_results.service';
 import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { UserService } from '../../../../services/user.services';
-import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { TFColumnType, TFColumn, TFOrder } from '../../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: 'testrun-compare.component.html',
@@ -50,8 +50,8 @@ export class TestrunCompareComponent implements OnInit {
     tbHiddenCols: TFColumn[];
     diffs: Test[];
     onlyDiffs = true;
-    sortBy = { property: 'name', order: 'desc' };
-    lookupSortBy = { property: 'start_time', order: 'desc' };
+    sortBy = { property: 'name', order: TFOrder.desc };
+    lookupSortBy = { property: 'start_time', order: TFOrder.desc };
 
     constructor(
         private resultResolutionService: ResultResolutionService,

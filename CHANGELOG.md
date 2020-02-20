@@ -4,6 +4,7 @@
 
 Features:
   - Move Administration to main Menu bar to make it more visible -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/58)
+  - Test Run view: Add stability indicator -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/60)
 
 Bugfixes:
 

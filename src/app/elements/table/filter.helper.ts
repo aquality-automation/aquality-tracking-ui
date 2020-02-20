@@ -9,6 +9,8 @@ export class Filter {
     to?: Date;
     options?: string;
     range?: string;
+    dots?: { name: string, only?: number[], contains?: number[] }
+    ft_select?: boolean | number;
 }
 
 export class FilterHelper {
@@ -35,9 +37,9 @@ export class FilterHelper {
 
     updateAppliedFilters = (appliedFilters: Filter[], filter: Filter) => {
         appliedFilters = appliedFilters.filter((x: Filter) => x.property !== filter.property &&
-            (x.from === undefined || filter.from === undefined ) ||
+            (x.from === undefined || filter.from === undefined) ||
             (x.to === undefined || filter.to === undefined));
-        if (filter.value || filter.state !== undefined || filter.options || filter.range || filter.from || filter.to) {
+        if (filter.value || filter.state !== undefined || filter.options || filter.range || filter.from || filter.to || filter.dots) {
             appliedFilters.push(filter);
         }
         return appliedFilters;
@@ -60,6 +62,11 @@ export class FilterHelper {
             queryParam[`f_${filter.property}_opt`] = filter.options;
         } else if (filter.range) {
             queryParam[`f_${filter.property}_rng`] = filter.range;
+        } else if (filter.dots) {
+            queryParam[`f_${filter.property}_dots`]
+                = `name_${filter.dots.name}_only_${
+                    filter.dots.only ? filter.dots.only.join(',') : ''}_contains_${
+                        filter.dots.contains ? filter.dots.contains.join(',') : ''}`;
         } else {
             this.route.queryParams.subscribe(params => {
                 const filterKeys = Object.keys(params);
@@ -96,6 +103,8 @@ export class FilterHelper {
                 return this.filterRange(data, filter);
             } else if (filter.hasOwnProperty('state')) {
                 return this.filterState(data, filter);
+            } else if (filter.hasOwnProperty('dots')) {
+                return this.filterDots(data, filter);
             } else {
                 return data;
             }
@@ -164,6 +173,23 @@ export class FilterHelper {
         return data;
     }
 
+    filterDots(filteredData: any[], filter: Filter) {
+        let data = filteredData;
+        if (filter.dots !== undefined) {
+            data = filteredData.filter(x => {
+                const value = x[filter.property] as number[];
+                if (filter.dots.only && filter.dots.only.length > 0) {
+                    return value.every(dot => filter.dots.only.includes(dot));
+                } else if (filter.dots.contains && filter.dots.contains.length > 0) {
+                    return value.some(dot => filter.dots.contains.includes(dot));
+                } else {
+                    return true;
+                }
+            });
+        }
+        return data;
+    }
+
     applyNewFilter = (data: any[], appliedFilters: Filter[], newFilter: Filter, queryParams: boolean): {
         filteredData: any[],
         newFilters: Filter[]
@@ -203,6 +229,8 @@ export class FilterHelper {
         const range = /f_(.*)_rng/;
         const state = /f_(.*)_st/;
         const value = /f_(.*)/;
+        const dots = /f_(.*)_dots/;
+        const dotsValue = /name_(.*)_only_(.*)_contains_(.*)/;
         const filter: Filter = new Filter();
 
         if (dateFrom.test(parameter)) {
@@ -220,6 +248,15 @@ export class FilterHelper {
         } else if (state.test(parameter)) {
             filter.property = parameter.match(state)[1];
             filter.state = parameters[parameter] === 'true' ? true : parameters[parameter] === 'false' ? false : undefined;
+        } else if (dots.test(parameter)) {
+            filter.property = parameter.match(dots)[1];
+            if (parameters[parameter]) {
+                filter.dots = {
+                    name: parameters[parameter].match(dotsValue)[1],
+                    only: JSON.parse(`[${parameters[parameter].match(dotsValue)[2]}]`) as number[],
+                    contains: JSON.parse(`[${parameters[parameter].match(dotsValue)[3]}]`) as number[]
+                };
+            }
         } else if (value.test(parameter)) {
             filter.property = parameter.match(value)[1];
             filter.value = parameters[parameter];

@@ -1,54 +1,56 @@
-<div class="overlay mt-overlay">
-    <div class="simple-modal panel" [ngClass]="{
-        'panel-warning':type=='warning',
-        'panel-danger':type=='error',
-        'panel-info':type=='info',
-        'panel-success':type=='success',
-        'panel-primary':type==''
-    }">
-        <div class="panel-heading col-sm-12">
-            <h4 class="panel-title pull-left">{{title}}</h4>
-            <span (click)="hideModal()" class="glyphicon glyphicon-remove clickable-element pull-right"
-                aria-hidden="true"></span>
-        </div>
-        <div class="panel-body">
-            <div class="col-sm-12 modal-message">
-                <div class="col-sm-7">
-                    <lookup-autocomplete id="sync-suite-selector" [allowEmptyValue]="false"
-                        [propertiesToShow]="['name']" [array]="suites" [model]="suite" [disabled]="false"
-                        placeholder="Select Suite" (modelChange)="suiteChange($event)" title="Suite to sync">
-                    </lookup-autocomplete>
-                </div>
-                <div class="col-sm-2">
-                    <input id="not-executed-for" class="form-control" placeholder="#" [(ngModel)]="notExecutedFor"
-                        title="Number of Not Executed results in a row" type="number"/>
-                </div>
-                <div class="col-sm-2">
-                    <button id="find-tests-to-sync" (click)="findTests()" class="btn btn-success"
-                        [disabled]="!suite || !notExecutedFor">Find Tests</button>
-                </div>
-            </div>
-            <div class="col-sm-12 modal-buttons">
-                <div class="col-sm-7">
-                    <label for="remove-not-executed">Remove 'Not Executed' results till first meaningful</label>
-                </div>
-                <div class="col-sm-1">
-                    <input type="checkbox" id="remove-not-executed" [(ngModel)]="removeNotExecuted"
-                        title="Check if you want to remove all Not Executed results till first meaningful result." />
-                </div>
-                <div class="col-sm-4 modal-buttons-form">
-                    <button [id]="button.name" autofocus (click)="accept(button.execute)"
-                        [disabled]="button.execute && (!suite || !notExecutedFor)" class="btn btn-sm btn-default"
-                        *ngFor="let button of buttons">{{button.name}}</button>
-                </div>
-            </div>
-        </div>
+<div [hidden]="isHidden" class="overlay mt-overlay modal fade" [ngClass]="{'show-modal': !this.isHidden}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
 
-        <div class="table-holder panel-body">
-            <table-filter id="sync-test-table" *ngIf="cols" #syncTestTable [rowsOnPage]="10" [queryParams]="false"
-                [data]="tests" [columns]="cols" [defaultSortBy]="{ property: 'name', order: 'desc' }"
-                [columnManagement]="false" [rowsOnPageSet]="[10]" [withSelector]="true">
-            </table-filter>
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="hideModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="col-sm-7">
+                        <lookup-autocomplete id="sync-suite-selector" [allowEmptyValue]="false"
+                            [propertiesToShow]="['name']" [array]="suites" [model]="suite" [disabled]="false"
+                            placeholder="Select Suite" (modelChange)="suiteChange($event)" title="Suite to sync">
+                        </lookup-autocomplete>
+                    </div>
+                    <div class="col-sm-2">
+                        <input id="not-executed-for" class="form-control" placeholder="#" [(ngModel)]="notExecutedFor"
+                            title="Number of Not Executed results in a row" type="number"/>
+                    </div>
+                    <div class="col-sm-3">
+                        <button id="find-tests-to-sync" (click)="findTests()" class="btn btn-success"
+                            [disabled]="!suite || !notExecutedFor">Find Tests</button>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 modal-buttons form-row">
+                    <div class="col-sm-7">
+                        <label for="remove-not-executed">Remove 'Not Executed' results till first meaningful</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="checkbox" id="remove-not-executed" [(ngModel)]="removeNotExecuted"
+                            title="Check if you want to remove all Not Executed results till first meaningful result." />
+                    </div>
+                    <div class="col-sm-4 modal-buttons-form">
+                        <button [id]="button.name" autofocus (click)="accept(button.execute)"
+                            [disabled]="button.execute && (!suite || !notExecutedFor)" class="btn btn-sm btn-secondary" [ngClass]="{
+                                'btn-secondary': !button.execute,
+                                'btn-success': button.execute
+                            }" *ngFor="let button of buttons">{{button.name}}</button>
+                    </div>
+                </div>
+
+                <div class="table-holder panel-body">
+                    <table-filter id="sync-test-table" *ngIf="cols" #syncTestTable [rowsOnPage]="10" [queryParams]="false"
+                        [data]="tests" [columns]="cols" [defaultSortBy]="sortBy"
+                        [columnManagement]="false" [rowsOnPageSet]="[10]" [withSelector]="true">
+                    </table-filter>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -4,15 +4,18 @@
 }
 
 .summary-panel{
-  width: calc(100% - 339px);
+  width: calc(100vw - 374px);
+  margin-left: 10px;
 }
 
 .inline{
-  display: inline-table;
+  display: inline-table !important;
 }
 
 .comments-panel{
-  width: calc(100% - 519px);
+  width: calc(100vw - 550px);
+  margin-right: 10px;
+  margin-left: 4px;
 }
 
 .comments-panel .panel-body{
@@ -42,4 +45,8 @@
 
 .summaryShow{
   padding: 10px;
+}
+
+#status {
+  margin-left: 10px;
 }

@@ -13,4 +13,11 @@ export class Test {
   developer_id?: number;
   results?: TestResult[];
   suites?: TestSuite[];
+  lastResultColors?: LastResulColors;
+}
+
+export class LastResulColors {
+  resolution_colors: string;
+  result_colors: string;
+  result_ids: string;
 }

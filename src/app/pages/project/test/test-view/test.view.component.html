@@ -5,89 +5,94 @@
   message="You have unsaved changes. Are you sure want to leave this page?" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="leavePage($event)"
   (closed)="leavePageWasClosed()"></simple-popup>
-<div id="test-page" class="panel-heading page result-search-margin">
+
+<div *ngIf="test" id="test-page" class="panel-heading page result-search-margin">
   <div class="row clearfix">
     <div class="col-sm-10 page-title">
       <h2 class="pull-left inline-page-label">Test: </h2>
       <div class="name-field clearfix">
-        <inline-editor
-          [disabledInline]="!canEdit"
-          maxLength="500" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur"
-          [(ngModel)]="test.name" (onSave)="testUpdate()" [required]="true"></inline-editor>
+        <inline-editor [disabledInline]="!canEdit" maxLength="500" (onError)="nameError($event)" min="3"
+          placeholder="Name" type="text" trim="blur" [(ngModel)]="test.name" (onSave)="testUpdate()" [required]="true">
+        </inline-editor>
       </div>
     </div>
     <div class="col-sm-2">
       <div class="btn-group pull-right">
-        <button *ngIf="showSteps" id="copy-scenario" class="btn btn-primary" (click)="copyScenario()">Copy Scenario</button>
-        <button *ngIf="canEdit"
-          class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
+        <button *ngIf="showSteps" id="copy-scenario" class="btn btn-primary" (click)="copyScenario()">Copy
+          Scenario</button>
+        <button *ngIf="canEdit" class="btn btn-primary" (click)="moveTestOpen()">Move Test</button>
       </div>
     </div>
   </div>
 </div>
-<hr class="col-sm-12 no-padding">
-<div class="container">
-  <div class="col-sm-12 no-padding clearfix header-info">
-    <div class="col-sm-4 clearfix">
-      <div class="pull-left">
-        <label class="label-inline pull-left margin-right-10" for="manualDuration">Manual Duration: </label>
+
+<div class="form-row col-sm-12 no-padding">
+  <hr class="col-sm-12">
+</div>
+
+<div *ngIf="test" class="row">
+  <div class="col-sm-12 form-row">
+      <div class="col-sm-4 clearfix">
+          <div class="pull-left">
+              <label class="label-inline pull-left margin-right-10" for="manualDuration">Manual Duration: </label>
+          </div>
+          <div class="pull-left">
+              <input id="manualDuration" class="form-control input-sm ft-duration-input" name="manualDuration"
+                  type="text" [textMask]="{mask:durationMask}"
+                  [ngModel]="transformation.calculateDuration(test.manual_duration)"
+                  (blur)="saveManualDuration($event)" [disabled]="!canEdit" />
+          </div>
       </div>
-      <div class="pull-left">
-        <input id="manualDuration" class="form-control input-sm ft-duration-input" name="manualDuration" type="text"
-          [textMask]="{mask:durationMask}" [ngModel]="transformation.calculateDuration(test.manual_duration)"
-          (blur)="saveManualDuration($event)"
-          [disabled]="!canEdit" />
+      <div *ngIf="selectedDeveloper || canEdit" class="col-sm-4 clearfix">
+          <div class="pull-left margin-right-10">
+              <label class="label-inline pull-left" for="selectedDeveloper">Developer: </label>
+          </div>
+          <div class="pull-left">
+              <lookup-autocomplete id="selectedDeveloper" [small]="true"
+                  [propertiesToShow]="['user.first_name', 'user.second_name']" [array]="users"
+                  [model]="selectedDeveloper" [disabled]="!canEdit" (modelChange)="setNewDeveloper($event)">
+              </lookup-autocomplete>
+          </div>
       </div>
-    </div>
-    <div
-      *ngIf="selectedDeveloper || canEdit"
-      class="col-sm-4 clearfix">
-      <div class="pull-left margin-right-10">
-        <label class="label-inline pull-left" for="selectedDeveloper">Developer: </label>
+      <div *ngIf="test.suites" class="col-sm-4 margin-bottom-10 clearfix">
+          <label class="label-inline pull-left margin-right-10">Test Suites:</label>
+          <a *ngFor="let suite of test.suites" class="label-inline pull-left suite-links"
+              routerLink="/project/{{test.project_id}}/tests" [queryParams]="{suite:suite.id}">{{suite.name}}</a>
       </div>
-      <div class="pull-left">
-        <lookup-autocomplete id="selectedDeveloper" [small]="true"
-          [propertiesToShow]="['user.first_name', 'user.second_name']" [array]="users" [model]="selectedDeveloper"
-          [disabled]="!canEdit"
-          (modelChange)="setNewDeveloper($event)"></lookup-autocomplete>
-      </div>
-    </div>
-    <div *ngIf="test.suites" class="col-sm-4 margin-bottom-10 clearfix">
-      <label class="label-inline pull-left margin-right-10">Test Suites:</label>
-      <a *ngFor="let suite of test.suites" class="label-inline pull-left suite-links"
-        routerLink="/project/{{test.project_id}}/tests" [queryParams]="{suite:suite.id}">{{suite.name}}</a>
-    </div>
   </div>
 
-  <hr *ngIf="showSteps" class="col-sm-12 no-padding">
-
-  <div *ngIf="showSteps" class="col-sm-12 no-padding">
-    <div class="col-sm-12">
-        <label class="label-inline pull-left">Steps:</label>
-    </div>
-    <steps-container #steps [editable]="canEdit"></steps-container>
+  <div *ngIf="showSteps" class="col-sm-12 form-row">
+    <hr class="col-sm-12">
   </div>
 
-  <hr class="col-sm-12 no-padding">
+  <div *ngIf="showSteps" class="col-sm-12 form-row">
+      <div class="col-sm-12">
+          <label class="label-inline pull-left">Steps:</label>
+      </div>
+      <div class="col-sm-12">
+          <steps-container #steps [editable]="canEdit"></steps-container>
+      </div>
+  </div>
 
-  <div class="col-sm-12 no-padding">
-    <div *ngIf="testResults?.length >1" class="col-sm-6 margin-bottom-10">
-      <result-timeline [testResults]="testResults">Loading...</result-timeline>
-    </div>
-    <div *ngIf="testResults?.length >1" class="col-sm-6 margin-bottom-10">
-      <test-duration-chart [testResults]="testResults">Loading...</test-duration-chart>
-    </div>
+  <div *ngIf="testResults?.length > 1 || test.body" class="col-sm-12 form-row">
+    <hr class="col-sm-12">
+  </div>
+
+  <div class="col-sm-12 no-padding form-row">
+      <div *ngIf="testResults?.length > 1" class="col-sm-6 margin-bottom-10">
+          <result-timeline [testResults]="testResults">Loading...</result-timeline>
+      </div>
+      <div *ngIf="testResults?.length > 1" class="col-sm-6 margin-bottom-10">
+          <test-duration-chart [testResults]="testResults">Loading...</test-duration-chart>
+      </div>
   </div>
   <div class="col-sm-12">
-    <div *ngIf="test.body" class="description-text">
-      <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()"
-        title="Double click to show\hide full text">{{test.body}}</pre>
-    </div>
+      <div *ngIf="test.body" class="description-text">
+          <pre [style.maxHeight.px]="descriptionHeight" (dblclick)="descriptionClicked()"
+              title="Double click to show\hide full text">{{test.body}}</pre>
+      </div>
   </div>
 </div>
-<div class="panel-body">
-  <div class="row">
-    <results-grid *ngIf="testResultTempalte" [testResults]="testResults" [showOnly]="columns"
-      [sortBy]="{ property: 'start_date', order: 'asc' }">Loading...</results-grid>
-  </div>
-</div>
+
+<results-grid *ngIf="testResults" [testResults]="testResults" [showOnly]="columns" [sortBy]="resultSorter">Loading...
+</results-grid>

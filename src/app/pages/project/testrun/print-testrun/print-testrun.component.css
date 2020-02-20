@@ -2,11 +2,14 @@
   display: block;
 }
 
-.simple-modal{
-  top: 30%;
-  margin-left: -500px;
+.show-modal {
+  opacity: 1;
+}
+
+.modal-dialog {
+  margin: 10rem auto !important;
+  max-width: 1000px !important;
   min-width: 1000px;
-  max-width: 1000px;
 }
 
 .preview{
@@ -35,4 +38,5 @@ hr {
     height: 115px;
     max-height: 115px;
     min-height: 76px;
+    margin-bottom: 5px;
  }

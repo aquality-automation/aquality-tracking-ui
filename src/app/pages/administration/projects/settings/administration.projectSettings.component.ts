@@ -6,6 +6,7 @@ import { TransformationsService } from '../../../../services/transformations.ser
 
 @Component({
   templateUrl: './administration.projectSettings.component.html',
+  styleUrls: ['../../global/app-settings/app-settings.component.css'],
   providers: [
     ProjectService,
     SimpleRequester,

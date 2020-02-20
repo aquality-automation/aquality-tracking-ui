@@ -5,7 +5,7 @@ import { ProjectService } from '../../../../services/project.service';
 import { ResultResolutionService } from '../../../../services/result-resolution.service';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { TransformationsService } from '../../../../services/transformations.service';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 
 @Component({
   templateUrl: './administration.resolutions.component.html',
@@ -31,7 +31,7 @@ export class AdministrationResolutionsComponent {
     { id: 4, title: 'Info', color: 4 },
     { id: 5, title: 'Success', color: 5 }];
   public sortBy = 'name';
-  public sortOrder = 'asc';
+  public sortOrder = TFOrder.asc;
   public tbCols: TFColumn[];
 
   constructor(

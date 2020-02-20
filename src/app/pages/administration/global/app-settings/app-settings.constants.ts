@@ -1,5 +1,6 @@
 export const Constants = {
-    emailPatternHelpText: `Example %FN{2}%.%LASTNAME%@example.com: For John Doe will result to jo.doe@example.com
+    emailPatternHelpText:
+`Example %FN{2}%.%LASTNAME%@example.com: For John Doe will result to jo.doe@example.com
 
 %FN% - First Name first letter
 %LN% - Last Name first letter

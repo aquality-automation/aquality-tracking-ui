@@ -2,6 +2,7 @@ import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { CookieService } from 'angular2-cookie/core';
 import { SimpleRequester } from '../../services/simple-requester';
+import { faTrash, faUpload, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'file-uploader',
@@ -18,6 +19,7 @@ export class UploaderComponent implements OnInit {
   public uploader: FileUploader;
   public hasBaseDropZoneOver = false;
   public hasAnotherDropZoneOver = false;
+  icons = { faTrash, faUpload, faPlus };
 
   constructor(
     protected cookieService: CookieService,

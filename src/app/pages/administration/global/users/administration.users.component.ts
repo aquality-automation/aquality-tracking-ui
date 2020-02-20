@@ -5,7 +5,7 @@ import { User } from '../../../../shared/models/user';
 import { Md5 } from 'ts-md5/dist/md5';
 import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { EmailSettings } from '../../../../shared/models/appSettings';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 
 @Component({
     templateUrl: './administration.users.component.html',
@@ -119,7 +119,7 @@ export class AdministrationUsersComponent implements OnInit {
             }
         }
     ];
-    public defSort = { property: 'first_name', order: 'asc' };
+    public defSort = { property: 'first_name', order: TFOrder.asc };
 
     constructor(
         private userService: UserService,

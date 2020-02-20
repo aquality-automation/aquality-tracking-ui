@@ -2,13 +2,14 @@ import {
   Directive, ElementRef, AfterViewChecked,
   Input, Output, Renderer, EventEmitter
 } from '@angular/core';
+import { TFSorting, TFOrder } from '../elements/table/tfColumn';
 
 @Directive({
   selector: '[sorter]'
 })
 export class TableSorterDerective implements AfterViewChecked {
   @Input()
-  sorter: {order: string, property: string};
+  sorter: TFSorting;
   @Output()
   sorted = new EventEmitter();
 
@@ -33,28 +34,50 @@ export class TableSorterDerective implements AfterViewChecked {
     const columns: HTMLElement[] = Array.prototype.slice.call(element.parentElement.getElementsByTagName('th'), 0);
     columns.forEach(column => {
       if (!column.classList.contains(this.sorter.property)) {
-        const span = column.getElementsByTagName('span')[0];
-        if (span) {
-          span.remove();
-        }
+        this.hide(column);
       }
     });
 
-    let icon: HTMLElement = element.getElementsByTagName('span')[0];
-    if (!icon) { icon = this.renderer.createElement(element, 'span'); }
-    icon.classList.remove('glyphicon-triangle-bottom');
-    icon.classList.remove('glyphicon-triangle-top');
-    icon.classList.remove('glyphicon');
+    const up: Element = element.getElementsByClassName('up')[0];
+    const down: Element = element.getElementsByClassName('down')[0];
 
-    if (this.sorter.order === 'asc') {
-      this.sorter = {order: 'desc', property: this.sorter.property};
-      icon.classList.add('glyphicon');
-      icon.classList.add('glyphicon-triangle-top');
-    } else if (this.sorter.order === 'desc') {
-      this.sorter = {order: 'asc', property: this.sorter.property};
-      icon.classList.add('glyphicon');
-      icon.classList.add('glyphicon-triangle-bottom');
+
+    switch (this.getCurrentSortOrder(up, down)) {
+      case TFOrder.asc:
+        this.sorter.order = TFOrder.desc;
+        this.hide(element);
+        this.show(down);
+        break;
+      case TFOrder.desc:
+        this.sorter.order = TFOrder.asc;
+        this.hide(element);
+        this.show(up);
+        break;
     }
+
     this.sorted.emit(this.sorter);
+  }
+
+  getCurrentSortOrder(up: Element, down: Element) {
+    if (up.getAttribute('style') === 'display: inline-table') {
+      return TFOrder.asc;
+    }
+
+    if (down.getAttribute('style') === 'display: inline-table') {
+      return TFOrder.desc;
+    }
+
+    return TFOrder.asc;
+  }
+
+  show(element: Element) {
+    element.setAttribute('style', 'display: inline-table');
+  }
+
+  hide(column: HTMLElement) {
+    const up: Element = column.getElementsByClassName('up')[0];
+    const down: Element = column.getElementsByClassName('down')[0];
+    up.setAttribute('style', 'display: none');
+    down.setAttribute('style', 'display: none');
   }
 }

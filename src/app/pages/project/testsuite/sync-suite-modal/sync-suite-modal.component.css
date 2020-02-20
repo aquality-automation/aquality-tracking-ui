@@ -2,15 +2,13 @@
   display: block;
 }
 
-.simple-modal{
-  top: 220px;
+.show-modal {
+  opacity: 1;
 }
 
-.modal-message{
-  max-height: 500px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-bottom: solid 1px lightgray;
+.modal-dialog {
+  margin: 9rem auto !important;
+  max-width: 600px !important;
 }
 
 .panel-body {
