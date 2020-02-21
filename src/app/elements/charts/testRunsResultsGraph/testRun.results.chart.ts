@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { FinalResult } from '../../../shared/models/final-result';
@@ -6,11 +6,15 @@ import { FinalResultService } from '../../../services/final_results.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TestRunService } from '../../../services/testRun.service';
 import { TestRunStat } from '../../../shared/models/testrunStats';
+import { ResultResolutionService } from '../../../services/result-resolution.service';
+import { ResultResolution } from '../../../shared/models/result_resolution';
+import { GlobalDataService } from '../../../services/globaldata.service';
 
 
 @Component({
   selector: 'testrun-result-timeline',
   templateUrl: './testRun.results.chart.html',
+  styleUrls: ['./testRun.results.chart.css'],
   providers: [
     SimpleRequester,
     FinalResultService,
@@ -18,9 +22,13 @@ import { TestRunStat } from '../../../shared/models/testrunStats';
   ]
 })
 
-export class TestRunsResultsTimelineComponent implements OnChanges {
+export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
   @Input() testRunsStat: TestRunStat[];
+  switchState = false;
+  switchLabel = 'Results';
+  projectId: number;
   listOfFinalResults: FinalResult[];
+  listOfResolutions: ResultResolution[];
   lineChartOptions: any = {
     hover: {
       mode: 'nearest',
@@ -32,15 +40,9 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
     scales: {
       xAxes: [{
         type: 'time',
+        distribution: 'linear',
         time: {
-          displayFormats: {
-            quarter: 'MMM YYYY',
-            day: 'll HH:mm',
-            hour: 'll HH:mm',
-            second: 'll HH:mm',
-            millisecond: 'll HH:mm',
-            minute: 'll HH:mm'
-          },
+          minUnit: 'day',
           tooltipFormat: 'll HH:mm'
         },
         scaleLabel: {
@@ -61,71 +63,138 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
   lineChartType = 'line';
   lineChartLabels: Array<any> = [];
 
+  colors = {
+    danger: {
+      fill: '#dc3545',
+      stroke: '#dc3545',
+    },
+    success: {
+      fill: '#28a745',
+      stroke: '#28a745',
+    },
+    primary: {
+      fill: '#007bff',
+      stroke: '#007bff',
+    },
+    warning: {
+      fill: '#ffc107',
+      stroke: '#ffc107',
+    },
+    info: {
+      fill: '#17a2b8',
+      stroke: '#17a2b8',
+    },
+    point: {
+      stroke: '#fff'
+    }
+  };
+
   public lineChartColors: Array<any> = [
     {
-      backgroundColor: 'rgba(224, 0, 0, 0.8)',
-      borderColor: 'rgba(224, 0, 0, 1)',
-      pointBackgroundColor: 'rgba(204, 0, 0, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(224, 0, 0, 1)'
+      pointBorderColor: this.colors.point.stroke,
+      backgroundColor: this.colors.danger.fill
     },
     {
-      backgroundColor: 'rgba(0, 153, 0, 0.8)',
-      borderColor: 'rgba(0, 133, 0, 1)',
-      pointBackgroundColor: 'rgba(0, 133, 0, 1',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0, 133, 0, 0.8)'
+      pointBorderColor: this.colors.point.stroke,
+      backgroundColor: this.colors.success.fill
     },
     {
-      backgroundColor: 'rgba(51, 102, 255, 0.8)',
-      borderColor: 'rgba(51, 102, 255, 1)',
-      pointBackgroundColor: 'rgba(51, 102, 255, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(51, 102, 255, 0.8)'
+      pointBorderColor: this.colors.point.stroke,
+      backgroundColor: this.colors.primary.fill
     },
     {
-      backgroundColor: 'rgba(255, 102, 0, 0.8)',
-      borderColor: 'rgba(255, 102, 0, 1)',
-      pointBackgroundColor: 'rgba(255, 102, 0, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255, 102, 0, 0.8)'
+      pointBorderColor: this.colors.point.stroke,
+      backgroundColor: this.colors.warning.fill
     },
     {
-      backgroundColor: 'rgba(91, 192, 222, 0.8)',
-      borderColor: 'rgba(91, 192, 222, 1)',
-      pointBackgroundColor: 'rgba(91, 192, 222, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(91, 192, 222, 0.8)'
+      pointBorderColor: this.colors.point.stroke,
+      backgroundColor: this.colors.info.fill
     }
   ];
 
   constructor(
     private finalResultService: FinalResultService,
-    private testRunService: TestRunService,
+    private resolutionService: ResultResolutionService,
+    public globaldata: GlobalDataService,
     private route: ActivatedRoute,
-    private router: Router
   ) {
+  }
+
+  ngOnInit(): void {
+    this.globaldata.currentProject$.subscribe(project => this.projectId = project.id);
   }
 
   async ngOnChanges() {
     if (!this.listOfFinalResults || this.listOfFinalResults.length < 1) {
       this.listOfFinalResults = await this.finalResultService.getFinalResult({});
+      this.listOfResolutions = [{
+        color: 1,
+        name: 'App Issue'
+      }, {
+        color: 2,
+        name: 'Passed'
+      }, {
+        color: 4,
+        name: 'Not Assigned'
+      }, {
+        color: 3,
+        name: 'Test Issues'
+      }, {
+        color: 5,
+        name: 'Other'
+      }];
       this.fillData();
     } else {
       this.fillData();
     }
   }
 
-  async fillData() {
-    await this.fillChartData();
+  fillData() {
+    if (this.switchState) {
+      this.fillByResolution();
+    } else {
+      this.fillByResult();
+    }
   }
 
-  fillChartData() {
+  fillByResolution() {
+    this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
+    this.testRunsStat = this.testRunsStat.sort((a, b) => new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime());
+    this.lineChartData = [];
+    for (const resolution of this.listOfResolutions) {
+      const dataArray: any[] = [];
+      let hidden = true;
+      for (const resultsSet of this.testRunsStat) {
+        switch (resolution.color) {
+          case 1:
+            if (resultsSet.app_issue !== 0) { hidden = false; }
+            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.app_issue, ts: resultsSet });
+            break;
+          case 2:
+            if (resultsSet.passed !== 0) { hidden = false; }
+            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.passed, ts: resultsSet });
+            break;
+          case 4:
+            if (resultsSet.not_assigned !== 0) { hidden = false; }
+            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.not_assigned, ts: resultsSet });
+            break;
+          case 3:
+            if (resultsSet.warning !== 0) { hidden = false; }
+            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.warning, ts: resultsSet });
+            break;
+          case 5:
+            if (resultsSet.other !== 0) { hidden = false; }
+            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.other, ts: resultsSet });
+            break;
+        }
+      }
+      console.log(hidden);
+      this.lineChartData.push({ data: dataArray, label: resolution.name, hidden: hidden, lineTension: 0.1 });
+    }
+    console.log(this.lineChartData);
+  }
+
+  fillByResult() {
     this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
     this.testRunsStat = this.testRunsStat.sort((a, b) => new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime());
     this.lineChartData = [];
@@ -156,7 +225,7 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
             break;
         }
       }
-      this.lineChartData.push({ data: dataArray, label: finalResult.name, hidden: hidden });
+      this.lineChartData.push({ data: dataArray, label: finalResult.name, hidden: hidden, lineTension: 0.1 });
     }
   }
 
@@ -166,5 +235,10 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
       const dataIndex = e.active[0]._index;
       window.open(`#/project/${this.route.snapshot.params['projectId']}/testrun/${this.lineChartData[datasetIndex].data[dataIndex].ts.id}`);
     }
+  }
+
+  switch() {
+    this.switchState = !this.switchState;
+    this.fillData();
   }
 }

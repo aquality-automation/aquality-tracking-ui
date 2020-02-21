@@ -1,0 +1,9 @@
+.result-switch {
+    position: absolute;
+    right: 30px;
+    top: 8px;
+}
+
+.result-switch-label {
+    display: inline;
+}
