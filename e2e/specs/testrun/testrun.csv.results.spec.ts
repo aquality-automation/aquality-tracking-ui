@@ -6,7 +6,7 @@ import { ProjectHelper } from '../../helpers/project.helper';
 import users from '../../data/users.json';
 import cucumberImport from '../../data/import/cucumberSpecialSymbols.json';
 
-fdescribe('TestRun view manual:', () => {
+describe('TestRun view manual:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const builds = projectHelper.generateBuilds(1);
 
