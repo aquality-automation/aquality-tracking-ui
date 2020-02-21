@@ -586,16 +586,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   downloadCSV() {
     let data: string, filename: string, link: HTMLAnchorElement;
-    let csv = this.getCSV();
+    const csv = this.getCSV();
     if (csv === null) { return; }
-
     filename = `export${Date.now()}.csv`;
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = 'data:text/csv;charset=utf-8,' + csv;
-    }
-    data = encodeURI(csv);
-
+    data = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
     link = document.createElement('a');
     document.body.appendChild(link);
     link.setAttribute('type', 'hidden');
