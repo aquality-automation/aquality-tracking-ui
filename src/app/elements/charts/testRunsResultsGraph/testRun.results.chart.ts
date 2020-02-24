@@ -3,7 +3,6 @@ import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { FinalResult } from '../../../shared/models/final-result';
 import { FinalResultService } from '../../../services/final_results.service';
-import { ActivatedRoute } from '@angular/router';
 import { TestRunStat } from '../../../shared/models/testrunStats';
 import { ResultResolution } from '../../../shared/models/result_resolution';
 import { GlobalDataService } from '../../../services/globaldata.service';
@@ -22,7 +21,6 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
     result: 'Results',
     resolution: 'Resolutions'
   };
-  switchLabel = this.switchLabels.result;
   projectId: number;
   listOfFinalResults: FinalResult[];
   listOfResolutions: ResultResolution[];
@@ -265,7 +263,6 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
 
   switch() {
     this.switchState = !this.switchState;
-    this.switchLabel = this.switchState ? this.switchLabels.result : this.switchLabels.resolution;
     this.fillData();
   }
 }
