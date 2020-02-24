@@ -1,33 +1,33 @@
 {
-    'global': {
-        'none': {
-            'name': 'None',
-            'index': -1
+    "global": {
+        "none": {
+            "name": "None",
+            "index": -1
         },
-        'notAssigned': {
-            'name': 'Not Assigned',
-            'color': 'Primary',
-            'index': 0
+        "notAssigned": {
+            "name": "Not Assigned",
+            "color": "Primary",
+            "index": 0
         },
-        'appIssue': {
-            'name': 'Application Issue',
-            'color': 'Danger',
-            'index': 1
+        "appIssue": {
+            "name": "Application Issue",
+            "color": "Danger",
+            "index": 1
         },
-        'environmentIssue': {
-            'name': 'Environment Issue',
-            'color': 'Warning',
-            'index': 2
+        "environmentIssue": {
+            "name": "Environment Issue",
+            "color": "Warning",
+            "index": 2
         },
-        'testIssue': {
-            'name': 'Test Issue',
-            'color': 'Warning',
-            'index': 3
+        "testIssue": {
+            "name": "Test Issue",
+            "color": "Warning",
+            "index": 3
         },
-        'testDesignIssue': {
-            'name': 'Test Design Issue',
-            'color': 'Warning',
-            'index': 4
+        "testDesignIssue": {
+            "name": "Test Design Issue",
+            "color": "Warning",
+            "index": 4
         }
     }
-};
+}

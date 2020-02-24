@@ -1,31 +1,31 @@
 {
-    'none': {
-        'name': 'None',
-        'index': -1
+    "none": {
+        "name": "None",
+        "index": -1
     },
-    'notExecuted': {
-        'name': 'Not Executed',
-        'color': 'Primary',
-        'index': 2
+    "notExecuted": {
+        "name": "Not Executed",
+        "color": "Primary",
+        "index": 2
     },
-    'failed': {
-        'name': 'Failed',
-        'color': 'Danger',
-        'index': 0
+    "failed": {
+        "name": "Failed",
+        "color": "Danger",
+        "index": 0
     },
-    'inProgress': {
-        'name': 'In Progress',
-        'color': 'Warning',
-        'index': 3
+    "inProgress": {
+        "name": "In Progress",
+        "color": "Warning",
+        "index": 3
     },
-    'passed': {
-        'name': 'Passed',
-        'color': 'Success',
-        'index': 1
+    "passed": {
+        "name": "Passed",
+        "color": "Success",
+        "index": 1
     },
-    'pending': {
-        'name': 'Pending',
-        'color': 'Info',
-        'index': 4
+    "pending": {
+        "name": "Pending",
+        "color": "Info",
+        "index": 4
     }
-};
+}

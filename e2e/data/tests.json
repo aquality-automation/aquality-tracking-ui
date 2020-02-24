@@ -1,6 +1,6 @@
 {
-    'creationTest': {
-        'name': 'Auto test',
-        'body': 'Description'
+    "creationTest": {
+        "name": "Auto test",
+        "body": "Description"
     }
-};
+}

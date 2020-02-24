@@ -1,13 +1,13 @@
 {
-    'creation': {
-        'name': 'Test creation',
-        'customer': {
-            'name': '-'
+    "creation": {
+        "name": "Test creation",
+        "customer": {
+            "name": "-"
         }
     },
-    'customerOnly': {
-        'customer': {
-            'name': '-'
+    "customerOnly": {
+        "customer": {
+            "name": "-"
         }
     }
-};
+}
