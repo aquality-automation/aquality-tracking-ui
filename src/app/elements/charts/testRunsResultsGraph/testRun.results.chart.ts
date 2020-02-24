@@ -1,47 +1,51 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
-import { SimpleRequester } from "../../../services/simple-requester";
-import { TestResultService } from "../../../services/test-result.service";
-import { FinalResult } from "../../../shared/models/final-result";
-import { FinalResultService } from "../../../services/final_results.service";
-import { ActivatedRoute } from "@angular/router";
-import { TestRunStat } from "../../../shared/models/testrunStats";
-import { ResultResolution } from "../../../shared/models/result_resolution";
-import { GlobalDataService } from "../../../services/globaldata.service";
-import { colors } from "../../../shared/colors.service";
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { SimpleRequester } from '../../../services/simple-requester';
+import { TestResultService } from '../../../services/test-result.service';
+import { FinalResult } from '../../../shared/models/final-result';
+import { FinalResultService } from '../../../services/final_results.service';
+import { ActivatedRoute } from '@angular/router';
+import { TestRunStat } from '../../../shared/models/testrunStats';
+import { ResultResolution } from '../../../shared/models/result_resolution';
+import { GlobalDataService } from '../../../services/globaldata.service';
+import { colors } from '../../../shared/colors.service';
 
 @Component({
-  selector: "testrun-result-timeline",
-  templateUrl: "./testRun.results.chart.html",
-  styleUrls: ["./testRun.results.chart.css"],
+  selector: 'testrun-result-timeline',
+  templateUrl: './testRun.results.chart.html',
+  styleUrls: ['./testRun.results.chart.css'],
   providers: [SimpleRequester, FinalResultService, TestResultService]
 })
 export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
   @Input() testRunsStat: TestRunStat[];
   switchState = false;
-  switchLabel = "Results";
+  switchLabels = {
+    result: 'Results',
+    resolution: 'Resolutions'
+  };
+  switchLabel = this.switchLabels.result;
   projectId: number;
   listOfFinalResults: FinalResult[];
   listOfResolutions: ResultResolution[];
   lineChartOptions: any = {
     hover: {
-      mode: "nearest",
+      mode: 'nearest',
       intersec: true
     },
     interaction: {
-      mode: "nearest"
+      mode: 'nearest'
     },
     scales: {
       xAxes: [
         {
-          type: "time",
-          distribution: "linear",
+          type: 'time',
+          distribution: 'linear',
           time: {
-            minUnit: "day",
-            tooltipFormat: "ll HH:mm"
+            minUnit: 'day',
+            tooltipFormat: 'll HH:mm'
           },
           scaleLabel: {
             display: true,
-            labelString: "Finish Date"
+            labelString: 'Finish Date'
           }
         }
       ],
@@ -50,14 +54,14 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
           stacked: true,
           scaleLabel: {
             display: true,
-            labelString: "Tests Number"
+            labelString: 'Tests Number'
           }
         }
       ]
     }
   };
   lineChartData: Array<any> = [];
-  lineChartType = "line";
+  lineChartType = 'line';
   lineChartLabels: Array<any> = [];
   orderByColor = [5, 3, 1, 2, 4];
 
@@ -86,9 +90,8 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
 
   constructor(
     private finalResultService: FinalResultService,
-    public globaldata: GlobalDataService,
-    private route: ActivatedRoute
-  ) {}
+    public globaldata: GlobalDataService
+  ) { }
 
   ngOnInit(): void {
     this.globaldata.currentProject$.subscribe(
@@ -104,23 +107,23 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
       this.listOfResolutions = [
         {
           color: 5,
-          name: "Passed"
+          name: 'Passed'
         },
         {
           color: 3,
-          name: "Not Assigned"
+          name: 'Not Assigned'
         },
         {
           color: 2,
-          name: "Test Issues"
+          name: 'Test Issues'
         },
         {
           color: 1,
-          name: "App Issue"
+          name: 'App Issue'
         },
         {
           color: 4,
-          name: "Other"
+          name: 'Other'
         }
       ];
       this.fillData();
@@ -187,7 +190,7 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
       }
       this.lineChartData.push({
         data: dataArray,
-        label: this.listOfResolutions.find(x => x.color == color).name,
+        label: this.listOfResolutions.find(x => x.color === color).name,
         lineTension: 0.1
       });
     }
@@ -262,6 +265,7 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
 
   switch() {
     this.switchState = !this.switchState;
+    this.switchLabel = this.switchState ? this.switchLabels.result : this.switchLabels.resolution;
     this.fillData();
   }
 }

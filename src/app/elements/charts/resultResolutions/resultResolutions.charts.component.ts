@@ -4,46 +4,58 @@ import {
   OnChanges,
   ViewChild,
   EventEmitter,
-  Output
-} from "@angular/core";
-import { SimpleRequester } from "../../../services/simple-requester";
-import { TestResultService } from "../../../services/test-result.service";
-import { TestResult } from "../../../shared/models/test-result";
-import { ResultResolution } from "../../../shared/models/result_resolution";
-import { ResultResolutionService } from "../../../services/result-resolution.service";
-import { BaseChartDirective } from "ng2-charts";
-import { colors } from "../../../shared/colors.service";
+  Output,
+  OnInit
+} from '@angular/core';
+import { SimpleRequester } from '../../../services/simple-requester';
+import { TestResultService } from '../../../services/test-result.service';
+import { TestResult } from '../../../shared/models/test-result';
+import { ResultResolution } from '../../../shared/models/result_resolution';
+import { ResultResolutionService } from '../../../services/result-resolution.service';
+import { BaseChartDirective } from 'ng2-charts';
+import { colors } from '../../../shared/colors.service';
+import { GlobalDataService } from '../../../services/globaldata.service';
 
 @Component({
-  selector: "result-resolution-chart",
-  templateUrl: "./resultResolutions.charts.component.html",
+  selector: 'result-resolution-chart',
+  templateUrl: './resultResolutions.charts.component.html',
   providers: [SimpleRequester, ResultResolutionService, TestResultService]
 })
-export class ResultResolutionsChartsComponent implements OnChanges {
+export class ResultResolutionsChartsComponent implements OnChanges, OnInit {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
   @Output() clickedResult = new EventEmitter<ResultResolution>();
   includeNotExecuted = false;
+  projectId: number;
   shownTestResults: TestResult[];
   listOfResultResolutions: ResultResolution[];
   doughnutChartLabels: string[] = [];
   doughnutChartData: number[] = [];
   chartColors: any[] = [];
-  doughnutChartType = "doughnut";
+  doughnutChartType = 'doughnut';
   chartOptions: any = {
     legend: {
       display: true,
-      position: "left",
+      position: 'left',
       labels: {
         boxWidth: 20
       }
     }
   };
 
-  constructor(private resultResolutionService: ResultResolutionService) {}
+  constructor(
+    private resultResolutionService: ResultResolutionService,
+    private globalDataService: GlobalDataService
+    ) {}
+
+  ngOnInit(): void {
+    this.globalDataService.currentProject$.subscribe(project => {
+      this.projectId = project.id;
+    });
+  }
 
   ngOnChanges() {
-    this.resultResolutionService.getResolution().subscribe(
+    this.resultResolutionService.getResolution(this.projectId).subscribe(
       result => {
         this.listOfResultResolutions = result;
         this.getData();

@@ -9,27 +9,27 @@ import {
   ViewChildren,
   QueryList,
   OnDestroy
-} from "@angular/core";
-import { TestSuiteService } from "../../../services/testSuite.service";
-import { ActivatedRoute } from "@angular/router";
-import { TestSuite, SuiteDashboard } from "../../../shared/models/testSuite";
-import { SimpleRequester } from "../../../services/simple-requester";
-import { TestRunService } from "../../../services/testRun.service";
-import { TestRunStat } from "../../../shared/models/testrunStats";
-import { TransformationsService } from "../../../services/transformations.service";
-import { BaseChartDirective } from "ng2-charts";
+} from '@angular/core';
+import { TestSuiteService } from '../../../services/testSuite.service';
+import { ActivatedRoute } from '@angular/router';
+import { TestSuite, SuiteDashboard } from '../../../shared/models/testSuite';
+import { SimpleRequester } from '../../../services/simple-requester';
+import { TestRunService } from '../../../services/testRun.service';
+import { TestRunStat } from '../../../shared/models/testrunStats';
+import { TransformationsService } from '../../../services/transformations.service';
+import { BaseChartDirective } from 'ng2-charts';
 import {
   faChevronRight,
   faChevronLeft,
   faTimes,
   faSyncAlt
-} from "@fortawesome/free-solid-svg-icons";
-import { colors } from "../../../shared/colors.service";
+} from '@fortawesome/free-solid-svg-icons';
+import { colors } from '../../../shared/colors.service';
 
 @Component({
-  selector: "app-suite-dashboard",
-  templateUrl: "./suite-dashboard.component.html",
-  styleUrls: ["./suite-dashboard.component.css"],
+  selector: 'app-suite-dashboard',
+  templateUrl: './suite-dashboard.component.html',
+  styleUrls: ['./suite-dashboard.component.css'],
   providers: [
     TransformationsService,
     TestSuiteService,
@@ -37,21 +37,21 @@ import { colors } from "../../../shared/colors.service";
     SimpleRequester
   ],
   animations: [
-    trigger("slideInOut", [
+    trigger('slideInOut', [
       state(
-        "in",
+        'in',
         style({
-          transform: "translate3d(0, 0, 0)"
+          transform: 'translate3d(0, 0, 0)'
         })
       ),
       state(
-        "out",
+        'out',
         style({
-          transform: "translate3d(-100%, 0, 0) translate3d(20px, 0, 0)"
+          transform: 'translate3d(-100%, 0, 0) translate3d(20px, 0, 0)'
         })
       ),
-      transition("in => out", animate("400ms ease-in-out")),
-      transition("out => in", animate("400ms ease-in-out"))
+      transition('in => out', animate('400ms ease-in-out')),
+      transition('out => in', animate('400ms ease-in-out'))
     ])
   ]
 })
@@ -67,19 +67,19 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   detailed: boolean | number = false;
   refreshStatus = true;
   suites: TestSuite[];
-  settingsBar = "out";
+  settingsBar = 'out';
   suitesToShow: TestSuite[];
   suite_stats: any[] = [];
   chartColors: any[] = [{}];
-  doughnutChartType = "pie";
+  doughnutChartType = 'pie';
   newDashboardName: string;
   dashboards: SuiteDashboard[];
   timer: NodeJS.Timer;
   chartOptions: any = {
     legend: {
       display: true,
-      position: "right",
-      align: "end",
+      position: 'right',
+      align: 'end',
       labels: {
         boxWidth: 10,
         usePointStyle: true
@@ -96,10 +96,10 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
   async getDashboards() {
     this.dashboards = await this.testSuiteService.getSuiteDashboards(
-      this.route.snapshot.params["projectId"]
+      this.route.snapshot.params['projectId']
     );
     this.dashboards.unshift({
-      name: "All",
+      name: 'All',
       suites: this.suites,
       detailed: false,
       notDeletable: true
@@ -146,7 +146,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   generateData(suites) {
     for (const suite of suites) {
       if (suite.stat) {
-        suite["chartData"] = [
+        suite['chartData'] = [
           {
             data: [
               suite.stat.passed,
@@ -161,7 +161,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
             ]
           }
         ];
-        suite["chartLabels"] = [
+        suite['chartLabels'] = [
           `Passed | ${suite.stat.passed}`,
           `Application Issues | ${suite.stat.app_issue}`,
           `Test Issues | ${suite.stat.warning +
@@ -171,7 +171,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
         ];
         const options = JSON.parse(JSON.stringify(this.chartOptions));
         options.id = suite.id;
-        suite["options"] = options;
+        suite['options'] = options;
       }
     }
     return suites;
@@ -181,7 +181,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
     for (const suite of suites) {
       if (suite.stat) {
         const stat: TestRunStat = suite.stat;
-        suite["chartData"] = [
+        suite['chartData'] = [
           {
             data: [
               stat.passed,
@@ -225,7 +225,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
             ]
           }
         ];
-        suite["chartLabels"] = [
+        suite['chartLabels'] = [
           `Passed | ${suite.stat.passed}`,
           `Failed | ${suite.stat.failed}`,
           `Not Executed | ${suite.stat.not_executed}`,
@@ -252,7 +252,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   async getSuiteStats() {
     const suite_stats = [];
     this.suites = await this.testSuiteService.getTestSuite(
-      { project_id: this.route.snapshot.params["projectId"] },
+      { project_id: this.route.snapshot.params['projectId'] },
       false
     );
     if (!this.suitesToShow) {
@@ -274,7 +274,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
       if (results.length > 0) {
         const latest = results[0];
-        suite["stat"] = latest;
+        suite['stat'] = latest;
       }
 
       suite_stats.push(suite);
@@ -287,10 +287,10 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
       name: this.newDashboardName,
       suites: this.suitesToShow,
       detailed: this.detailed === true || this.detailed === 1 ? 1 : 0,
-      project_id: this.route.snapshot.params["projectId"]
+      project_id: this.route.snapshot.params['projectId']
     });
     await this.getDashboards();
-    this.newDashboardName = "";
+    this.newDashboardName = '';
   }
 
   isDashboardNameValid(): boolean {
@@ -317,7 +317,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleSideBar() {
-    this.settingsBar = this.settingsBar === "out" ? "in" : "out";
+    this.settingsBar = this.settingsBar === 'out' ? 'in' : 'out';
   }
 
   autoRefresh() {

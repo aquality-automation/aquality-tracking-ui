@@ -1,28 +1,28 @@
 {
-    "flowTest": {
-        "name": "Auto Flow Test",
-        "color": "Danger"
+    'flowTest': {
+        'name': 'Auto Flow Test',
+        'color': 'Danger'
     },
-    "global": {
-        "notAssigned": {
-            "name": "Not Assigned",
-            "color": "Primary"
+    'global': {
+        'notAssigned': {
+            'name': 'Not Assigned',
+            'color': 'Primary'
         },
-        "appIssue":{
-            "name": "Application Issue",
-            "color": "Danger"
+        'appIssue': {
+            'name': 'Application Issue',
+            'color': 'Danger'
         },
-        "environmentIssue":{
-            "name": "Environment Issue",
-            "color": "Warning"
+        'environmentIssue': {
+            'name': 'Environment Issue',
+            'color': 'Warning'
         },
-        "testIssue":{
-            "name": "Test Issue",
-            "color": "Warning"
+        'testIssue': {
+            'name': 'Test Issue',
+            'color': 'Warning'
         },
-        "testDesignIssue": {
-            "name": "Test Design Issue",
-            "color": "Warning"
+        'testDesignIssue': {
+            'name': 'Test Design Issue',
+            'color': 'Warning'
         }
     }
-}
+};

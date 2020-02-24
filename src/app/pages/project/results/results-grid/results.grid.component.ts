@@ -97,7 +97,7 @@ export class ResultGridComponent implements OnInit {
       debug: result.debug,
       assignee: result.assigned_user ? result.assigned_user.user_id : undefined
     };
-    await this.testResultService.createTestResult(testResultUpdateTemplate)
+    await this.testResultService.createTestResult(testResultUpdateTemplate);
     this.resultUpdated.emit(result);
   }
 

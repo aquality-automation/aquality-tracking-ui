@@ -1,8 +1,8 @@
 {
-    "suiteCreation": {
-        "name": "For Suite Creation"
+    'suiteCreation': {
+        'name': 'For Suite Creation'
     },
-    "testCreation": {
-        "name": "For Test Creation"
+    'testCreation': {
+        'name': 'For Test Creation'
     }
-}
+};

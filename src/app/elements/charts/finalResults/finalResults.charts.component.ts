@@ -6,18 +6,18 @@ import {
   OnChanges,
   Output,
   EventEmitter
-} from "@angular/core";
-import { SimpleRequester } from "../../../services/simple-requester";
-import { TestResultService } from "../../../services/test-result.service";
-import { TestResult } from "../../../shared/models/test-result";
-import { FinalResult } from "../../../shared/models/final-result";
-import { FinalResultService } from "../../../services/final_results.service";
-import { BaseChartDirective } from "ng2-charts";
-import { colors } from "../../../shared/colors.service";
+} from '@angular/core';
+import { SimpleRequester } from '../../../services/simple-requester';
+import { TestResultService } from '../../../services/test-result.service';
+import { TestResult } from '../../../shared/models/test-result';
+import { FinalResult } from '../../../shared/models/final-result';
+import { FinalResultService } from '../../../services/final_results.service';
+import { BaseChartDirective } from 'ng2-charts';
+import { colors } from '../../../shared/colors.service';
 
 @Component({
-  selector: "final-result-chart",
-  templateUrl: "./finalResults.charts.component.html",
+  selector: 'final-result-chart',
+  templateUrl: './finalResults.charts.component.html',
   providers: [SimpleRequester, TestResultService, FinalResultService]
 })
 export class FinalResultChartsComponent implements OnInit, OnChanges {
@@ -25,7 +25,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
   @Input() testResults: TestResult[];
   @Output() clickedResult = new EventEmitter<FinalResult>();
   public lineChartDataTest: Array<any>;
-  doughnutChartType = "doughnut";
+  doughnutChartType = 'doughnut';
   listOfFinalResults: FinalResult[];
   doughnutChartLabels: string[] = [];
   doughnutChartData: number[] = [];
@@ -33,7 +33,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
   chartOptions: any = {
     legend: {
       display: true,
-      position: "left",
+      position: 'left',
       labels: {
         boxWidth: 20
       }
@@ -71,7 +71,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
     for (const finalResult of this.listOfFinalResults) {
       this.doughnutChartLabels.push(
         finalResult.name +
-          " | " +
+          ' | ' +
           this.calculatePrecentageAndCount(finalResult.name)
       );
     }
@@ -92,26 +92,26 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
       x => x.final_result.name === finalResult
     ).length;
     const percentage = (num / this.testResults.length) * 100;
-    return percentage.toFixed(1) + "% | " + num;
+    return percentage.toFixed(1) + '% | ' + num;
   }
 
   fillChartColors() {
     const backgroundColors: any[] = [];
     for (const finalResult of this.listOfFinalResults) {
       switch (finalResult.name) {
-        case "Passed":
+        case 'Passed':
           backgroundColors.push(colors.success.fill);
           break;
-        case "Failed":
+        case 'Failed':
           backgroundColors.push(colors.danger.fill);
           break;
-        case "In Progress":
+        case 'In Progress':
           backgroundColors.push(colors.warning.fill);
           break;
-        case "Not Executed":
+        case 'Not Executed':
           backgroundColors.push(colors.primary.fill);
           break;
-        case "Pending":
+        case 'Pending':
           backgroundColors.push(colors.info.fill);
           break;
       }
