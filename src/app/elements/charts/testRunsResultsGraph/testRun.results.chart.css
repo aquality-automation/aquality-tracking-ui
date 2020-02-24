@@ -1,0 +1,11 @@
+.result-switch {
+    position: absolute;
+    right: 30px;
+    top: 8px;
+}
+
+.result-switch-label {
+    position: absolute;
+    top: 0;
+    left: -60;
+}

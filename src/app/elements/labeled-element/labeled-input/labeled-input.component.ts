@@ -23,7 +23,7 @@ export class LabeledInputComponent extends LabeledBaseComponent<string> implemen
   }
 
   ngOnInit() {
-    const validators: ValidatorFn[] = []
+    const validators: ValidatorFn[] = [];
     if (this.min) {
       validators.push(Validators.min(+this.min));
     }
