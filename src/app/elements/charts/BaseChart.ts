@@ -1,9 +1,9 @@
 export class BaseChart {
-    success90 = '#009900';
-    success80 = '#5aaa00';
-    success70 = '#aacd00';
-    success60 = '#c89600';
-    success50 = '#e66e00';
-    success40 = '#cc2100';
-    grey = '#e8e8e8';
+  success90 = '#28a745';
+  success80 = '#5ba728';
+  success70 = '#a1a728';
+  success60 = '#c7a431';
+  success50 = '#dc6b35';
+  success40 = '#dc3545';
+  grey = '#e8e8e8';
 }

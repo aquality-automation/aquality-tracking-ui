@@ -10,6 +10,7 @@ import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../../services/transformations.service';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../services/current-permissions.service';
+import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   templateUrl: './audit.info.component.html',
@@ -47,7 +48,8 @@ export class AuditInfoComponent implements OnInit {
   };
   auditors: User[];
   URL: string;
-  events = { remove: 'remove', start: 'start', submit: 'submit', finish: 'finish' }
+  events = { remove: 'remove', start: 'start', submit: 'submit', finish: 'finish' };
+  icons = { faTrash, faUpload };
 
   constructor(
     public route: ActivatedRoute,
@@ -108,7 +110,7 @@ export class AuditInfoComponent implements OnInit {
 
   removeAttachment(id: number) {
     this.removingInProgress = true;
-    this.auditService.removeAuditAttachment(id).subscribe(res => {
+    this.auditService.removeAuditAttachment(id, this.audit.project.id).subscribe(() => {
       this.updateAttachments();
       this.removingInProgress = false;
     });

@@ -1,3 +1,5 @@
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
 export class Navigation {
   name: string;
   id?: string;
@@ -7,4 +9,5 @@ export class Navigation {
   routerOptions?: any;
   children?: Navigation[];
   params?: object;
+  icon?: IconDefinition;
 }

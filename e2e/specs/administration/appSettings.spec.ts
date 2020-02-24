@@ -11,7 +11,7 @@ describe('Full Admin Administartion User Flow', () => {
 
     beforeAll(async () => {
         await logIn.logInAs(users.admin.user_name, users.admin.password);
-        return (await projectList.menuBar.user()).administration();
+        return projectList.menuBar.administration();
     });
 
     afterAll(async () => {
@@ -30,7 +30,7 @@ describe('Full Admin Administartion User Flow', () => {
         });
 
         it('I can enable Audit Module', async () => {
-            await (await projectList.menuBar.user()).administration();
+            await projectList.menuBar.administration();
             await userAdministration.sidebar.appSettings();
             await appSettings.enableAuditModule();
             await appSettings.saveGeneralSettings();
@@ -41,7 +41,7 @@ describe('Full Admin Administartion User Flow', () => {
 
     describe('Default Email Pattern', () => {
         it('I can see closed Email Pattern Hint', async () => {
-            await (await projectList.menuBar.user()).administration();
+            await projectList.menuBar.administration();
             await userAdministration.sidebar.appSettings();
             return expect(appSettings.getHintText()).toEqual(Constants.emailHelpTextHint);
         });

@@ -1,3 +1,21 @@
+.panel-body {
+    padding-top: 70px;
+}
+
+.nav-tabs>li>a {
+    text-decoration: none;
+    color: black;
+    background-color: transparent;
+  }
+  
+  .nav-tabs>li>a.active {
+    background-color: var(--light) !important;
+  }
+  
+  .nav-tabs>li>a.active:hover {
+    background-color: var(--light);
+  }
+
 #orange-drop {
     animation: pulseorange 3s ease infinite alternate;
 }

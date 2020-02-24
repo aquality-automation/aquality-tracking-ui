@@ -2,13 +2,14 @@
   <ul class="col-sm-12 no-padding me-droppable steps-can-be-empty" [dragula]="'steps-bag'"
     [dragulaModel]='newStepsOrder'>
     <li class="step-row added-step" *ngFor="let step of newStepsOrder; let i = index" [ngClass]="{'me-draggable': editable}">
-      <fa-icon *ngIf="editable" class="icon-remove" [icon]="faMinus" (click)="removeStep(i)"></fa-icon>
+      <fa-icon *ngIf="editable" class="icon-remove" [icon]="icons.faMinus" (click)="removeStep(i)"></fa-icon>
       <b>{{step.type.name}}</b>
       {{step.name}}
     </li>
   </ul>
+
   <ul *ngIf="editable" class="col-sm-12 no-padding creator">
-    <li class="clearfix step-row">
+    <li class="clearfix step-row form-row">
       <div class="col-sm-1 add-step-cell">
         <lookup-autocomplete class="type-selector" [cutLongText]="true" [small]="true" placeholder="Step Type" [allowEmptyValue]="true"
           [propertiesToShow]="['name']" [array]="types" [model]="newStepType" (modelChange)="setNewStepType($event)">
@@ -21,9 +22,10 @@
         </lookup-autocomplete>
       </div>
       <button id="add-step" *ngIf="newStepType && newStep" type="button" class="btn btn-success btn-sm col-sm-1" (click)="addStep()">
-        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        <fa-icon class="icon" [icon]="icons.faCheck"></fa-icon>
       </button>
     </li>
+
     <li *ngIf="isOrderChanged()" class="clearfix step-row">
       <div class="col-sm-12 no-padding">
         <button id="discard-steps-changes" type="button" class="btn btn-danger btn-sm pull-right discard-btn" (click)="discardOrderChanges()">

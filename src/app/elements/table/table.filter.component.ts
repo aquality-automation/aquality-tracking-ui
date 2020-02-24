@@ -9,7 +9,11 @@ import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.util';
-import { TFColumn, TFColumnType } from './tfColumn';
+import { TFColumn, TFColumnType, TFSorting, TFOrder } from './tfColumn';
+import {
+  faColumns, faCheck, faTimes, faArrowUp,
+  faArrowDown, faSyncAlt, faChevronUp, faChevronDown
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'table-filter',
@@ -27,7 +31,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() columnManagement = true;
   @Input() columns: TFColumn[];
   @Input() hiddenColumns: TFColumn[] = [];
-  @Input() defaultSortBy: { property: string, order: string };
+  @Input() defaultSortBy: TFSorting;
   @Input() rowsOnPage = 10;
   @Input() queryParams: boolean;
   @Input() allowCreate = false;
@@ -80,7 +84,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   durationMask = [/\d/, /\d/, ':', /\d/, /\d/, ':', /\d/, /\d/];
   filteredData: any[];
   showCreation = false;
-  appliedFilters: any[] = [];
+  appliedFilters: Filter[] = [];
   newEntity: {} = {};
   bulkChangeEntity: {} = {};
   confirm: string;
@@ -94,6 +98,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   prevent = false;
   selectAll = false;
   filterHelper: FilterHelper;
+  icons = {
+    faColumns,
+    faCheck,
+    faTimes,
+    faArrowUp,
+    faArrowDown,
+    faSyncAlt,
+    faChevronUp,
+    faChevronDown
+  };
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -144,6 +158,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     clearInterval(this.timerToken);
   }
 
+  getDefaultSorter(col: TFColumn): TFSorting {
+    if (col.sorting) {
+      return col.sorter
+        ? col.sorter
+        : { property: col.property, order: TFOrder.desc };
+    }
+
+    return undefined;
+  }
+
   applyFilters() {
     if (this.data) {
       this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
@@ -152,10 +176,14 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
   }
 
-  sort(sorter: { property: string, order: string }) {
+  sort(sorter: TFSorting) {
     if (sorter) {
       this.defaultSortBy = sorter;
-      this.transformationsService.sort(this.filteredData, sorter);
+      if (sorter.hasOwnProperty('weights')) {
+        this.transformationsService.sortArrayByWeight(this.filteredData, sorter);
+      } else {
+        this.transformationsService.sort(this.filteredData, sorter);
+      }
     }
   }
 
@@ -323,7 +351,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return filter ? filter[value] : undefined;
   }
 
-  getLookupFilterValue(col: any) {
+  getLookupFilterValue(col: TFColumn) {
     const filter = this.appliedFilters.find(x => {
       if (col.lookup.objectWithId) {
         return x.property === col.lookup.objectWithId;
@@ -342,6 +370,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       });
     }
     return selectedOpts;
+  }
+
+  getDotFilterValue(col: TFColumn) {
+    const filter = this.appliedFilters.find(x => x.property === col.property);
+    return filter ? col.dotsFilter.values.find(x => x.name === filter.dots.name) : '';
   }
 
   textFilterData(property: string) {
@@ -509,8 +542,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.emptyFieldError;
   }
 
-  handleFilterChange(col, $event) {
-    const newFilter: Filter = { property: col.property, value: $event };
+  handleDotFilterChange(col: TFColumn, value: { name: string, only?: number[], contains?: number[] }) {
+    const newFilter: Filter = { property: col.property, dots: value };
+    this.filterChange(newFilter);
+  }
+
+  handleFilterChange(col: TFColumn, event: any) {
+    const newFilter: Filter = { property: col.property, value: event };
     this.filterChange(newFilter);
   }
 
@@ -548,16 +586,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   downloadCSV() {
     let data: string, filename: string, link: HTMLAnchorElement;
-    let csv = this.getCSV();
+    const csv = this.getCSV();
     if (csv === null) { return; }
-
     filename = `export${Date.now()}.csv`;
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = 'data:text/csv;charset=utf-8,' + csv;
-    }
-    data = encodeURI(csv);
-
+    data = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
     link = document.createElement('a');
     document.body.appendChild(link);
     link.setAttribute('type', 'hidden');

@@ -83,7 +83,7 @@ describe('Import Test Run: Nunit V3', () => {
         await testRunList.openTestRun(featureName.buildName);
         await testRunView.sortResultsByName();
 
-        const tableComparisonResult = await testRunView.checkIfTableEqualToCSv('/resultsTable/nunitV3FeatureName.csv');
+        const tableComparisonResult = await testRunView.checkIfTableEqualToCSV('/resultsTable/nunitV3FeatureName.csv');
         return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
@@ -109,7 +109,7 @@ describe('Import Test Run: Nunit V3', () => {
         await testRunList.openTestRun(className.buildName);
         await testRunView.sortResultsByName();
 
-        const tableComparisonResult = await testRunView.checkIfTableEqualToCSv('/resultsTable/nunitV3ClassName.csv');
+        const tableComparisonResult = await testRunView.checkIfTableEqualToCSV('/resultsTable/nunitV3ClassName.csv');
         return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 });

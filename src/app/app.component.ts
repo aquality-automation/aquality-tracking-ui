@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CookieService } from 'angular2-cookie/core';
 import { User } from './shared/models/user';
 import { SimpleRequester } from './services/simple-requester';
 import { UserService } from './services/user.services';
@@ -10,6 +9,7 @@ import { ProjectService } from './services/project.service';
 import { ApplicationSettingsService } from './services/applicationSettings.service';
 import { Navigation } from './shared/models/navigation.model';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from './services/current-permissions.service';
+import { faCog, faBug, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 declare var require: any;
 const { version: appVersion } = require('../../package.json');
@@ -46,10 +46,10 @@ export class AppComponent {
   navigations: Navigation[];
   rightNavigations: Navigation[];
   isLoaded: boolean;
+  faSignOutAlt = faSignOutAlt;
 
   constructor(
     private route: ActivatedRoute,
-    private cookieService: CookieService,
     public globaldata: GlobalDataService,
     public userService: UserService,
     public projectService: ProjectService,
@@ -91,7 +91,6 @@ export class AppComponent {
     } else {
       this.currentProject = undefined;
     }
-
     this.globaldata.announceCurrentProject(this.currentProject);
   }
 
@@ -127,8 +126,7 @@ export class AppComponent {
           name: 'Test Runs',
           link: `/project/${this.projectId}/testrun`,
           params: { 'f_debug_st': false },
-          show: this.isLogged
-            && this.projectId !== undefined,
+          show: this.isLogged && this.projectId !== undefined,
           routerOptions: { exact: false }
         }, {
           name: 'Milestones',
@@ -192,7 +190,9 @@ export class AppComponent {
           link: `/audit/${this.projectId}`,
           show: (await this.permissionsService.hasPermissions(undefined,
             [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]))
-            && this.projectId && this.globaldata.auditModule,
+            && this.projectId && this.globaldata.auditModule &&
+            !(await this.permissionsService.hasPermissions([EGlobalPermissions.manager, EGlobalPermissions.auditor,
+              EGlobalPermissions.audit_admin])),
           routerOptions: { exact: true }
         }, {
           name: 'Audits',
@@ -215,25 +215,29 @@ export class AppComponent {
           routerOptions: { exact: false }
         }
       ];
-      this.rightNavigations = [{
-        name: this.userService.getUserFullName(this.globaldata.currentUser),
-        id: 'user-mb',
-        show: true,
-        children: [{
-          name: 'Edit My Account',
+      this.rightNavigations = [
+        {
+          name: this.userService.getUserFullName(this.globaldata.currentUser),
+          id: 'user-mb',
           link: `/settings`,
-          show: true
+          show: true,
+          routerOptions: { exact: false }
         }, {
           name: 'Administration',
           link: `/administration`,
+          id: 'administration-nav',
+          icon: faCog,
           show: await this.permissionsService.hasPermissions([EGlobalPermissions.admin, EGlobalPermissions.manager],
-            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer])
+            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]),
+          routerOptions: { exact: false }
         }, {
           name: 'Report an Issue',
+          id: 'bug-nav',
+          icon: faBug,
           href: `https://github.com/aquality-automation/aquality-tracking/issues`,
           show: true
-        }]
-      }];
+        },
+      ];
     } else {
       this.navigations = [];
       this.rightNavigations = [];

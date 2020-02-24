@@ -1,0 +1,4 @@
+Test Name,Fail Reason,Last Results,Result,Resolution,Assignee,Comment
+"Test Feature with all results: step failed","step was failed !”#$%&’()*+,-./:;<=>?@[\]^_`{|}~","","Failed","Not Assigned",,
+"Test Feature with all results: All passed","","","Passed",,,
+"Test Feature with all results: Step skipped","step was skippedstep was skipped","","Pending","Not Assigned",,

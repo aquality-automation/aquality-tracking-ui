@@ -12,8 +12,9 @@ import { ResultSearcherComponent } from '../results-searcher/results.searcher.co
 import { FinalResult } from '../../../../shared/models/final-result';
 import { FinalResultService } from '../../../../services/final_results.service';
 import { TestRunService } from '../../../../services/testRun.service';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
+import { TestService } from '../../../../services/test.service';
 
 @Component({
   selector: 'results-grid',
@@ -31,8 +32,8 @@ export class ResultGridComponent implements OnInit {
   @Input() testResultTempalte: TestResult;
   @ViewChild(ResultSearcherComponent) resultSearcher: ResultSearcherComponent;
   @Input() testResults: TestResult[];
-  @Input() sortBy = { property: 'final_result.name', order: 'desc' };
-  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Comment'];
+  @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
+  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Comment', 'Last Results'];
   @Output() resultUpdated = new EventEmitter;
   listOfResolutions: ResultResolution[];
   finalResults: FinalResult[];
@@ -50,6 +51,7 @@ export class ResultGridComponent implements OnInit {
     private resultResolutionService: ResultResolutionService,
     private testResultService: TestResultService,
     private testRunService: TestRunService,
+    private testService: TestService,
     private route: ActivatedRoute,
     private router: Router,
     public userService: UserService,
@@ -62,122 +64,23 @@ export class ResultGridComponent implements OnInit {
     this.projectId = this.route.snapshot.params.projectId;
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager]);
-    this.resultResolutionService.getResolution().subscribe(async resolutions => {
-      this.testResults.forEach(result => {
-        if (result.final_result.color === 5) { result.test_resolution = undefined; }
-        result['duration'] = this.calculateDuration(result);
-      });
-      this.listOfResolutions = resolutions;
-      this.finalResults = await this.finalResultService.getFinalResult({});
-      const testruns = await this.testRunService.getTestRun({ project_id: this.projectId });
-      this.userService.getProjectUsers(this.projectId).subscribe(projectUsers => {
-        this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
-        this.testResults.forEach(result => {
-          result['developer'] = this.users.find(x => x.user_id === result.test.developer_id);
-          result['testrun'] = testruns.find(x => x.id === result.test_run_id);
-        });
-        this.allColumns = [
-          { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-          {
-            name: 'Build Name', property: 'testrun.build_name', filter: true,
-            sorting: true, type: TFColumnType.text, class: 'ft-width-150'
-          },
-          {
-            name: 'Test Name',
-            property: 'test.name',
-            filter: true,
-            sorting: true,
-            type: TFColumnType.text,
-            class: 'ft-width-150'
-          },
-          {
-            name: 'Fail Reason',
-            property: 'fail_reason',
-            filter: true,
-            sorting: true,
-            type: TFColumnType.longtext,
-            listeners: ['contextmenu'],
-            class: 'ft-width-250'
-          },
-          {
-            name: 'Result',
-            property: 'final_result.name',
-            filter: true,
-            sorting: true,
-            type: TFColumnType.colored,
-            lookup: {
-              entity: 'final_result',
-              values: this.finalResults,
-              propToShow: ['name']
-            },
-            class: 'fit'
-          },
-          {
-            name: 'Resolution',
-            property: 'test_resolution.name',
-            filter: true,
-            sorting: true,
-            type: TFColumnType.colored,
-            lookup: {
-              entity: 'test_resolution',
-              values: this.listOfResolutions,
-              propToShow: ['name']
-            },
-            editable: this.canEdit,
-            bulkEdit: true,
-            class: 'fit'
-          },
-          {
-            name: 'Assignee',
-            property: 'assigned_user.user',
-            filter: true,
-            type: TFColumnType.autocomplete,
-            lookup: {
-              propToShow: ['user.first_name', 'user.second_name'],
-              entity: 'assigned_user',
-              allowEmpty: true,
-              objectWithId: 'assigned_user.user',
-              values: this.users,
-            },
-            nullFilter: true,
-            editable: this.canEdit,
-            bulkEdit: true,
-            class: 'fit'
-          },
-          {
-            name: 'Comment',
-            property: 'comment',
-            filter: true,
-            sorting: false,
-            type: TFColumnType.textarea,
-            editable: this.canEdit,
-            bulkEdit: true,
-            class: 'ft-width-150'
-          },
-          {
-            name: 'Developer',
-            property: 'developer.user',
-            filter: true,
-            sorting: false,
-            type: TFColumnType.autocomplete,
-            lookup: {
-              propToShow: ['user.first_name', 'user.second_name'],
-              entity: 'developer',
-              objectWithId: 'developer.user',
-              values: this.users,
-            },
-            nullFilter: true,
-            class: 'fit'
-          },
-          { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-          { name: 'Updated', property: 'updated', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-          { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' },
-          { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' }
-        ];
-        this.tbCols = this.allColumns.filter(x => this.showOnly.includes(x.name));
-        this.tbHiddenCols = this.allColumns.filter(x => !this.showOnly.includes(x.name));
-      });
-    }, error => console.log(error));
+
+    this.listOfResolutions = await this.resultResolutionService.getResolution().toPromise();
+    this.finalResults = await this.finalResultService.getFinalResult({});
+    const testruns = await this.testRunService.getTestRun({ project_id: this.projectId });
+    this.users = (await this.userService.getProjectUsers(this.projectId).toPromise())
+      .filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
+
+
+    this.testResults.forEach(result => {
+      result['developer'] = this.users.find(x => x.user_id === result.test.developer_id);
+      result['testrun'] = testruns.find(x => x.id === result.test_run_id);
+      if (result.final_result.color === 5) { result.test_resolution = undefined; }
+      result['duration'] = this.calculateDuration(result);
+      result['combinedLastResults'] = this.testService.combineLastResults(result.test.lastResultColors);
+    });
+
+    this.createColumns();
   }
 
   rowClicked($event) {
@@ -194,7 +97,7 @@ export class ResultGridComponent implements OnInit {
       debug: result.debug,
       assignee: result.assigned_user ? result.assigned_user.user_id : undefined
     };
-    await this.testResultService.createTestResult(testResultUpdateTemplate)
+    await this.testResultService.createTestResult(testResultUpdateTemplate);
     this.resultUpdated.emit(result);
   }
 
@@ -256,5 +159,130 @@ export class ResultGridComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  private createColumns() {
+    this.allColumns = [
+      { name: 'Started', property: 'start_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      {
+        name: 'Build Name', property: 'testrun.build_name', filter: true,
+        sorting: true, type: TFColumnType.text, class: 'ft-width-150'
+      },
+      {
+        name: 'Test Name',
+        property: 'test.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.text,
+        class: 'ft-width-150'
+      },
+      {
+        name: 'Fail Reason',
+        property: 'fail_reason',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.longtext,
+        listeners: ['contextmenu'],
+        class: 'ft-width-250'
+      },
+      {
+        name: 'Last Results',
+        property: 'combinedLastResults',
+        type: TFColumnType.dots,
+        class: 'fit',
+        filter: true,
+        sorting: true,
+        sorter: {
+          order: TFOrder.desc,
+          property: 'combinedLastResults',
+          weights: this.testService.getResultWeights()
+        },
+        dotsFilter: {
+          values: [
+            { name: 'Stable', only: [5] },
+            { name: 'Unstable', contains: [1, 2, 3, 4] },
+            { name: 'Passed or App Issue', only: [1, 5] },
+            { name: 'Has Test Issues', contains: [2, 3, 4] }
+          ],
+          propToShow: ['name']
+        }
+      },
+      {
+        name: 'Result',
+        property: 'final_result.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'final_result',
+          values: this.finalResults,
+          propToShow: ['name']
+        },
+        class: 'fit'
+      },
+      {
+        name: 'Resolution',
+        property: 'test_resolution.name',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          entity: 'test_resolution',
+          values: this.listOfResolutions,
+          propToShow: ['name']
+        },
+        editable: this.canEdit,
+        bulkEdit: true,
+        class: 'fit'
+      },
+      {
+        name: 'Assignee',
+        property: 'assigned_user.user',
+        filter: true,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          propToShow: ['user.first_name', 'user.second_name'],
+          entity: 'assigned_user',
+          allowEmpty: true,
+          objectWithId: 'assigned_user.user',
+          values: this.users,
+        },
+        nullFilter: true,
+        editable: this.canEdit,
+        bulkEdit: true,
+        class: 'fit'
+      },
+      {
+        name: 'Comment',
+        property: 'comment',
+        filter: true,
+        sorting: false,
+        type: TFColumnType.textarea,
+        editable: this.canEdit,
+        bulkEdit: true,
+        class: 'ft-width-150'
+      },
+      {
+        name: 'Developer',
+        property: 'developer.user',
+        filter: true,
+        sorting: false,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          propToShow: ['user.first_name', 'user.second_name'],
+          entity: 'developer',
+          objectWithId: 'developer.user',
+          values: this.users,
+        },
+        nullFilter: true,
+        class: 'fit'
+      },
+      { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      { name: 'Updated', property: 'updated', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' },
+      { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' },
+    ];
+    this.tbCols = this.allColumns.filter(x => this.showOnly.includes(x.name));
+    this.tbHiddenCols = this.allColumns.filter(x => !this.showOnly.includes(x.name));
   }
 }

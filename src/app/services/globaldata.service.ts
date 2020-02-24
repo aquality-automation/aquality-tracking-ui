@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { User } from '../shared/models/user';
 import { Project } from '../shared/models/project';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class GlobalDataService {
-  private currentProjectSource = new Subject<Project>();
+  private currentProjectSource = new BehaviorSubject<Project>({});
   currentUser: User;
   auditModule: boolean;
   loading = false;

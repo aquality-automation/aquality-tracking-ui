@@ -1,8 +1,8 @@
 .card {
     padding: 5px;
-    background: #fff;
+    background: var(--white);
     margin: 10px;
-    border: 1px solid #eee;
+    border: 1px solid var(--light);
     border-radius: 2px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
@@ -26,12 +26,12 @@
     left: 0;
     top: 0;
     height: 100%;
-    background-color: #101010;
+    background-color: var(--dark);
     width: 300px;
-    z-index: 1000;
+    z-index: 10;
 }
 
-.settings-content{
+.settings-content {
     overflow: auto;
     height: inherit;
 }
@@ -42,21 +42,21 @@
     right: 0;
     bottom: 0;
     top: 0;
-    background: #333;
+    background: var(--dark);
     width: 20px;
-    z-index: 5000;
+    z-index: 10;
 }
 
 .settings-toggler:hover {
-    background-color: #101010;
+    background-color: black;
 }
 
 .settings-bar label {
-    color: whitesmoke;
+    color: var(--light);
 }
 
 .dashboards-list {
-    color: whitesmoke;
+    color: var(--light);
     padding: 0;
 }
 
@@ -73,12 +73,13 @@
     margin-top: 10px;
 }
 
-.settings-toggler>span {
+.settings-toggler>.icon-holder {
     margin-top: 50vh;
     margin-left: 4px;
-    color: whitesmoke;
+    color: var(--light);
 }
 
 .autoRefresh {
+    margin-top: 10px;
     margin-bottom: 10px;
 }

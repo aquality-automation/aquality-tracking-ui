@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule, } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule, BrowserXhr } from '@angular/http';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CookieService, CookieOptions } from 'angular2-cookie/core';
@@ -33,6 +33,7 @@ import { GuardService } from './shared/guards/guard.service';
     AdministrationModule,
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     appRouting,
     HttpModule,
     ProjectModule,

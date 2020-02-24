@@ -54,7 +54,7 @@ export class ResultSearcher extends BaseElement {
   }
 
   async isSearcherOpened() {
-    const classValue = await this.element.element(By.css('#resultSearcherOpener span')).getAttribute('class');
+    const classValue = await this.element.element(By.css('#resultSearcherOpener svg')).getAttribute('data-icon');
     return classValue.includes('up');
   }
 

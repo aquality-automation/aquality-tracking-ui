@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.3.6 (2020-02-24)
+
+Features:
+  - Move Administration to main Menu bar to make it more visible -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/58)
+  - Test Run view: Add stability indicator -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/60)
+  - Add 'Show resolution slider' for Test Runs chart -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/43)
+  - Move to Bootstrap 4.4.1 -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/66)
+
+Bugfixes:
+  - Csv export with special symbols -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/36)
+
 ## 0.3.5 (2020-02-15)
 
 Features:
@@ -13,8 +24,6 @@ Features:
 Bugfixes:
   - Cannot remove milestone from TestRun -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/50)
   - Refactored Permissions service
-
-Bugfixes:
   - Test Runs: Filter by Start Time date From doesn't work -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/38)
 
 ## 0.3.4 (2019-12-10)

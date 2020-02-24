@@ -3,6 +3,7 @@ import { BasePopupComponent } from '../../../../elements/modals/basePopup.compon
 import { Test } from '../../../../shared/models/test';
 import { TestService } from '../../../../services/test.service';
 import { SimpleRequester } from '../../../../services/simple-requester';
+import { faPlus, faArrowRight, faArrowDown, faMinus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     selector: 'move-test-modal',
@@ -23,6 +24,7 @@ export class MoveTestModalComponent extends BasePopupComponent implements OnInit
     @Output() execute = new EventEmitter();
     @Output() testMovedTo = new EventEmitter();
     pairsToMove: { from: Test, to: Test }[] = [];
+    icons = { faPlus, faMinus, faArrowRight, faArrowDown };
 
     constructor(
         private testService: TestService,

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuditService } from '../../../services/audits.service';
 import { Audit, Service } from '../../../shared/models/audit';
 import { UserService } from '../../../services/user.services';
-import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class AuditProjectComponent implements OnInit {
   isAuditAdmin: boolean;
   public data: Audit[];
   public columns: TFColumn[];
-  public defSort = { property: 'created', order: 'asc' };
+  public defSort = { property: 'created', order: TFOrder.asc };
 
   constructor(
     private router: Router,

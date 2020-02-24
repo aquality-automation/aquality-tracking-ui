@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TransformationsService } from '../../services/transformations.service';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
 
 interface A1qaLookup {
   placeholder: string;
@@ -53,6 +54,9 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
   selectedItemText: string;
   emptyValue = undefined;
   emptyValueForFilter = { findEmpty: true };
+  icons = {
+    faCaretDown
+  };
 
   toggle() {
     this.hidden = !this.hidden;

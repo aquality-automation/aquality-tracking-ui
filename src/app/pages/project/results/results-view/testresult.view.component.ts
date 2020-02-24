@@ -13,12 +13,12 @@ import { TransformationsService } from '../../../../services/transformations.ser
 import { NotificationsService } from 'angular2-notifications';
 import { StepsService } from '../../../../services/steps.service';
 import { StepType, StepResult } from '../../../../shared/models/steps';
-import { $ } from 'protractor';
 import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './testresult.view.component.html',
+  styleUrls: ['./testresult.view.component.css'],
   providers: [
     TransformationsService,
     SimpleRequester,

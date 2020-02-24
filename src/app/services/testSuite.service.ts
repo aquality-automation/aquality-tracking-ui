@@ -35,7 +35,7 @@ export class TestSuiteService extends SimpleRequester {
   }
 
   removeTestSuite(testSuite: TestSuite): Promise<void> {
-    return this.doDelete(`/suite?id=${testSuite.id}&projectId=${testSuite.project_id}`)
+    return this.doDelete(`/suite?id=${testSuite.id}&project_id=${testSuite.project_id}`)
       .map(() => this.handleSuccess(`Test Suite '${testSuite.name}' was deleted.`)).toPromise();
   }
 
@@ -55,10 +55,12 @@ export class TestSuiteService extends SimpleRequester {
   }
 
   syncSuite(tests: Test[], suiteId: number, removeNotExecutedResults: boolean) {
-    return this.doPost(`/suite/sync`, tests, { suiteId, removeNotExecutedResults }, true).map(res => res).toPromise();
+    const project_id = this.route.snapshot.params['projectId'];
+    return this.doPost(`/suite/sync`, tests, { project_id, suiteId, removeNotExecutedResults }, true).map(res => res).toPromise();
   }
 
   findTestToSync(notExecutedFor: number, suiteId: number): Promise<Test[]> {
-    return this.doGet('/suite/sync', { notExecutedFor, suiteId }, true).map(res => res.json()).toPromise();
+    const project_id = this.route.snapshot.params['projectId'];
+    return this.doGet('/suite/sync', { project_id, notExecutedFor, suiteId }, true).map(res => res.json()).toPromise();
   }
 }

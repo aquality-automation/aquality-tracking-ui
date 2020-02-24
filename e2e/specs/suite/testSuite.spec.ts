@@ -24,12 +24,12 @@ describe('Full Admin Test Suite', () => {
 
   it('Create button is disabled when Name is not filled', async () => {
     await (await projectView.menuBar.create()).suite();
-    expect(suiteCreate.isCreateEnabled()).toBe(false, 'Create button should be disabled');
+    return expect(suiteCreate.isCreateEnabled()).toBe(false, 'Create button should be disabled');
   });
 
   it('Suites List page should be opend after Suite creation', async () => {
     await suiteCreate.createSuite(suite);
-    expect(suiteList.isOpened()).toBe(true, 'Suites List should be opened');
+    return expect(suiteList.isOpened()).toBe(true, 'Suites List should be opened');
   });
 
   it('New Suite should be in list', () => {

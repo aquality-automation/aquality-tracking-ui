@@ -3,19 +3,21 @@
     <div class="col-sm-1 text-center vert-aligned"> </div>
     <form class="col-sm-10 no-margin" action="getResults()">
       <div class="form-group text-center vert-aligned input-group no-margin">
-        <span class="input-group-addon">Search by Fail Reason in project</span>
-        <input maxlength="500" id="searchByFailReason" name="searchByFailReason" class="form-control" type="text"
+
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="search-description">Search by Fail Reason in project</span>
+        </div>
+        <input maxlength="500" id="searchByFailReason" name="searchByFailReason" aria-describedby="search-description" class="form-control" type="text"
           trim="blur" [(ngModel)]="failReasonSearch">
-        <div class="input-group-btn">
+        <input id="limitResults" name="limitResults" class="form-control" type="number" placeholder="Limit" title="Results Limit" [(ngModel)]="limit" step="10">
+
+        <div class="input-group-append">
           <button id="regexpSearch" (click)="toggleRegexpSearch()" type="button" class="btn"
             title="Search by regular expression."
-            [ngClass]="{'btn-default': !isRegexSearch, 'btn-success': isRegexSearch}">(.*)</button>
-          <button class="btn limit-results" type="button">
-            <input id="limitResults" name="limitResults" class="form-control" type="number" placeholder="Limit" title="Results Limit." [(ngModel)]="limit" step="10">
-          </button>
+            [ngClass]="{'btn-secondary': !isRegexSearch, 'btn-success': isRegexSearch}">(.*)</button>
           <button id="startResultsSearch" (click)="getResults()" type="submit" class="btn btn-success"
-            title="Search for last 100 results.">Search
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            title="Search for last {{limit}} results.">Search
+            <fa-icon class="icon" [icon]="icons.faSearch"></fa-icon>
           </button>
         </div>
       </div>
@@ -27,9 +29,7 @@
       [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy"></table-filter>
   </div>
   <div id="resultSearcherOpener" class="header-tools-opener text-center" (click)="toggleTools()">
-    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true" [ngClass]="{
-        'glyphicon-chevron-up': toggledOn =='in',
-        'glyphicon-chevron-down': toggledOn =='out'
-      }"></span>
+    <fa-icon *ngIf="toggledOn =='out'" class="icon" [icon]="icons.faAngleDown"></fa-icon>
+    <fa-icon *ngIf="toggledOn =='in'" class="icon" [icon]="icons.faAngleUp"></fa-icon>
   </div>
 </div>

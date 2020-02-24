@@ -3,7 +3,7 @@ import { DragulaService } from 'ng2-dragula';
 import { StepType, Step } from '../../../../shared/models/steps';
 import { StepsService } from '../../../../services/steps.service';
 import { ActivatedRoute } from '@angular/router';
-import { faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'steps-container',
@@ -19,7 +19,10 @@ export class StepsContainerComponent implements OnInit {
     private stepService: StepsService
   ) { }
 
-  public faMinus = faMinus;
+  public icons = {
+    faMinus,
+    faCheck,
+  };
   public newStepType: StepType;
   public newStep: Step;
   public testSteps: Step[];

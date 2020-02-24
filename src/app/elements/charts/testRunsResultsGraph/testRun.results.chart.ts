@@ -1,162 +1,253 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { FinalResult } from '../../../shared/models/final-result';
 import { FinalResultService } from '../../../services/final_results.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TestRunService } from '../../../services/testRun.service';
 import { TestRunStat } from '../../../shared/models/testrunStats';
-
+import { ResultResolution } from '../../../shared/models/result_resolution';
+import { GlobalDataService } from '../../../services/globaldata.service';
+import { colors } from '../../../shared/colors.service';
 
 @Component({
   selector: 'testrun-result-timeline',
   templateUrl: './testRun.results.chart.html',
-  providers: [
-    SimpleRequester,
-    FinalResultService,
-    TestResultService
-  ]
+  styleUrls: ['./testRun.results.chart.css'],
+  providers: [SimpleRequester, FinalResultService, TestResultService]
 })
-
-export class TestRunsResultsTimelineComponent implements OnChanges {
+export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
   @Input() testRunsStat: TestRunStat[];
+  switchState = false;
+  switchLabels = {
+    result: 'Results',
+    resolution: 'Resolutions'
+  };
+  projectId: number;
   listOfFinalResults: FinalResult[];
+  listOfResolutions: ResultResolution[];
   lineChartOptions: any = {
     hover: {
       mode: 'nearest',
-      intersec: true,
+      intersec: true
     },
     interaction: {
-      mode: 'nearest',
+      mode: 'nearest'
     },
     scales: {
-      xAxes: [{
-        type: 'time',
-        time: {
-          displayFormats: {
-            quarter: 'MMM YYYY',
-            day: 'll HH:mm',
-            hour: 'll HH:mm',
-            second: 'll HH:mm',
-            millisecond: 'll HH:mm',
-            minute: 'll HH:mm'
+      xAxes: [
+        {
+          type: 'time',
+          distribution: 'linear',
+          time: {
+            minUnit: 'day',
+            tooltipFormat: 'll HH:mm'
           },
-          tooltipFormat: 'll HH:mm'
-        },
-        scaleLabel: {
-          display: true,
-          labelString: 'Finish Date'
+          scaleLabel: {
+            display: true,
+            labelString: 'Finish Date'
+          }
         }
-      }],
-      yAxes: [{
-        stacked: true,
-        scaleLabel: {
-          display: true,
-          labelString: 'Tests Number'
+      ],
+      yAxes: [
+        {
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Tests Number'
+          }
         }
-      }]
+      ]
     }
   };
   lineChartData: Array<any> = [];
   lineChartType = 'line';
   lineChartLabels: Array<any> = [];
+  orderByColor = [5, 3, 1, 2, 4];
 
   public lineChartColors: Array<any> = [
     {
-      backgroundColor: 'rgba(224, 0, 0, 0.8)',
-      borderColor: 'rgba(224, 0, 0, 1)',
-      pointBackgroundColor: 'rgba(204, 0, 0, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(224, 0, 0, 1)'
+      pointBorderColor: colors.point.stroke,
+      backgroundColor: colors.success.fill
     },
     {
-      backgroundColor: 'rgba(0, 153, 0, 0.8)',
-      borderColor: 'rgba(0, 133, 0, 1)',
-      pointBackgroundColor: 'rgba(0, 133, 0, 1',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(0, 133, 0, 0.8)'
+      pointBorderColor: colors.point.stroke,
+      backgroundColor: colors.primary.fill
     },
     {
-      backgroundColor: 'rgba(51, 102, 255, 0.8)',
-      borderColor: 'rgba(51, 102, 255, 1)',
-      pointBackgroundColor: 'rgba(51, 102, 255, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(51, 102, 255, 0.8)'
+      pointBorderColor: colors.point.stroke,
+      backgroundColor: colors.danger.fill
     },
     {
-      backgroundColor: 'rgba(255, 102, 0, 0.8)',
-      borderColor: 'rgba(255, 102, 0, 1)',
-      pointBackgroundColor: 'rgba(255, 102, 0, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(255, 102, 0, 0.8)'
+      pointBorderColor: colors.point.stroke,
+      backgroundColor: colors.warning.fill
     },
     {
-      backgroundColor: 'rgba(91, 192, 222, 0.8)',
-      borderColor: 'rgba(91, 192, 222, 1)',
-      pointBackgroundColor: 'rgba(91, 192, 222, 1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(91, 192, 222, 0.8)'
+      pointBorderColor: colors.point.stroke,
+      backgroundColor: colors.info.fill
     }
   ];
 
   constructor(
     private finalResultService: FinalResultService,
-    private testRunService: TestRunService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
+    public globaldata: GlobalDataService
+  ) { }
+
+  ngOnInit(): void {
+    this.globaldata.currentProject$.subscribe(
+      project => (this.projectId = project.id)
+    );
   }
 
   async ngOnChanges() {
     if (!this.listOfFinalResults || this.listOfFinalResults.length < 1) {
-      this.listOfFinalResults = await this.finalResultService.getFinalResult({});
+      this.listOfFinalResults = await this.finalResultService.getFinalResult(
+        {}
+      );
+      this.listOfResolutions = [
+        {
+          color: 5,
+          name: 'Passed'
+        },
+        {
+          color: 3,
+          name: 'Not Assigned'
+        },
+        {
+          color: 2,
+          name: 'Test Issues'
+        },
+        {
+          color: 1,
+          name: 'App Issue'
+        },
+        {
+          color: 4,
+          name: 'Other'
+        }
+      ];
       this.fillData();
     } else {
       this.fillData();
     }
   }
 
-  async fillData() {
-    await this.fillChartData();
+  fillData() {
+    if (this.switchState) {
+      this.fillByResolution();
+    } else {
+      this.fillByResult();
+    }
   }
 
-  fillChartData() {
+  fillByResolution() {
     this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
-    this.testRunsStat = this.testRunsStat.sort((a, b) => new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime());
+    this.testRunsStat = this.testRunsStat.sort(
+      (a, b) =>
+        new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime()
+    );
     this.lineChartData = [];
-    for (const finalResult of this.listOfFinalResults) {
+    for (const color of this.orderByColor) {
       const dataArray: any[] = [];
-      let hidden = true;
       for (const resultsSet of this.testRunsStat) {
-        switch (finalResult.id) {
+        switch (color) {
           case 1:
-            if (resultsSet.failed !== 0) { hidden = false; }
-            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.failed, ts: resultsSet });
-            break;
-          case 2:
-            if (resultsSet.passed !== 0) { hidden = false; }
-            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.passed, ts: resultsSet });
-            break;
-          case 3:
-            if (resultsSet.not_executed !== 0) { hidden = false; }
-            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.not_executed, ts: resultsSet });
-            break;
-          case 4:
-            if (resultsSet.in_progress !== 0) { hidden = false; }
-            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.in_progress, ts: resultsSet });
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.app_issue,
+              ts: resultsSet
+            });
             break;
           case 5:
-            if (resultsSet.pending !== 0) { hidden = false; }
-            dataArray.push({ x: resultsSet.finish_time, y: resultsSet.pending, ts: resultsSet });
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.passed,
+              ts: resultsSet
+            });
+            break;
+          case 3:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.not_assigned,
+              ts: resultsSet
+            });
+            break;
+          case 2:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.warning,
+              ts: resultsSet
+            });
+            break;
+          case 4:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.other,
+              ts: resultsSet
+            });
             break;
         }
       }
-      this.lineChartData.push({ data: dataArray, label: finalResult.name, hidden: hidden });
+      this.lineChartData.push({
+        data: dataArray,
+        label: this.listOfResolutions.find(x => x.color === color).name,
+        lineTension: 0.1
+      });
+    }
+  }
+
+  fillByResult() {
+    this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
+    this.testRunsStat = this.testRunsStat.sort(
+      (a, b) =>
+        new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime()
+    );
+    this.lineChartData = [];
+    for (const color of this.orderByColor) {
+      const dataArray: any[] = [];
+      for (const resultsSet of this.testRunsStat) {
+        switch (color) {
+          case 1:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.failed,
+              ts: resultsSet
+            });
+            break;
+          case 5:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.passed,
+              ts: resultsSet
+            });
+            break;
+          case 3:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.not_executed,
+              ts: resultsSet
+            });
+            break;
+          case 2:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.in_progress,
+              ts: resultsSet
+            });
+            break;
+          case 4:
+            dataArray.push({
+              x: resultsSet.finish_time,
+              y: resultsSet.pending,
+              ts: resultsSet
+            });
+            break;
+        }
+      }
+
+      this.lineChartData.push({
+        data: dataArray,
+        label: this.listOfFinalResults.find(x => x.color === color).name,
+        lineTension: 0.1
+      });
     }
   }
 
@@ -164,7 +255,14 @@ export class TestRunsResultsTimelineComponent implements OnChanges {
     if (e.active[0]) {
       const datasetIndex = e.active[0]._datasetIndex;
       const dataIndex = e.active[0]._index;
-      window.open(`#/project/${this.route.snapshot.params['projectId']}/testrun/${this.lineChartData[datasetIndex].data[dataIndex].ts.id}`);
+      window.open(
+        `#/project/${this.projectId}/testrun/${this.lineChartData[datasetIndex].data[dataIndex].ts.id}`
+      );
     }
+  }
+
+  switch() {
+    this.switchState = !this.switchState;
+    this.fillData();
   }
 }

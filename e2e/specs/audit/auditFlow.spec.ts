@@ -3,7 +3,6 @@ import { projectList } from '../../pages/project/list.po';
 import { projectAudits } from '../../pages/audit/project.list.po';
 import { createAudit } from '../../pages/audit/create.po';
 import { auditInfo } from '../../pages/audit/view.po';
-import { browser } from 'protractor';
 import { testData } from '../../utils/testData.util';
 import { ProjectHelper } from '../../helpers/project.helper';
 

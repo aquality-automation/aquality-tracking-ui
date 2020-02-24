@@ -1,11 +1,14 @@
 .show-button{
-  margin-top: 25px;
+  margin-top: 29px;
 }
+
 .greyout{
   color:#dddddd;
 }
+
 .line-margin{
-  margin-top: 27px
+  margin-top: 29px;
+  padding-left: 40px;
 }
 
 .margin-top-6px{

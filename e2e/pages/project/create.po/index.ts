@@ -28,7 +28,7 @@ class ProjectCreate extends BasePage {
         return elements.createButton.isEnabled();
     }
 
-    async createProject(project: Project){
+    async createProject(project: Project) {
         await this.fillProjectNameField(project.name);
         await this.selectCustomer(project.customer.name);
         await this.clickCreateButton();

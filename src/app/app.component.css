@@ -7,3 +7,15 @@
     height: 50px;
     padding: 5px 5px;
 }
+
+.navbar {
+    z-index: 100;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.logout-nav {
+    margin-left: 10px;
+}

@@ -3,7 +3,7 @@ import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class ListMilestoneComponent implements OnInit {
   columns: TFColumn[];
   projectId: number;
 
-  public defSort = { property: 'name', order: 'desc' };
+  public defSort = { property: 'name', order: TFOrder.desc };
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
@@ -66,6 +66,7 @@ export class ListMilestoneComponent implements OnInit {
   }
 
   async updateMilestone(milestone: Milestone) {
+    milestone.project_id = this.projectId;
     await this.milestoneService.createMilestone(milestone);
     return this.milestoneService.handleSuccess(`The milestone '${milestone.name}' was updated.`);
   }

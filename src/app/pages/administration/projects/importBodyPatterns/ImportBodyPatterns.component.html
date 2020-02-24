@@ -1,16 +1,18 @@
 <div class="row">
     <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'" [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]"
         (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
-    <div *ngIf="projects" class="col-md-12 vert-aligned">
+
+    <div *ngIf="projects" class="col-md-12 form-row">
         <label class="col-md-2 label-inline control-label">Select Project:</label>
         <div class="col-sm-3">
             <lookup-autocomplete placeholder="Select Project" [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects" [model]="selectedProject"
                 (modelChange)="onProjectChange($event)"></lookup-autocomplete>
         </div>
     </div>
-    <div class="col-sm-12 top-padding-md">
-        <table-filter *ngIf="bodyPatterns" [queryParams]="true" [data]="bodyPatterns" [columns]="tableColumns" [allowCreate]="true" [allowDelete]="true"
-            (dataChange)="updatePattern($event)" (action)="handleAction($event)">
-        </table-filter>
-    </div>
+</div>
+
+<div class="col-sm-12 top-padding-md">
+    <table-filter *ngIf="bodyPatterns" [queryParams]="true" [data]="bodyPatterns" [columns]="tableColumns" [allowCreate]="true" [allowDelete]="true"
+        (dataChange)="updatePattern($event)" (action)="handleAction($event)">
+    </table-filter>
 </div>

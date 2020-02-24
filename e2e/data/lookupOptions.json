@@ -1,6 +1,6 @@
 {
     "global": {
-        "none":{
+        "none": {
             "name": "None",
             "index": -1
         },
@@ -9,17 +9,17 @@
             "color": "Primary",
             "index": 0
         },
-        "appIssue":{
+        "appIssue": {
             "name": "Application Issue",
             "color": "Danger",
             "index": 1
         },
-        "environmentIssue":{
+        "environmentIssue": {
             "name": "Environment Issue",
             "color": "Warning",
             "index": 2
         },
-        "testIssue":{
+        "testIssue": {
             "name": "Test Issue",
             "color": "Warning",
             "index": 3

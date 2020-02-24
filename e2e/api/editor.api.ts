@@ -62,7 +62,7 @@ export class EditorAPI {
     }
 
     public async addTestToSuite(testId: number, suiteId: number) {
-        return sendPost(Endpoints.testToSuite, { testId, suiteId, projectId: this.project.id }, {}, this.token, this.project.id);
+        return sendPost(Endpoints.testToSuite, { testId, suiteId, project_id: this.project.id }, {}, this.token, this.project.id);
     }
 
     public async getSuites(testSuite: TestSuite): Promise<TestSuite[]> {
@@ -82,6 +82,6 @@ export class EditorAPI {
     }
 
     public async removeTestRun(testRunId: number) {
-        return sendDelete(Endpoints.testrun, { id: testRunId, projectId: this.project.id}, null, this.token, this.project.id);
+        return sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id}, null, this.token, this.project.id);
     }
 }

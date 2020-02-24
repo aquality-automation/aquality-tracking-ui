@@ -182,7 +182,7 @@ class TestRunView extends BasePage {
     return +(url.match(regexp)[1]);
   }
 
-  checkIfTableEqualToCSv(path: string): Promise<{ result: boolean, message: string }> {
+  checkIfTableEqualToCSV(path: string): Promise<{ result: boolean, message: string }> {
     return elements.resultsTable.checkIfTableEqualToCSv(path);
   }
 }

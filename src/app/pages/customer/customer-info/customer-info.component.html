@@ -7,37 +7,45 @@
 </div>
 <div class="col-md-12 container" *ngIf="customer">
   <div class="left-side clearfix">
-    <div class="inline info-panel panel panel-default no-padding margin-bottom-10">
-      <div class="panel-heading">Customer
-        <div class="btn-group pull-right">
-          <button *ngIf="canEdit" class="btn btn-success btn-sm panel-button" (click)="updateCustomer()" [disabled]="!IsFormValid()">Save</button>
+    <div class="inline info-panel card">
+      <div class="card-body">
+
+        <div class="card-title">Customer
+          <div class="btn-group pull-right">
+            <button *ngIf="canEdit" class="btn btn-success btn-sm panel-button" (click)="updateCustomer()"
+              [disabled]="!IsFormValid()">Save</button>
+          </div>
         </div>
-      </div>
-      <div class="panel-body">
-        <div class="col-sm-12 fields-row no-padding">
+
+        <div class="form-row">
           <div class="col-sm-6 col-label">
             <label for="name" class="label-inline">Name:</label>
           </div>
           <div class="col-sm-6 col-field no-padding">
-            <inline-editor [disabledInline]="!canEdit" maxLength="150" [name]="name" (onError)="nameError($event)" min="3" placeholder="Name" type="text" trim="blur"
-              [(ngModel)]="customer.name" [required]="true"></inline-editor>
+            <inline-editor [disabledInline]="!canEdit" maxLength="150" [name]="name" (onError)="nameError($event)"
+              min="3" placeholder="Name" type="text" trim="blur" [(ngModel)]="customer.name" [required]="true">
+            </inline-editor>
           </div>
         </div>
-        <div class="col-sm-12 fields-row no-padding">
+
+        <div class="form-row">
           <div class="col-sm-6 col-label">
             <label for="coordinator" class="label-inline">Unit Coordinator:</label>
           </div>
           <div class="col-sm-6 col-field no-padding" [ngClass]="{'ci-label-inline': !canEdit}">
-            <lookup-autocomplete [disabled]="!canEdit" id="coordinator" name="coordinator" *ngIf="coordinators" [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']"
-              [array]="coordinators" [(model)]="customer.coordinator" placeholder="Unit Coordinator"></lookup-autocomplete>
+            <lookup-autocomplete [disabled]="!canEdit" id="coordinator" name="coordinator" *ngIf="coordinators"
+              [allowEmptyValue]="false" [propertiesToShow]="['first_name', 'second_name']" [array]="coordinators"
+              [(model)]="customer.coordinator" placeholder="Unit Coordinator"></lookup-autocomplete>
           </div>
         </div>
+
       </div>
     </div>
   </div>
+
   <div class="right-side no-padding clearfix">
-    <table-filter *ngIf="customer" [data]="customer.projects" [columns]="columns" [defaultSortBy]="defSort" [queryParams]="true"
-      (rowClick)="rowClicked($event)" (dataChange)="updateProj($event)" rowsOnPage="10" 
+    <table-filter *ngIf="customer" [data]="customer.projects" [columns]="columns" [defaultSortBy]="defSort"
+      [queryParams]="true" (rowClick)="rowClicked($event)" (dataChange)="updateProj($event)" rowsOnPage="10"
       [allowCreate]="allowCreate" (action)="handleAction($event)"></table-filter>
   </div>
 </div>

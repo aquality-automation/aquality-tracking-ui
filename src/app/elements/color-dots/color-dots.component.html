@@ -1,0 +1,10 @@
+<div class="color-dots-container">
+  <span *ngFor="let color of numericColors; let i=index" class="badge" [ngClass]="{
+    'badge-danger': color === 1,
+    'badge-primary': color === 3,
+    'badge-warning': color === 2,
+    'badge-info': color === 4,
+    'badge-success': color === 5
+  }"></span>
+
+</div>

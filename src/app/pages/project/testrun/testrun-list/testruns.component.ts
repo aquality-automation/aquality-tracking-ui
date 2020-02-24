@@ -13,7 +13,7 @@ import { TestResultService } from '../../../../services/test-result.service';
 import { TestResultStat } from '../../../../shared/models/test-result';
 import { UserService } from '../../../../services/user.services';
 import { TableFilterComponent } from '../../../../elements/table/table.filter.component';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
@@ -43,7 +43,7 @@ export class TestRunsComponent implements OnInit {
   suites: TestSuite[];
   tbCols: TFColumn[];
   hiddenCols: any[];
-  sortBy: { property: 'start_time', order: 'desc' };
+  sortBy: { property: 'start_time', order: TFOrder.desc };
   @ViewChild(TableFilterComponent) testRunsTable: TableFilterComponent;
 
   constructor(

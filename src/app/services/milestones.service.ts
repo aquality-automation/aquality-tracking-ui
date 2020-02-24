@@ -17,11 +17,12 @@ export class MilestoneService extends SimpleRequester {
   }
 
   removeMilestone(milestone: Milestone) {
-    return this.doDelete(`/milestone?id=${milestone.id}`, )
+    return this.doDelete(`/milestone?id=${milestone.id}&project_id=${milestone.project_id}`, )
       .map(() => this.handleSuccess(`Milestone '${milestone.name}' was deleted.`)).toPromise();
   }
 
   getMilestoneResults(milestone: Milestone): Promise<TestResult[]> {
-    return this.doGet(`/milestone/results`, { milestoneId : milestone.id}, true).map(res => res.json()).toPromise();
+    return this.doGet(`/milestone/results`,
+     { milestoneId : milestone.id, project_id: milestone.project_id}, true).map(res => res.json()).toPromise();
   }
 }

@@ -4,7 +4,7 @@ import { UserService } from '../../../services/user.services';
 import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../shared/models/customer';
 import { User } from '../../../shared/models/user';
-import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
+import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class CustomerComponent implements OnInit {
     coordinators: User[];
     accountManagers: User[];
     users: User[];
-    defSort = { property: 'name', order: 'desc' };
+    defSort = { property: 'name', order: TFOrder.desc };
     columns: TFColumn[];
     customerToRemove: Customer;
     hideModal = true;

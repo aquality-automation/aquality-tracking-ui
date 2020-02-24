@@ -1,11 +1,11 @@
-<div *ngIf="suite_stats && suite_stats.length > 0" class="holder">
+<div *ngIf="suite_stats && suite_stats.length > 0" class="holder form-row">
   <div *ngFor="let suite of suite_stats" class="no-padding" [ngClass]="{
-    'col-sm-3': suite_stats.length < 13,
-    'col-sm-2': suite_stats.length > 12
+    'col-sm-3': suite_stats.length < 13 || detailed,
+    'col-sm-2': suite_stats.length > 12 && !detailed
   }">
     <div class="card clearfix" [ngClass]="{
-      'card-holder': suite_stats.length < 13,
-      'card-holder-sm': suite_stats.length > 12
+      'card-holder': suite_stats.length < 13 || detailed,
+      'card-holder-sm': suite_stats.length > 12 && !detailed
     }">
       <div class="suite_name_holder">
         <h3 class="suite_name CropLongTexts" [title]="suite.name">{{suite.name}}</h3>
@@ -29,41 +29,43 @@
 
 <div class="settings-bar" [@slideInOut]="settingsBar">
   <div class="settings-toggler" (click)="toggleSideBar()">
-    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true" [ngClass]="{
-        'glyphicon-chevron-left': settingsBar =='in',
-        'glyphicon-chevron-right': settingsBar =='out'
-      }"></span>
+    <div class="icon-holder">
+      <fa-icon *ngIf="settingsBar =='out'" class="icon" [icon]="icons.faChevronRight"></fa-icon>
+      <fa-icon *ngIf="settingsBar =='in'" class="icon" [icon]="icons.faChevronLeft"></fa-icon>
+    </div>
   </div>
   <div *ngIf="settingsBar" class="settings-content">
-    <div *ngIf="settingsBar" class="col-sm-12">
+
+    <div *ngIf="settingsBar" class="col-sm-12 form-row">
       <button id="autoRefresh" class="btn btn-sm autoRefresh" title="Auto Refresh" (click)="autoRefresh()" [ngClass]="{
       'btn-success' : refreshStatus,
-      'btn-default' : !refreshStatus
+      'btn-secondary' : !refreshStatus
       }">
         Auto Refresh
-        <span class="glyphicon glyphicon-refresh" [ngClass]="{
-          'glyphicon-refresh-animate' : refreshStatus
-      }"></span>
+        <fa-icon class="icon" [icon]="icons.faSyncAlt" [ngClass]="{
+            'glyphicon-refresh-animate' : refreshStatus
+        }">
+        </fa-icon>
       </button>
     </div>
     
-    <div *ngIf="settingsBar" class="col-sm-12">
+    <div *ngIf="settingsBar" class="col-sm-12 form-row">
       <ui-switch class="pull-left" id="detailed" size="small" [ngModel]="detailed" (change)="generateChartsData($event)">
       </ui-switch>
       <label class="pull-left ui-switch-sm-label" for="detailed">Detailed</label>
     </div>
   
-    <div *ngIf="settingsBar" class="col-sm-12">
+    <div *ngIf="settingsBar" class="col-sm-12 form-row">
       <label for="suites">Suites</label>
       <lookup-autocomplete-multiselect id="suites" placeholder="Select Suites" [propertiesToShow]="['name']"
         [array]="suites" [model]="suitesToShow" (onClosed)="updateSuites($event)"></lookup-autocomplete-multiselect>
     </div>
   
   
-    <div *ngIf="settingsBar" class="col-sm-12">
+    <div *ngIf="settingsBar" class="col-sm-12 form-row">
       <div class="input-group input-group-sm">
         <input type="text" class="form-control" id="name" placeholder="Name" [(ngModel)]="newDashboardName">
-        <span class="input-group-btn">
+        <span class="input-group-append">
           <button type="button" class="btn btn-success" (click)="saveDashboard()"
             [disabled]="!isDashboardNameValid()">Save</button>
         </span>
@@ -75,8 +77,7 @@
       <ul class="dashboards-list">
         <li class="clearfix" *ngFor="let dashboard of dashboards">
           <p class="pull-left no-margin" (click)="selectDashboard(dashboard)">{{dashboard.name}}</p>
-          <span *ngIf="!dashboard.notDeletable" class="glyphicon glyphicon-remove pull-right"
-            (click)="removeDashboard(dashboard)"></span>
+          <fa-icon *ngIf="!dashboard.notDeletable" class="icon pull-right" [icon]="icons.faTimes" (click)="removeDashboard(dashboard)"></fa-icon>
         </li>
       </ul>
     </div>
