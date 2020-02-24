@@ -1,20 +1,23 @@
-import { Component, Input, OnChanges, ViewChild, EventEmitter, Output} from '@angular/core';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestResultService } from '../../../services/test-result.service';
-import { TestResult } from '../../../shared/models/test-result';
-import { ResultResolution } from '../../../shared/models/result_resolution';
-import { ResultResolutionService } from '../../../services/result-resolution.service';
-import { BaseChartDirective } from 'ng2-charts';
-import { Router, ActivatedRoute } from '@angular/router';
+import {
+  Component,
+  Input,
+  OnChanges,
+  ViewChild,
+  EventEmitter,
+  Output
+} from "@angular/core";
+import { SimpleRequester } from "../../../services/simple-requester";
+import { TestResultService } from "../../../services/test-result.service";
+import { TestResult } from "../../../shared/models/test-result";
+import { ResultResolution } from "../../../shared/models/result_resolution";
+import { ResultResolutionService } from "../../../services/result-resolution.service";
+import { BaseChartDirective } from "ng2-charts";
+import { colors } from "../../../shared/colors.service";
 
 @Component({
-  selector: 'result-resolution-chart',
-  templateUrl: './resultResolutions.charts.component.html',
-  providers: [
-    SimpleRequester,
-    ResultResolutionService,
-    TestResultService
-  ]
+  selector: "result-resolution-chart",
+  templateUrl: "./resultResolutions.charts.component.html",
+  providers: [SimpleRequester, ResultResolutionService, TestResultService]
 })
 export class ResultResolutionsChartsComponent implements OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
@@ -25,36 +28,39 @@ export class ResultResolutionsChartsComponent implements OnChanges {
   listOfResultResolutions: ResultResolution[];
   doughnutChartLabels: string[] = [];
   doughnutChartData: number[] = [];
-  chartColors: any[]= [];
-  doughnutChartType = 'doughnut';
+  chartColors: any[] = [];
+  doughnutChartType = "doughnut";
   chartOptions: any = {
     legend: {
       display: true,
-      position: 'left',
+      position: "left",
       labels: {
         boxWidth: 20
       }
     }
   };
 
-  constructor(
-    private resultResolutionService: ResultResolutionService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  constructor(private resultResolutionService: ResultResolutionService) {}
 
   ngOnChanges() {
-    this.resultResolutionService.getResolution().subscribe(result => {
-      this.listOfResultResolutions = result;
-      this.getData();
-    }, error => this.resultResolutionService.handleError(error));
+    this.resultResolutionService.getResolution().subscribe(
+      result => {
+        this.listOfResultResolutions = result;
+        this.getData();
+      },
+      error => this.resultResolutionService.handleError(error)
+    );
   }
 
   getData() {
     if (this.includeNotExecuted) {
-      this.shownTestResults = this.testResults.filter(x => x.debug === 0 && (x.final_result.id !== 2));
+      this.shownTestResults = this.testResults.filter(
+        x => x.debug === 0 && x.final_result.id !== 2
+      );
     } else {
-      this.shownTestResults = this.testResults.filter(x => x.debug === 0 && x.final_result.id !== 2 && x.final_result.id !== 3);
+      this.shownTestResults = this.testResults.filter(
+        x => x.debug === 0 && x.final_result.id !== 2 && x.final_result.id !== 3
+      );
     }
     this.fillChartData();
     this.fillChartColors();
@@ -73,54 +79,65 @@ export class ResultResolutionsChartsComponent implements OnChanges {
   fillChartLabels() {
     this.doughnutChartLabels = [];
     for (const resultResolution of this.listOfResultResolutions) {
-      this.doughnutChartLabels.push(resultResolution.name + this.calculatePrecentageAndCount(resultResolution.name));
+      this.doughnutChartLabels.push(
+        resultResolution.name +
+          this.calculatePrecentageAndCount(resultResolution.name)
+      );
     }
   }
 
   fillChartData() {
     this.doughnutChartData = [];
     for (const resultResolution of this.listOfResultResolutions) {
-      this.doughnutChartData.push(this.shownTestResults.filter(x => x.test_resolution.name === resultResolution.name).length);
+      this.doughnutChartData.push(
+        this.shownTestResults.filter(
+          x => x.test_resolution.name === resultResolution.name
+        ).length
+      );
     }
   }
 
   calculatePrecentageAndCount(resultResolution: String): String {
-    const num = this.shownTestResults.filter(x => x.test_resolution.name === resultResolution).length;
-    const percentage = num / this.shownTestResults.length * 100;
+    const num = this.shownTestResults.filter(
+      x => x.test_resolution.name === resultResolution
+    ).length;
+    const percentage = (num / this.shownTestResults.length) * 100;
     return ` | ${percentage.toFixed(1)}% | ${num}`;
   }
 
   fillChartColors() {
-    const colors: any[] = [];
+    const backgroundColors: any[] = [];
     for (const resultResolution of this.listOfResultResolutions) {
       switch (resultResolution.color) {
         case 1:
-          colors.push('#CC0000'); // danger
+          backgroundColors.push(colors.danger.fill);
           break;
         case 2:
-          colors.push('#FF6600'); // warning
+          backgroundColors.push(colors.warning.fill);
           break;
         case 3:
-          colors.push('#3366FF'); // primary
+          backgroundColors.push(colors.primary.fill);
           break;
         case 4:
-          colors.push('#5bc0de'); // info
+          backgroundColors.push(colors.info.fill);
           break;
         case 5:
-          colors.push('#5cb85c'); // success
+          backgroundColors.push(colors.success.fill);
           break;
         default:
-          colors.push('#e5e9ec'); // white
+          backgroundColors.push(colors.point.stroke);
       }
     }
-    this.chartColors = [{ backgroundColor: colors }];
+    this.chartColors = [{ backgroundColor: backgroundColors }];
   }
 
   chartClicked(event: any): void {
     if (event.active[0]) {
       const dataIndex = event.active[0]._index;
       const label: string = this.chart.labels[dataIndex].toString();
-      const clickedResolution = this.listOfResultResolutions.find(x => label.startsWith(x.name));
+      const clickedResolution = this.listOfResultResolutions.find(x =>
+        label.startsWith(x.name)
+      );
       this.clickedResult.emit(clickedResolution);
     }
   }
