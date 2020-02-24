@@ -20,9 +20,9 @@ const serializeToQueryString = (object: object) => {
         return '';
     }
     const str = [];
-    for (const proprty in object) {
-        if (object.hasOwnProperty(proprty)) {
-            str.push(encodeURIComponent(proprty) + '=' + encodeURIComponent(object[proprty]));
+    for (const property in object) {
+        if (object.hasOwnProperty(property)) {
+            str.push(encodeURIComponent(property) + '=' + encodeURIComponent(object[property]));
         }
     }
     return `?${str.join('&')}`;

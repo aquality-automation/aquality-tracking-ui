@@ -7,6 +7,7 @@ Features:
   - Test Run view: Add stability indicator -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/60)
 
 Bugfixes:
+  - Csv export with special symbols -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/36)
 
 ## 0.3.5 (2020-02-15)
 
