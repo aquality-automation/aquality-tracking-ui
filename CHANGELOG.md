@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.3.7 (unreleased)
+
+Features:
+  - Improve Test Run and Test List page performance -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/71)
+  - Exclude Debug results from last results column -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/70)
+
+Bugfixes:
+
 ## 0.3.6 (2020-02-24)
 
 Features:
