@@ -5,10 +5,14 @@ import { Test } from '../../../src/app/shared/models/test';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 import { ProjectHelper } from '../../helpers/project.helper';
+import { TestResult } from '../../../src/app/shared/models/test-result';
+import { TestRun } from '../../../src/app/shared/models/testRun';
 
 let test: Test = { name: 'Project can be opened from Projects list' };
 let suite1: Test = { name: 'First Suite' };
 let suite2: Test = { name: 'Second Suite' };
+let result: TestResult = { final_result_id: 1 };
+let test_run: TestRun = { build_name: 'build_1' };
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -21,7 +25,7 @@ const notEditorExamples = {
     viewer: usersTestData.viewer
 };
 
-describe('Tests List:', () => {
+fdescribe('Tests List:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
@@ -35,6 +39,11 @@ describe('Tests List:', () => {
         test = await projectHelper.editorAPI.createTest(test);
         suite1 = await projectHelper.editorAPI.createSuite(suite1);
         suite2 = await projectHelper.editorAPI.createSuite(suite2);
+        test_run.test_suite_id = suite1.id;
+        test_run = await projectHelper.editorAPI.createTestRun(test_run);
+        result.test_id = test.id;
+        result.test_run_id = test_run.id;
+        result = await projectHelper.editorAPI.createResult(result);
     });
 
     afterAll(async () => {
@@ -68,6 +77,11 @@ describe('Tests List:', () => {
                 await suiteView.removeSuite(suite1.name, test.name);
                 return expect(suiteView.getTestSuites(test.name)).toEqual([], 'First Suite was not removed');
             });
+
+            it('I can see last result dot', async () => {
+                const count = await suiteView.getTestDotsCount(test.name);
+                return expect(count).toEqual(1, 'Count of result dots is not correct!');
+            });
         });
     });
 
@@ -77,6 +91,10 @@ describe('Tests List:', () => {
                 await logIn.logInAs(user.user_name, user.password);
                 await projectHelper.openProject();
                 return (await projectList.menuBar.tests()).all();
+            });
+
+            it('I can see tests', async () => {
+                return expect(suiteView.isTestPresent(test.name)).toBe(true, 'Cannot see test!');
             });
 
             it('I can see tests', async () => {

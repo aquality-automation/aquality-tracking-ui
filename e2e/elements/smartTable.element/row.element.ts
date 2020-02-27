@@ -8,6 +8,7 @@ import { InlineEditor } from '../inlineEditor.element';
 import { logger } from '../../utils/log.util';
 import { InlineAttach } from '../inlineAttach.element';
 import { Multiselect } from '../multiselect.element';
+import { Dots } from '../dots.element';
 
 export class Row extends BaseElement {
     constructor(locator: ElementFinder | Locator) {
@@ -58,7 +59,8 @@ export class Row extends BaseElement {
             inlineEditor: () => new InlineEditor(cell.element(by.tagName('inline-editor'))),
             lookup: () => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
             inlineAttachment: () => new InlineAttach(cell.element(by.xpath('.//attachment-inline'))),
-            multiselect: () => new Multiselect(cell.element(by.xpath('.//lookup-autocomplete-multiselect')))
+            multiselect: () => new Multiselect(cell.element(by.xpath('.//lookup-autocomplete-multiselect'))),
+            dots: () => new Dots(cell.element(by.xpath('.//app-color-dots')))
         };
     }
 
@@ -196,4 +198,5 @@ export class CellElements {
     lookup: () => Lookup;
     inlineAttachment: () => InlineAttach;
     multiselect: () => Multiselect;
+    dots: () => Dots;
 }
