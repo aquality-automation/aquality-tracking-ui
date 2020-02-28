@@ -22,5 +22,6 @@ export const columns = {
     test: 'Test',
     finished: 'Finished',
     result: 'Result',
-    resolution: 'Resolution'
+    resolution: 'Resolution',
+    testrun: 'Test Run'
 };
