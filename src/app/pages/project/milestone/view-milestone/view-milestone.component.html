@@ -7,6 +7,16 @@
     <labeled-switch class="pull-right" id="stack-suites" label="Distinct Tests" size="small" [ngModel]="stackSuites"
     (ngModelChange)="updateStackSuites($event)" title="Show Latest results by uniq Test or by uniq Suite and Test"></labeled-switch>
   </div>
+  <hr class="col-sm-12 no-padding">
+  <div class="col-sm-12">
+    <label>Selected Suites:</label>
+    <lookup-autocomplete-multiselect id="suites" *ngIf="suites" placeholder="Selected Suites"
+        [propertiesToShow]="['name']" [array]="suites" [(model)]="milestone.suites" (onClosed)="updateMilestone()">
+    </lookup-autocomplete-multiselect>
+  </div>
+  <div *ngIf="notExecutedSuites" class="col-sm-12">
+    <p><b>Not Executed Suites:</b> {{notExecutedSuites}}</p>
+  </div>
 </div>
 <hr class="col-sm-12 no-padding">
 <div class="row">

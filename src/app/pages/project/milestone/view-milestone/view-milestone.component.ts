@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MilestoneService } from '../../../../services/milestones.service';
@@ -18,12 +18,13 @@ import { ResultResolutionsChartsComponent } from '../../../../elements/charts/re
 import { FinalResultChartsComponent } from '../../../../elements/charts/finalResults/finalResults.charts.component';
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   templateUrl: './view-milestone.component.html',
   styleUrls: ['./view-milestone.component.css']
 })
-export class ViewMilestoneComponent implements OnInit {
+export class ViewMilestoneComponent implements OnInit, OnDestroy {
 
   constructor(
     public userService: UserService,
@@ -52,14 +53,24 @@ export class ViewMilestoneComponent implements OnInit {
   columns: TFColumn[];
   stackSuites = false;
   sortBy = { order: TFOrder.desc, property: 'result.final_result.name' };
+  paramsSubscription: Subscription;
+  notExecutedSuites: string;
 
   async ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.paramsSubscription = this.route.params.subscribe(params => {
       this.milestone = {
         project_id: params.projectId,
         id: params.milestoneId
       };
     });
+    await this.updateData();
+  }
+
+  ngOnDestroy(): void {
+    this.paramsSubscription.unsubscribe();
+  }
+
+  async updateData() {
     const milestones = await this.milestoneService.getMilestone(this.milestone);
     if (milestones.length !== 1) {
       this.router.navigate(['**']);
@@ -74,9 +85,11 @@ export class ViewMilestoneComponent implements OnInit {
       this.tests
     ] = await this.getInitialInfo();
 
-    this.viewData = this.getData();
-    this.resultsToShow = this.getResultsFromViewData();
     this.columns = this.getColumns();
+    this.updateStackSuites(this.stackSuites);
+    const notExecutedSuites = (this.milestone.suites.filter(suite => !this.testRuns.find(x => x.test_suite_id === suite.id)))
+      .map(x => x.name);
+    this.notExecutedSuites = notExecutedSuites.join(', ');
   }
 
   async updateStackSuites(state: boolean) {
@@ -102,53 +115,34 @@ export class ViewMilestoneComponent implements OnInit {
     const viewData: ViewData[] = [];
 
     this.tests.forEach(test => {
-      if (test.suites.length > 0) {
-        if (!this.stackSuites) {
-          test.suites.forEach(suite => {
-            const testLatestResult = this.findLatestResult(this.latestResults, test, suite, this.testRuns);
+      if (this.isTestFromSelectedSuites(test)) {
+        if (test.suites && test.suites.length > 0) {
+          if (!this.stackSuites) {
+            test.suites.forEach(suite => {
+              if (this.isSuiteFromSelectedSuites(suite)) {
+                const testLatestResult = this.findLatestResult(this.latestResults, test, suite);
+                viewData.push({
+                  testName: test.name,
+                  suite: suite,
+                  result: testLatestResult
+                });
+              }
+            });
+          } else {
+            const testLatestResult = this.findLatestResult(this.latestResults, test);
             viewData.push({
               testName: test.name,
-              suite: suite,
+              suite: testLatestResult.id
+                ? this.testRuns.find(testRun => testRun.id === testLatestResult.test_run_id).test_suite
+                : { name: 'Any Suite' },
               result: testLatestResult
             });
-          });
-        } else {
-          const testLatestResult = this.findLatestResult(this.latestResults, test);
-          viewData.push({
-            testName: test.name,
-            suite: testLatestResult.id
-              ? this.testRuns.find(testRun => testRun.id === testLatestResult.test_run_id).test_suite
-              : { name: 'Any Suite' },
-            result: testLatestResult
-          });
+          }
         }
       }
     });
 
     return viewData;
-  }
-
-  findLatestResult(results: TestResult[], test: Test, suite?: TestSuite, testRuns?: TestRun[]) {
-    let latest: TestResult;
-    if (suite) {
-      const suiteRuns = testRuns.filter(testRun => testRun.test_suite_id === suite.id);
-      latest = results.find(result => {
-        return result.test_id === test.id && suiteRuns.find(run => run.id === result.test_run_id) !== undefined;
-      });
-    } else {
-      this.transformationsService.sort(results, { order: TFOrder.asc, property: 'finish_date' });
-      latest = results.find(result => result.test_id === test.id);
-    }
-
-    if (!latest) {
-      latest = {
-        final_result: this.finalResults.find(x => x.id === 3),
-        test_resolution: this.resolutions.find(x => x.id === 1),
-        comment: undefined,
-        start_date: undefined
-      };
-    }
-    return latest;
   }
 
   hideTableValue(entity: ViewData, property: string) {
@@ -172,6 +166,55 @@ export class ViewMilestoneComponent implements OnInit {
     );
   }
 
+  async updateMilestone() {
+    await this.milestoneService.createMilestone(this.milestone);
+    await this.updateData();
+    return this.milestoneService.handleSuccess(`The milestone '${this.milestone.name}' was updated.`);
+  }
+
+  private isTestFromSelectedSuites(test: Test) {
+    return test.suites.find(suite => this.isSuiteFromSelectedSuites(suite)) !== undefined;
+  }
+
+  private isSuiteFromSelectedSuites(suite: TestSuite) {
+    return this.milestone.suites.find(x => suite.id === x.id) !== undefined;
+  }
+
+  private findLatestResult(results: TestResult[], test: Test, suite?: TestSuite) {
+    let latest: TestResult;
+    if (suite) {
+      latest = this.findResultFromSuite(test, suite, results);
+    } else {
+      latest = this.findResultFromTest(results, test);
+    }
+
+    if (!latest) {
+      latest = this.getNotExecutedResult();
+    }
+    return latest;
+  }
+
+  private findResultFromTest(results: TestResult[], test: Test): TestResult {
+    this.transformationsService.sort(results, { order: TFOrder.asc, property: 'finish_date' });
+    return results.find(result => result.test_id === test.id);
+  }
+
+  private findResultFromSuite(test: Test, suite: TestSuite, results: TestResult[]): TestResult {
+    const suiteRuns = this.testRuns.filter(testRun => testRun.test_suite_id === suite.id);
+    return results.find(result => {
+      return result.test_id === test.id && suiteRuns.find(run => run.id === result.test_run_id) !== undefined;
+    });
+  }
+
+  private getNotExecutedResult(): TestResult {
+    return {
+      final_result: this.finalResults.find(x => x.id === 3),
+      test_resolution: this.resolutions.find(x => x.id === 1),
+      comment: undefined,
+      start_date: undefined
+    };
+  }
+
   private getColumns(): TFColumn[] {
     return [
       { name: 'Test', property: 'testName', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-150' },
@@ -186,8 +229,16 @@ export class ViewMilestoneComponent implements OnInit {
           values: this.suites
         },
         class: 'fit'
-      },
-      {
+      }, {
+        name: 'Test Run', property: 'result.test_run_id',
+        filter: true,
+        type: TFColumnType.text,
+        link: {
+          template: '/project/{result.project_id}/testrun/{result.test_run_id}',
+          properties: ['result.project_id', 'result.test_run_id']
+        },
+        class: 'fit'
+      }, {
         name: 'Result',
         property: 'result.final_result.name',
         filter: true,
@@ -199,8 +250,7 @@ export class ViewMilestoneComponent implements OnInit {
           propToShow: ['name']
         },
         class: 'fit'
-      },
-      {
+      }, {
         name: 'Resolution',
         property: 'test_resolution.name',
         filter: true,
@@ -223,8 +273,12 @@ export class ViewMilestoneComponent implements OnInit {
   }
 
   private updateCharts() {
-    this.resultResolutionsChart.ngOnChanges();
-    this.finalResultChart.ngOnChanges();
+    if (this.resultResolutionsChart) {
+      this.resultResolutionsChart.ngOnChanges();
+    }
+    if (this.finalResultChart) {
+      this.finalResultChart.ngOnChanges();
+    }
   }
 }
 

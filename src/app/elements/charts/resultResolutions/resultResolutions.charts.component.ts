@@ -5,7 +5,8 @@ import {
   ViewChild,
   EventEmitter,
   Output,
-  OnInit
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
@@ -15,16 +16,18 @@ import { ResultResolutionService } from '../../../services/result-resolution.ser
 import { BaseChartDirective } from 'ng2-charts';
 import { colors } from '../../../shared/colors.service';
 import { GlobalDataService } from '../../../services/globaldata.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'result-resolution-chart',
   templateUrl: './resultResolutions.charts.component.html',
   providers: [SimpleRequester, ResultResolutionService, TestResultService]
 })
-export class ResultResolutionsChartsComponent implements OnChanges, OnInit {
+export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   @Input() testResults: TestResult[];
   @Output() clickedResult = new EventEmitter<ResultResolution>();
+  projectSubscription: Subscription;
   includeNotExecuted = false;
   projectId: number;
   shownTestResults: TestResult[];
@@ -49,12 +52,16 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit {
     ) {}
 
   ngOnInit(): void {
-    this.globalDataService.currentProject$.subscribe(project => {
+    this.projectSubscription = this.globalDataService.currentProject$.subscribe(project => {
       this.projectId = project.id;
     });
   }
 
-  ngOnChanges() {
+  ngOnDestroy(): void {
+    this.projectSubscription.unsubscribe();
+  }
+
+  public ngOnChanges() {
     this.resultResolutionService.getResolution(this.projectId).subscribe(
       result => {
         this.listOfResultResolutions = result;
