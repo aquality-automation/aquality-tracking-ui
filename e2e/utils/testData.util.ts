@@ -103,10 +103,10 @@ class TestData {
      * Find all files recursively in specific folder with specific extension, e.g:
      * findFilesInDir('./project/src', '.html') ==> ['./project/src/a.html','./project/src/build/index.html']
      * @param  {String} startPath    Path relative to this file or other file which requires this files
-     * @param  {String} filter       Extension name, e.g: '.html'
+     * @param  {String} extension    Extension name, e.g: '.html'
      * @return {Array}               Result files with path string in an array
      */
-    findFilesInDir = (pathFromDataFolder, filter: string): Array<string> => {
+    findFilesInDir = (pathFromDataFolder, extension: string): Array<string> => {
         const startPath = this.getFullPath(`${pathFromDataFolder}`);
         let results = [];
 
@@ -120,8 +120,8 @@ class TestData {
             const filename = path.join(startPath, files[i]);
             const stat = fs.lstatSync(filename);
             if (stat.isDirectory()) {
-                results = results.concat(this.findFilesInDir(filename, filter));
-            } else if (filename.indexOf(filter) >= 0) {
+                results = results.concat(this.findFilesInDir(filename, extension));
+            } else if (filename.endsWith(extension)) {
                 logger.info(`Found File: ${filename}`);
                 results.push(filename);
             }
