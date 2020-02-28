@@ -5,6 +5,8 @@
 Features:
   - Improve Test Run and Test List page performance -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/71)
   - Exclude Debug results from last results column -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/70)
+  - Milestone: Add selected Suites to milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/63)
+  - Milestone: Add not executed suites -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/64)
 
 Bugfixes:
 
