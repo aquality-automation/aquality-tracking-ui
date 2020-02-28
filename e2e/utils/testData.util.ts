@@ -45,6 +45,7 @@ class TestData {
                 if (err) {
                     reject(err.message);
                 }
+                logger.info(`\n${data.toString()}\n`);
                 resolve(data.toString());
             });
         });
