@@ -115,8 +115,8 @@ export class TestSuiteViewComponent implements OnInit {
     }
 
     this.testSuite.tests.forEach(test => {
-      test['combinedLastResults'] = this.testService.combineLastResults(test.lastResultColors);
-      test['entitiesId'] = this.testService.getLastResultsId(test.lastResultColors);
+      test['combinedLastResults'] = this.testService.combineLastResults(test);
+      test['entitiesId'] = this.testService.getLastResultsId(test);
     });
   }
 

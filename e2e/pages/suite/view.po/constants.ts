@@ -25,5 +25,6 @@ export const columns = {
     name: 'Name',
     developer: 'Developer',
     suites: 'Suites',
-    manualDuration: 'Manual Duration'
+    manualDuration: 'Manual Duration',
+    lastResults: 'Last Results'
 };

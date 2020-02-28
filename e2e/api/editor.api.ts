@@ -6,6 +6,7 @@ import { Milestone } from '../../src/app/shared/models/milestone';
 import { sendPost, sendGet, sendDelete } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { Project } from '../../src/app/shared/models/project';
+import { ResultResolution } from '../../src/app/shared/models/result_resolution';
 
 enum Endpoints {
     suite = '/suite',
@@ -53,6 +54,7 @@ export class EditorAPI {
     }
 
     public async createResult(testResult: TestResult): Promise<TestResult> {
+        testResult.project_id = this.project.id;
         return sendPost(Endpoints.testresult, undefined, testResult, this.token, this.project.id);
     }
 

@@ -77,7 +77,7 @@ export class ResultGridComponent implements OnInit {
       result['testrun'] = testruns.find(x => x.id === result.test_run_id);
       if (result.final_result.color === 5) { result.test_resolution = undefined; }
       result['duration'] = this.calculateDuration(result);
-      result['combinedLastResults'] = this.testService.combineLastResults(result.test.lastResultColors);
+      result['combinedLastResults'] = this.testService.combineLastResults(result.test);
     });
 
     this.createColumns();
