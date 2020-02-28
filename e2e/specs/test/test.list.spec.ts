@@ -2,11 +2,11 @@ import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { suiteView } from '../../pages/suite/view.po';
 import { Test } from '../../../src/app/shared/models/test';
-import usersTestData from '../../data/users.json';
-import using from 'jasmine-data-provider';
 import { ProjectHelper } from '../../helpers/project.helper';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 import { TestRun } from '../../../src/app/shared/models/testRun';
+import usersTestData from '../../data/users.json';
+import using from 'jasmine-data-provider';
 
 let test: Test = { name: 'Project can be opened from Projects list' };
 let suite1: Test = { name: 'First Suite' };
@@ -25,7 +25,7 @@ const notEditorExamples = {
     viewer: usersTestData.viewer
 };
 
-fdescribe('Tests List:', () => {
+describe('Tests List:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
