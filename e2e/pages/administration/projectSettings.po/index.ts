@@ -37,10 +37,19 @@ class ProjectSettingsAdministration extends AdministrationBase {
       return this.modal.clickYes();
     }
   }
+
+  getNumberOfResultsToTrackStability() {
+    return elements.stabilityResultsCount.getValue();
+  }
+
+  setNumberOfResultsToTrackStability(value: number) {
+    return elements.stabilityResultsCount.typeText(`${value}`);
+  }
 }
 
 export class ProjectSettings {
   stepsState: boolean;
+  stabilityResultsCount?: number;
 }
 
 export const projectSettingsAdministration = new ProjectSettingsAdministration();

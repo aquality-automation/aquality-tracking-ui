@@ -5,6 +5,8 @@ import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
 import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
+import { TestSuite } from '../../../../shared/models/testSuite';
+import { TestSuiteService } from '../../../../services/testSuite.service';
 
 @Component({
   templateUrl: './list-milestone.component.html',
@@ -17,6 +19,7 @@ export class ListMilestoneComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private milestoneService: MilestoneService,
+    private suiteService: TestSuiteService,
     private permissions: PermissionsService
   ) { }
 
@@ -28,11 +31,13 @@ export class ListMilestoneComponent implements OnInit {
   milestoneToRemove: Milestone;
   columns: TFColumn[];
   projectId: number;
+  suites: TestSuite[];
 
-  public defSort = { property: 'name', order: TFOrder.desc };
+  public defSort = { property: 'due_date', order: TFOrder.asc };
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
+    this.suites = await this.suiteService.getTestSuite({ project_id: this.projectId });
     this.milestones = await this.getMilestones();
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
@@ -44,16 +49,44 @@ export class ListMilestoneComponent implements OnInit {
         type: TFColumnType.text,
         class: 'fit',
       }, {
+        name: 'Active',
+        property: 'active',
+        filter: true,
+        type: TFColumnType.checkbox,
+        editable: this.canEdit,
+        notEditableByProperty: { property: 'active', value: false }
+      }, {
         name: 'Name',
         property: 'name',
         filter: true,
         sorting: true,
         type: TFColumnType.text,
         editable: this.canEdit,
+        notEditableByProperty: { property: 'active', value: false },
         creation: {
           creationLength: 500,
           required: true
         }
+      }, {
+        name: 'Suites',
+        property: 'suites',
+        filter: true,
+        type: TFColumnType.multiselect,
+        editable: this.canEdit,
+        notEditableByProperty: { property: 'active', value: false },
+        lookup: {
+          entity: 'suites',
+          propToShow: ['name'],
+          values: this.suites,
+        }
+      }, {
+        name: 'Due Date',
+        property: 'due_date',
+        sorting: true,
+        type: TFColumnType.date,
+        format: 'MMM dd, yyyy',
+        notEditableByProperty: { property: 'active', value: false },
+        editable: this.canEdit
       }];
   }
 
@@ -62,7 +95,7 @@ export class ListMilestoneComponent implements OnInit {
   }
 
   getMilestones() {
-    return this.milestoneService.getMilestone({project_id: this.projectId});
+    return this.milestoneService.getMilestone({ project_id: this.projectId });
   }
 
   async updateMilestone(milestone: Milestone) {
@@ -99,6 +132,8 @@ export class ListMilestoneComponent implements OnInit {
       this.milestones = await this.getMilestones();
     }
   }
+
+
 
   wasClosed(state: boolean) {
     this.hideModal = state;

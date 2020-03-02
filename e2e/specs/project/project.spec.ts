@@ -44,13 +44,13 @@ describe('Full Admin Project', () => {
       return expect(projectCreate.isCreateButtonEnabled()).toBe(true);
     });
 
-    it('Redirected to List after success project creation', async () => {
+    it('Message about creation is shown', async () => {
       await projectCreate.clickCreateButton();
-      return expect(projectList.isOpened()).toEqual(true);
+      return projectList.notification.assertIsSuccess(`${project.name} project is created!`);
     });
 
-    it('Message about creation is shown', async () => {
-      return projectList.notification.assertIsSuccess(`${project.name} project is created!`);
+    it('Redirected to List after success project creation', async () => {
+      return expect(projectList.isOpened()).toEqual(true);
     });
 
     it(`Project is in list after creation`, async () => {

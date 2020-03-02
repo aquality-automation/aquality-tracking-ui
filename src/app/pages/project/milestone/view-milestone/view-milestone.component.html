@@ -1,20 +1,45 @@
 <div *ngIf="milestone" class="panel-heading form-row">
-  <div class="col-sm-9">
-    <h2 id="milestone-view">Milestone {{milestone.name}}</h2>
+  <div class="col-sm-6">
+    <h2 id="milestone-view">Milestone {{milestone.name}}
+      <fa-icon *ngIf="warningMessage" class="warning-icon" [icon]="icons.faExclamationTriangle" [title]="warningMessage"></fa-icon>
+    </h2>
   </div>
-
-  <div class="col-sm-3">
+  <div class="col-sm-2 due-date-wrapper">
+    <label>Due Date:</label>
+    <ng-datepicker id="due-date" class="due-date" [(ngModel)]="milestone.due_date"
+      (ngModelChange)="updateMilestone()" [options]="optionsFrom" [disabled]="!canEdit || !milestone.active">
+    </ng-datepicker>
+  </div>
+  <div class="col-sm-2">
+    <labeled-switch class="pull-right" id="active-switch" label="Active" size="small" [(ngModel)]="milestone.active"
+      (ngModelChange)="updateMilestone()" title="Mark milestone as Active or Inactive" [disabled]="!canEdit"></labeled-switch>
+  </div>
+  <div class="col-sm-2">
     <labeled-switch class="pull-right" id="stack-suites" label="Distinct Tests" size="small" [ngModel]="stackSuites"
-    (ngModelChange)="updateStackSuites($event)" title="Show Latest results by uniq Test or by uniq Suite and Test"></labeled-switch>
+      (ngModelChange)="updateStackSuites($event)" title="Show Latest results by uniq Test or by uniq Suite and Test">
+    </labeled-switch>
+  </div>
+  <hr class="col-sm-12 no-padding">
+  <div class="col-sm-12">
+    <label><b>Selected Suites:</b></label>
+    <lookup-autocomplete-multiselect id="suites" *ngIf="suites" placeholder="Selected Suites" [disabled]="!canEdit || !milestone.active"
+      [propertiesToShow]="['name']" [array]="suites" [(model)]="milestone.suites" (onClosed)="updateMilestone()">
+    </lookup-autocomplete-multiselect>
+  </div>
+  <div *ngIf="notExecutedSuites" class="col-sm-12">
+    <p><b>Not Executed Suites:</b></p>
+    <p>{{notExecutedSuites}}</p>
   </div>
 </div>
 <hr class="col-sm-12 no-padding">
 <div class="row">
   <div class="col-sm-6" *ngIf="resultsToShow">
-    <final-result-chart [testResults]="resultsToShow" (clickedResult)="finalResultChartClick($event)">Loading...</final-result-chart>
+    <final-result-chart [testResults]="resultsToShow" (clickedResult)="finalResultChartClick($event)">Loading...
+    </final-result-chart>
   </div>
   <div class="col-sm-6" *ngIf="resultsToShow">
-    <result-resolution-chart [testResults]="resultsToShow" (clickedResult)="resolutionChartClick($event)">Loading...</result-resolution-chart>
+    <result-resolution-chart [testResults]="resultsToShow" (clickedResult)="resolutionChartClick($event)">Loading...
+    </result-resolution-chart>
   </div>
 </div>
 

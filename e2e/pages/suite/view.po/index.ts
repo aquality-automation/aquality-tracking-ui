@@ -69,6 +69,10 @@ class SuiteView extends BasePage {
   isTestPresent(name: string): Promise<boolean> {
     return elements.testsTable.isRowExists(name, columns.name);
   }
+
+  async getTestDotsCount(name: string): Promise<number> {
+    return (await elements.testsTable.getCellDots(columns.lastResults, name, columns.name)).getDotsCount();
+  }
 }
 
 export const suiteView = new SuiteView();

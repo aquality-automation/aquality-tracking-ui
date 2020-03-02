@@ -14,8 +14,8 @@ class MilestoneView extends BasePage {
         return elements.milestonesTable.checkIfTableEqualToCSv(path);
     }
 
-    removeFinishedColumn() {
-        return elements.milestonesTable.manageColumns.removeColumn(columns.finished);
+    removeGenericColumn() {
+        return elements.milestonesTable.manageColumns.removeColumns([columns.finished, columns.testrun]);
     }
 
     setDistinctTest(state: boolean) {

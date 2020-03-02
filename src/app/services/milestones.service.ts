@@ -8,21 +8,21 @@ import { TestResult } from '../shared/models/test-result';
 @Injectable()
 export class MilestoneService extends SimpleRequester {
 
-  getMilestone(milestone: Milestone ): Promise<Milestone[]> {
+  getMilestone(milestone: Milestone): Promise<Milestone[]> {
     return this.doGet('/milestone', milestone).map(res => res.json()).toPromise();
   }
 
-  createMilestone(milestone: Milestone): Promise<Milestone>  {
+  createMilestone(milestone: Milestone): Promise<Milestone> {
     return this.doPost('/milestone', milestone).map(res => res.json()).toPromise();
   }
 
   removeMilestone(milestone: Milestone) {
-    return this.doDelete(`/milestone?id=${milestone.id}&project_id=${milestone.project_id}`, )
+    return this.doDelete(`/milestone?id=${milestone.id}&project_id=${milestone.project_id}`)
       .map(() => this.handleSuccess(`Milestone '${milestone.name}' was deleted.`)).toPromise();
   }
 
   getMilestoneResults(milestone: Milestone): Promise<TestResult[]> {
     return this.doGet(`/milestone/results`,
-     { milestoneId : milestone.id, project_id: milestone.project_id}, true).map(res => res.json()).toPromise();
+      { milestoneId: milestone.id, project_id: milestone.project_id }, true).map(res => res.json()).toPromise();
   }
 }
