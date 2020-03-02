@@ -771,7 +771,7 @@ angular2-date-picker .wc-date-container>i.fa-calendar {
   float: none !important;
 }
 
-.tf-column .ngx-datepicker-input {
+.tf-column .ngx-datepicker-input, .ft-cell .ngx-datepicker-input {
   font-size: 12px !important;
   min-width: 70px !important;
   width: 70px !important;

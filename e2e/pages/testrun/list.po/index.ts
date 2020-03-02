@@ -16,7 +16,7 @@ class TestRunList extends BasePage {
     }
 
     openTestRun(buildName: string) {
-        return elements.testRunsTable.clickRow(buildName, columns.build);
+        return elements.testRunsTable.clickCell(columns.build, buildName, columns.build);
     }
 
     getTestRunsCount() {

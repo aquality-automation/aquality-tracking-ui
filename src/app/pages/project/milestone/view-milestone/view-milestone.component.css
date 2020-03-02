@@ -1,0 +1,19 @@
+p {
+    margin: 5px 0px;
+}
+
+label {
+    margin: 0;
+}
+
+.due-date {
+    display: inline-table;
+}
+
+.due-date-wrapper { 
+    padding-top: 5px;
+}
+
+.warning-icon {
+    color: var(--warning);
+}

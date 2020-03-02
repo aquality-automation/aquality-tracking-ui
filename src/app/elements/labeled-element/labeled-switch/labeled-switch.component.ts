@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { LabeledBaseComponent } from '../labeled-base.component';
 let identifier = 0;
@@ -13,6 +13,7 @@ let identifier = 0;
 })
 export class LabeledSwitchComponent extends LabeledBaseComponent<boolean> implements OnInit {
   public identifier = `labeled-switch-${identifier++}`;
+  @Input() disabled = false;
 
   constructor() {
     super();

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { SimpleRequester } from '../../../services/simple-requester';
 import { TestResultService } from '../../../services/test-result.service';
 import { FinalResult } from '../../../shared/models/final-result';
@@ -7,6 +7,7 @@ import { TestRunStat } from '../../../shared/models/testrunStats';
 import { ResultResolution } from '../../../shared/models/result_resolution';
 import { GlobalDataService } from '../../../services/globaldata.service';
 import { colors } from '../../../shared/colors.service';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'testrun-result-timeline',
@@ -14,8 +15,9 @@ import { colors } from '../../../shared/colors.service';
   styleUrls: ['./testRun.results.chart.css'],
   providers: [SimpleRequester, FinalResultService, TestResultService]
 })
-export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
+export class TestRunsResultsTimelineComponent implements OnInit, OnChanges, OnDestroy {
   @Input() testRunsStat: TestRunStat[];
+  projectSubscription: Subscription;
   switchState = false;
   switchLabels = {
     result: 'Results',
@@ -92,9 +94,13 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.globaldata.currentProject$.subscribe(
+    this.projectSubscription = this.globaldata.currentProject$.subscribe(
       project => (this.projectId = project.id)
     );
+  }
+
+  ngOnDestroy(): void {
+    this.projectSubscription.unsubscribe();
   }
 
   async ngOnChanges() {

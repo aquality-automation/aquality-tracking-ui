@@ -9,7 +9,7 @@ export class TFColumn {
     lookup?: TFLookup;
     class?: string;
     editable?= false;
-    notEditableByProperty?: string;
+    notEditableByProperty?: TFNotEditable;
     link?: FTLink;
     title?: string;
     listeners?: string[];
@@ -52,6 +52,11 @@ export class TFLookup {
 export class TFDots {
     values: { name: string, only?: number[], contains?: number[] }[];
     propToShow: string[];
+}
+
+export class TFNotEditable {
+    property: string;
+    value: any;
 }
 
 export enum TFOrder {

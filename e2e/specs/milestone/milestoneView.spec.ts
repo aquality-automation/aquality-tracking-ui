@@ -87,7 +87,7 @@ describe('Milestone:', () => {
             await assigneMilestone(importedRuns.login);
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
-            await milestoneView.removeFinishedColumn();
+            await milestoneView.removeGenericColumn();
 
             const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/firstAssignedTestRun.csv');
             return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
@@ -97,10 +97,11 @@ describe('Milestone:', () => {
             const imported = await projectHelper.importer
                 .executeCucumberImport(suites.testRun_Manager, [testRun_ManagerTestRunJson], ['ManagerTestRunJson.json']);
             importedRuns.testRun_Manager = imported[0];
+            await projectHelper.editorAPI.addSuiteToMilestone(milestones.version1.name, suites.testRun_Manager);
 
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
-            await milestoneView.removeFinishedColumn();
+            await milestoneView.removeGenericColumn();
 
             const tableComparisonResult = await milestoneView.checkIfTableEqualToCSv('/expected/milestoneView/assignedAndUnissigned.csv');
             return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
@@ -116,7 +117,7 @@ describe('Milestone:', () => {
 
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
-            await milestoneView.removeFinishedColumn();
+            await milestoneView.removeGenericColumn();
 
             await milestoneView.setDistinctTest(true);
 

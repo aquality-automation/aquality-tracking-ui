@@ -44,7 +44,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
 
   async ngOnInit() {
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
-    this.testResults = this.testResults.filter(x => x.debug === 0);
+    this.testResults = this.testResults.filter(x => x.debug === 0 || x.debug === undefined);
     this.fillChartData();
     this.fillChartLabels();
     this.fillChartColors();
@@ -81,8 +81,7 @@ export class FinalResultChartsComponent implements OnInit, OnChanges {
     this.doughnutChartData = [];
     for (const finalResult of this.listOfFinalResults) {
       this.doughnutChartData.push(
-        this.testResults.filter(x => x.final_result.name === finalResult.name)
-          .length
+        this.testResults.filter(x => x.final_result.name === finalResult.name).length
       );
     }
   }

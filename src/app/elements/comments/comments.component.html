@@ -10,7 +10,7 @@
     </div>
     <div *ngFor="let comment of shownComments" class="comment-section">
       <div class="comment-author">
-        <b>{{comment.author.first_name}} {{comment.author.second_name}}</b> added a comment - {{comment.created | date:'dd/MM/yy
+        <b>{{comment.author.first_name}} {{comment.author.second_name}}</b> added a comment - {{comment.created | date:'MMM dd, yyyy
         hh:mm:ss'}}</div>
       <div class="comment-body" [showHtml]="comment.body"></div>
     </div>

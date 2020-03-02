@@ -6,7 +6,6 @@ import { Milestone } from '../../src/app/shared/models/milestone';
 import { sendPost, sendGet, sendDelete } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { Project } from '../../src/app/shared/models/project';
-import { ResultResolution } from '../../src/app/shared/models/result_resolution';
 
 enum Endpoints {
     suite = '/suite',
@@ -68,6 +67,7 @@ export class EditorAPI {
     }
 
     public async getSuites(testSuite: TestSuite): Promise<TestSuite[]> {
+        testSuite.project_id = this.project.id;
         return sendGet(Endpoints.suite, testSuite, this.token, this.project.id);
     }
 
@@ -83,7 +83,23 @@ export class EditorAPI {
         return sendGet(Endpoints.testrun, testrun, this.token, this.project.id);
     }
 
+    public async getMilestones(milestone: Milestone): Promise<Milestone[]> {
+        milestone.project_id = this.project.id;
+        return sendGet(Endpoints.milestone, milestone, this.token, this.project.id);
+    }
+
     public async removeTestRun(testRunId: number) {
-        return sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id}, null, this.token, this.project.id);
+        return sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id }, null, this.token, this.project.id);
+    }
+
+    public async addSuiteToMilestone(milestoneName: string, suiteName: string) {
+        const milestone: Milestone = (await this.getMilestones({ name: milestoneName }))[0];
+        const suite: TestSuite = (await this.getSuites({ name: suiteName }))[0];
+        if (milestone.suites) {
+            milestone.suites.push(suite);
+        } else {
+            milestone.suites = [suite];
+        }
+        return this.createMilestone(milestone);
     }
 }

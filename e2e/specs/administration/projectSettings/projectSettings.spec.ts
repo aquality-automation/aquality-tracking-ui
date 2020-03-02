@@ -5,11 +5,11 @@ import { projectSettingsAdministration } from '../../../pages/administration/pro
 import { logIn } from '../../../pages/login.po';
 import { predefinedResolutions } from '../../../pages/administration/predefinedResolutions.po';
 import { Test } from '../../../../src/app/shared/models/test';
+import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestResult } from '../../../../src/app/shared/models/test-result';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import cucumberImport from '../../../data/import/cucumber.json';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
-import { TestResult } from '../../../../src/app/shared/models/test-result';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -112,13 +112,14 @@ describe('Administartion: Project Settings:', () => {
                         [cucumberImport],
                         ['cucumber6.json']);
                 let result: TestResult = (await projectHelper.editorAPI
-                    .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id }))[0];
+                    .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id }))
+                    .find(x => x.final_result_id === 5);
                 result.final_result_id = 1;
                 result.test_resolution_id = 4;
                 result = await projectHelper.editorAPI.createResult(result);
                 result = (await projectHelper.editorAPI.getResults(result))[0];
                 expect(result.test.resolution_colors).toBe(`${result.test_resolution.color},3,3,3,3`, 'resolution_colors is wrong!');
-                expect(result.test.result_colors).toBe(`${result.final_result.color},5,5,5,5`, 'result_colors is wrong!');
+                expect(result.test.result_colors).toBe(`${result.final_result.color},4,4,4,4`, 'result_colors is wrong!');
                 expect(result.test.result_ids.startsWith(`${result.id}`)).toBe(true, 'result_ids is wrong!');
             });
 

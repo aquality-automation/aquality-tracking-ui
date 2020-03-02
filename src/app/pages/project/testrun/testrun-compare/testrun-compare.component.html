@@ -54,7 +54,7 @@
                 <a *ngIf="shownTestRunFirst"
                     routerLink="/project/{{shownTestRunFirst.project_id}}/testrun/{{shownTestRunFirst.id}}"><b>First
                         Test Run:</b> {{shownTestRunFirst.build_name}} -
-                    {{shownTestRunFirst.start_time | date:'dd/MM/yy hh:mm:ss a'}}</a>
+                    {{shownTestRunFirst.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</a>
                 <div *ngIf="resultsFirst">
                     <b>Total Results: </b>{{resultsFirst.length}}</div>
             </div>
@@ -62,7 +62,7 @@
                 <a *ngIf="shownTestRunSecond"
                     routerLink="/project/{{shownTestRunSecond.project_id}}/testrun/{{shownTestRunSecond.id}}"><b>Second
                         Test Run:</b> {{shownTestRunSecond.build_name}} -
-                    {{shownTestRunSecond.start_time | date:'dd/MM/yy hh:mm:ss a'}}</a>
+                    {{shownTestRunSecond.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</a>
                 <div *ngIf="resultsSecond">
                     <b>Total Results: </b>{{resultsSecond.length}}</div>
             </div>

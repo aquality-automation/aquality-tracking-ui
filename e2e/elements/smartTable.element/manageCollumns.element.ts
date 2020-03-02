@@ -59,4 +59,13 @@ export class ManageColumns extends BaseElement {
         await this.hideColumn(columnName);
         return this.apply();
     }
+
+    async removeColumns(columnNames: string[]) {
+        await this.openManageColumns();
+        for (let i = 0; i < columnNames.length; i++) {
+            const columnName = columnNames[i];
+            await this.hideColumn(columnName);
+        }
+        return this.apply();
+    }
 }

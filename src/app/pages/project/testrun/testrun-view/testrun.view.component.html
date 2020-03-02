@@ -69,7 +69,7 @@
       </div>
       <div class="form-group col-md-4">
         <label for="start-time">Start Time:</label>
-        <p class="inline" id="start-time">{{testRun?.start_time | date:'dd/MM/yy hh:mm:ss a'}}</p>
+        <p class="inline" id="start-time">{{testRun?.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</p>
       </div>
 
       <div *ngIf="testRun.author || canEdit" class="form-group col-md-4">
