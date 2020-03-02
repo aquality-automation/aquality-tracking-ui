@@ -72,7 +72,7 @@ export class UploaderComponent implements OnInit {
       }
       if (filter.name === 'mimeType') {
         this.simpleRequester.handleSimpleError(`${item.name} is blocked!`,
-          `The '${filter.item.type}' format of file is not allowed!`);
+          `The '${item.type}' format of file is not allowed!`);
       }
     };
   }

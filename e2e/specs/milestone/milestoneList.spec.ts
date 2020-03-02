@@ -89,7 +89,7 @@ describe('Milestone List:', () => {
             });
 
             it('I can open Milestones table is not editable', async () => {
-                return expect(milestoneList.isTableEditable()).toBe(false, `Steps table should not be editable for ${description}`);
+                return expect(milestoneList.isTableEditable()).toBe(false, `Milestones table should not be editable for ${description}`);
             });
         });
     });

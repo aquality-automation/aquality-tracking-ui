@@ -11,7 +11,7 @@
     </ng-datepicker>
   </div>
   <div class="col-sm-2">
-    <labeled-switch class="pull-right" id="stack-suites" label="Active" size="small" [(ngModel)]="milestone.active"
+    <labeled-switch class="pull-right" id="active-switch" label="Active" size="small" [(ngModel)]="milestone.active"
       (ngModelChange)="updateMilestone()" title="Mark milestone as Active or Inactive" [disabled]="!canEdit"></labeled-switch>
   </div>
   <div class="col-sm-2">
