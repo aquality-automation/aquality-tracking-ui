@@ -12,6 +12,7 @@ import { Importer } from '../api/importer.api';
 import { EditorAPI } from '../api/editor.api';
 import projects from '../data/projects.json';
 import usersTestData from '../data/users.json';
+import { PublicAPI } from '../api/public.api';
 
 
 export enum PermissionType {
@@ -28,6 +29,7 @@ export class ProjectHelper {
     public project: Project = projects.customerOnly;
     public importer: Importer;
     public editorAPI: EditorAPI;
+    public publicAPI: PublicAPI;
     private admin = usersTestData.admin;
 
     constructor(name?: string) {
@@ -52,6 +54,7 @@ export class ProjectHelper {
 
             this.importer = new Importer(this.project, token);
             this.editorAPI = new EditorAPI(this.project, token);
+            this.publicAPI = new PublicAPI(this.project, token);
             return projectView.menuBar.clickLogOut();
         } catch (err) {
             logger.error(err.message);
