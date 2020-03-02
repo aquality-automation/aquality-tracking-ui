@@ -19,6 +19,8 @@ import { FinalResultChartsComponent } from '../../../../elements/charts/finalRes
 import { TestSuiteService } from '../../../../services/testSuite.service';
 import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
 import { Subscription } from 'rxjs/Subscription';
+import { PermissionsService, ELocalPermissions, EGlobalPermissions } from '../../../../services/current-permissions.service';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   templateUrl: './view-milestone.component.html',
@@ -36,7 +38,8 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     private resultResolutionService: ResultResolutionService,
     private suitesService: TestSuiteService,
     private testRunService: TestRunService,
-    private transformationsService: TransformationsService
+    private transformationsService: TransformationsService,
+    private permissions: PermissionsService
   ) { }
 
   @ViewChild(ResultResolutionsChartsComponent) resultResolutionsChart: ResultResolutionsChartsComponent;
@@ -55,6 +58,9 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   sortBy = { order: TFOrder.desc, property: 'result.final_result.name' };
   paramsSubscription: Subscription;
   notExecutedSuites: string;
+  canEdit: boolean;
+  icons = { faExclamationTriangle };
+  warningMessage: string;
 
   async ngOnInit() {
     this.paramsSubscription = this.route.params.subscribe(params => {
@@ -64,6 +70,8 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
       };
     });
     await this.updateData();
+    this.canEdit = await this.permissions.hasProjectPermissions(this.milestone.project_id,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
   }
 
   ngOnDestroy(): void {
@@ -76,6 +84,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
       this.router.navigate(['**']);
     }
     this.milestone = milestones[0];
+    this.warningMessage = this.getWarningMessage();
     [
       this.suites,
       this.testRuns,
@@ -167,9 +176,21 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   async updateMilestone() {
+    this.milestone.active = +this.milestone.active;
     await this.milestoneService.createMilestone(this.milestone);
     await this.updateData();
     return this.milestoneService.handleSuccess(`The milestone '${this.milestone.name}' was updated.`);
+  }
+
+  private getWarningMessage() {
+    if (this.milestone.due_date && this.milestone.active && this.milestone.due_date < new Date()) {
+      const now = new Date(new Date().toDateString()).getTime();
+      const due = new Date(new Date(this.milestone.due_date).toDateString()).getTime();
+      const diffDays = Math.ceil(Math.abs(now - due) / (1000 * 3600 * 24));
+      return diffDays > 0
+        ? `Past due by ${diffDays} day${diffDays > 1 ? 's' : ''}`
+        : `Today is the last day for the '${this.milestone.name}' Milestone`;
+    }
   }
 
   private isTestFromSelectedSuites(test: Test) {

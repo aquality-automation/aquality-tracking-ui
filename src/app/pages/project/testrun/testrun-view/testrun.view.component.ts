@@ -65,7 +65,7 @@ export class TestRunViewComponent implements OnInit {
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
 
     this.testRun = (await this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId }))[0];
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 });
     this.testResults = this.testRun.testResults;
 
     await this.setTestRunsToCompare();
@@ -151,7 +151,7 @@ export class TestRunViewComponent implements OnInit {
 
   createMilestone($event) {
     this.milestoneService.createMilestone({ name: $event, project_id: this.testRun.project_id }).then(() => {
-      this.milestoneService.getMilestone({ project_id: this.testRun.project_id }).then(milestones => {
+      this.milestoneService.getMilestone({ project_id: this.testRun.project_id, active: 1 }).then(milestones => {
         this.milestones = milestones;
         this.testRun.milestone = this.milestones.find(x => x.name === $event);
         this.testRunUpdate();

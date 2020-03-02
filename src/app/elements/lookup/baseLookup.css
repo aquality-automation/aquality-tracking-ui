@@ -94,11 +94,8 @@ li.default-option {
 .disabled-lookup {
   color: black;
   border: none;
-  padding: 5px;
-  padding-bottom: 4px;
-  padding-top: 4px;
-  margin-bottom: 2px;
-  margin-top: 2px;
+  padding: 0 !important;
+  margin: 5px 0px;
 }
 
 .caret {

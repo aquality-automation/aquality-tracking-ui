@@ -18,7 +18,7 @@
         </div>
       </div>
       <div *ngIf="suite.stat" class="db-stat col-sm-12 no-padding">
-        {{suite.stat.start_time | date: 'dd/MM/yyyy hh:mm a'}} | {{getDuration(suite.stat)}}
+        {{suite.stat.start_time | date: 'MMM dd, yyyy hh:mm a'}} | {{getDuration(suite.stat)}}
       </div>
       <div *ngIf="!suite.chartData" class="col-sm-6 db-chart">
         <p>Nothing to show</p>

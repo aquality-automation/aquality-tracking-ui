@@ -649,4 +649,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       this.rowClick.emit(entity);
     }
   }
+
+  notEditableByProperty(entity: any, col: TFColumn) {
+    if (col.notEditableByProperty) {
+      if (typeof col.notEditableByProperty.value === 'boolean') {
+        const currentBoolValue = !!this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);
+        return currentBoolValue === col.notEditableByProperty.value;
+      }
+      const currentValue = this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);
+      return currentValue === col.notEditableByProperty.value;
+    }
+    return false;
+  }
 }

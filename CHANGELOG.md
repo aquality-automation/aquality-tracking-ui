@@ -7,6 +7,9 @@ Features:
   - Exclude Debug results from last results column -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/70)
   - Milestone: Add selected Suites to milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/63)
   - Milestone: Add not executed suites -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/64)
+  - Milestone: Add Due Date to Milestone. -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/61)
+  - Milestone: Add possibility to Close Milestone. -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/62)
+  - Test Runs List: Add possibility to Add milestone from Test Runs List. -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/59)
 
 Bugfixes:
 
