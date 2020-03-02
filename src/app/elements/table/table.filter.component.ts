@@ -645,7 +645,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   rowClicked(entity: any, col: any, $event: any) {
     const el: HTMLElement = $event.target;
-    if ((!col.editable || el.classList.contains('ft-cell')) && col.type !== 'link' && col.type !== 'long-text' && !col.link) {
+    const canClick = (!col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell'))
+    && col.type !== 'link'
+    && col.type !== 'long-text'
+    && !col.link;
+    if (canClick) {
       this.rowClick.emit(entity);
     }
   }

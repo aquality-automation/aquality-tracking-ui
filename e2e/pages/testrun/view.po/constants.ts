@@ -38,11 +38,6 @@ export const elements = {
     debug: new Checkbox(by.id('debug'))
 };
 
-export const regexps = {
-    // tslint:disable-next-line: max-line-length
-    startDateRegexp: '(?<day>(\\d{2}))\\/(?<month>(\\d{2}))\\/(?<year>(\\d{2}))\\s(?<hours>(\\d{2})):(?<minutes>(\\d{2})):(?<seconds>(\\d{2}))\\s(?<period>(\\w{2}))'
-};
-
 export const columns = {
     testName: 'Test Name',
     failReason: 'Fail Reason',
