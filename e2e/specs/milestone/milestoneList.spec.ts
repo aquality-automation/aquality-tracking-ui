@@ -6,6 +6,7 @@ import { ProjectHelper } from '../../helpers/project.helper';
 import usersTestData from '../../data/users.json';
 
 import using from 'jasmine-data-provider';
+import { TestSuite } from '../../../src/app/shared/models/testSuite';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -23,6 +24,7 @@ describe('Milestone List:', () => {
 
     const milestone = { name: 'List Test' };
     const editedMilestone = { name: 'Edited List Test' };
+    let suite: TestSuite = {name: 'My Suite'};
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -33,6 +35,8 @@ describe('Milestone List:', () => {
             manager: usersTestData.manager,
             viewer: usersTestData.viewer
         });
+
+        suite = await projectHelper.editorAPI.createSuite({name: 'My Suite'});
     });
 
     afterAll(async () => {
@@ -59,9 +63,29 @@ describe('Milestone List:', () => {
                 return milestoneList.notification.assertIsSuccess(`The milestone '${milestone.name}' was created.`);
             });
 
-            it('I can edit Milestone', async () => {
+            it('I can edit Milestone name', async () => {
                 await milestoneList.updateMilestoneName(editedMilestone.name, milestone.name);
-                return milestoneList.notification.assertIsSuccess();
+                return milestoneList.notification.assertIsSuccess(`The milestone '${editedMilestone.name}' was updated.`);
+            });
+
+            it('I can edit Milestone suites', async () => {
+                await milestoneList.addMilestoneSuite(suite.name, editedMilestone.name);
+                return milestoneList.notification.assertIsSuccess(`The milestone '${editedMilestone.name}' was updated.`);
+            });
+
+            it('I can edit Milestone Due Date', async () => {
+                await milestoneList.updateMilestoneDueDate(new Date('December 17, 1995'), editedMilestone.name);
+                return milestoneList.notification.assertIsSuccess(`The milestone '${editedMilestone.name}' was updated.`);
+            });
+
+            it('I can make Milestone Inactive', async () => {
+                await milestoneList.updateMilestoneActive(false, editedMilestone.name);
+                return milestoneList.notification.assertIsSuccess(`The milestone '${editedMilestone.name}' was updated.`);
+            });
+
+            it('I can not edit Inactive Milestone', async () => {
+                const isEditable = await milestoneList.isRowEditable(editedMilestone.name);
+                return expect(isEditable).toBe(false, 'Inactive Milestone should not be editable');
             });
 
             it('I can remove Milestone', async () => {
