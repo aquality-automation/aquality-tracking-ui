@@ -1,4 +1,4 @@
-import { by, Locator, ElementFinder } from 'protractor';
+import { by, Locator, ElementFinder, protractor } from 'protractor';
 import { BaseElement } from './base.element';
 import { WithSearch } from './interfaces/elementWithSearch';
 
@@ -28,11 +28,17 @@ export class Multiselect extends BaseElement implements WithSearch {
 
     public async select(value: string) {
         await this.enterValue(value);
-        return this.selectOption(value);
+        await this.selectOption(value);
+        if (await this.isOpened()) {
+            return this.search.sendKeys(protractor.Key.ESCAPE);
+        }
     }
 
-    public remove(name: string) {
-        return this.removeMsBox(name).click();
+    public async remove(name: string) {
+        await this.removeMsBox(name).click();
+        if (await this.isOpened()) {
+            return this.search.sendKeys(protractor.Key.ESCAPE);
+        }
     }
 
     public async isEditable() {
@@ -50,6 +56,10 @@ export class Multiselect extends BaseElement implements WithSearch {
         }
 
         return (await this.disabledElement.getText()).split(', ');
+    }
+
+    private isOpened() {
+        return this.search.isPresent();
     }
 
     private findOption(value: string) {

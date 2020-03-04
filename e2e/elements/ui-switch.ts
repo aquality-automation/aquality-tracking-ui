@@ -28,4 +28,9 @@ export class UiSwitch extends BaseElement {
             return this.element.click();
         }
     }
+
+    async isEnabled() {
+        const elementClass = await this.element.element(by.tagName('span')).getAttribute('class');
+        return !elementClass.includes('disabled');
+    }
 }

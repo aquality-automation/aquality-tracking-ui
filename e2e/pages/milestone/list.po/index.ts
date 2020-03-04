@@ -46,7 +46,7 @@ class MilestoneList extends BasePage {
     }
 
     openMilestone(name: string) {
-        return elements.milestonesTable.clickRow(name, columns.name);
+        return elements.milestonesTable.clickCell(columns.name, name, columns.name);
     }
 
     addMilestoneSuite(suiteName: string, name: string) {

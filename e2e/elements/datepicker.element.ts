@@ -37,6 +37,10 @@ export class DatePicker extends BaseElement {
         return this.dayButton(day).click();
     }
 
+    isEditable(): Promise<boolean> {
+        return this.linkInput.isPresent();
+    }
+
     private async selectMonth(month: string): Promise<void> {
         for (let i = 0; i < this.monthNames.length; i++) {
             const currentMonth = await this.getCurrentMonth();

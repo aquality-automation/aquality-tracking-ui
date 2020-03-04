@@ -1,12 +1,10 @@
 import { logIn } from '../../pages/login.po';
 import { projectList } from '../../pages/project/list.po';
 import { milestoneList } from '../../pages/milestone/list.po';
-
 import { ProjectHelper } from '../../helpers/project.helper';
-import usersTestData from '../../data/users.json';
-
-import using from 'jasmine-data-provider';
 import { TestSuite } from '../../../src/app/shared/models/testSuite';
+import usersTestData from '../../data/users.json';
+import using from 'jasmine-data-provider';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -28,7 +26,6 @@ describe('Milestone List:', () => {
 
     beforeAll(async () => {
         await projectHelper.init({
-            admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
