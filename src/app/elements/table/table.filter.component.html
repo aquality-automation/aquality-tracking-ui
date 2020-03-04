@@ -77,7 +77,7 @@
                         </div>
                         <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
                             [model]="textFilterData(col.property)" *ngIf="col.type === 'link' && col.filter"
-                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.lookup.values"
+                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
                             (modelChange)="handleFilterChange(col, $event)"></lookup>
 
                         <lookup-colored *ngIf="col.type === 'lookup-colored' && col.filter" [cutLongText]="true"
@@ -95,7 +95,7 @@
 
                         <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete' && col.filter"
                             [cutLongText]="true" [small]="true" [propertiesToShow]="col.lookup.propToShow"
-                            [array]="col.lookup.values"
+                            [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
                             [placeholder]="col.lookup.placeholder ? col.lookup.placeholder : 'None'"
                             [allowEmptyValue]="true" [model]="getLookupFilterValue(col)[0]"
                             [emptyForFilter]="col.nullFilter"
@@ -118,7 +118,7 @@
                         </div>
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
-                            [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.values"
+                            [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
                             [model]="getLookupFilterValue(col)"
                             (modelChange)="handleLookupFilterChange(col.property, $event)">
                         </lookup-autocomplete-multiselect>

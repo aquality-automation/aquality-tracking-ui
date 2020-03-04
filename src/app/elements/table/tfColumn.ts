@@ -42,6 +42,7 @@ export class TFCreation {
 
 export class TFLookup {
     values: any[];
+    filterValues?: any[];
     entity: string;
     objectWithId?: string;
     placeholder?: string;

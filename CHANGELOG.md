@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.3.8 (2020-03-02)
+
+Features:
+  - Test Run List: Add posibility to filter by Inactive Milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/73)
+
 ## 0.3.7 (2020-03-02)
 
 Features:
