@@ -102,11 +102,14 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   async updateStackSuites(state: boolean) {
+    const showMessage = this.stackSuites !== state;
     this.stackSuites = state;
     this.viewData = this.getData();
     this.resultsToShow = this.getResultsFromViewData();
     this.updateCharts();
-    this.milestoneService.handleInfo(`The Latest results by ${this.stackSuites ? 'Test' : 'Suite'} are shown.`);
+    if (showMessage) {
+      this.milestoneService.handleInfo(`The Latest results by ${this.stackSuites ? 'Test' : 'Suite'} are shown.`);
+    }
   }
 
   getInitialInfo() {

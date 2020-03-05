@@ -38,19 +38,19 @@ describe('Public API', () => {
 
   describe('Suite:', () => {
     it('Can not create Suite via public API without name and id', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateSuite({
+      return api.assertNegativeResponse(api.createOrUpdateSuite({
         project_id: projectHelper.project.id
       }), apiResponseErrors.missedIdOrName);
     });
 
     it('Can not create Suite via public API without project_id', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateSuite({
+      return api.assertNegativeResponse(api.createOrUpdateSuite({
         name: suiteName
       }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Suite via public API for unaccessible project', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateSuite({
+      return api.assertNegativeResponse(api.createOrUpdateSuite({
         name: suiteName,
         project_id: unaccessibleId
       }), apiResponseErrors.anonymousNotAllowedToViewTestSuites);
@@ -68,7 +68,7 @@ describe('Public API', () => {
     });
 
     it('Can not update Suite via public API with unaccessible id', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateSuite({
+      return api.assertNegativeResponse(api.createOrUpdateSuite({
         id: unaccessibleId,
         name: editedSuiteName,
         project_id: projectHelper.project.id
@@ -103,28 +103,28 @@ describe('Public API', () => {
 
   describe('Test:', () => {
     it('Can not create Test via public API without name and id', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateTest({
+      return api.assertNegativeResponse(api.createOrUpdateTest({
         suites: [{ id: suite.id }],
         project_id: projectHelper.project.id
       }), apiResponseErrors.missedIdOrName);
     });
 
     it('Can not create Test via public API without project_id', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateTest({
+      return api.assertNegativeResponse(api.createOrUpdateTest({
         name: testName,
         suites: [{ id: suite.id }]
       }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Test via public API without suites', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateTest({
+      return api.assertNegativeResponse(api.createOrUpdateTest({
         name: testName,
         project_id: projectHelper.project.id
       }), apiResponseErrors.missedSuites);
     });
 
     it('Can not create Test via public API for unaccessible project', async () => {
-      return api.assertNegativeresponse(api.createOrUpdateTest({
+      return api.assertNegativeResponse(api.createOrUpdateTest({
         name: testName,
         suites: [{ id: suite.id }],
         project_id: unaccessibleId
@@ -176,28 +176,28 @@ describe('Public API', () => {
 
   describe('Test Run:', () => {
     it('Can not create Test Run via public API without build_name', async () => {
-      return api.assertNegativeresponse(api.startTestrun({
+      return api.assertNegativeResponse(api.startTestrun({
         test_suite_id: suite.id,
         project_id: projectHelper.project.id
       }), apiResponseErrors.missedBuildName);
     });
 
     it('Can not create Test Run via public API without test_suite_id', async () => {
-      return api.assertNegativeresponse(api.startTestrun({
+      return api.assertNegativeResponse(api.startTestrun({
         build_name: buildName,
         project_id: projectHelper.project.id
       }), apiResponseErrors.missedSuiteId);
     });
 
     it('Can not create Test Run via public API without project_id', async () => {
-      return api.assertNegativeresponse(api.startTestrun({
+      return api.assertNegativeResponse(api.startTestrun({
         build_name: buildName,
         test_suite_id: suite.id
       }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Test Run via public API for unaccessible project', async () => {
-      return api.assertNegativeresponse(api.startTestrun({
+      return api.assertNegativeResponse(api.startTestrun({
         build_name: buildName,
         test_suite_id: suite.id,
         project_id: unaccessibleId
@@ -221,22 +221,22 @@ describe('Public API', () => {
 
     describe('Test Result:', () => {
       it('Can not start Test Result via public API without test_id', async () => {
-        return api.assertNegativeresponse(api.testResultStart(undefined, testrun.id, projectHelper.project.id),
+        return api.assertNegativeResponse(api.testResultStart(undefined, testrun.id, projectHelper.project.id),
           apiResponseErrors.missedTestId);
       });
 
       it('Can not start Test Result via public API without test_run_id', async () => {
-        return api.assertNegativeresponse(api.testResultStart(test.id, undefined, projectHelper.project.id),
+        return api.assertNegativeResponse(api.testResultStart(test.id, undefined, projectHelper.project.id),
           apiResponseErrors.missedTestRunId);
       });
 
       it('Can not start Test Result via public API without project_id', async () => {
-        return api.assertNegativeresponse(api.testResultStart(test.id, testrun.id, undefined),
+        return api.assertNegativeResponse(api.testResultStart(test.id, testrun.id, undefined),
           apiResponseErrors.missedProjectId);
       });
 
       it('Can not start Test Result via public API for unaccessible project', async () => {
-        return api.assertNegativeresponse(api.testResultStart(test.id, testrun.id, unaccessibleId),
+        return api.assertNegativeResponse(api.testResultStart(test.id, testrun.id, unaccessibleId),
           apiResponseErrors.anonymousNotAllowedToViewTestResults);
       });
 
@@ -251,26 +251,26 @@ describe('Public API', () => {
       });
 
       it('Can not finish Test Result via public API without id', async () => {
-        return api.assertNegativeresponse(api.testResultFinish({
+        return api.assertNegativeResponse(api.testResultFinish({
           project_id: projectHelper.project.id
         }), apiResponseErrors.missedId);
       });
 
       it('Can not finish Test Result via public API without project_id', async () => {
-        return api.assertNegativeresponse(api.testResultFinish({
+        return api.assertNegativeResponse(api.testResultFinish({
           id: testResult.id
         }), apiResponseErrors.missedProjectId);
       });
 
       it('Can not finish Test Result via public API without final_result_id', async () => {
-        return api.assertNegativeresponse(api.testResultFinish({
+        return api.assertNegativeResponse(api.testResultFinish({
           id: testResult.id,
           project_id: projectHelper.project.id
         }), apiResponseErrors.missedFinalResultId);
       });
 
       it('Can not finish Test Result via public API for unaccessible project', async () => {
-        return api.assertNegativeresponse(api.testResultFinish({
+        return api.assertNegativeResponse(api.testResultFinish({
           id: testResult.id,
           final_result_id: 2,
           project_id: unaccessibleId
@@ -293,17 +293,17 @@ describe('Public API', () => {
     });
 
     it('Can not finish Test Run via public API without id', async () => {
-      return api.assertNegativeresponse(api.finishTestRun(projectHelper.project.id, undefined),
+      return api.assertNegativeResponse(api.finishTestRun(projectHelper.project.id, undefined),
         apiResponseErrors.missedId);
     });
 
     it('Can not finish Test Run via public API without project_id', async () => {
-      return api.assertNegativeresponse(api.finishTestRun(undefined, testrun.id),
+      return api.assertNegativeResponse(api.finishTestRun(undefined, testrun.id),
         apiResponseErrors.missedProjectId);
     });
 
     it('Can not finish Test Run via public API for unaccessible project', async () => {
-      return api.assertNegativeresponse(api.finishTestRun(unaccessibleId, testrun.id),
+      return api.assertNegativeResponse(api.finishTestRun(unaccessibleId, testrun.id),
         apiResponseErrors.anonymousNotAllowedToCreateTestRun);
     });
 

@@ -44,4 +44,9 @@ export class Autocomplete extends BaseElement implements WithSearch {
     async isEnabled() {
         return !(await this.disabledElement.isPresent());
     }
+
+    async hasOption(value: string) {
+        await this.enterValue(value);
+        return this.findOption(value).isPresent();
+    }
 }

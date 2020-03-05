@@ -212,7 +212,7 @@ export class SmartTable extends BaseElement {
         return rightClick(cell);
     }
 
-    public async editRow(value: string | boolean, column: string, searchValue: string, searchColumn: string) {
+    public async editRow(value: string | boolean | Date, column: string, searchValue: string, searchColumn: string) {
         const row = await this.getRow(searchValue, searchColumn);
         const columnIndex = await this.getColumnIndex(column);
         return row.editRowCellValueByColumnIndex(value, columnIndex);

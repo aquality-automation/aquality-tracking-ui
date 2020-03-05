@@ -27,6 +27,10 @@ class TestRunList extends BasePage {
         return elements.testRunsTable.setFilter(buildName, columns.build);
     }
 
+    filterByMilestone(name: string) {
+        return elements.testRunsTable.setFilter(name, columns.milestone);
+    }
+
     clickSuiteMatrix() {
         return elements.matrixButton.click();
     }
@@ -41,6 +45,19 @@ class TestRunList extends BasePage {
             await this.menuBar.testRuns();
             return await this.isTestRunRowDisplayed(buildName);
         }, 5, 3000);
+    }
+
+    async doesMilestonePresentInEdit(name: string, build_name: string): Promise<boolean> {
+        const cellElements = await elements.testRunsTable.getElementsForCell(columns.milestone, build_name, columns.build);
+        return cellElements.autocomplete().hasOption(name);
+    }
+
+    setMilestone(name: string, build_name: string): Promise<void> {
+        return elements.testRunsTable.editRow(name, columns.milestone, build_name, columns.build);
+    }
+
+    isTableEditable(): any {
+        return elements.testRunsTable.isRowEditableByIndex(0);
     }
 }
 

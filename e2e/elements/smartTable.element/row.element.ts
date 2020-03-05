@@ -9,6 +9,7 @@ import { logger } from '../../utils/log.util';
 import { InlineAttach } from '../inlineAttach.element';
 import { Multiselect } from '../multiselect.element';
 import { Dots } from '../dots.element';
+import { DatePicker } from '../datepicker.element';
 
 export class Row extends BaseElement {
     constructor(locator: ElementFinder | Locator) {
@@ -60,13 +61,17 @@ export class Row extends BaseElement {
             lookup: () => new Lookup(cell.element(by.xpath('.//lookup-colored'))),
             inlineAttachment: () => new InlineAttach(cell.element(by.xpath('.//attachment-inline'))),
             multiselect: () => new Multiselect(cell.element(by.xpath('.//lookup-autocomplete-multiselect'))),
+            date: () => new DatePicker(cell.element(by.xpath('.//ng-datepicker'))),
             dots: () => new Dots(cell.element(by.xpath('.//app-color-dots')))
         };
     }
 
-    public async editRowCellValueByColumnIndex(value: string | boolean | number, columnIndex: number) {
+    public async editRowCellValueByColumnIndex(value: string | boolean | number | Date, columnIndex: number) {
         const rowElements = await this.getRowElements(columnIndex);
         if (await this.isCellContainsEditableElement(columnIndex)) {
+            if (await rowElements.date().element.isPresent()) {
+                return rowElements.date().select(new Date(value as Date));
+            }
             if (await rowElements.inlineEditor().element.isPresent()) {
                 return rowElements.inlineEditor().changeAndSetValue(value as string);
             }
@@ -84,6 +89,9 @@ export class Row extends BaseElement {
             }
             if (await rowElements.coloredLookup().element.isPresent()) {
                 return rowElements.coloredLookup().select(value as string);
+            }
+            if (await rowElements.multiselect().element.isPresent()) {
+                return rowElements.multiselect().select(value as string);
             }
         }
 
@@ -199,4 +207,5 @@ export class CellElements {
     inlineAttachment: () => InlineAttach;
     multiselect: () => Multiselect;
     dots: () => Dots;
+    date: () => DatePicker;
 }

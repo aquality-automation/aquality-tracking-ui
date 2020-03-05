@@ -46,13 +46,29 @@ class MilestoneList extends BasePage {
     }
 
     openMilestone(name: string) {
-        return elements.milestonesTable.clickRow(name, columns.name);
+        return elements.milestonesTable.clickCell(columns.name, name, columns.name);
+    }
+
+    addMilestoneSuite(suiteName: string, name: string) {
+        return elements.milestonesTable.editRow(suiteName, columns.suites, name, columns.name);
+    }
+
+    updateMilestoneDueDate(date: Date, name: string) {
+        return elements.milestonesTable.editRow(date, columns.dueDate, name, columns.name);
+    }
+
+    updateMilestoneActive(value: boolean, name: string) {
+        return elements.milestonesTable.editRow(value, columns.active, name, columns.name);
     }
 
     async isTableEditable(): Promise<boolean> {
         const isActionColumnExist = await elements.milestonesTable.isColumnExist(columns.action);
         const isRowContainEditableElements = await elements.milestonesTable.isRowEditableByIndex(0);
         return isActionColumnExist || isRowContainEditableElements;
+    }
+
+    async isRowEditable(name: string) {
+        return elements.milestonesTable.isRowEditableByValue(name, columns.name);
     }
 }
 

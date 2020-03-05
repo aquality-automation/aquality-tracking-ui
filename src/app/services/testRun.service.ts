@@ -10,21 +10,20 @@ import { TestRunStat } from '../shared/models/testrunStats';
 export class TestRunService extends SimpleRequester {
 
   getTestRun(testRun: TestRun, limit: number = 0): Promise<TestRun[]> {
-    if (!testRun.project_id) {
-      testRun.project_id = this.route.snapshot.params['projectId'];
-    }
+    testRun = this.setProjectId(testRun);
     testRun['limit'] = limit;
     return this.doGet(`/testrun`, testRun).map(res => res.json()).toPromise();
   }
 
   getTestRunWithChilds(testRun: TestRun, limit: number = 0): Promise<TestRun[]> {
-    testRun.project_id = this.route.snapshot.params['projectId'];
+    testRun = this.setProjectId(testRun);
     testRun['limit'] = limit;
     testRun['withChildren'] = 1;
     return this.doGet(`/testrun`, testRun).map(res => res.json()).toPromise();
   }
 
   createTestRun(testRun: TestRun): Promise<TestRun> {
+    testRun = this.setProjectId(testRun);
     if (testRun.testResults) {
       testRun.testResults = undefined;
     }
@@ -32,12 +31,13 @@ export class TestRunService extends SimpleRequester {
   }
 
   removeTestRun(testRun: TestRun): Promise<void> {
+    testRun = this.setProjectId(testRun);
     return this.doDelete(`/testrun`, { id: testRun.id, project_id: testRun.project_id })
       .map(() => this.handleSuccess(`Test run '${testRun.build_name}/${testRun.start_time}' was deleted.`)).toPromise();
   }
 
   getTestsRunStats(testRun: TestRun, overlay: boolean = true): Promise<TestRunStat[]> {
-    testRun.project_id = this.route.snapshot.params['projectId'];
+    testRun = this.setProjectId(testRun);
     return this.doGet('/stats/testrun', testRun, overlay).map(res => res.json()).toPromise<TestRunStat[]>();
   }
 
@@ -65,5 +65,13 @@ export class TestRunService extends SimpleRequester {
 
   getPassRate(stat: TestRunStat): string | number {
     return stat ? ((stat.passed / stat.total) * 100).toFixed(2) : 0;
+  }
+
+  private setProjectId(testRun: TestRun): TestRun {
+    if (!testRun.project_id) {
+      testRun.project_id = this.route.snapshot.params.projectId;
+    }
+
+    return testRun;
   }
 }

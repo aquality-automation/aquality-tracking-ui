@@ -94,7 +94,7 @@ export class TestRunsComponent implements OnInit {
           values: this.labels,
           propToShow: ['name']
         },
-        editable: true,
+        editable: this.canEdit,
         class: 'fit'
       },
       {

@@ -11,7 +11,7 @@ export class BaseAPI {
         this.token = token;
     }
 
-    public async assertNegativeresponse(promise: Promise<object>, expectedError: string): Promise<void> {
+    public async assertNegativeResponse(promise: Promise<object>, expectedError: string): Promise<void> {
         let atError: ATError;
         try {
             await promise;
