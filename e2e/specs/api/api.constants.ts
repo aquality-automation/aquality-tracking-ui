@@ -23,13 +23,13 @@ class ApiResponseErrors {
     public missedTestId = `You should specify 'test_id'`;
     public missedTestRunId = `You should specify 'test_run_id'`;
     public missedFinalResultId = `You should specify 'final_result_id' - Failed: 1, Passed: 2, Not Executed: 3, Pending: 5.`;
-    public entityWithIdDoesNotExist = `Entity with specified id does not exist!`;
     // tslint:disable-next-line: quotemark
     public missedSuites = "You should specify 'suites' array with single suite like `[{id: test_suite_id}]`";
     public anonymousNotAllowedToViewTestSuites = this.anonymousNotAllowedToView('Test Suites');
     public anonymousNotAllowedToViewTests = this.anonymousNotAllowedToView('Tests');
     public anonymousNotAllowedToViewTestResults = this.anonymousNotAllowedToView('Test Results');
     public anonymousNotAllowedToCreateTestRun = this.anonymousNotAllowedToCreate('Test Run');
+    public entityWithIdDoesNotExist = (id: number) => `Entity with specified '${id}' id does not exist!`;
 
     private anonymousNotAllowedToView(entity: string) {
         return `[Permissions anonymous]: Account is not allowed to view ${entity}`;

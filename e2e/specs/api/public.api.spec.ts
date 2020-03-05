@@ -98,7 +98,7 @@ describe('Public API', () => {
       }
 
       expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.entityWithIdDoesNotExist, ApiAssertMessages.errorIsWrong);
+      expect(atError.message).toBe(apiResponseErrors.entityWithIdDoesNotExist(unaccessibleId), ApiAssertMessages.errorIsWrong);
     });
 
     it('Can update Suite via public API with id', async () => {
