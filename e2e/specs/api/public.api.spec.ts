@@ -5,6 +5,7 @@ import { Test } from '../../../src/app/shared/models/test';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 import { ATError } from '../../../src/app/shared/models/error';
 import { ApiAssertMessages, apiResponseErrors } from './api.constants';
+import { PublicAPI } from '../../api/public.api';
 
 let suite: TestSuite;
 let test: Test;
@@ -18,12 +19,13 @@ const testName = 'My Test';
 const editedTestName = 'My Edited Test';
 const buildName = 'build_1';
 
-
 describe('Public API', () => {
   const projectHelper: ProjectHelper = new ProjectHelper();
+  let api: PublicAPI;
 
   beforeAll(async () => {
     await projectHelper.init();
+    api = projectHelper.publicAPI;
   });
 
   afterAll(async () => {
@@ -36,47 +38,26 @@ describe('Public API', () => {
 
   describe('Suite:', () => {
     it('Can not create Suite via public API without name and id', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateSuite({
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedIdOrName, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateSuite({
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.missedIdOrName);
     });
 
     it('Can not create Suite via public API without project_id', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateSuite({
-          name: suiteName
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateSuite({
+        name: suiteName
+      }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Suite via public API for unaccessible project', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateSuite({
-          name: suiteName,
-          project_id: unaccessibleId
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToViewTestSuites, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateSuite({
+        name: suiteName,
+        project_id: unaccessibleId
+      }), apiResponseErrors.anonymousNotAllowedToViewTestSuites);
     });
 
     it('Can create Suite via public API', async () => {
-      suite = await projectHelper.publicAPI.createOrUpdateSuite({
+      suite = await api.createOrUpdateSuite({
         name: suiteName,
         project_id: projectHelper.project.id
       });
@@ -87,22 +68,15 @@ describe('Public API', () => {
     });
 
     it('Can not update Suite via public API with unaccessible id', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateSuite({
-          id: unaccessibleId,
-          name: editedSuiteName,
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.entityWithIdDoesNotExist, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateSuite({
+        id: unaccessibleId,
+        name: editedSuiteName,
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.entityWithIdDoesNotExist(unaccessibleId));
     });
 
     it('Can update Suite via public API with id', async () => {
-      const newSuite = await projectHelper.publicAPI.createOrUpdateSuite({
+      const newSuite = await api.createOrUpdateSuite({
         id: suite.id,
         name: editedSuiteName,
         project_id: projectHelper.project.id
@@ -115,7 +89,7 @@ describe('Public API', () => {
     });
 
     it('Existing suite returned when trying to add duplicate', async () => {
-      const newSuite = await projectHelper.publicAPI.createOrUpdateSuite({
+      const newSuite = await api.createOrUpdateSuite({
         name: editedSuiteName,
         project_id: projectHelper.project.id
       });
@@ -129,65 +103,36 @@ describe('Public API', () => {
 
   describe('Test:', () => {
     it('Can not create Test via public API without name and id', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateTest({
-          suites: [{ id: suite.id }],
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedIdOrName, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateTest({
+        suites: [{ id: suite.id }],
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.missedIdOrName);
     });
 
     it('Can not create Test via public API without project_id', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateTest({
-          name: testName,
-          suites: [{ id: suite.id }]
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateTest({
+        name: testName,
+        suites: [{ id: suite.id }]
+      }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Test via public API without suites', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateTest({
-          name: testName,
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message)
-        .toBe(apiResponseErrors.missedSuites, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateTest({
+        name: testName,
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.missedSuites);
     });
 
     it('Can not create Test via public API for unaccessible project', async () => {
-      try {
-        await projectHelper.publicAPI.createOrUpdateTest({
-          name: testName,
-          suites: [{ id: suite.id }],
-          project_id: unaccessibleId
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToViewTests, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.createOrUpdateTest({
+        name: testName,
+        suites: [{ id: suite.id }],
+        project_id: unaccessibleId
+      }), apiResponseErrors.anonymousNotAllowedToViewTests);
     });
 
     it('Can create Test via public API', async () => {
-      test = await projectHelper.publicAPI.createOrUpdateTest({
+      test = await api.createOrUpdateTest({
         name: testName,
         suites: [{ id: suite.id }],
         project_id: projectHelper.project.id
@@ -200,7 +145,7 @@ describe('Public API', () => {
     });
 
     it('Can update Test via public API with id', async () => {
-      const newTest = await projectHelper.publicAPI.createOrUpdateTest({
+      const newTest = await api.createOrUpdateTest({
         id: test.id,
         name: editedTestName,
         suites: [{ id: suite.id }],
@@ -215,7 +160,7 @@ describe('Public API', () => {
     });
 
     it('Can update Test via public API with name', async () => {
-      const newTest = await projectHelper.publicAPI.createOrUpdateTest({
+      const newTest = await api.createOrUpdateTest({
         name: editedTestName,
         suites: [{ id: suite.id }],
         project_id: projectHelper.project.id
@@ -231,64 +176,36 @@ describe('Public API', () => {
 
   describe('Test Run:', () => {
     it('Can not create Test Run via public API without build_name', async () => {
-      try {
-        await projectHelper.publicAPI.startTestrun({
-          test_suite_id: suite.id,
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedBuildName, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.startTestrun({
+        test_suite_id: suite.id,
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.missedBuildName);
     });
 
     it('Can not create Test Run via public API without test_suite_id', async () => {
-      try {
-        await projectHelper.publicAPI.startTestrun({
-          build_name: buildName,
-          project_id: projectHelper.project.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedSuiteId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.startTestrun({
+        build_name: buildName,
+        project_id: projectHelper.project.id
+      }), apiResponseErrors.missedSuiteId);
     });
 
     it('Can not create Test Run via public API without project_id', async () => {
-      try {
-        await projectHelper.publicAPI.startTestrun({
-          build_name: buildName,
-          test_suite_id: suite.id
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.startTestrun({
+        build_name: buildName,
+        test_suite_id: suite.id
+      }), apiResponseErrors.missedProjectId);
     });
 
     it('Can not create Test Run via public API for unaccessible project', async () => {
-      try {
-        await projectHelper.publicAPI.startTestrun({
-          build_name: buildName,
-          test_suite_id: suite.id,
-          project_id: unaccessibleId
-        });
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToCreateTestRun, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.startTestrun({
+        build_name: buildName,
+        test_suite_id: suite.id,
+        project_id: unaccessibleId
+      }), apiResponseErrors.anonymousNotAllowedToCreateTestRun);
     });
 
     it('Can start Test Run via public API', async () => {
-      testrun = await projectHelper.publicAPI.startTestrun({
+      testrun = await api.startTestrun({
         build_name: buildName,
         test_suite_id: suite.id,
         project_id: projectHelper.project.id
@@ -304,51 +221,27 @@ describe('Public API', () => {
 
     describe('Test Result:', () => {
       it('Can not start Test Result via public API without test_id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultStart(undefined, testrun.id, projectHelper.project.id);
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.missedTestId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultStart(undefined, testrun.id, projectHelper.project.id),
+          apiResponseErrors.missedTestId);
       });
 
       it('Can not start Test Result via public API without test_run_id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultStart(test.id, undefined, projectHelper.project.id);
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.missedTestRunId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultStart(test.id, undefined, projectHelper.project.id),
+          apiResponseErrors.missedTestRunId);
       });
 
       it('Can not start Test Result via public API without project_id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultStart(test.id, testrun.id, undefined);
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultStart(test.id, testrun.id, undefined),
+          apiResponseErrors.missedProjectId);
       });
 
       it('Can not start Test Result via public API for unaccessible project', async () => {
-        try {
-          await projectHelper.publicAPI.testResultStart(test.id, testrun.id, unaccessibleId);
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToViewTestResults, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultStart(test.id, testrun.id, unaccessibleId),
+          apiResponseErrors.anonymousNotAllowedToViewTestResults);
       });
 
       it('Can start Test Result via public API', async () => {
-        testResult = await projectHelper.publicAPI.testResultStart(test.id, testrun.id, projectHelper.project.id);
+        testResult = await api.testResultStart(test.id, testrun.id, projectHelper.project.id);
 
         expect(testResult.id).toBeDefined(ApiAssertMessages.idMissed);
         expect(testResult.start_date).toBeDefined(ApiAssertMessages.startDateMissed);
@@ -358,63 +251,34 @@ describe('Public API', () => {
       });
 
       it('Can not finish Test Result via public API without id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultFinish({
-            project_id: projectHelper.project.id
-          });
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.missedId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultFinish({
+          project_id: projectHelper.project.id
+        }), apiResponseErrors.missedId);
       });
 
       it('Can not finish Test Result via public API without project_id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultFinish({
-            id: testResult.id
-          });
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultFinish({
+          id: testResult.id
+        }), apiResponseErrors.missedProjectId);
       });
 
       it('Can not finish Test Result via public API without final_result_id', async () => {
-        try {
-          await projectHelper.publicAPI.testResultFinish({
-            id: testResult.id,
-            project_id: projectHelper.project.id
-          });
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message)
-          .toBe(apiResponseErrors.missedFinalResultId, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultFinish({
+          id: testResult.id,
+          project_id: projectHelper.project.id
+        }), apiResponseErrors.missedFinalResultId);
       });
 
       it('Can not finish Test Result via public API for unaccessible project', async () => {
-        try {
-          await projectHelper.publicAPI.testResultFinish({
-            id: testResult.id,
-            final_result_id: 2,
-            project_id: unaccessibleId
-          });
-        } catch (error) {
-          atError = error;
-        }
-
-        expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToViewTestResults, ApiAssertMessages.errorIsWrong);
+        return api.assertNegativeresponse(api.testResultFinish({
+          id: testResult.id,
+          final_result_id: 2,
+          project_id: unaccessibleId
+        }), apiResponseErrors.anonymousNotAllowedToViewTestResults);
       });
 
       it('Can finish Test Result via public API', async () => {
-        testResult = await projectHelper.publicAPI.testResultFinish({
+        testResult = await api.testResultFinish({
           id: testResult.id,
           final_result_id: 2,
           project_id: projectHelper.project.id
@@ -429,40 +293,22 @@ describe('Public API', () => {
     });
 
     it('Can not finish Test Run via public API without id', async () => {
-      try {
-        await projectHelper.publicAPI.finishTestRun(projectHelper.project.id, undefined);
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.finishTestRun(projectHelper.project.id, undefined),
+        apiResponseErrors.missedId);
     });
 
     it('Can not finish Test Run via public API without project_id', async () => {
-      try {
-        await projectHelper.publicAPI.finishTestRun(undefined, testrun.id);
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.missedProjectId, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.finishTestRun(undefined, testrun.id),
+        apiResponseErrors.missedProjectId);
     });
 
     it('Can not finish Test Run via public API for unaccessible project', async () => {
-      try {
-        await projectHelper.publicAPI.finishTestRun(unaccessibleId, testrun.id);
-      } catch (error) {
-        atError = error;
-      }
-
-      expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-      expect(atError.message).toBe(apiResponseErrors.anonymousNotAllowedToCreateTestRun, ApiAssertMessages.errorIsWrong);
+      return api.assertNegativeresponse(api.finishTestRun(unaccessibleId, testrun.id),
+        apiResponseErrors.anonymousNotAllowedToCreateTestRun);
     });
 
     it('Can finish Test Run via public API', async () => {
-      const newTestrun: TestRun = await projectHelper.publicAPI.finishTestRun(projectHelper.project.id, testrun.id);
+      const newTestrun: TestRun = await api.finishTestRun(projectHelper.project.id, testrun.id);
 
       expect(newTestrun.id).toBe(testrun.id, ApiAssertMessages.idWrong);
       expect(newTestrun.start_time).toBe(testrun.start_time, ApiAssertMessages.startTimeWrong);

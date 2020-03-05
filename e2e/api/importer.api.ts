@@ -3,6 +3,7 @@ import { logger } from '../utils/log.util';
 import { Project } from '../../src/app/shared/models/project';
 import { EditorAPI } from './editor.api';
 import { TestRun } from '../../src/app/shared/models/testRun';
+import { BaseAPI } from './base.api';
 
 export class ImportParams {
     projectId?: number;
@@ -20,14 +21,11 @@ export enum ImportFormats {
 
 const CHECK_IMPORTED_DELAY = 2000;
 
-export class Importer {
-    project: Project;
-    token: string;
+export class Importer extends BaseAPI {
     editorAPI: EditorAPI;
 
     constructor(project: Project, token: string) {
-        this.project = project;
-        this.token = token;
+        super(project, token);
         this.editorAPI = new EditorAPI(this.project, this.token);
     }
 

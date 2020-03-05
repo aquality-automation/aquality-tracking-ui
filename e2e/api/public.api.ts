@@ -4,6 +4,7 @@ import { TestRun } from '../../src/app/shared/models/testRun';
 import { sendPost, sendGet } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { Project } from '../../src/app/shared/models/project';
+import { BaseAPI } from './base.api';
 
 enum Endpoints {
     suite_create_or_update = '/public/suite/create-or-update',
@@ -14,14 +15,7 @@ enum Endpoints {
     test_create_or_update = '/public/test/create-or-update'
 }
 
-export class PublicAPI {
-    project: Project;
-    token: string;
-
-    constructor(project: Project, token: string) {
-        this.project = project;
-        this.token = token;
-    }
+export class PublicAPI extends BaseAPI {
 
     public createOrUpdateSuite(suite: TestSuite): Promise<TestSuite> {
         return sendPost(Endpoints.suite_create_or_update, undefined, suite, this.token, this.project.id);
