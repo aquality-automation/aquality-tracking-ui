@@ -102,7 +102,7 @@ export class AuditComponent implements OnInit {
               class: 'fit'
             },
             {
-              name: 'Last Audit Result, %',
+              name: 'Last Audit Result',
               property: 'result',
               filter: true,
               sorting: true,

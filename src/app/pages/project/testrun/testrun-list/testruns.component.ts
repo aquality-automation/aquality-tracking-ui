@@ -173,7 +173,7 @@ export class TestRunsComponent implements OnInit {
         },
         class: 'ft-width-250'
       },
-      { name: 'Pass Rate, %', property: 'passrate', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Pass Rate', property: 'passrate', sorting: true, type: TFColumnType.percent, class: 'fit' },
       { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' }
     ];
     this.hiddenCols = [

@@ -59,7 +59,7 @@ export class CustomerComponent implements OnInit {
                         property: 'projects_count',
                         filter: true,
                         sorting: true,
-                        type: TFColumnType.percent,
+                        type: TFColumnType.number,
                         class: 'fit'
                     }
                 ];

@@ -48,9 +48,9 @@
                         <fa-icon class="icon up sorter" [icon]="icons.faArrowUp" style="display: none"></fa-icon>
                         <fa-icon class="icon down sorter" [icon]="icons.faArrowDown" style="display: none"></fa-icon>
 
-                        <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}</div>
+                        <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</div>
                         <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;"
-                            (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}</a>
+                            (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</a>
                         <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
                             [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
                             (ngModelChange)="toggleSelectAll($event)" />
