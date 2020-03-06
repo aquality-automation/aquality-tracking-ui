@@ -8,6 +8,7 @@ import { Paginator } from './paginator.element';
 import { Row, CellElements } from './row.element';
 import { ManageColumns } from './manageCollumns.element';
 import { compareCSVStrings } from '../../utils/csv.util';
+import { Dots } from '../dots.element';
 
 const EC = protractor.ExpectedConditions;
 
@@ -248,6 +249,13 @@ export class SmartTable extends BaseElement {
         const row = await this.getRow(searchValue, searchColumn);
         const rowElements = await row.getRowElements(columnIndex);
         return rowElements.lookup();
+    }
+
+    public async getCellDots(column: string, searchValue: string, searchColumn: string): Promise<Dots> {
+        const columnIndex = await this.getColumnIndex(column);
+        const row = await this.getRow(searchValue, searchColumn);
+        const rowElements = await row.getRowElements(columnIndex);
+        return rowElements.dots();
     }
 
     public async isRowEditableByValue(searchValue: string, searchColumn: string) {

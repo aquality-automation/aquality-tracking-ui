@@ -9,7 +9,7 @@ export class Filter {
     to?: Date;
     options?: string;
     range?: string;
-    dots?: { name: string, only?: number[], contains?: number[] }
+    dots?: { name: string, only?: number[], contains?: number[] };
     ft_select?: boolean | number;
 }
 

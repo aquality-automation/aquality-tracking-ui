@@ -22,7 +22,7 @@ export class StepsContainerComponent implements OnInit {
   public icons = {
     faMinus,
     faCheck,
-  }
+  };
   public newStepType: StepType;
   public newStep: Step;
   public testSteps: Step[];

@@ -44,6 +44,7 @@ export class TestRunsComponent implements OnInit {
   tbCols: TFColumn[];
   hiddenCols: any[];
   sortBy: { property: 'start_time', order: TFOrder.desc };
+  canEdit: boolean;
   @ViewChild(TableFilterComponent) testRunsTable: TableFilterComponent;
 
   constructor(
@@ -64,7 +65,9 @@ export class TestRunsComponent implements OnInit {
     };
     this.allowDelete = await this.permissions.hasProjectPermissions(this.testRun.project_id,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId });
+    this.canEdit = await this.permissions.hasProjectPermissions(this.testRun.project_id,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId, active: 1 });
     this.labels = await this.testrunService.getTestsRunLabels(0).toPromise();
     this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
     this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params.projectId });
@@ -134,7 +137,7 @@ export class TestRunsComponent implements OnInit {
           entity: 'milestone',
           allowEmpty: true
         },
-        editable: false,
+        editable: this.canEdit,
         class: 'fit'
       },
       {
@@ -201,8 +204,12 @@ export class TestRunsComponent implements OnInit {
     await this.testrunService.createTestRun({
       id: testrun.id,
       label_id: testrun.label.id,
-      debug: testrun.debug
+      debug: testrun.debug,
+      milestone_id: testrun.milestone ? testrun.milestone.id : 0
     });
+    this.testrunService.handleSuccess(`Test run '${
+      testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
+      }' was updated!`);
     this.tableDataUpdate(this.testRunsTable.filteredData);
   }
 

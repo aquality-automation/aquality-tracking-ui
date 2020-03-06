@@ -268,7 +268,7 @@
                         <div *ngIf="!isPropertyShouldBeHidden(entity, col.property)" class="ft-cell"
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
-                                *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
                                 [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
                                 [name]="col.property" type="text" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
@@ -276,7 +276,7 @@
                             </inline-editor>
 
                             <inline-editor [placeholder]="col?.name"
-                                *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
                                 [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
                                 [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
                                 [config]="{empty:'Add...'}"
@@ -288,7 +288,7 @@
                                 [small]="true" [allowEmptyValue]="col.lookup.allowEmpty"
                                 [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.values"
                                 [model]="transformationsService.getPropertyValue(entity, col.lookup.entity)"
-                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)"
                                 placeholder="Not Assigned"
                                 (modelChange)="setPropertyValue(entity, col.lookup.entity, $event)">
                             </lookup-autocomplete>
@@ -297,7 +297,7 @@
                                 [colorProperty]="'color'"
                                 [propertiesToShow]="[getLookupProperty(col.property, col.lookup.values)]"
                                 [array]="col.lookup.values"
-                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)"
                                 placeholder="Not Assigned" [allowEmptyValue]="col.lookup.allowEmpty"
                                 [model]="transformationsService.getPropertyValue(entity, col.lookup.entity)"
                                 (modelChange)="setPropertyValue(entity, col.lookup.entity, $event)"></lookup-colored>
@@ -316,7 +316,7 @@
                                 [ngModel]="!!transformationsService.getPropertyValue(entity, col.property)"
                                 (ngModelChange)="setPropertyValue(entity, col.property, $event)"
                                 (change)="sendUpdate(entity)"
-                                [disabled]="!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)" />
+                                [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)" />
 
                             <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link"
                                 [routerLink]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
@@ -329,31 +329,36 @@
                                 {{transformationsService.getPropertyValue(entity, col.property).text}}</div>
 
                             <div
-                                *ngIf="col.type === 'multiselect' && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty))">
+                                *ngIf="col.type === 'multiselect' && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))">
                                 {{getMultiPropertyValueString(entity, col.property, col.lookup.propToShow)}}</div>
 
                             <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
-                                *ngIf="col.type === 'multiselect' && (col.editable && !entity.constantRow && !transformationsService.getPropertyValue(entity, col.notEditableByProperty))"
+                                *ngIf="col.type === 'multiselect' && (col.editable && !entity.constantRow && !notEditableByProperty(entity, col))"
                                 placeholder="{{col?.name}}" [propertiesToShow]="col.lookup.propToShow"
                                 [array]="col.lookup.values"
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 (modelChange)="setPropertyValue(entity, col.lookup.entity, $event)">
                             </lookup-autocomplete-multiselect>
 
-                            <div *ngIf="col.type === 'date' && col.format" class="nowrap">
+                            <div *ngIf="col.type === 'date' && col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))" class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:col.format}}
                             </div>
 
-                            <div *ngIf="col.type === 'date' && !col.format" class="nowrap">
+                            <div *ngIf="col.type === 'date' && !col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))" class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:'MM/dd/yy hh:mm:ss a'}}
                             </div>
+                            
+                            <ng-datepicker *ngIf="col.type === 'date' && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)" 
+                                [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
+                                (ngModelChange)="setPropertyValue(entity, col.property, $event)"
+                                [options]="col.format"></ng-datepicker>
 
                             <div
-                                *ngIf="col.type === 'time' && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty))">
+                                *ngIf="col.type === 'time' && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))">
                                 {{transformationsService.msToDurationString(transformationsService.getPropertyValue(entity, col.property))}}
                             </div>
                             <input
-                                *ngIf="col.type === 'time' && col.editable && !entity.constantRow  && !transformationsService.getPropertyValue(entity, col.notEditableByProperty)"
+                                *ngIf="col.type === 'time' && col.editable && !entity.constantRow  && !notEditableByProperty(entity, col)"
                                 class="form-control input-sm ft-duration-input" [name]="col.property + rowNum"
                                 type="text" [textMask]="{mask:durationMask}"
                                 [ngModel]="transformationsService.calculateDuration(transformationsService.getPropertyValue(entity, col.property))"
@@ -361,7 +366,7 @@
                                 (blur)="sendUpdate(entity)" />
 
                             <div
-                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || transformationsService.getPropertyValue(entity, col.notEditableByProperty)) && !col.link">
+                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || notEditableByProperty(entity, col)) && !col.link">
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
                             <attachment-inline *ngIf="col.type === 'file'" [name]="col.property + rowNum"
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"

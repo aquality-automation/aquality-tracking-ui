@@ -1,4 +1,15 @@
-import { Component, OnInit, trigger, state, style, transition, animate, ViewChildren, QueryList, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+  ViewChildren,
+  QueryList,
+  OnDestroy
+} from '@angular/core';
 import { TestSuiteService } from '../../../services/testSuite.service';
 import { ActivatedRoute } from '@angular/router';
 import { TestSuite, SuiteDashboard } from '../../../shared/models/testSuite';
@@ -7,7 +18,13 @@ import { TestRunService } from '../../../services/testRun.service';
 import { TestRunStat } from '../../../shared/models/testrunStats';
 import { TransformationsService } from '../../../services/transformations.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { faChevronRight, faChevronLeft, faTimes, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronRight,
+  faChevronLeft,
+  faTimes,
+  faSyncAlt
+} from '@fortawesome/free-solid-svg-icons';
+import { colors } from '../../../shared/colors.service';
 
 @Component({
   selector: 'app-suite-dashboard',
@@ -21,24 +38,29 @@ import { faChevronRight, faChevronLeft, faTimes, faSyncAlt } from '@fortawesome/
   ],
   animations: [
     trigger('slideInOut', [
-      state('in', style({
-        transform: 'translate3d(0, 0, 0)'
-      })),
-      state('out', style({
-        transform: 'translate3d(-100%, 0, 0) translate3d(20px, 0, 0)'
-      })),
+      state(
+        'in',
+        style({
+          transform: 'translate3d(0, 0, 0)'
+        })
+      ),
+      state(
+        'out',
+        style({
+          transform: 'translate3d(-100%, 0, 0) translate3d(20px, 0, 0)'
+        })
+      ),
       transition('in => out', animate('400ms ease-in-out')),
       transition('out => in', animate('400ms ease-in-out'))
-    ]),
-  ],
+    ])
+  ]
 })
 export class SuiteDashboardComponent implements OnInit, OnDestroy {
-
   constructor(
     private testSuiteService: TestSuiteService,
     private testRunService: TestRunService,
-    private route: ActivatedRoute,
-  ) { }
+    private route: ActivatedRoute
+  ) {}
 
   @ViewChildren(BaseChartDirective) charts: QueryList<BaseChartDirective>;
 
@@ -57,6 +79,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
     legend: {
       display: true,
       position: 'right',
+      align: 'end',
       labels: {
         boxWidth: 10,
         usePointStyle: true
@@ -72,8 +95,15 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   }
 
   async getDashboards() {
-    this.dashboards = await this.testSuiteService.getSuiteDashboards(this.route.snapshot.params['projectId']);
-    this.dashboards.unshift({ name: 'All', suites: this.suites, detailed: false, notDeletable: true });
+    this.dashboards = await this.testSuiteService.getSuiteDashboards(
+      this.route.snapshot.params['projectId']
+    );
+    this.dashboards.unshift({
+      name: 'All',
+      suites: this.suites,
+      detailed: false,
+      notDeletable: true
+    });
   }
 
   async generateChartsData(detailed: boolean | number) {
@@ -92,15 +122,21 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
     const charts = this.charts.toArray();
     this.suite_stats.forEach((suite, i) => {
-      const new_suite = new_suite_stats.find(new_suite_stat => new_suite_stat.id === suite.id);
-      const currentChart = charts.find(chart => chart.options.id === new_suite.id);
+      const new_suite = new_suite_stats.find(
+        new_suite_stat => new_suite_stat.id === suite.id
+      );
+      const currentChart = charts.find(
+        chart => chart.options.id === new_suite.id
+      );
       if (currentChart) {
         suite.chartData = new_suite.chartData;
         suite.chartLabels = new_suite.chartLabels;
         currentChart.chart.config.data.labels = suite.chartLabels;
       } else {
         if (new_suite.chartData) {
-          const index = this.suite_stats.findIndex(suiteStat => suiteStat.id === new_suite.id);
+          const index = this.suite_stats.findIndex(
+            suiteStat => suiteStat.id === new_suite.id
+          );
           this.suite_stats[index] = new_suite;
         }
       }
@@ -112,14 +148,25 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
       if (suite.stat) {
         suite['chartData'] = [
           {
-            data: [suite.stat.passed, suite.stat.app_issue, suite.stat.warning + suite.stat.not_assigned + suite.stat.other, 0],
-            backgroundColor: ['#009900', '#CC0000', '#FF6600']
+            data: [
+              suite.stat.passed,
+              suite.stat.app_issue,
+              suite.stat.warning + suite.stat.not_assigned + suite.stat.other,
+              0
+            ],
+            backgroundColor: [
+              colors.success.fill,
+              colors.danger.fill,
+              colors.warning.fill
+            ]
           }
         ];
         suite['chartLabels'] = [
           `Passed | ${suite.stat.passed}`,
           `Application Issues | ${suite.stat.app_issue}`,
-          `Test Issues | ${suite.stat.warning + suite.stat.not_assigned + suite.stat.other}`,
+          `Test Issues | ${suite.stat.warning +
+            suite.stat.not_assigned +
+            suite.stat.other}`,
           `Total | ${suite.stat.total}`
         ];
         const options = JSON.parse(JSON.stringify(this.chartOptions));
@@ -133,14 +180,49 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   generateDetailedData(suites) {
     for (const suite of suites) {
       if (suite.stat) {
+        const stat: TestRunStat = suite.stat;
         suite['chartData'] = [
           {
-            data: [suite.stat.passed, 0, 0, suite.stat.app_issue, suite.stat.warning, suite.stat.not_assigned, suite.stat.other, 0],
-            backgroundColor: ['#009900', '#CC0000', '#3366FF', '#CC0000', '#FF6600', '#3366FF', '#5bc0de']
+            data: [
+              stat.passed,
+              0,
+              0,
+              stat.app_issue,
+              stat.warning,
+              stat.not_assigned,
+              stat.other,
+              0
+            ],
+            backgroundColor: [
+              colors.success.fill,
+              colors.danger.fill,
+              colors.primary.fill,
+              colors.danger.fill,
+              colors.warning.fill,
+              colors.primary.fill,
+              colors.info.fill
+            ]
           },
           {
-            data: [suite.stat.passed, suite.stat.failed, suite.stat.not_executed, 0, 0, 0, 0, 0],
-            backgroundColor: ['#009900', '#CC0000', '#3366FF', '#CC0000', '#FF6600', '#3366FF', '#5bc0de']
+            data: [
+              stat.passed,
+              stat.failed,
+              stat.not_executed + stat.pending + stat.in_progress,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            backgroundColor: [
+              colors.success.fill,
+              colors.danger.fill,
+              colors.primary.fill,
+              colors.danger.fill,
+              colors.warning.fill,
+              colors.primary.fill,
+              colors.info.fill
+            ]
           }
         ];
         suite['chartLabels'] = [
@@ -169,19 +251,26 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
   async getSuiteStats() {
     const suite_stats = [];
-    this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] }, false);
+    this.suites = await this.testSuiteService.getTestSuite(
+      { project_id: this.route.snapshot.params['projectId'] },
+      false
+    );
     if (!this.suitesToShow) {
       this.suitesToShow = this.suites;
     } else {
-      const newSuitesToShow = this.suites.filter(x => this.suitesToShow.find(y => y.id === x.id));
+      const newSuitesToShow = this.suites.filter(x =>
+        this.suitesToShow.find(y => y.id === x.id)
+      );
       this.suitesToShow = newSuitesToShow;
     }
     for (const suite of this.suitesToShow) {
-      const results = await this.testRunService.getTestsRunStats({
-        test_suite_id: suite.id,
-        project_id: suite.project_id
-      },
-        this.suite_stats.length < 1);
+      const results = await this.testRunService.getTestsRunStats(
+        {
+          test_suite_id: suite.id,
+          project_id: suite.project_id
+        },
+        this.suite_stats.length < 1
+      );
 
       if (results.length > 0) {
         const latest = results[0];
@@ -206,9 +295,14 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
   isDashboardNameValid(): boolean {
     const isAlreadyExists = this.dashboards
-      ? this.dashboards.find(x => x.name === this.newDashboardName) !== undefined
+      ? this.dashboards.find(x => x.name === this.newDashboardName) !==
+        undefined
       : true;
-    return this.newDashboardName && !isAlreadyExists && this.newDashboardName.length > 3;
+    return (
+      this.newDashboardName &&
+      !isAlreadyExists &&
+      this.newDashboardName.length > 3
+    );
   }
 
   selectDashboard(dashboard: SuiteDashboard) {
@@ -233,7 +327,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
 
   executeRefresh() {
     this.refreshStatus
-      ? this.timer = setInterval(() => this.updateChartsData(), 5000)
+      ? (this.timer = setInterval(() => this.updateChartsData(), 5000))
       : clearTimeout(this.timer);
   }
 

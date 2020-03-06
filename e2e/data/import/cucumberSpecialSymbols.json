@@ -75,7 +75,7 @@
             "result": {
               "status": "failed",
               "duration": 86,
-              "error_message": "step was failed\n log asdf sadf  asdf  dsd dd d d d d d dasd asdf [error]\nExpected 1\n[error]"
+              "error_message": "step was failed !”#$%&’()*+,-./:;<=>?@[\\]^_`{|}~"
             }
           }
         ]

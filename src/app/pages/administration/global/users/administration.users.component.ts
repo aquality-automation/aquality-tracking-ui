@@ -40,7 +40,7 @@ export class AdministrationUsersComponent implements OnInit {
             sorting: true,
             type: TFColumnType.text,
             editable: true,
-            notEditableByProperty: 'ldap_user',
+            notEditableByProperty: { property: 'ldap_user', value: true },
             creation: {
                 required: true
             }
@@ -52,7 +52,7 @@ export class AdministrationUsersComponent implements OnInit {
             sorting: true,
             type: TFColumnType.text,
             editable: true,
-            notEditableByProperty: 'ldap_user',
+            notEditableByProperty: { property: 'ldap_user', value: true },
             creation: {
                 required: true
             }
@@ -65,7 +65,7 @@ export class AdministrationUsersComponent implements OnInit {
             type: TFColumnType.text,
             editable: true,
             pattern: '[first_name] [second_name]',
-            notEditableByProperty: 'ldap_user',
+            notEditableByProperty: { property: 'ldap_user', value: true },
             creation: {
                 required: true
             }
@@ -77,7 +77,7 @@ export class AdministrationUsersComponent implements OnInit {
             sorting: true,
             type: TFColumnType.email,
             editable: true,
-            notEditableByProperty: 'ldap_user',
+            notEditableByProperty: { property: 'ldap_user', value: true },
             creation: {
                 required: true
             }

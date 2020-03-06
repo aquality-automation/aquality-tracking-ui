@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers , RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { ActivatedRoute } from '@angular/router';
 import { ResultResolution } from '../shared/models/result_resolution';
 
 

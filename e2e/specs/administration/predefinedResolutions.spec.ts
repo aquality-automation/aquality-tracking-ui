@@ -159,7 +159,7 @@ describe('Predefined Resolution:', () => {
                 await predefinedResolutions.modal.clickYes();
                 await predefinedResolutions.notification.assertIsSuccess('Predefined Resolution was removed!');
                 return expect(predefinedResolutions.isResolutionPresent(edit.expression))
-                    .toBe(false, 'Predefined Resolution was not removed!')
+                    .toBe(false, 'Predefined Resolution was not removed!');
             });
         });
     });

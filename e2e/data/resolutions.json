@@ -8,15 +8,15 @@
             "name": "Not Assigned",
             "color": "Primary"
         },
-        "appIssue":{
+        "appIssue": {
             "name": "Application Issue",
             "color": "Danger"
         },
-        "environmentIssue":{
+        "environmentIssue": {
             "name": "Environment Issue",
             "color": "Warning"
         },
-        "testIssue":{
+        "testIssue": {
             "name": "Test Issue",
             "color": "Warning"
         },

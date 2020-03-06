@@ -38,7 +38,7 @@ export class CreateTestRunComponent implements OnInit {
     this.projectId = this.route.snapshot.params.projectId;
     [this.testSuites, this.milestones] = await Promise.all([
       this.testSuiteService.getTestSuite({ project_id: this.projectId }),
-      this.milestoneService.getMilestone({ project_id: this.projectId })
+      this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 })
     ]);
   }
 
@@ -75,7 +75,7 @@ export class CreateTestRunComponent implements OnInit {
 
   async createMilestone(name: string) {
     await this.milestoneService.createMilestone({ name, project_id: this.projectId });
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId });
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 });
     this.milestone = this.milestones.find(x => x.name === name);
   }
 

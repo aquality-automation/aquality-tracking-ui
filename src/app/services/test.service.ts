@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { Test, LastResulColors } from '../shared/models/test';
+import { Test } from '../shared/models/test';
 import { TestSuite } from '../shared/models/testSuite';
 
 
@@ -64,7 +64,7 @@ export class TestService extends SimpleRequester {
     ];
   }
 
-  public getLastResultsId(entity: LastResulColors): number[] {
+  public getLastResultsId(entity: Test): number[] {
     if (entity && entity.result_ids) {
       return JSON.parse(`[${entity.result_ids}]`) as number[];
     }
@@ -72,7 +72,7 @@ export class TestService extends SimpleRequester {
     return [];
   }
 
-  public combineLastResults(entity: LastResulColors): number[] {
+  public combineLastResults(entity: Test): number[] {
     const combinedColors: number[] = [];
     if (entity && entity.resolution_colors && entity.result_colors) {
       const resolutionColors = entity.resolution_colors.split(',');

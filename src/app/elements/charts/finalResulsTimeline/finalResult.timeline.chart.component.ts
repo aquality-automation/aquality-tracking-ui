@@ -17,7 +17,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   ]
 })
 
-export class FinalResultsTimelineComponent implements OnInit{
+export class FinalResultsTimelineComponent implements OnInit {
   @Input() testResults: TestResult[];
   listOfFinalResults: FinalResult[];
   lineChartOptions: any = {};

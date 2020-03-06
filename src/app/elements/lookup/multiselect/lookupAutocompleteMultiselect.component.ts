@@ -82,6 +82,13 @@ export class LookupAutocompleteMultiselectComponent extends BaseLookupComponent 
     }
   }
 
+  onClickedOutside($event: MouseEvent) {
+    const element = $event.target as HTMLElement;
+    if (!element.classList.contains('selector-button')) {
+      this.toggleOff();
+    }
+  }
+
   removeModelFromArray() {
     this.notSelectedArray = this.array;
     if (this.model) {

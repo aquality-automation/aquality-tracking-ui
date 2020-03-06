@@ -13,8 +13,7 @@ import { TestSuite } from '../../../../shared/models/testSuite';
 import { StepsContainerComponent } from '../steps-container/steps-container.component';
 import { copyToClipboard } from '../../../../shared/utils/clipboard.util';
 import { GlobalDataService } from '../../../../services/globaldata.service';
-// tslint:disable-next-line: import-blacklist
-import { Subscription } from 'rxjs';
+import { Subscription } from 'rxjs/Subscription';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 import { TFOrder, TFSorting } from '../../../../elements/table/tfColumn';
 

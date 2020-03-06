@@ -586,16 +586,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   downloadCSV() {
     let data: string, filename: string, link: HTMLAnchorElement;
-    let csv = this.getCSV();
+    const csv = this.getCSV();
     if (csv === null) { return; }
-
     filename = `export${Date.now()}.csv`;
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = 'data:text/csv;charset=utf-8,' + csv;
-    }
-    data = encodeURI(csv);
-
+    data = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
     link = document.createElement('a');
     document.body.appendChild(link);
     link.setAttribute('type', 'hidden');
@@ -651,8 +645,24 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   rowClicked(entity: any, col: any, $event: any) {
     const el: HTMLElement = $event.target;
-    if ((!col.editable || el.classList.contains('ft-cell')) && col.type !== 'link' && col.type !== 'long-text' && !col.link) {
+    const canClick = (!col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell'))
+    && col.type !== 'link'
+    && col.type !== 'long-text'
+    && !col.link;
+    if (canClick) {
       this.rowClick.emit(entity);
     }
+  }
+
+  notEditableByProperty(entity: any, col: TFColumn) {
+    if (col.notEditableByProperty) {
+      if (typeof col.notEditableByProperty.value === 'boolean') {
+        const currentBoolValue = !!this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);
+        return currentBoolValue === col.notEditableByProperty.value;
+      }
+      const currentValue = this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);
+      return currentValue === col.notEditableByProperty.value;
+    }
+    return false;
   }
 }

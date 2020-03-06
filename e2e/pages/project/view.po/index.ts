@@ -15,7 +15,7 @@ class ProjectView extends BasePage {
         return elements.projectTitleLabel.getText();
     }
 
-    async isEmpty(){
+    async isEmpty() {
         return elements.emptyProjectMessage.isDisplayed();
     }
 }
