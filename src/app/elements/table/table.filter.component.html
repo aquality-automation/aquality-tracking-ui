@@ -43,7 +43,7 @@
                         [sorter]="getDefaultSorter(col)"
                         (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
                             'fit': col.type === 'checkbox' || col.property === 'action',
-                            'percent':col.type === 'percent'
+                            'percent':col.type === 'percent' || col.type === 'number'
                         }">
                         <fa-icon class="icon up sorter" [icon]="icons.faArrowUp" style="display: none"></fa-icon>
                         <fa-icon class="icon down sorter" [icon]="icons.faArrowDown" style="display: none"></fa-icon>
@@ -102,17 +102,17 @@
                             (modelChange)="handleLookupFilterChange(col.lookup.objectWithId ? col.lookup.objectWithId : col.lookup.entity, [$event])">
                         </lookup-autocomplete>
 
-                        <div *ngIf="col.type === 'percent' && col.filter"
+                        <div *ngIf="(col.type === 'percent' || col.type === 'number') && col.filter"
                             [ngClass]="{ 'has-error': isRangeInvalid(col) }">
                             <input placeholder="from" class="inline form-control input-sm ft-range-selector"
-                                (keyup)="rangeKeyUp($event)"
+                                (keyup)="rangeKeyUp($event, col)"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
-                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0" max="100"
+                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0" [max]="col.type === 'percent' ? 100 : undefined"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <input placeholder="to" class="inline form-control input-sm ft-range-selector"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
-                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" max="100"
-                                (keyup)="rangeKeyUp($event)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" [max]="col.type === 'percent' ? 100 : undefined"
+                                (keyup)="rangeKeyUp($event, col)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <fa-icon class="icon" [icon]="icons.faTimes" (click)="removeRangeFilter(col.property)">
                             </fa-icon>
                         </div>
@@ -366,7 +366,7 @@
                                 (blur)="sendUpdate(entity)" />
 
                             <div
-                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='textarea') && (!col.editable || entity.constantRow || notEditableByProperty(entity, col)) && !col.link">
+                                *ngIf="(col.type === 'text' || col.type=='email' || col.type=='percent' || col.type=='number' || col.type=='textarea') && (!col.editable || entity.constantRow || notEditableByProperty(entity, col)) && !col.link">
                                 {{transformationsService.getPropertyValue(entity, col.property)}}</div>
                             <attachment-inline *ngIf="col.type === 'file'" [name]="col.property + rowNum"
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"

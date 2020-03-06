@@ -164,7 +164,7 @@ export class TestRunsComponent implements OnInit {
         property: 'not_assigned',
         filter: true,
         sorting: true,
-        type: TFColumnType.percent,
+        type: TFColumnType.number,
         editable: false,
         link: {
           template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
