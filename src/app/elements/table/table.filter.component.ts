@@ -274,14 +274,14 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   handleRangeFilterChange(col: any, value: string, type: string) {
     const newFilter: Filter = this.filterHelper.getOrCreateFilter(col.property, this.appliedFilters);
     let ranges: any[] = [];
-    ranges = newFilter.range ? newFilter.range.split(',') : [0, 100];
+    ranges = newFilter.range ? newFilter.range.split(',') : [0, undefined];
 
     switch (type) {
       case 'from':
-        ranges[0] = this.fixIvalidRange(value);
+        ranges[0] = this.fixIvalidRange(value, col);
         break;
       case 'to':
-        ranges[1] = this.fixIvalidRange(value);
+        ranges[1] = this.fixIvalidRange(value, col);
         break;
     }
 
@@ -318,9 +318,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.filterChange(newFilter);
   }
 
-  fixIvalidRange(range: string | number) {
+  fixIvalidRange(range: string | number, col: TFColumn) {
     range = +range < 0 ? 0 : range;
-    range = +range > 100 ? 100 : range;
+    if (col.type === TFColumnType.percent) {
+      range = +range > 100 ? 100 : range;
+    }
     return range;
   }
 
@@ -568,8 +570,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.sort(this.defaultSortBy);
   }
 
-  rangeKeyUp($event) {
-    $event.target.value = this.fixIvalidRange($event.target.value);
+  rangeKeyUp($event, column: TFColumn) {
+    $event.target.value = this.fixIvalidRange($event.target.value, column);
   }
 
   removeRangeFilter(property) {
@@ -646,9 +648,9 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   rowClicked(entity: any, col: any, $event: any) {
     const el: HTMLElement = $event.target;
     const canClick = (!col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell'))
-    && col.type !== 'link'
-    && col.type !== 'long-text'
-    && !col.link;
+      && col.type !== 'link'
+      && col.type !== 'long-text'
+      && !col.link;
     if (canClick) {
       this.rowClick.emit(entity);
     }
