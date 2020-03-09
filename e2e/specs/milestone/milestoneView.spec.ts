@@ -73,7 +73,7 @@ describe('Milestone:', () => {
         milestones.version1 = await projectHelper.editorAPI.createMilestone(milestones.version1);
         milestones.version2 = await projectHelper.editorAPI.createMilestone(milestones.version2);
         milestones.version3 = await projectHelper.editorAPI.createMilestone(milestones.version3);
-        await projectHelper.editorAPI.createSuite({ name: suites.base });
+        return projectHelper.editorAPI.createSuite({ name: suites.base });
     });
 
     afterAll(async () => {
