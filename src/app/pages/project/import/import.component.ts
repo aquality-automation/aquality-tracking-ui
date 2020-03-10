@@ -47,12 +47,18 @@ export class ImportComponent {
   importResults: Import[];
   resultsColumnsToShow: TFColumn[];
   timerToken: any;
-  statuses: { name: string, color: number }[] = [{
+  statuses: { id: number, name: string, color: number }[] = [{
+    id: 1,
     name: 'Finished',
     color: 5
   }, {
+    id: 0,
     name: 'In Progress',
     color: 2
+  }, {
+    id: 2,
+    name: 'Failed',
+    color: 1
   }];
   sortBy = { order: TFOrder.asc, property: 'started' };
   imports: { name: string, key: string }[] = [
@@ -92,9 +98,7 @@ export class ImportComponent {
     this.importService.importResults(this.route.snapshot.params.projectId).subscribe(res => {
       this.importResults = res;
       this.importResults.forEach(result => {
-        result['status'] = result.is_finished === 1
-          ? this.statuses.find(status => status.color === 5)
-          : this.statuses.find(status => status.color === 2);
+        result['status'] = this.statuses.find(status => status.id === result.finish_status);
       });
       this.resultsColumnsToShow = [
         {
