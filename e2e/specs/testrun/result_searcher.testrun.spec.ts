@@ -20,8 +20,6 @@ describe('Test Run Result Searcher', () => {
             [`${builds.build_1}.json`,
             `${builds.build_2}.json`]);
         await projectView.menuBar.testRuns();
-        const isTestRunAppear = await testRunList.waitForTestRun(builds.build_2);
-        expect(isTestRunAppear).toBe(true, 'Import was not finished!');
         await testRunList.openTestRun(builds.build_1);
     });
 
