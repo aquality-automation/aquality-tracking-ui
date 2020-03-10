@@ -5,7 +5,6 @@ import { projectList } from '../../pages/project/list.po';
 import { dateUtil } from '../../utils/date.util';
 import using from 'jasmine-data-provider';
 import users from '../../data/users.json';
-import { logger } from '../../utils/log.util';
 
 const editorExamples = {
     auditAdmin: users.auditAdmin,
@@ -26,7 +25,7 @@ const getLastSubmittedAuditsfileName = (): string => {
     return `Aquality_Tracking_Last_Submitted_Audits_${dateUtil.getDateFormat()}.xlsx`;
 };
 
-fdescribe('Audits Dashboard:', () => {
+describe('Audits Dashboard:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`${description} role:`, () => {
             it(`Is not available for role ${description}`, async () => {
