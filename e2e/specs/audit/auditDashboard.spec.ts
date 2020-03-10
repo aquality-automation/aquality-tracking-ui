@@ -5,6 +5,7 @@ import { projectList } from '../../pages/project/list.po';
 import { dateUtil } from '../../utils/date.util';
 import using from 'jasmine-data-provider';
 import users from '../../data/users.json';
+import { logger } from '../../utils/log.util';
 
 const editorExamples = {
     auditAdmin: users.auditAdmin,
@@ -25,7 +26,7 @@ const getLastSubmittedAuditsfileName = (): string => {
     return `Aquality_Tracking_Last_Submitted_Audits_${dateUtil.getDateFormat()}.xlsx`;
 };
 
-describe('Audits Dashboard:', () => {
+fdescribe('Audits Dashboard:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`${description} role:`, () => {
             it(`Is not available for role ${description}`, async () => {
@@ -51,14 +52,14 @@ describe('Audits Dashboard:', () => {
                 await auditsDashboardPage.exportAllSubmittedAudits();
                 return expect(
                     await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getAllSubmittedAuditsfileName()))
-                    .toBe(true, 'All submitted audits should be exported to file');
+                    .toBe(true, `All submitted audits should be exported to file: ${getAllSubmittedAuditsfileName()}`);
             });
 
             it('Can export last submitted audits', async () => {
                 await auditsDashboardPage.exportLastSubmittedAudits();
                 return expect(
                     await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getLastSubmittedAuditsfileName()))
-                    .toBe(true, 'Last submitted audits should be exported to file');
+                    .toBe(true, `Last submitted audits should be exported to file: ${getLastSubmittedAuditsfileName()}`);
             });
         });
     });

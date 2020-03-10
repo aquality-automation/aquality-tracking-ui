@@ -21,7 +21,9 @@ class TestData {
      * @return {string} full path
      */
     getFullPath(pathFromDataFolder: string): string {
-        return path.join(__dirname, '..', dataFolderName, pathFromDataFolder);
+        const fullPath = path.join(__dirname, '..', dataFolderName, pathFromDataFolder);
+        logger.info(`Full path from data folder: ${fullPath}`);
+        return fullPath;
     }
 
     /**
@@ -56,19 +58,27 @@ class TestData {
      */
     cleanUpDownloadsData() {
         const downloadsPath = this.getFullPath(`/${downloadsFolderName}`);
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             logger.info('Running Downloads Clean UP!');
-            if (fs.existsSync(downloadsPath)) {
-                fs.readdirSync(downloadsPath).forEach(function (file, index) {
-                    const curPath = downloadsPath + '/' + file;
-                    if (fs.lstatSync(curPath).isDirectory()) {
-                        this.deleteFolderRecursive(curPath);
-                    } else {
-                        fs.unlinkSync(curPath);
-                    }
-                });
-                resolve();
+            try {
+                if (fs.existsSync(downloadsPath)) {
+                    logger.info('Downloads folder Exists');
+                    fs.readdirSync(downloadsPath).forEach(function (file, index) {
+                        logger.info(`Processing ${file}`);
+                        const curPath = path.join(downloadsPath, file);
+                        if (fs.lstatSync(curPath).isDirectory()) {
+                            logger.info(`Removing directory '${file}'`);
+                            this.deleteFolderRecursive(curPath);
+                        } else {
+                            logger.info(`Removing file '${file}'`);
+                            fs.unlinkSync(curPath);
+                        }
+                    });
+                }
+            } catch (error) {
+                reject(`Was not able to clean up the downloads folder: ${error.message}`);
             }
+            resolve();
         });
     }
 
