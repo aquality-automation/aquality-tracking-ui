@@ -5,7 +5,7 @@ import { TestRun } from '../../src/app/shared/models/testRun';
 import { Milestone } from '../../src/app/shared/models/milestone';
 import { sendPost, sendGet, sendDelete } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
-import { Project } from '../../src/app/shared/models/project';
+import { BaseAPI } from './base.api';
 
 enum Endpoints {
     suite = '/suite',
@@ -18,14 +18,7 @@ enum Endpoints {
     testToSuite = '/testToSuite'
 }
 
-export class EditorAPI {
-    project: Project;
-    token: string;
-
-    constructor(project: Project, token: string) {
-        this.project = project;
-        this.token = token;
-    }
+export class EditorAPI extends BaseAPI {
 
     public async createSuite(suite: TestSuite): Promise<TestSuite> {
         suite.project_id = this.project.id;

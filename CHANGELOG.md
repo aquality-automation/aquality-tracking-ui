@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 0.3.8 (unreleased)
+
+Features:
+  - Test Run List: Add posibility to filter by Inactive Milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/73)
+  - Mark import af failed when import is failed  -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/79)
+
+Bugfixes:
+  - Test Runs: Fix Filter for No Resolution Column -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/22)
+  - Test Run View: Chart is not updated when user updating results in a bulk -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/78)
+  
 ## 0.3.7 (2020-03-02)
 
 Features:

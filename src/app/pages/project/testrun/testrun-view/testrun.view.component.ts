@@ -144,8 +144,10 @@ export class TestRunViewComponent implements OnInit {
     testUpdatedTestRun = await this.testRunService.createTestRun(testUpdatedTestRun);
   }
 
-  updateResult($event: TestResult) {
-    this.testResults[this.testResults.findIndex(x => x.id === $event.id)] = $event;
+  updateResult(updatedResults: TestResult[]) {
+    updatedResults.forEach(updatedResult => {
+      this.testResults[this.testResults.findIndex(x => x.id === updatedResult.id)] = updatedResult;
+    });
     this.resultResolutionsCharts.ngOnChanges();
   }
 

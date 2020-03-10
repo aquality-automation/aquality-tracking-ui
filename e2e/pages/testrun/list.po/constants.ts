@@ -12,6 +12,7 @@ export const names = {
 };
 
 export const columns = {
-    build: 'Build'
+    build: 'Build',
+    milestone: 'Milestone'
 };
 

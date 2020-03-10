@@ -64,10 +64,10 @@ export class AuditProjectComponent implements OnInit {
               { name: 'Progress Finished', property: 'progress_finished', sorting: true, type: TFColumnType.date },
               { name: 'Submitted', property: 'submitted', sorting: true, type: TFColumnType.date },
               {
-                name: 'Result, %',
+                name: 'Result',
                 property: 'result',
                 sorting: true,
-                type: TFColumnType.text
+                type: TFColumnType.percent
               },
               {
                 name: 'Auditors',

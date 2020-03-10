@@ -8,7 +8,7 @@ import { TestResult, TestResultStat } from '../shared/models/test-result';
 export class TestResultService extends SimpleRequester {
 
   getTestResult(testresult: TestResult): Promise<TestResult[]> {
-    testresult.project_id = this.route.snapshot.params['projectId'];
+    testresult = this.setProjectId(testresult);
     return this.doGet('/testresult', testresult).map(res => res.json()).toPromise();
   }
 
@@ -19,7 +19,7 @@ export class TestResultService extends SimpleRequester {
 
   bulkUpdate(testresults: TestResult[]): Promise<void> {
     testresults.forEach(testresult => {
-      testresult.project_id = this.route.snapshot.params['projectId'];
+      testresult = this.setProjectId(testresult);
       if (testresult.test_resolution) {
         testresult.test_resolution_id = testresult.test_resolution.id;
       }
@@ -31,12 +31,21 @@ export class TestResultService extends SimpleRequester {
   }
 
   removeTestResult(testresult: TestResult): Promise<void> {
+    testresult = this.setProjectId(testresult);
     return this.doDelete(`/testrun?id=${testresult.id}&project_id=${testresult.project_id}`)
       .map(() => this.handleSuccess(`Test result '${testresult.id}' was deleted.`)).toPromise();
   }
 
-  getTestResultsStat(projectId, testRunStartedFrom, testRunStartedTo): Promise<TestResultStat[]> {
-    const params = { projectId, testRunStartedFrom, testRunStartedTo };
+  getTestResultsStat(project_id: number, testRunStartedFrom: string, testRunStartedTo: string): Promise<TestResultStat[]> {
+    const params = { project_id, testRunStartedFrom, testRunStartedTo };
     return this.doGet(`/stats/testresult`, params).map(res => res.json()).toPromise();
+  }
+
+  private setProjectId(testResult: TestResult): TestResult {
+    if (!testResult.project_id) {
+      testResult.project_id = this.route.snapshot.params.projectId;
+    }
+
+    return testResult;
   }
 }

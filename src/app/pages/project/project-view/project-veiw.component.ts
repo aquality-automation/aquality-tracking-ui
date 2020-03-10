@@ -65,7 +65,7 @@ export class ProjectViewComponent implements OnInit {
         { name: 'Execution Environment', property: 'execution_environment', type: TFColumnType.text },
         { name: 'Start Time', property: 'start_time', type: TFColumnType.date, class: 'fit' },
         { name: 'Finish Time', property: 'finish_time', type: TFColumnType.date, class: 'fit' },
-        { name: 'Pass Rate, %', property: 'failed', type: TFColumnType.text, class: 'fit' },
+        { name: 'Pass Rate', property: 'failed', type: TFColumnType.percent, class: 'fit' },
       ];
     });
   }
