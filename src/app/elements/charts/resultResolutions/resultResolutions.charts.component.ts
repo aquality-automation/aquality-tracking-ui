@@ -49,7 +49,7 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
   constructor(
     private resultResolutionService: ResultResolutionService,
     private globalDataService: GlobalDataService
-    ) {}
+  ) { }
 
   ngOnInit(): void {
     this.projectSubscription = this.globalDataService.currentProject$.subscribe(project => {
@@ -58,7 +58,9 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    this.projectSubscription.unsubscribe();
+    if (this.projectSubscription) {
+      this.projectSubscription.unsubscribe();
+    }
   }
 
   public ngOnChanges() {
@@ -100,7 +102,7 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
     for (const resultResolution of this.listOfResultResolutions) {
       this.doughnutChartLabels.push(
         resultResolution.name +
-          this.calculatePrecentageAndCount(resultResolution.name)
+        this.calculatePrecentageAndCount(resultResolution.name)
       );
     }
   }
