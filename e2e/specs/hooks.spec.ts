@@ -33,6 +33,7 @@ beforeAll(async () => {
     await userAdministration.create(usersTestData.manager);
     await userAdministration.create(usersTestData.projectTemp);
     await userAdministration.create(usersTestData.viewer);
+    await userAdministration.create(usersTestData.unitCoordinator);
     await userAdministration.menuBar.clickLogOut();
 });
 
@@ -53,5 +54,6 @@ afterAll(async () => {
     await userAdministration.remove(usersTestData.manager.user_name);
     await userAdministration.remove(usersTestData.projectTemp.user_name);
     await userAdministration.remove(usersTestData.viewer.user_name);
+    await userAdministration.remove(usersTestData.unitCoordinator.user_name);
     await userAdministration.menuBar.clickLogOut();
 });

@@ -16,6 +16,7 @@ services:
       - db
     image: tomcat:9.0-jre8-alpine
     restart: always
+    command: bash -c "apk add --update ttf-dejavu && rm -rf /var/cache/apk/* && catalina.sh run"
     volumes:
       - ./apps:/usr/local/tomcat/webapps/
     links:

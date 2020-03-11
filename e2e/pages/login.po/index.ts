@@ -29,7 +29,10 @@ class LogIn extends BasePage {
       logger.info('Going to log out, before logging in with another user account.');
       await this.menuBar.clickLogOut();
     }
-    await expect(await this.isOpened()).toBe(true, 'Was not logged out!');
+    if (!(await this.isOpened())) {
+      const logs = await this.getConsoleLogs();
+      expect(true).toBe(false, `Was not logged out!\nLogs:\n${logs}`);
+    }
     await this.setUserName(userName);
     await this.setPassword(password);
     await this.clickLogIn();

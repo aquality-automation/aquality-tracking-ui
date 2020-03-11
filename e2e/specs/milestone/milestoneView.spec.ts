@@ -174,7 +174,7 @@ describe('Milestone:', () => {
 
     using(editorExamples, (user, description) => {
         describe(`Milestone View: ${description} role:`, () => {
-            let testrun;
+            let testrun: TestRun;
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
                 await projectHelper.openProject();

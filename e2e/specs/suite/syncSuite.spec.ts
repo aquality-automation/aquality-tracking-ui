@@ -9,6 +9,8 @@ import using from 'jasmine-data-provider';
 import cucumberImport from '../../data/import/cucumber.json';
 import syncImport from '../../data/import/oneTestCucumber.json';
 import users from '../../data/users.json';
+import { TestRun } from '../../../src/app/shared/models/testRun';
+import { EditorAPI } from '../../api/editor.api';
 
 const editorExamples = {
   localAdmin: users.localAdmin,
@@ -28,6 +30,12 @@ const isTestRunCorrect = (testResults: TestResult[], includedTests: string[], re
   const included = includedTests.every((includedTest) => tests.includes(includedTest));
   const removed = removedTests.every((removedTest) => !tests.includes(removedTest));
   return included && removed;
+};
+
+const updateTestRunDates = (api: EditorAPI, testRun: TestRun, started: Date, finished: Date) =>{
+  testRun.start_time = started;
+  testRun.finish_time = finished;
+  return api.createTestRun(testRun);
 };
 
 const testSuite = 'Sync Test Suite';
@@ -80,6 +88,9 @@ describe('Sync Test Suite', () => {
         notSyncTestRun = await projectHelper.importer.executeCucumberImport(testSuite, [cucumberImport], [builds.filenames[0]]);
         syncTestRuns = await projectHelper.importer.executeCucumberImport(
           testSuite, [syncImport, syncImport], [builds.filenames[1], builds.filenames[2]]);
+        await updateTestRunDates(projectHelper.editorAPI, notSyncTestRun[0], new Date('03/09/2020'), new Date('03/10/2020'));
+        await updateTestRunDates(projectHelper.editorAPI, syncTestRuns[0], new Date('03/10/2020'), new Date('03/11/2020'));
+        await updateTestRunDates(projectHelper.editorAPI, syncTestRuns[1], new Date('03/11/2020'), new Date('03/12/2020'));
         await logIn.logInAs(user.user_name, user.password);
         return projectHelper.openProject();
       });
