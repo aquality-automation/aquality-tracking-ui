@@ -25,8 +25,7 @@ export class AppSettingsComponent implements OnInit {
 
     constructor(
         private appSettingService: ApplicationSettingsService,
-        private emailSettingsService: EmailSettingsService,
-        private globaldata: GlobalDataService
+        private emailSettingsService: EmailSettingsService
     ) { }
 
     async ngOnInit() {
@@ -47,6 +46,7 @@ export class AppSettingsComponent implements OnInit {
             base_auth: +this.generalSettings.base_auth,
             audits: +this.generalSettings.audits
         });
+        this.appSettingService.handleSuccess('General settings were saved!');
     }
 
     setLdap($event) {
@@ -58,8 +58,9 @@ export class AppSettingsComponent implements OnInit {
         }
     }
 
-    saveLDAP() {
-        this.appSettingService.updateLDAPSettings(this.ldapSettings).subscribe();
+    async saveLDAP() {
+        await this.appSettingService.updateLDAPSettings(this.ldapSettings).toPromise();
+        this.appSettingService.handleSuccess('LDAP settings were saved!');
     }
 
     saveEmail() {

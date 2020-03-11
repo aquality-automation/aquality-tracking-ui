@@ -50,6 +50,13 @@ exports.config = {
         }, 'image/png')();
         done();
       })
+
+      browser.manage().logs().get('browser').then(function(browserLog) {
+        allure.createAttachment('log', function () {
+          return require('util').inspect(browserLog)
+        }, 'text/plain')();
+        done();
+      });
     });
   }
 };

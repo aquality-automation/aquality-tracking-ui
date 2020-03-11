@@ -6,7 +6,7 @@
   </div>
   <div class="col-sm-2 due-date-wrapper">
     <label>Due Date:</label>
-    <ng-datepicker id="due-date" class="due-date" [(ngModel)]="milestone.due_date"
+    <ng-datepicker id="milestone-due-date" class="due-date" [(ngModel)]="milestone.due_date"
       (ngModelChange)="updateMilestone()" [options]="optionsFrom" [disabled]="!canEdit || !milestone.active">
     </ng-datepicker>
   </div>
@@ -28,7 +28,7 @@
   </div>
   <div *ngIf="notExecutedSuites" class="col-sm-12">
     <p><b>Not Executed Suites:</b></p>
-    <p>{{notExecutedSuites}}</p>
+    <p id="not-executed-suites">{{notExecutedSuites}}</p>
   </div>
 </div>
 <hr class="col-sm-12 no-padding">

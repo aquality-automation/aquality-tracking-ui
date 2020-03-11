@@ -44,6 +44,11 @@ export class BasePage {
         return browser.navigate().back();
     }
 
+    async getConsoleLogs() {
+        const browserLog = await browser.manage().logs().get('browser');
+        return require('util').inspect(browserLog);
+    }
+
     async getCurrentProjectId(): Promise<number> {
         const url = `${await browser.getCurrentUrl()}/`;
         const regexp = /.*\/project\/(\d+)\/.*/;

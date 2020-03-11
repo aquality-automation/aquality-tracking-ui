@@ -26,7 +26,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7033
+              "duration": 1684328900
             }
           },
           {
@@ -39,7 +39,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 86
+              "duration": 1684328900
             }
           }
         ]
@@ -61,7 +61,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7033
+              "duration": 1684328900
             }
           },
           {
@@ -74,7 +74,7 @@
             },
             "result": {
               "status": "failed",
-              "duration": 86,
+              "duration": 1684328900,
               "error_message": "step was failed !”#$%&’()*+,-./:;<=>?@[\\]^_`{|}~"
             }
           }
@@ -97,7 +97,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 7033
+              "duration": 1684328900
             }
           },
           {
@@ -110,7 +110,7 @@
             },
             "result": {
               "status": "skipped",
-              "duration": 86,
+              "duration": 1684328900,
               "error_message": "step was skipped"
             }
           }

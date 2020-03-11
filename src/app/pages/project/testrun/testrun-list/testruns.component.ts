@@ -39,6 +39,7 @@ export class TestRunsComponent implements OnInit {
   testRunStatsFiltered: TestRunStat[];
   testRuns: TestRun[];
   testRun: TestRun;
+  activeMilestones: Milestone[];
   milestones: Milestone[];
   suites: TestSuite[];
   tbCols: TFColumn[];
@@ -67,7 +68,8 @@ export class TestRunsComponent implements OnInit {
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
     this.canEdit = await this.permissions.hasProjectPermissions(this.testRun.project_id,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId, active: 1 });
+    this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId});
+    this.activeMilestones = this.milestones.filter(x => !!x.active);
     this.labels = await this.testrunService.getTestsRunLabels(0).toPromise();
     this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
     this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params.projectId });
@@ -92,7 +94,7 @@ export class TestRunsComponent implements OnInit {
           values: this.labels,
           propToShow: ['name']
         },
-        editable: true,
+        editable: this.canEdit,
         class: 'fit'
       },
       {
@@ -132,7 +134,8 @@ export class TestRunsComponent implements OnInit {
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          values: this.milestones,
+          values: this.activeMilestones,
+          filterValues: this.milestones,
           propToShow: ['name'],
           entity: 'milestone',
           allowEmpty: true
@@ -161,7 +164,7 @@ export class TestRunsComponent implements OnInit {
         property: 'not_assigned',
         filter: true,
         sorting: true,
-        type: TFColumnType.percent,
+        type: TFColumnType.number,
         editable: false,
         link: {
           template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
@@ -170,7 +173,7 @@ export class TestRunsComponent implements OnInit {
         },
         class: 'ft-width-250'
       },
-      { name: 'Pass Rate, %', property: 'passrate', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Pass Rate', property: 'passrate', sorting: true, type: TFColumnType.percent, class: 'fit' },
       { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' }
     ];
     this.hiddenCols = [

@@ -34,7 +34,7 @@ export class ResultGridComponent implements OnInit {
   @Input() testResults: TestResult[];
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
   @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Comment', 'Last Results'];
-  @Output() resultUpdated = new EventEmitter;
+  @Output() resultUpdated = new EventEmitter<TestResult[]>();
   listOfResolutions: ResultResolution[];
   finalResults: FinalResult[];
   users: LocalPermissions[];
@@ -98,11 +98,12 @@ export class ResultGridComponent implements OnInit {
       assignee: result.assigned_user ? result.assigned_user.user_id : undefined
     };
     await this.testResultService.createTestResult(testResultUpdateTemplate);
-    this.resultUpdated.emit(result);
+    this.resultUpdated.emit([result]);
   }
 
-  bulkResultUpdate(results: TestResult[]) {
-    return this.testResultService.bulkUpdate(results);
+  async bulkResultUpdate(results: TestResult[]) {
+    await this.testResultService.bulkUpdate(results);
+    this.resultUpdated.emit(results);
   }
 
   async getResults(testResultTemplate: TestResult) {

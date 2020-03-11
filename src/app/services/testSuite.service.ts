@@ -27,7 +27,7 @@ export class TestSuiteService extends SimpleRequester {
     };
     if (testsuite.id) { params['suiteId'] = testsuite.id; }
 
-    return this.doGet(`/suite/stat`, params).map(res => res.json());
+    return this.doGet(`/stats/suite`, params).map(res => res.json());
   }
 
   createTestSuite(testsuite: TestSuite): Promise<TestSuite> {

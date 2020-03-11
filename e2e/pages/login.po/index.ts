@@ -2,6 +2,7 @@ import { browser } from 'protractor';
 import { elements, baseUrl, names } from './constants';
 import { BasePage } from '../base.po';
 import { projectList } from '../project/list.po';
+import { logger } from '../../utils/log.util';
 
 class LogIn extends BasePage {
   constructor() {
@@ -25,7 +26,12 @@ class LogIn extends BasePage {
 
   async logInAs(userName: string, password: string) {
     if (await this.menuBar.isLogged()) {
+      logger.info('Going to log out, before logging in with another user account.');
       await this.menuBar.clickLogOut();
+    }
+    if (!(await this.isOpened())) {
+      const logs = await this.getConsoleLogs();
+      expect(true).toBe(false, `Was not logged out!\nLogs:\n${logs}`);
     }
     await this.setUserName(userName);
     await this.setPassword(password);

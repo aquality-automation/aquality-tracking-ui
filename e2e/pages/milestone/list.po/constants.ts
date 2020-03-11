@@ -14,5 +14,8 @@ export const names = {
 
 export const columns = {
     name: 'Name',
-    action: 'Action'
+    action: 'Action',
+    active: 'Active',
+    suites: 'Suites',
+    dueDate: 'Due Date'
 };

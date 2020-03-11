@@ -87,6 +87,19 @@
         "unit_coordinator": 0,
         "account_manager": 0
     },
+    "unitCoordinator":{
+        "user_name": "auto.unitcoordinator",
+        "password": "123456",
+        "first_name": "auto",
+        "second_name": "coordinator",
+        "email": "coordinator@example.com",
+        "admin":0,
+        "manager":0,
+        "auditor":0,
+        "audit_admin":0,
+        "unit_coordinator":1,
+        "account_manager":0
+    },
     "viewer": {
         "user_name": "auto.viewer",
         "password": "123456",

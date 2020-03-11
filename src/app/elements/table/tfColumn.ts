@@ -42,6 +42,7 @@ export class TFCreation {
 
 export class TFLookup {
     values: any[];
+    filterValues?: any[];
     entity: string;
     objectWithId?: string;
     placeholder?: string;
@@ -71,6 +72,7 @@ export enum TFColumnType {
     email = 'email',
     multiselect = 'multiselect',
     percent = 'percent',
+    number = 'number',
     password = 'password',
     checkbox = 'checkbox',
     autocomplete = 'lookup-autocomplete',
