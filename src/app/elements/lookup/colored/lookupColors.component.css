@@ -2,3 +2,10 @@
     opacity: 1 !important;
     cursor: default;
 }
+
+.button-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: calc(100% - 12px);
+    margin: 0;
+}

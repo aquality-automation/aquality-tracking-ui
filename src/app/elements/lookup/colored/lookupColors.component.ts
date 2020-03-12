@@ -13,7 +13,7 @@ export class LookupColorsComponent extends BaseLookupComponent {
 
   getColorFromHash(item: { [x: string]: any; }) {
     if (item) {
-      if (typeof item[this.colorProperty] === 'string') {
+      if (typeof item[this.colorProperty] === 'string' && isNaN(item[this.colorProperty])) {
         return {
           'background-color': item[this.colorProperty],
           'color': '#ffffff'
@@ -24,10 +24,10 @@ export class LookupColorsComponent extends BaseLookupComponent {
     }
   }
 
-  getColorId(item: { [x: string]: number; }): number {
+  getColorId(item: { [x: string]: number | string; }): number {
     if (item) {
-      if (typeof item[this.colorProperty] === 'number') {
-        return item[this.colorProperty];
+      if (typeof item[this.colorProperty] === 'number' || !isNaN(+item[this.colorProperty])) {
+        return +item[this.colorProperty];
       } else {
         return;
       }

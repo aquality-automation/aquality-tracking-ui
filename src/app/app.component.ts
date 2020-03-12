@@ -156,6 +156,12 @@ export class AppComponent {
           show: this.isLogged && this.projectId !== undefined,
           routerOptions: { exact: true }
         }, {
+          name: 'Issues',
+          link: `/project/${this.projectId}/issues`,
+          show: this.isLogged
+            && this.projectId !== undefined,
+          routerOptions: { exact: false }
+        }, {
           name: 'Create',
           show: this.projectId
             && (await this.permissionsService.hasPermissions(
