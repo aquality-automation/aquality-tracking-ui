@@ -27,6 +27,7 @@ export class TestResult {
   fail_reason_regex?: string;
   limit?: number;
   steps?: StepResult[];
+  issue_id?: number;
 }
 
 export class TestResultStat {
