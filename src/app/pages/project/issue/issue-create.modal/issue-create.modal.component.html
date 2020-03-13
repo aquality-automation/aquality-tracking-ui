@@ -1,0 +1,73 @@
+<div [hidden]="isHidden" class="overlay mt-overlay modal fade" [ngClass]="{'show-modal': !this.isHidden}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">Create Issue</h4>
+        <button type="button" class="close" aria-label="Close" (click)="hideModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <input type="text" class="form-control" placeholder="Title" [(ngModel)]="issue.title">
+          </div>
+        </div>
+
+        <div class="row">
+          <br class="col-sm-12">
+        </div>
+
+        <div class="row">
+          <div *ngIf="issue.expression" class="col-sm-12">
+            <ui-switch class="clearfix" size="small" [(ngModel)]="updateResults" id="update-results"></ui-switch>
+            <label class="update-results-label" for="update-results">Assigne to Results that fit the expression</label>
+          </div>
+          <div class="col-sm-8">
+            <label for="issue-description">Description:</label>
+            <textarea id="issue-description" class="form-control" placeholder="Description" name="description"
+              id="issue-desciption" cols="30" rows="12" [(ngModel)]="issue.description"></textarea>
+          </div>
+          <div class="col-sm-4 issue-fields">
+            <div class="col-sm-12 no-padding">
+              <label for="issue-resolution">Resolution*:</label>
+              <lookup-colored *ngIf="resolutions" id="issue-resolution" [cutLongText]="true" [colorProperty]="'color'"
+                [propertiesToShow]="['name']" [array]="resolutions" placeholder="Resolution" [allowEmptyValue]="false"
+                [model]="issue.resolution" (modelChange)="updateResolution($event)">
+              </lookup-colored>
+            </div>
+            <div class="col-sm-12 no-padding">
+              <label for="issue-assignee">Assignee:</label>
+              <lookup-autocomplete *ngIf="users" id="issue-assignee" [cutLongText]="true"
+                [propertiesToShow]="['first_name', 'second_name']" [array]="users" placeholder="Assignee"
+                [allowEmptyValue]="true" [model]="issue.assignee" (modelChange)="updateAssignee($event)">
+              </lookup-autocomplete>
+            </div>
+            <div class="col-sm-12 no-padding">
+              <label for="issue-expression">Regular Expression:</label>
+              <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
+                [(ngModel)]="issue.expression">
+            </div>
+            <div class="col-sm-12 no-padding">
+              <label for="issue-external-url">External Issue:</label>
+              <input id="issue-external-url" type="text" class="form-control" placeholder="External Issue"
+                [(ngModel)]="issue.external_url">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 modal-footer modal-buttons">
+          <div class="modal-buttons-form">
+            <button *ngFor="let button of buttons" type="button" autofocus (click)="doAction(button.execute)"
+              class="btn btn-sm btn-secondary" [ngClass]="{
+              'btn-secondary': !button.execute,
+              'btn-success': button.execute
+          }">{{button.name}}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

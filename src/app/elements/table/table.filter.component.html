@@ -286,11 +286,13 @@
 
                             <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete'" [cutLongText]="true"
                                 [small]="true" [allowEmptyValue]="col.lookup.allowEmpty"
+                                [allowCreation]="col.lookup.allowCreation"
                                 [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.values"
                                 [model]="transformationsService.getPropertyValue(entity, col.lookup.entity)"
                                 [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)"
                                 placeholder="Not Assigned"
-                                (modelChange)="setPropertyValue(entity, col.lookup.entity, $event)">
+                                (modelChange)="setPropertyValue(entity, col.lookup.entity, $event)"
+                                (searchText)="handleLookupCreation($event, col, entity)">
                             </lookup-autocomplete>
 
                             <lookup-colored *ngIf="col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"

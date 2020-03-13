@@ -6,6 +6,6 @@
 .button-text {
     overflow: hidden;
     text-overflow: ellipsis;
-    width: calc(100% - 12px);
+    width: calc(100% - 15px);
     margin: 0;
 }

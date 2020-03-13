@@ -26,17 +26,53 @@ export class SimpleRequester extends Http {
     super(backend, defaultOptions);
   }
 
-  isAuthHeaderExists() {
+  public isAuthHeaderExists() {
     return !!this.cookieService.get('iio78');
   }
 
-  createAuthorizationHeader(headers: Headers) {
-    if (this.cookieService.get('iio78')) {
-      headers.append('Authorization', 'Basic ' + this.cookieService.get('iio78'));
+  public handleError(err) {
+    let errorMessage: string = err.headers.get('errormessage');
+    if (errorMessage.startsWith('Duplicate entry')) {
+      const matches = errorMessage.match(/'([^']+)'/);
+      errorMessage = `The '${matches[1]}' value is duplicated by another entity!`;
     }
+    if (+err.status === 401) {
+      this.cookieService.remove('iio78');
+    }
+    this.notificationsService.error(
+      `Ooops! ${err.status} code`,
+      errorMessage
+    );
   }
 
-  public doPost(url: string, object?, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false) {
+  public handleSimpleError(header: string, message: string) {
+    this.notificationsService.error(
+      header,
+      message
+    );
+  }
+
+  public handleWarning(header: string, message: string) {
+    this.notificationsService.warn(
+      header, message
+    );
+  }
+
+  public handleSuccess(message: string) {
+    this.notificationsService.success(
+      `Successful`,
+      message
+    );
+  }
+
+  public handleInfo(message: string) {
+    this.notificationsService.info(
+      `Information`,
+      message
+    );
+  }
+
+  protected doPost(url: string, object?, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false) {
     let jsonString = JSON.stringify(object);
     if (typeof jsonString === 'undefined') { jsonString = '{}'; }
     const headers = new Headers();
@@ -44,7 +80,7 @@ export class SimpleRequester extends Http {
     return this.intercept(super.post(this.api + url, jsonString, { headers: headers, params }), showLoading);
   }
 
-  public doPut(url: string, object?) {
+  protected doPut(url: string, object?) {
     let jsonString = JSON.stringify(object);
     if (typeof jsonString === 'undefined') { jsonString = '{}'; }
     const headers = new Headers();
@@ -52,13 +88,13 @@ export class SimpleRequester extends Http {
     return this.intercept(super.put(this.api + url, jsonString, { headers: headers }), true);
   }
 
-  public doDelete(url: string, params: { [key: string]: any | any[]; } = null) {
+  protected doDelete(url: string, params: { [key: string]: any | any[]; } = null) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.intercept(super.delete(this.api + url, { headers, params }), false);
   }
 
-  public doPostFiles(url: string, fileList: File[], params: { [key: string]: any | any[]; }) {
+  protected doPostFiles(url: string, fileList: File[], params: { [key: string]: any | any[]; }) {
     this.turnOnModal();
     const formData: FormData = new FormData();
     let i = 0;
@@ -71,23 +107,29 @@ export class SimpleRequester extends Http {
     return this.intercept(super.post(this.api + url, formData, { headers: headers, params: params }), true);
   }
 
-  public doGetWithoutAuthHeader(url: string) {
+  protected doGetWithoutAuthHeader(url: string) {
     return this.intercept(super.get(this.api + url), false);
   }
 
-  public doGet(url: string, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false, handleError: boolean = true) {
+  protected doGet(url: string, params: { [key: string]: any | any[]; } = null, showLoading: boolean = false, handleError: boolean = true) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.intercept(super.get(this.api + url, { headers: headers, params: params }), showLoading, handleError);
   }
 
-  public doDownload(url: string) {
+  protected doDownload(url: string) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
     return this.intercept(super.get(this.api + url, { headers: headers, responseType: ResponseContentType.Blob }), false);
   }
 
-  intercept(observable: Observable<Response>, showLoading: boolean, handleError: boolean = true): Observable<Response> {
+  private createAuthorizationHeader(headers: Headers) {
+    if (this.cookieService.get('iio78')) {
+      headers.append('Authorization', 'Basic ' + this.cookieService.get('iio78'));
+    }
+  }
+
+  private intercept(observable: Observable<Response>, showLoading: boolean, handleError: boolean = true): Observable<Response> {
     if (showLoading) {
       this.globaldata.requestQuery++;
       this.turnOnModal();
@@ -120,47 +162,5 @@ export class SimpleRequester extends Http {
     if (this.globaldata.requestQuery === 0) {
       this.globaldata.setLoaderVisibility(false);
     }
-  }
-
-  handleError(err) {
-    let errorMessage: string = err.headers.get('errormessage');
-    if (errorMessage.startsWith('Duplicate entry')) {
-      const matches = errorMessage.match(/'([^']+)'/);
-      errorMessage = `The '${matches[1]}' value is duplicated by another entity!`;
-    }
-    if (+err.status === 401) {
-      this.cookieService.remove('iio78');
-    }
-    this.notificationsService.error(
-      `Ooops! ${err.status} code`,
-      errorMessage
-    );
-  }
-
-  handleSimpleError(header: string, message: string) {
-    this.notificationsService.error(
-      header,
-      message
-    );
-  }
-
-  handleWarning(header: string, message: string) {
-    this.notificationsService.warn(
-      header, message
-    );
-  }
-
-  handleSuccess(message: string) {
-    this.notificationsService.success(
-      `Successful`,
-      message
-    );
-  }
-
-  handleInfo(message: string) {
-    this.notificationsService.info(
-      `Information`,
-      message
-    );
   }
 }

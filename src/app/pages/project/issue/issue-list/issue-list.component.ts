@@ -36,6 +36,7 @@ export class IssueListComponent implements OnInit {
   users: User[];
   statuses: Label[];
   defSort: TFSorting = { property: 'created', order: TFOrder.asc };
+  hideCreateModal = true;
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
@@ -74,7 +75,27 @@ export class IssueListComponent implements OnInit {
       issue.status_id = issue.status.id;
     }
 
-    await this.issueService.createIssue(issue);
+    await this.issueService.createIssue(issue, true);
+  }
+
+  showCreate() {
+    this.hideCreateModal = false;
+  }
+
+  async execute(result: {executed: boolean, result?: Issue}) {
+    this.hideCreateModal = true;
+    if (result.executed) {
+      await this.updateList();
+    }
+  }
+
+  wasClosed() {
+    this.hideCreateModal = true;
+  }
+
+  private async updateList() {
+    this.issues = await this.issueService.getIssues({ project_id: this.projectId });
+    this.addLinks();
   }
 
   private createColumns() {

@@ -112,7 +112,7 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
     for (const resultResolution of this.listOfResultResolutions) {
       this.doughnutChartData.push(
         this.shownTestResults.filter(
-          x => x.test_resolution.name === resultResolution.name
+          x => x.issue.resolution.name === resultResolution.name
         ).length
       );
     }
@@ -120,7 +120,7 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
 
   calculatePrecentageAndCount(resultResolution: String): String {
     const num = this.shownTestResults.filter(
-      x => x.test_resolution.name === resultResolution
+      x => x.issue.resolution.name === resultResolution
     ).length;
     const percentage = (num / this.shownTestResults.length) * 100;
     return ` | ${percentage.toFixed(1)}% | ${num}`;

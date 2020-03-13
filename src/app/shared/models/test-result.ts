@@ -3,6 +3,7 @@ import { FinalResult } from './final-result';
 import { LocalPermissions } from './LocalPermissions';
 import { Test } from './test';
 import { StepResult } from './steps';
+import { Issue } from './issue';
 
 export class TestResult {
   id?: number;
@@ -28,6 +29,7 @@ export class TestResult {
   limit?: number;
   steps?: StepResult[];
   issue_id?: number;
+  issue?: Issue;
 }
 
 export class TestResultStat {

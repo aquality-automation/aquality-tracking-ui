@@ -54,6 +54,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Output() shownData = new EventEmitter();
   @Output() refresh = new EventEmitter();
   @Output() bulkChanges = new EventEmitter();
+  @Output() lookupCreation = new EventEmitter<{value: string, column: TFColumn, entity: any}>();
 
   @ViewChild(DataTable) datatable: DataTable;
 
@@ -166,6 +167,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
 
     return undefined;
+  }
+
+  handleLookupCreation(value: string, column: TFColumn, entity: any) {
+    this.lookupCreation.emit({ value, column, entity });
   }
 
   applyFilters() {

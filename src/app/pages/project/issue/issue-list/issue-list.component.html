@@ -4,12 +4,13 @@
       <h2 id="issues-list">Issues</h2>
     </div>
     <div *ngIf="canEdit" class="col-sm-6">
-      <button class="btn btn-primary pull-right" id="create-issue-button">Create Issue</button>
+      <button class="btn btn-primary pull-right" id="create-issue-button" (click)="showCreate()">Create Issue</button>
     </div>
   </div>
 </div>
 
 <div class="panel-body">
+  <issue-create-modal *ngIf="!hideCreateModal" (execute)="execute($event)" (closed)="wasClosed()" [resolutions]="resolutions" [users]="users" ></issue-create-modal>
   <table-filter id="issues-table" *ngIf="issues && columns" [data]="issues" [columns]="columns"
     [hiddenColumns]="hiddenColumns" [defaultSortBy]="defSort" (action)="handleAction($event)" [queryParams]="true"
     (dataChange)="updateIssue($event)" (rowClick)="rowClicked($event)" rowsOnPage="20">

@@ -67,6 +67,7 @@ import { TransformationsService } from '../../services/transformations.service';
 import { TestSuiteService } from '../../services/testSuite.service';
 import { IssueListComponent } from './issue/issue-list/issue-list.component';
 import { IssueService } from '../../services/issue.service';
+import { CreateIssueModalComponent } from './issue/issue-create.modal/issue-create.modal.component';
 
 @NgModule({
   imports: [
@@ -112,7 +113,8 @@ import { IssueService } from '../../services/issue.service';
     StepsContainerComponent,
     SafePipe,
     SyncSuiteModalComponent,
-    IssueListComponent
+    IssueListComponent,
+    CreateIssueModalComponent
   ],
   providers: [
     IssueService,

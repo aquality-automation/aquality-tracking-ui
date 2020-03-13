@@ -48,6 +48,7 @@ export class TFLookup {
     placeholder?: string;
     propToShow: string[];
     allowEmpty?= false;
+    allowCreation?= false;
 }
 
 export class TFDots {

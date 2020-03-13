@@ -1,0 +1,26 @@
+.mt-overlay {
+    display: block;
+}
+
+.show-modal {
+    opacity: 1;
+}
+
+.modal-dialog {
+    margin: 9rem auto !important;
+    max-width: 800px !important;
+}
+
+.issue-fields > div:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+.modal-footer {
+    margin-top: 5px;
+}
+
+.update-results-label {
+    position: absolute;
+    top: 0;
+    left: 60;
+}
