@@ -96,7 +96,7 @@ describe('Administartion: Project Settings:', () => {
                 const results: TestResult[] = await projectHelper.editorAPI
                     .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id });
                 results.forEach(result => {
-                    expect(result.test.resolution_colors).toBe(`${result.test_resolution.color}`, 'resolution_colors is wrong!');
+                    expect(result.test.resolution_colors).toBe(`${result.issue.resolution.color}`, 'resolution_colors is wrong!');
                     expect(result.test.result_colors).toBe(`${result.final_result.color}`, 'result_colors is wrong!');
                     expect(result.test.result_ids).toBe(`${result.id}`, 'result_ids is wrong!');
                 });
@@ -118,7 +118,7 @@ describe('Administartion: Project Settings:', () => {
                 result.test_resolution_id = 4;
                 result = await projectHelper.editorAPI.createResult(result);
                 result = (await projectHelper.editorAPI.getResults(result))[0];
-                expect(result.test.resolution_colors).toBe(`${result.test_resolution.color},3,3,3,3`, 'resolution_colors is wrong!');
+                expect(result.test.resolution_colors).toBe(`${result.issue.resolution.color},3,3,3,3`, 'resolution_colors is wrong!');
                 expect(result.test.result_colors).toBe(`${result.final_result.color},4,4,4,4`, 'result_colors is wrong!');
                 expect(result.test.result_ids.startsWith(`${result.id}`)).toBe(true, 'result_ids is wrong!');
             });

@@ -158,7 +158,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   hideTableValue(entity: ViewData, property: string) {
-    if ((property === 'test_resolution.name') && entity.result.final_result.color === 5) {
+    if ((property === 'issue.resolution.name') && entity.result.final_result.color === 5) {
       return true;
     }
     return false;
@@ -233,8 +233,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   private getNotExecutedResult(): TestResult {
     return {
       final_result: this.finalResults.find(x => x.id === 3),
-      test_resolution: this.resolutions.find(x => x.id === 1),
-      comment: undefined,
+      issue: { resolution: this.resolutions.find(x => x.id === 1) },
       start_date: undefined
     };
   }
@@ -276,18 +275,18 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
         class: 'fit'
       }, {
         name: 'Resolution',
-        property: 'test_resolution.name',
+        property: 'issue.resolution.name',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'result.test_resolution',
+          entity: 'result.issue.resolution',
           values: this.resolutions,
           propToShow: ['name']
         },
         class: 'fit'
       },
-      { name: 'Comment', property: 'result.comment', filter: true, type: TFColumnType.text, class: 'ft-width-150' },
+      { name: 'Issue', property: 'result.issue.title', filter: true, type: TFColumnType.text, class: 'ft-width-150' },
       { name: 'Finished', property: 'result.finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' }
     ];
   }

@@ -85,7 +85,6 @@ export class ResultGridComponent implements OnInit {
     this.testResults.forEach(result => {
       result['developer'] = this.users.find(x => x.id === result.test.developer_id);
       result['testrun'] = testruns.find(x => x.id === result.test_run_id);
-      if (result.final_result.color === 5) { result.test_resolution = undefined; }
       result['duration'] = this.calculateDuration(result);
       result['combinedLastResults'] = this.testService.combineLastResults(result.test);
     });
@@ -164,7 +163,7 @@ export class ResultGridComponent implements OnInit {
   }
 
   hideVal(entity: TestResult, property: string) {
-    if ((property === 'test_resolution.name' || property === 'issue') && entity.final_result.color === 5) {
+    if ((property === 'issue.resolution.name' || property === 'issue') && entity.final_result.color === 5) {
       return true;
     }
     return false;

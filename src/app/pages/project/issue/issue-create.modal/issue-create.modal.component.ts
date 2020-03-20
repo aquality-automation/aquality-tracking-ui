@@ -6,6 +6,7 @@ import { User } from '../../../../shared/models/user';
 import { IssueService } from '../../../../services/issue.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.services';
+import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
 
 @Component({
   selector: 'issue-create-modal',
@@ -14,10 +15,33 @@ import { UserService } from '../../../../services/user.services';
 })
 export class CreateIssueModalComponent extends BasePopupComponent implements OnInit {
   @Input() resolutions: ResultResolution[];
+  @Input() existingIssues: Issue[];
   @Input() users: User[];
   @Input() title: string;
   issue: Issue;
   updateResults = true;
+  overlappedIssues: Issue[] = [];
+  validateExpressionTimeout = null;
+  columns: TFColumn[] = [
+    {
+      name: 'Id',
+      property: 'id',
+      sorting: true,
+      type: TFColumnType.text,
+      class: 'fit',
+    }, {
+      name: 'Title',
+      property: 'title',
+      filter: true,
+      sorting: true,
+      type: TFColumnType.text
+    }, {
+      name: 'Expression',
+      property: 'expression',
+      type: TFColumnType.text,
+      class: 'ft-width-250'
+    }
+  ];
 
   constructor(
     public userService: UserService,
@@ -25,9 +49,6 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     private issueService: IssueService
   ) {
     super();
-  }
-
-  ngOnInit() {
     this.buttons = [{
       name: 'Create',
       execute: true
@@ -35,6 +56,9 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
       name: 'Cancel',
       execute: false
     }];
+  }
+
+  async ngOnInit() {
     this.issue = new Issue();
     if (this.title) {
       this.issue.title = this.title;
@@ -43,6 +67,9 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     this.issue.creator_id = this.userService.currentUser().id;
     this.issue.status_id = 1;
     this.updateResolution(this.resolutions.find(x => x.id === 1));
+    if (!this.existingIssues) {
+      this.existingIssues = await this.issueService.getIssues({ project_id: this.issue.project_id });
+    }
   }
 
   updateResolution(resolution: ResultResolution) {
@@ -55,14 +82,35 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     this.issue.assignee_id = user.id;
   }
 
+  onExpressionUpdate() {
+    clearTimeout(this.validateExpressionTimeout);
+    this.validateExpressionTimeout = setTimeout(() => {
+      if (this.issue.expression) {
+        const newIssueRegExp = new RegExp(this.issue.expression);
+        this.overlappedIssues = this.existingIssues.filter(existingIssue => existingIssue.expression
+          ? newIssueRegExp.test(existingIssue.expression) || new RegExp(existingIssue.expression).test(this.issue.expression)
+          : false);
+      } else {
+        this.overlappedIssues = [];
+      }
+    }, 1000);
+  }
+
   async doAction(execute: boolean) {
     if (execute) {
-      if (this.isIssueValid()) {
-        const issue = await this.issueService.createIssue(this.issue, this.updateResults);
-        this.execute.emit({ executed: true, result: issue });
-      } else {
+      if (!this.isIssueValid()) {
         this.issueService.handleSimpleError('Fill all required fields!', 'You should fill Title and Resolution fields!');
+        return;
       }
+
+      if (this.isExpressionOverlapped()) {
+        this.issueService.handleSimpleError('Expression is overlapped!',
+          'The Regular Expression sould not be overlapped with other issues!');
+        return;
+      }
+
+      const issue = await this.issueService.createIssue(this.issue, this.updateResults);
+      this.execute.emit({ executed: true, result: issue });
     } else {
       this.execute.emit({ executed: false });
     }
@@ -74,5 +122,9 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     }
 
     return true;
+  }
+
+  isExpressionOverlapped() {
+    return this.overlappedIssues.length > 0;
   }
 }

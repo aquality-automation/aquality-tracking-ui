@@ -11,7 +11,7 @@ export class Issue {
     external_url?: String;
     assignee_id?: number;
     assignee?: User;
-    expression?: String;
+    expression?: string;
     status_id?: number;
     status?: Label;
     label_id?: number;

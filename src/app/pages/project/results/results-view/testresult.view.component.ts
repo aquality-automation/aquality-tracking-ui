@@ -15,6 +15,9 @@ import { StepsService } from '../../../../services/steps.service';
 import { StepType, StepResult } from '../../../../shared/models/steps';
 import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
+import { Issue } from '../../../../shared/models/issue';
+import { IssueService } from '../../../../services/issue.service';
+import { User } from '../../../../shared/models/user';
 
 @Component({
   templateUrl: './testresult.view.component.html',
@@ -31,12 +34,15 @@ export class TestResultViewComponent implements OnInit {
   projectId: number;
   listOfResolutions: ResultResolution[];
   listOfFinalResults: FinalResult[];
+  issues: Issue[];
   currentState: TestResult;
   editableText: string;
   debugState: number;
-  users: LocalPermissions[];
+  users: User[];
   savedState: TestResult = {};
   hideModal = true;
+  hideCreateIssueModal = true;
+  newIssueTitle: string;
   canClose: Promise<boolean>;
   canEdit: boolean;
   public types: StepType[];
@@ -50,6 +56,7 @@ export class TestResultViewComponent implements OnInit {
     private finalResultService: FinalResultService,
     private testResultService: TestResultService,
     private stepService: StepsService,
+    private issueService: IssueService,
     private permissions: PermissionsService
   ) { }
 
@@ -57,8 +64,10 @@ export class TestResultViewComponent implements OnInit {
     this.projectId = this.route.snapshot.params.projectId;
     this.listOfResolutions = await this.resultResolutionService.getResolution().toPromise();
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
-    this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
-    this.users = this.users.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
+    this.issues = await this.issueService.getIssues({project_id: this.projectId});
+    let projectUsers: LocalPermissions[] = await this.userService.getProjectUsers(this.projectId).toPromise();
+    projectUsers = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
+    this.users = projectUsers.map(x => x.user);
     this.types = await this.stepService.getStepTypes({});
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
@@ -75,13 +84,6 @@ export class TestResultViewComponent implements OnInit {
     return hours + 'h:' + minutes + 'm:' + seconds + 's';
   }
 
-  testAssigneeUpdate(assigned_user: LocalPermissions) {
-    if (assigned_user) {
-      this.currentState.assigned_user = assigned_user;
-      this.currentState.assignee = assigned_user.user_id;
-    }
-  }
-
   setNewResult(finalResult: FinalResult) {
     if (finalResult) {
       this.currentState.final_result = finalResult;
@@ -89,10 +91,10 @@ export class TestResultViewComponent implements OnInit {
     }
   }
 
-  resolutionUpdate(test_resolution: ResultResolution) {
-    if (test_resolution) {
-      this.currentState.test_resolution = test_resolution;
-      this.currentState.test_resolution_id = test_resolution.id;
+  issueUpdate(issue: Issue) {
+    if (issue) {
+      this.currentState.issue = issue;
+      this.currentState.issue_id = issue.id;
     }
   }
 
@@ -117,8 +119,21 @@ export class TestResultViewComponent implements OnInit {
     this.canClose = $event;
   }
 
+  async executeIssueCreation(result: { executed: boolean, result?: Issue }) {
+    this.hideCreateIssueModal = true;
+    if (result.executed) {
+      this.issues = await this.issueService.getIssues({ project_id: this.projectId });
+      this.currentState.issue = this.issues.find(x => x.id === result.result.id);
+    }
+  }
+  startIssueCreation(title: string) {
+    this.newIssueTitle = title;
+    this.hideCreateIssueModal = false;
+  }
+
   wasClosed() {
     this.hideModal = true;
+    this.hideCreateIssueModal = true;
   }
 
   timeout(ms) {
@@ -130,10 +145,8 @@ export class TestResultViewComponent implements OnInit {
       id: this.currentState.id,
       test_id: this.currentState.test.id,
       final_result_id: this.currentState.final_result_id,
-      test_resolution_id: this.currentState.test_resolution_id,
-      comment: this.currentState.comment,
-      debug: this.currentState.debug,
-      assignee: this.currentState.assignee
+      issue_id: this.currentState.issue ? this.currentState.issue.id : 0,
+      debug: this.currentState.debug
     };
     await this.testResultService.createTestResult(testResultUpdateTemplate);
     await this.refreshResult();

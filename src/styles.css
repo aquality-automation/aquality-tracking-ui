@@ -247,6 +247,7 @@ simple-popup>.overlay {
   height: 100% !important;
   z-index: 1000 !important;
   background-color: rgba(108, 117, 125, 0.7) !important;
+  overflow: auto !important;
 }
 
 input[type="file"] {

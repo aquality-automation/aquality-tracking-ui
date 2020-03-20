@@ -144,9 +144,8 @@ describe('Predefined Resolution:', () => {
 
                 const result = results.find(x => x.fail_reason === 'step was skippedstep was skipped');
                 if (result) {
-                    expect(result.assigned_user.user.user_name).toBe(usersTestData.localAdmin.user_name, 'Assignee was not filled!');
-                    expect(result.test_resolution.name).toBe(edit.resolution.name, 'Resolution was not filled!');
-                    expect(result.comment).toBe(edit.comment, 'Comment was not filled!');
+                    expect(result.issue.resolution.name).toBe(edit.resolution.name, 'Resolution was not filled!');
+                    expect(result.issue.title).toBe(edit.comment, 'Comment was not filled!');
                 } else {
                     expect(result).toBeDefined('The imported results do not contain expected result!');
                 }

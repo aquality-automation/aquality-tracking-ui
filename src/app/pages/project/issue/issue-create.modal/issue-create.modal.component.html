@@ -21,14 +21,10 @@
         </div>
 
         <div class="row">
-          <div *ngIf="issue.expression" class="col-sm-12">
-            <ui-switch class="clearfix" size="small" [(ngModel)]="updateResults" id="update-results"></ui-switch>
-            <label class="update-results-label" for="update-results">Assigne to Results that fit the expression</label>
-          </div>
           <div class="col-sm-8">
             <label for="issue-description">Description:</label>
             <textarea id="issue-description" class="form-control" placeholder="Description" name="description"
-              id="issue-desciption" cols="30" rows="12" [(ngModel)]="issue.description"></textarea>
+              [(ngModel)]="issue.description"></textarea>
           </div>
           <div class="col-sm-4 issue-fields">
             <div class="col-sm-12 no-padding">
@@ -47,8 +43,17 @@
             </div>
             <div class="col-sm-12 no-padding">
               <label for="issue-expression">Regular Expression:</label>
-              <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
-                [(ngModel)]="issue.expression">
+              <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" [ngClass]="{
+                  'is-valid': isExpressionOverlapped(), 
+                  'is-invalid': isExpressionOverlapped()
+                  }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate($event)">
+              <div class="invalid-feedback">
+                Expression is overlapped!
+              </div>
+            </div>
+            <div *ngIf="issue.expression" class="col-sm-12 no-padding row-with-switch" title="Assign this issue to all results where Fail Reason fits the Expression and without assigned issue">
+              <ui-switch class="clearfix" size="small" [(ngModel)]="updateResults" id="update-results"></ui-switch>
+              <label class="update-results-label" for="update-results">Add to Results without issue</label>
             </div>
             <div class="col-sm-12 no-padding">
               <label for="issue-external-url">External Issue:</label>
@@ -56,6 +61,14 @@
                 [(ngModel)]="issue.external_url">
             </div>
           </div>
+          
+        </div>
+
+        <div class="col-sm-12 no-padding" *ngIf="overlappedIssues && columns && overlappedIssues.length > 0">
+          <p>The Regular Expression is overlapped with:</p>
+          <table-filter id="overlapped-issues-table" [data]="overlappedIssues" [columns]="columns" rowsOnPage="3"
+            [hidePageSets]="true" [hideFilter]="true" [columnManagement]="false">
+          </table-filter>
         </div>
 
         <div class="col-sm-12 modal-footer modal-buttons">

@@ -235,9 +235,9 @@ export class TestRunsComponent implements OnInit {
       { name: 'Test Run Started', property: 'test_run_started', type: 'date' },
       { name: 'Test Name', property: 'name' },
       { name: 'Result', property: 'status' },
-      { name: 'Resolution', property: 'resolution' },
-      { name: 'Comment', property: 'comment' },
-      { name: 'Assignee', property: 'assignee' },
+      { name: 'Resolution', property: 'issue.resolution' },
+      { name: 'Issue', property: 'issue.title' },
+      { name: 'Assignee', property: 'issue.assignee' },
       { name: 'Developer', property: 'developer' }];
     const from = this.route.snapshot.queryParamMap.get('f_start_time_from')
       ? new Date(this.route.snapshot.queryParamMap.get('f_start_time_from')).toISOString()

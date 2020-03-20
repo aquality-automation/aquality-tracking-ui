@@ -20,11 +20,8 @@ export class TestResultService extends SimpleRequester {
   bulkUpdate(testresults: TestResult[]): Promise<void> {
     testresults.forEach(testresult => {
       testresult = this.setProjectId(testresult);
-      if (testresult.test_resolution) {
-        testresult.test_resolution_id = testresult.test_resolution.id;
-      }
-      if (testresult.assigned_user) {
-        testresult.assignee = testresult.assigned_user.user_id;
+      if (testresult.issue) {
+        testresult.issue_id = testresult.issue.id;
       }
     });
     return this.doPut('/testresult', testresults).map(() => {}).toPromise();
