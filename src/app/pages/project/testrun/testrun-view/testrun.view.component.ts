@@ -168,9 +168,13 @@ export class TestRunViewComponent implements OnInit {
   }
 
   resolutionChartClick(resolution: ResultResolution) {
+    const queryParams = resolution.id === 1
+      ? { 'f_issue_opt': 'null' }
+      : { 'f_issue.resolution_opt': resolution.id };
+
     this.router.navigate(
       [`/project/${this.projectId}/testrun/${this.testRun.id}`],
-      { queryParams: { f_test_resolution_opt: resolution.id } });
+      { queryParams });
   }
 
   canFinish() {

@@ -17,6 +17,15 @@
     <div [hidden]="hidden" class="selector-suggestions cut-long-text"
         *ngIf="filteredArray && filteredArray.length > 20">
         <ul>
+            <li tabindex="0" [title]="placeholder" *ngIf="allowEmptyValue"
+                class="selector-button btn-default default-option" (keyup.enter)="select(emptyValue)"
+                (mousedown)="select(emptyValue)">{{placeholder}}</li>
+            <li tabindex="0" title="Add" *ngIf="allowCreation && !inList() "
+                class="selector-button btn-default default-option" (keyup.enter)="sendSearchText()"
+                (mousedown)="sendSearchText()">Add</li>
+            <li tabindex="0" title="Not Assigned" *ngIf="emptyForFilter"
+                class="selector-button btn-default default-option" (keyup.enter)="select(emptyValueForFilter)"
+                (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
             <li tabindex="0" class="selector-button btn-default default-option wrap-text"
                 title="To many items. Type something to search.">To many items. Type something to search.</li>
         </ul>

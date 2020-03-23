@@ -103,7 +103,7 @@ export class ResultSearcherComponent {
         },
         class: 'fit'
       },
-      { name: 'Comment', property: 'comment', filter: true, type: TFColumnType.text, class: 'ft-width-250' }
+      { name: 'Issue', property: 'issue.title', filter: true, type: TFColumnType.text, class: 'ft-width-250' }
     ];
     if (this.failReasonSearch.length > 150) {
       this.failReasonSearch = this.failReasonSearch.slice(0, 150);

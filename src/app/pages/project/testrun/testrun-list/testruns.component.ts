@@ -160,7 +160,7 @@ export class TestRunsComponent implements OnInit {
       },
       { name: 'Total', property: 'totalTests', sorting: true, type: TFColumnType.text, class: 'fit' },
       {
-        name: 'No Resolution',
+        name: 'No Issue',
         property: 'not_assigned',
         filter: true,
         sorting: true,
@@ -169,7 +169,7 @@ export class TestRunsComponent implements OnInit {
         link: {
           template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
           properties: ['id'],
-          params: { f_test_resolution_opt: 1 }
+          params: { f_issue_opt: 'null' }
         },
         class: 'ft-width-250'
       },

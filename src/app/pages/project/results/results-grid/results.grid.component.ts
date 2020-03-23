@@ -273,6 +273,7 @@ export class ResultGridComponent implements OnInit {
         sorting: false,
         type: TFColumnType.autocomplete,
         editable: this.canEdit,
+        nullFilter: true,
         lookup: {
           allowCreation: true,
           allowEmpty: true,
