@@ -101,20 +101,16 @@ class TestRunView extends BasePage {
     return elements.buildName.isEnabled();
   }
 
-  async setResolution(resolution: string, testName: string): Promise<void> {
-    return elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
+  async setIssue(title: string, testName: string): Promise<void> {
+    return elements.resultsTable.editRow(title, columns.issue, testName, columns.testName);
+  }
+
+  async getIssue(testName: string): Promise<string> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().getValue();
   }
 
   async getResolution(testName: string): Promise<string> {
     return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.resolution];
-  }
-
-  async getComment(testName: string): Promise<string> {
-    return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.comment];
-  }
-
-  setComment(comment: string, testName: string): Promise<void> {
-    return elements.resultsTable.editRow(comment, columns.comment, testName, columns.testName);
   }
 
   async isResolutionPresent(resolutionName: string, testName: string): Promise<boolean> {

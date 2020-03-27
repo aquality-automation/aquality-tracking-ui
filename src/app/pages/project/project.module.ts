@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { DatepickerModule } from 'ngx-bootstrap';
 import { FileUploadModule } from 'ng2-file-upload';
 import {
@@ -73,8 +72,6 @@ import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 @NgModule({
   imports: [
     FileUploadModule,
-    FormsModule,
-    CommonModule,
     projectRouting,
     DatepickerModule.forRoot(),
     SharedModule,

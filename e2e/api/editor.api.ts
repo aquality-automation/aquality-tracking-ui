@@ -6,6 +6,7 @@ import { Milestone } from '../../src/app/shared/models/milestone';
 import { sendPost, sendGet, sendDelete } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
 import { BaseAPI } from './base.api';
+import { Issue } from '../../src/app/shared/models/issue';
 
 enum Endpoints {
     suite = '/suite',
@@ -15,7 +16,8 @@ enum Endpoints {
     milestone = '/milestone',
     testresult = '/testresult',
     testSteps = '/test/steps',
-    testToSuite = '/testToSuite'
+    testToSuite = '/testToSuite',
+    issue = '/issues'
 }
 
 export class EditorAPI extends BaseAPI {
@@ -83,6 +85,12 @@ export class EditorAPI extends BaseAPI {
 
     public async removeTestRun(testRunId: number) {
         return sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id }, null, this.token, this.project.id);
+    }
+
+    public async createIssue(issue: Issue): Promise<Issue> {
+        issue.project_id = this.project.id;
+        issue.creator_id = 1;
+        return sendPost(Endpoints.issue, undefined, issue, this.token, this.project.id);
     }
 
     public async addSuiteToMilestone(milestoneName: string, suiteName: string) {

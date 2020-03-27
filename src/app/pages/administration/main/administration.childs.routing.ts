@@ -11,7 +11,6 @@ import {
   AdministrationProjectGuard
 } from '../../../shared/guards/administration-guard.service';
 import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
-import { PredefinedResolutionComponent } from '../projects/predefinedResolution/predefinedResolution.component';
 
 
 const administrationChildsRoutes: Routes = [
@@ -23,8 +22,7 @@ const administrationChildsRoutes: Routes = [
       { path: 'resolutions', component: AdministrationResolutionsComponent, canActivate: [AdministrationProjectManagerGuard]},
       { path: 'importBodyPatterns', component: ImportBodyPatternsComponent, canActivate: [AdministrationProjectManagerGuard]},
       { path: 'apiToken', component: APITokenComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'projectSettings', component: AdministrationProjectSettingsComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'predefined-resolutions', component: PredefinedResolutionComponent, canActivate: [AdministrationProjectGuard]}
+      { path: 'projectSettings', component: AdministrationProjectSettingsComponent, canActivate: [AdministrationProjectManagerGuard]}
     ]
   }, {
     path: 'global', canActivate: [AdministrationGlobalGuard],

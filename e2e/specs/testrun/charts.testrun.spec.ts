@@ -35,8 +35,8 @@ describe('Test Run View Charts', () => {
 
     it('Can Filter by Resolution', async () => {
         await testRunView.setResultFilter(lookupOptions.global.none.name);
-        await testRunView.setResolution(lookupOptions.global.testIssue.name,
-            `${cucumberImport[0].name}: ${cucumberImport[0].elements[2].name}`);
+        // await testRunView.setResolution(lookupOptions.global.testIssue.name,
+        //     `${cucumberImport[0].name}: ${cucumberImport[0].elements[2].name}`);
         const clickedChartSection = await testRunView.clickResolutionTestIssueChartSection();
         return expect(testRunView.resultsAreFilteredByResolution(clickedChartSection))
             .toBe(true, 'Results are not filtered by Resolution');

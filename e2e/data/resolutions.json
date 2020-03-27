@@ -5,22 +5,27 @@
     },
     "global": {
         "notAssigned": {
+            "id": 1,
             "name": "Not Assigned",
             "color": "Primary"
         },
         "appIssue": {
+            "id": 2,
             "name": "Application Issue",
             "color": "Danger"
         },
         "environmentIssue": {
+            "id": 3,
             "name": "Environment Issue",
             "color": "Warning"
         },
         "testIssue": {
+            "id": 4,
             "name": "Test Issue",
             "color": "Warning"
         },
         "testDesignIssue": {
+            "id": 5,
             "name": "Test Design Issue",
             "color": "Warning"
         }

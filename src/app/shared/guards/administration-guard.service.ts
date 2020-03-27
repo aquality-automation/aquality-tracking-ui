@@ -29,7 +29,7 @@ export class AdministrationProjectManagerGuard implements CanActivate {
     return this.guardService.redirect({
       global: [EGlobalPermissions.admin, EGlobalPermissions.manager],
       local: [ELocalPermissions.admin, ELocalPermissions.manager]
-    }, ['/administration/project/predefined-resolutions']);
+    }, ['**']);
   }
 }
 

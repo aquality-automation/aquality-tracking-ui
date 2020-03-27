@@ -1,5 +1,6 @@
 import { by, Locator } from 'protractor';
 import { BaseElement } from './base.element';
+import { logger } from '../utils/log.util';
 
 export class Lookup extends BaseElement {
     constructor(locator: Locator) {
@@ -8,8 +9,13 @@ export class Lookup extends BaseElement {
 
     private selector = this.element.element(by.css('.selector-main-button'));
 
-    public getSelectedValue() {
-        return this.selector.getText();
+    public async getSelectedValue() {
+        if (await this.selector.isPresent()) {
+            return this.selector.getText();
+        }
+
+        logger.warn(`Colored Lookup '${this.element.locator()}' is hidden!`);
+        return '';
     }
 
     public openSelector() {

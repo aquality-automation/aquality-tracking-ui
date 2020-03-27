@@ -22,19 +22,19 @@ beforeAll(async () => {
         throw new Error(`Backend is unavailable ${environment.host}`);
     }
     await logIn.navigateTo();
-    await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-    await projectList.menuBar.administration();
-    await userAdministration.create(usersTestData.autoAdmin);
-    await userAdministration.create(usersTestData.localAdmin);
-    await userAdministration.create(usersTestData.auditAdmin);
-    await userAdministration.create(usersTestData.assignedAuditor);
-    await userAdministration.create(usersTestData.localManager);
-    await userAdministration.create(usersTestData.localEngineer);
-    await userAdministration.create(usersTestData.manager);
-    await userAdministration.create(usersTestData.projectTemp);
-    await userAdministration.create(usersTestData.viewer);
-    await userAdministration.create(usersTestData.unitCoordinator);
-    await userAdministration.menuBar.clickLogOut();
+    // await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+    // await projectList.menuBar.administration();
+    // await userAdministration.create(usersTestData.autoAdmin);
+    // await userAdministration.create(usersTestData.localAdmin);
+    // await userAdministration.create(usersTestData.auditAdmin);
+    // await userAdministration.create(usersTestData.assignedAuditor);
+    // await userAdministration.create(usersTestData.localManager);
+    // await userAdministration.create(usersTestData.localEngineer);
+    // await userAdministration.create(usersTestData.manager);
+    // await userAdministration.create(usersTestData.projectTemp);
+    // await userAdministration.create(usersTestData.viewer);
+    // await userAdministration.create(usersTestData.unitCoordinator);
+    // await userAdministration.menuBar.clickLogOut();
 });
 
 beforeEach(async () => {
@@ -45,15 +45,15 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
-    await projectList.menuBar.administration();
-    await userAdministration.remove(usersTestData.localAdmin.user_name);
-    await userAdministration.remove(usersTestData.autoAdmin.user_name);
-    await userAdministration.remove(usersTestData.localManager.user_name);
-    await userAdministration.remove(usersTestData.localEngineer.user_name);
-    await userAdministration.remove(usersTestData.manager.user_name);
-    await userAdministration.remove(usersTestData.projectTemp.user_name);
-    await userAdministration.remove(usersTestData.viewer.user_name);
-    await userAdministration.remove(usersTestData.unitCoordinator.user_name);
-    await userAdministration.menuBar.clickLogOut();
+    // await logIn.logInAs(usersTestData.admin.user_name, usersTestData.admin.password);
+    // await projectList.menuBar.administration();
+    // await userAdministration.remove(usersTestData.localAdmin.user_name);
+    // await userAdministration.remove(usersTestData.autoAdmin.user_name);
+    // await userAdministration.remove(usersTestData.localManager.user_name);
+    // await userAdministration.remove(usersTestData.localEngineer.user_name);
+    // await userAdministration.remove(usersTestData.manager.user_name);
+    // await userAdministration.remove(usersTestData.projectTemp.user_name);
+    // await userAdministration.remove(usersTestData.viewer.user_name);
+    // await userAdministration.remove(usersTestData.unitCoordinator.user_name);
+    // await userAdministration.menuBar.clickLogOut();
 });

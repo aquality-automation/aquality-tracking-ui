@@ -36,7 +36,6 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { InputTrimModule } from 'ng2-trim-directive';
-import { LoaderComponent } from '../elements/loader/loader.component';
 import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch/labeled-switch.component';
@@ -46,8 +45,6 @@ import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.c
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
 import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
 import { HighliteTextDirective } from '../derectives/highlite-text.derective';
 import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
 
@@ -78,9 +75,7 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    PopoverModule.forRoot(),
-    BrowserAnimationsModule,
-    BrowserModule
+    PopoverModule.forRoot()
   ],
   declarations: [
     ClickableLinks,
@@ -104,7 +99,6 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     MaxLength,
     ManageColumnsModalComponent,
     OverflowDirective,
-    LoaderComponent,
     LabeledSwitchComponent,
     AttachmentInlineComponent,
     LabeledInputComponent,
@@ -152,7 +146,6 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     ChartsModule,
     HttpModule,
     InputTrimModule,
-    LoaderComponent,
     MatMenuModule,
     MatIconModule,
     MatListModule,
@@ -168,8 +161,6 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     TooltipModule,
     ModalModule,
     PopoverModule,
-    BrowserAnimationsModule,
-    BrowserModule,
     CommonModule,
     HighliteTextDirective,
     RegexpTesterComponent

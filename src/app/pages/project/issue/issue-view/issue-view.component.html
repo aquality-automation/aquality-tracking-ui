@@ -1,7 +1,7 @@
 <div *ngIf="issue" class="panel-heading">
     <div class="row">
         <div class="col-sm-6">
-            <h2 id="issues-list">Issue {{issue.id}} <span id="status-badge" class="badge" [ngClass]="{
+            <h2 id="issue-view">Issue {{issue.id}} <span id="status-badge" class="badge" [ngClass]="{
                 'badge-danger': +issue.status.color === 1,
                 'badge-primary': +issue.status.color === 3,
                 'badge-warning': +issue.status.color === 2,

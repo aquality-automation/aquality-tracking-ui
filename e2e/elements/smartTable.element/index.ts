@@ -72,9 +72,9 @@ export class SmartTable extends BaseElement {
         return new Row(rows[0]);
     }
 
-    public async getElementsForCell(columnName: string, searchValue: string | number, searchName: string): Promise<CellElements> {
+    public async getElementsForCell(columnName: string, searchValue: string | number, searchColumn: string): Promise<CellElements> {
         const columnIndex = await this.getColumnIndex(columnName);
-        return (await this.getRow(searchValue, searchName)).getRowElements(columnIndex);
+        return (await this.getRow(searchValue, searchColumn)).getRowElements(columnIndex);
     }
 
     public async getRowByIndex(index: number): Promise<Row> {

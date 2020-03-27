@@ -1,4 +1,4 @@
-import { by, Locator } from 'protractor';
+import { by, Locator, browser } from 'protractor';
 import { BaseElement } from './base.element';
 import { Input } from './input.element';
 import { WithSearch } from './interfaces/elementWithSearch';
@@ -16,7 +16,9 @@ export class Autocomplete extends BaseElement implements WithSearch {
     }
 
     public selectOption(value: string) {
-        return this.findOption(value).click();
+        const option = this.findOption(value);
+        browser.executeScript('arguments[0].scrollIntoView();', option.getWebElement());
+        return option.click();
     }
 
     public async select(value: string) {

@@ -6,9 +6,9 @@ export class Issue {
     id?: number;
     resolution_id?: number;
     resolution?: ResultResolution;
-    title?: String;
-    description?: String;
-    external_url?: String;
+    title?: string;
+    description?: string;
+    external_url?: string;
     assignee_id?: number;
     assignee?: User;
     expression?: string;
