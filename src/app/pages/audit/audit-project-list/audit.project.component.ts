@@ -47,12 +47,11 @@ export class AuditProjectComponent implements OnInit {
             this.columns = [
               {
                 name: 'Service',
-                property: 'service.name',
+                property: 'service',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                  entity: 'service',
                   values: this.services,
                   propToShow: ['name']
                 },
@@ -74,7 +73,6 @@ export class AuditProjectComponent implements OnInit {
                 property: 'auditors',
                 type: TFColumnType.multiselect,
                 lookup: {
-                  entity: 'auditors',
                   values: this.services,
                   propToShow: ['first_name', 'second_name'],
                 }

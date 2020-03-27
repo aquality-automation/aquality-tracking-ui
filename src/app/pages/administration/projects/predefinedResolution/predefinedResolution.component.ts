@@ -60,12 +60,11 @@ export class PredefinedResolutionComponent implements OnInit {
     this.columns = [
       {
         name: 'Resolution',
-        property: 'resolution.name',
+        property: 'resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'resolution',
           values: this.resolutions,
           propToShow: ['name']
         },
@@ -98,12 +97,11 @@ export class PredefinedResolutionComponent implements OnInit {
       },
       {
         name: 'Assignee',
-        property: 'assigned_user.user_name',
+        property: 'assigned_user',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'assigned_user',
           propToShow: ['user_name'],
           values: this.users
         },

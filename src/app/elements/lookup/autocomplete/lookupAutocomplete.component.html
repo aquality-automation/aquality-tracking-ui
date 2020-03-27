@@ -6,13 +6,19 @@
     'has-error': lookupField.invalid && lookupField.touched,
     'has-success': lookupField.valid && lookupField.touched
   }">
-    <div>
+    <div class="input-group">
         <input [ngClass]="{
         'inline-selector': inline,
         'lookup-selector-sm': small
       }" [disabled]="disabled" autocomplete="off" [required]="!allowEmptyValue" [placeholder]="placeholder"
             #lookupField name="lookupField" [maxlength]="maxlength" (focus)="toggleOn()" class="form-control"
             (click)="toggleOn()" (keyup.esc)="toggleOff()" (ngModelChange)="onKey($event)" [ngModel]="selectedItemText">
+        <div *ngIf="addAction && model && model.id !== 0" class="input-group-append">
+            <label class="input-group-text btn" (click)="onActionClick(model)">
+                <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            </label>
+        </div>
+
     </div>
     <div [hidden]="hidden" class="selector-suggestions cut-long-text"
         *ngIf="filteredArray && filteredArray.length > 20">
@@ -46,8 +52,9 @@
                 class="selector-button btn-default default-option" (keyup.enter)="select(emptyValueForFilter)"
                 (mousedown)="select(emptyValueForFilter)">Not Assigned</li>
             <li tabindex="0" [title]="textToShow(item)" class="selector-button btn-default wrap-text"
-                *ngFor="let item of filteredArray" (keyup.enter)="select(item)" (mousedown)="select(item)">
-                {{textToShow(item)}}
+                *ngFor="let item of filteredArray" (keyup.enter)="select(item)">
+                <p (mousedown)="select(item)">{{textToShow(item)}}</p>
+                <fa-icon *ngIf="addAction" [icon]="faExternalLinkAlt" (click)="onActionClick(item)"></fa-icon>
             </li>
         </ul>
     </div>

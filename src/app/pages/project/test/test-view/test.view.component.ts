@@ -16,6 +16,7 @@ import { GlobalDataService } from '../../../../services/globaldata.service';
 import { Subscription } from 'rxjs/Subscription';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 import { TFOrder, TFSorting } from '../../../../elements/table/tfColumn';
+import { ResultGridComponent } from '../../results/results-grid/results.grid.component';
 
 @Component({
   templateUrl: './test.view.component.html',
@@ -30,6 +31,7 @@ import { TFOrder, TFSorting } from '../../../../elements/table/tfColumn';
 })
 export class TestViewComponent implements OnInit, OnDestroy {
   @ViewChild('steps') steps: StepsContainerComponent;
+  @ViewChild(ResultGridComponent) resultGridComponent: ResultGridComponent;
   descriptionHeight = 40;
   hideMoveModal = true;
   hideLeavePageModal = true;
@@ -58,7 +60,6 @@ export class TestViewComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private testService: TestService,
-    private resultsService: TestResultService,
     private globalData: GlobalDataService,
     public userService: UserService,
     public transformation: TransformationsService,
@@ -79,17 +80,18 @@ export class TestViewComponent implements OnInit, OnDestroy {
     this.selectedDeveloper = this.test.developer;
     this.users = await this.userService.getProjectUsers(this.projectId).toPromise();
     this.suite = (await this.testSuiteService.getTestSuite({ id: this.test.test_suite_id }))[0];
-
     this.testResultTempalte = { test_id: this.test.id };
-    this.testResults = await this.resultsService.getTestResult({ project_id: this.projectId, test_id: this.test.id });
-
     this.projectSubscription = this.globalData.currentProject$.subscribe(project => {
       this.showSteps = project ? !!project.steps : false;
     });
+
+    this.testResults = this.resultGridComponent.testResults;
   }
 
   ngOnDestroy(): void {
-    this.projectSubscription.unsubscribe();
+    if (this.projectSubscription) {
+      this.projectSubscription.unsubscribe();
+    }
   }
 
   async saveManualDuration(event) {

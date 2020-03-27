@@ -45,7 +45,11 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
-import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
+import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { HighliteTextDirective } from '../derectives/highlite-text.derective';
+import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
 
 @NgModule({
   imports: [
@@ -73,7 +77,10 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     FontAwesomeModule,
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    PopoverModule.forRoot(),
+    BrowserAnimationsModule,
+    BrowserModule
   ],
   declarations: [
     ClickableLinks,
@@ -103,7 +110,9 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     LabeledInputComponent,
     LabeledBaseComponent,
     TristateCheckboxComponent,
-    ColorDotsComponent
+    ColorDotsComponent,
+    HighliteTextDirective,
+    RegexpTesterComponent
   ],
   exports: [
     ClickableLinks,
@@ -157,7 +166,13 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     ColorDotsComponent,
     BsDropdownModule,
     TooltipModule,
-    ModalModule
+    ModalModule,
+    PopoverModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    CommonModule,
+    HighliteTextDirective,
+    RegexpTesterComponent
   ]
 })
 export class SharedModule {}

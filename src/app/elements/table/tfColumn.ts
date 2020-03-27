@@ -43,12 +43,13 @@ export class TFCreation {
 export class TFLookup {
     values: any[];
     filterValues?: any[];
-    entity: string;
     objectWithId?: string;
     placeholder?: string;
     propToShow: string[];
     allowEmpty?= false;
     allowCreation?= false;
+    addAction?= false;
+    action?;
 }
 
 export class TFDots {

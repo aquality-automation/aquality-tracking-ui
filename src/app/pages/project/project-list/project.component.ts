@@ -103,7 +103,6 @@ export class ProjectComponent implements OnInit {
             property: 'customer',
             lookup: {
               values: this.customers,
-              entity: 'customer',
               propToShow: ['name'],
             },
             filter: true,
@@ -116,7 +115,6 @@ export class ProjectComponent implements OnInit {
             property: 'customer.coordinator',
             lookup: {
               values: this.users,
-              entity: 'customer.coordinator',
               propToShow: ['first_name', 'second_name'],
             },
             filter: true,
@@ -147,7 +145,6 @@ export class ProjectComponent implements OnInit {
           property: 'customer',
           lookup: {
             values: this.customers,
-            entity: 'customer',
             propToShow: ['name'],
           },
           type: TFColumnType.autocomplete,
@@ -158,7 +155,6 @@ export class ProjectComponent implements OnInit {
           property: 'customer.coordinator',
           lookup: {
             values: this.users,
-            entity: 'customer.coordinator',
             propToShow: ['first_name', 'second_name'],
           },
           filter: true,

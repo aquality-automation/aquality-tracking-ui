@@ -4,9 +4,9 @@
   <div class="col-md-9">
     <h2>Audit Info - {{audit.project.name}}
       <span id="status" class="badge" [ngClass]="{
-      'badge-success': audit.status.color === 5,
-      'badge-warning': audit.status.color === 2,
-      'badge-primary': audit.status.color === 3
+      'badge-success': +audit.status.color === 5,
+      'badge-warning': +audit.status.color === 2,
+      'badge-primary': +audit.status.color === 3
     }">{{audit.status.name}}</span></h2>
 
   </div>

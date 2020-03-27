@@ -141,12 +141,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'First Result',
-                property: 'f_result.final_result.name',
+                property: 'f_result.final_result',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 'f_result.final_result',
                     values: this.finalResults,
                     propToShow: ['name']
                 },
@@ -154,12 +153,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'First Resolution',
-                property: 'f_result.issue.resolution.name',
+                property: 'f_result.issue.resolution',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 'f_result.issue.resolution',
                     values: this.listOfResolutions,
                     propToShow: ['name']
                 },
@@ -177,12 +175,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'Second Result',
-                property: 's_result.final_result.name',
+                property: 's_result.final_result',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 's_result.final_result',
                     values: this.finalResults,
                     propToShow: ['name']
                 },
@@ -191,12 +188,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'Second Resolution',
-                property: 's_result.issue.resolution.name',
+                property: 's_result.issue.resolution',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 's_result.issue.resolution',
                     values: this.listOfResolutions,
                     propToShow: ['name']
                 },
@@ -212,7 +208,6 @@ export class TestrunCompareComponent implements OnInit {
                 sorting: true,
                 type: TFColumnType.autocomplete,
                 lookup: {
-                    entity: 'f_result.issue.assignee',
                     propToShow: ['first_name', 'second_name'],
                     placeholder: 'Unassinged',
                     objectWithId: 'f_result.issue.assignee',
@@ -235,7 +230,6 @@ export class TestrunCompareComponent implements OnInit {
                 type: TFColumnType.autocomplete,
                 lookup: {
                     values: this.users,
-                    entity: 's_result.issue.assignee',
                     propToShow: ['first_name', 'second_name'],
                     objectWithId: 's_result.issue.assignee',
                 },

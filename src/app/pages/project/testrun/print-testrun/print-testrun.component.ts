@@ -21,8 +21,6 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
     @Input() buttons: any[];
     @Input() testResults: TestResult[];
     @Input() testRun: TestRun;
-    @Input() finalResultsChart;
-    @Input() resultResolutionsChart;
     @Output() closed = new EventEmitter();
     @Output() execute = new EventEmitter();
     project: Project;

@@ -68,6 +68,7 @@ import { TestSuiteService } from '../../services/testSuite.service';
 import { IssueListComponent } from './issue/issue-list/issue-list.component';
 import { IssueService } from '../../services/issue.service';
 import { CreateIssueModalComponent } from './issue/issue-create.modal/issue-create.modal.component';
+import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 
 @NgModule({
   imports: [
@@ -114,7 +115,8 @@ import { CreateIssueModalComponent } from './issue/issue-create.modal/issue-crea
     SafePipe,
     SyncSuiteModalComponent,
     IssueListComponent,
-    CreateIssueModalComponent
+    CreateIssueModalComponent,
+    IssueViewComponent
   ],
   providers: [
     IssueService,

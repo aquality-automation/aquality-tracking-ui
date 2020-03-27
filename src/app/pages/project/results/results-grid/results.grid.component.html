@@ -7,8 +7,9 @@
   (closed)="wasClosed()" 
   [resolutions]="listOfResolutions" 
   [users]="users"
-  [title]="newIssueTitle"
+  [issue]="issueForModal"
   [existingIssues]="listOfIssues"
+  [failReason]="issueFailReason"
   ></issue-create-modal>
   <table-filter id="resultsGridMain" *ngIf="tbCols"
   [hide]="hideVal" 
@@ -26,5 +27,6 @@
   (dataChange)="resultUpdate($event)" 
   (action)="handleAction($event)"
   (bulkChanges)="bulkResultUpdate($event)"
-  (lookupCreation)="handleLookupCreation($event)"></table-filter>
+  (lookupCreation)="handleLookupCreation($event)"
+  (lookupAction)="handleLookupAction($event)"></table-filter>
 </div>

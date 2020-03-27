@@ -133,6 +133,11 @@ inline-editor-number>input {
   width: 100% !important;
 }
 
+issue-popover popover-container {
+  width: 800px !important;
+  max-width: none !important;
+}
+
 div.c-inline-editor:not([hidden]) {
   display: inline;
 }
@@ -879,7 +884,7 @@ textarea.form-control {
   min-height: calc(100vh - 50px);
 }
 
-.glyphicon-refresh-animate > svg {
+.glyphicon-refresh-animate>svg {
   -webkit-animation: spin2 .7s infinite linear;
   animation: spin2 .7s infinite linear;
 }

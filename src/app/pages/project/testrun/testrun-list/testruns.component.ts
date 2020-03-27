@@ -85,12 +85,11 @@ export class TestRunsComponent implements OnInit {
     this.tbCols = [
       {
         name: 'Label',
-        property: 'label.name',
+        property: 'label',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'label',
           values: this.labels,
           propToShow: ['name']
         },
@@ -115,21 +114,20 @@ export class TestRunsComponent implements OnInit {
       },
       {
         name: 'Test Suite',
-        property: 'test_suite.name',
+        property: 'test_suite',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
           values: this.suites,
           propToShow: ['name'],
-          entity: 'test_suite',
           allowEmpty: true
         },
         class: 'fit'
       },
       {
         name: 'Milestone',
-        property: 'milestone.name',
+        property: 'milestone',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
@@ -137,7 +135,6 @@ export class TestRunsComponent implements OnInit {
           values: this.activeMilestones,
           filterValues: this.milestones,
           propToShow: ['name'],
-          entity: 'milestone',
           allowEmpty: true
         },
         editable: this.canEdit,
@@ -169,7 +166,7 @@ export class TestRunsComponent implements OnInit {
         link: {
           template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
           properties: ['id'],
-          params: { f_issue_opt: 'null' }
+          params: { f_issue_opt: 0 }
         },
         class: 'ft-width-250'
       },

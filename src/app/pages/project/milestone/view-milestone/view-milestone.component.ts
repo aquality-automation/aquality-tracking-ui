@@ -179,7 +179,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
 
   resolutionChartClick(resolution: ResultResolution) {
     const queryParams = resolution.id === 1
-      ? { 'f_result.issue_opt': 'null' }
+      ? { 'f_result.issue_opt': 0 }
       : { 'f_result.issue.resolution_opt': resolution.id };
 
     this.router.navigate(
@@ -250,12 +250,11 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     return [
       { name: 'Test', property: 'testName', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-150' },
       {
-        name: 'Test Suite', property: 'suite.name',
+        name: 'Test Suite', property: 'suite',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'suite',
           propToShow: ['name'],
           values: this.suites
         },
@@ -271,24 +270,22 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
         class: 'fit'
       }, {
         name: 'Result',
-        property: 'result.final_result.name',
+        property: 'result.final_result',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'result.final_result',
           values: this.finalResults,
           propToShow: ['name']
         },
         class: 'fit'
       }, {
         name: 'Resolution',
-        property: 'issue.resolution.name',
+        property: 'issue.resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'result.issue.resolution',
           values: this.resolutions,
           propToShow: ['name']
         },
@@ -296,11 +293,10 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
       },
       {
         name: 'Issue',
-        property: 'result.issue.title',
+        property: 'result.issue',
         filter: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'result.issue',
           values: this.issues,
           propToShow: ['title']
         },

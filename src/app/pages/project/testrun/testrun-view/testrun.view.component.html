@@ -2,7 +2,7 @@
   [buttons]="[{name:'Send Email', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
   (closed)="wasClosed()"></notify-team-modal>
 
-<print-testrun-modal *ngIf="testResults" [(isHidden)]="hidePrintModal" [testRun]="testRun" [testResults]="testResults"
+<print-testrun-modal *ngIf="resultGridComponent && resultGridComponent.testResults" [(isHidden)]="hidePrintModal" [testRun]="testRun" [testResults]="resultGridComponent.testResults"
   [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
   (closed)="wasClosed()"></print-testrun-modal>
 
@@ -123,17 +123,17 @@
   <div class="dropdown-divider"></div>
 
   <div class="row">
-    <div class="col-sm-6" *ngIf="testResults?.length">
-      <final-result-chart [testResults]="testResults" (clickedResult)="finalResultChartClick($event)">Loading...
+    <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
+      <final-result-chart [testResults]="resultGridComponent.testResults" (clickedResult)="finalResultChartClick($event)">Loading...
       </final-result-chart>
     </div>
-    <div class="col-sm-6" *ngIf="testResults?.length">
-      <result-resolution-chart [testResults]="testResults" (clickedResult)="resolutionChartClick($event)">Loading...
+    <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
+      <result-resolution-chart [testResults]="resultGridComponent.testResults" (clickedResult)="resolutionChartClick($event)">Loading...
       </result-resolution-chart>
     </div>
   </div>
 
-  <div *ngIf="testResults?.length">
-    <results-grid id="testRunViewResultsGrid" [testResults]="testResults" (resultUpdated)="updateResult($event)"
+  <div *ngIf="testResultTempalte">
+    <results-grid id="testRunViewResultsGrid" (resultUpdated)="updateResult($event)"
       [testResultTempalte]="testResultTempalte">Loading...</results-grid>
   </div>

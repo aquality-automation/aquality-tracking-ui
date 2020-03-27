@@ -1,0 +1,116 @@
+<div *ngIf="issue" class="panel-heading">
+    <div class="row">
+        <div class="col-sm-6">
+            <h2 id="issues-list">Issue {{issue.id}} <span id="status-badge" class="badge" [ngClass]="{
+                'badge-danger': +issue.status.color === 1,
+                'badge-primary': +issue.status.color === 3,
+                'badge-warning': +issue.status.color === 2,
+                'badge-info': +issue.status.color === 4,
+                'badge-success': +issue.status.color === 5
+            }">{{issue.status.name}}</span></h2>
+        </div>
+        <div class="col-sm-6">
+            <div class="btn-group pull-right" role="group">
+                <button *ngIf="+issue.status.id === 1" id="start-progress" type="button" class="btn btn-warning" (click)="setStatus(3)">Start Progress</button>
+                <button *ngIf="+issue.status.id === 3" id="close" type="button" class="btn btn-success" (click)="setStatus(5)">Close</button>
+                <button *ngIf="+issue.status.id === 5" id="done" type="button" class="btn btn-success" (click)="setStatus(4)">Mark as Done</button>
+                <button *ngIf="+issue.status.id !== 1" id="reopen" type="button" class="btn btn-primary" (click)="setStatus(1)">Re Open</button>
+                <button *ngIf="+issue.status.id === 3" id="cannot-reproduce" type="button" class="btn btn-info" (click)="setStatus(2)">Can Not Reproduce</button>
+                <button  id="save" type="button" class="btn btn-success" (click)="saveIssue()">Save</button>
+              </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="issue" class="panel-body">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" placeholder="Title" [(ngModel)]="issue.title">
+                </div>
+            </div>
+
+            <div class="row">
+                <br class="col-sm-12">
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8">
+                    <label for="issue-description">Description:</label>
+                    <textarea id="issue-description" class="form-control" placeholder="Description" name="description"
+                        [(ngModel)]="issue.description"></textarea>
+                </div>
+                <div class="col-sm-4 issue-fields">
+                    <div class="col-sm-12 no-padding">
+                        <label for="issue-resolution">Resolution*:</label>
+                        <lookup-colored *ngIf="resolutions" id="issue-resolution" [cutLongText]="true"
+                            [colorProperty]="'color'" [propertiesToShow]="['name']" [array]="resolutions"
+                            placeholder="Resolution" [allowEmptyValue]="false" [model]="issue.resolution"
+                            (modelChange)="updateResolution($event)">
+                        </lookup-colored>
+                    </div>
+                    <div class="col-sm-12 no-padding">
+                        <label for="issue-assignee">Assignee:</label>
+                        <lookup-autocomplete *ngIf="users" id="issue-assignee" [cutLongText]="true"
+                            [propertiesToShow]="['first_name', 'second_name']" [array]="users" placeholder="Assignee"
+                            [allowEmptyValue]="true" [model]="issue.assignee" (modelChange)="updateAssignee($event)">
+                        </lookup-autocomplete>
+                    </div>
+                    <div class="col-sm-12 no-padding">
+                        <label for="issue-external-url">External Issue:</label>
+                        <input id="issue-external-url" type="text" class="form-control" placeholder="External Issue"
+                            [(ngModel)]="issue.external_url">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 no-padding">
+                <label for="issue-expression">Regular Expression:</label>
+                <div class="input-group">
+                    <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
+                        [ngClass]="{
+                    'is-valid': isExpressionOverlapped(), 
+                    'is-invalid': isExpressionOverlapped()
+                    }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate($event)">
+                    <div class="invalid-feedback">
+                        Expression is overlapped!
+                    </div>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="button" id="save-and-assign"
+                            (click)="saveExpressionAndAssignIssue()"
+                            title="Save issue. Assign this issue to all results where Fail Reason fits the Expression and without assigned issue">Save
+                            and Assign</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 no-padding">
+                <label for="regexpTestText">Fail Reason Example:</label>
+                <textarea id="regexpTestText" class="form-control" placeholder="Test Fail Reason text"
+                    name="regexpTestText" [(ngModel)]="regexpTestText"></textarea>
+
+                <br class="col-sm-12">
+                <regexp-tester *ngIf="regexpTestText" [expression]="issue.expression" [text]="regexpTestText">
+                </regexp-tester>
+            </div>
+
+            <div class="row">
+                <br class="col-sm-12">
+            </div>
+
+            <div class="col-sm-12 no-padding" *ngIf="overlappedIssues && columns && overlappedIssues.length > 0">
+                <div class="row">
+                    <br class="col-sm-12">
+                </div>
+                <table-filter id="overlapped-issues-table" [data]="overlappedIssues" [columns]="overlappedIssueColumns"
+                    [rowsOnPage]="3" [rowsOnPageSet]="[3]" [hideFilter]="true" [columnManagement]="false">
+                </table-filter>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <table-filter id="affected-tests" [data]="affectedTests" [columns]="affectedTestColumns" [rowsOnPage]="10"
+                [hideFilter]="true" [columnManagement]="false">
+            </table-filter>
+        </div>
+    </div>
+</div>

@@ -48,7 +48,6 @@ export class CustomerComponent implements OnInit {
                         filter: true,
                         type: TFColumnType.autocomplete,
                         lookup: {
-                            entity: 'coordinator',
                             propToShow: ['first_name', 'second_name'],
                             values: this.coordinators,
                         },

@@ -79,12 +79,11 @@ export class ResultSearcherComponent {
       },
       {
         name: 'Result',
-        property: 'final_result.name',
+        property: 'final_result',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'final_result',
           values: this.finalResults,
           propToShow: ['name']
         },
@@ -92,12 +91,11 @@ export class ResultSearcherComponent {
       },
       {
         name: 'Resolution',
-        property: 'issue.resolution.name',
+        property: 'issue.resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'issue.resolution',
           values: this.listOfResolutions,
           propToShow: ['name']
         },

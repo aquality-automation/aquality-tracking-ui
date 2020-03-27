@@ -164,12 +164,11 @@ export class TestrunMatrixComponent implements OnInit {
             this.tbCols.push({
                 name: `${testRun.id} | ${testRun.label.name} | ${this.datepipe.transform(new Date(testRun.start_time), 'MM/dd/yy')}`,
                 title: `${testRun.id}_result.comment`,
-                property: state ? `${testRun.id}_resolution.name` : `${testRun.id}_result.name`,
+                property: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
                     values: this.filterValues,
                     propToShow: ['name']
                 },

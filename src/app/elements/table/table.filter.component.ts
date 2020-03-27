@@ -54,7 +54,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Output() shownData = new EventEmitter();
   @Output() refresh = new EventEmitter();
   @Output() bulkChanges = new EventEmitter();
-  @Output() lookupCreation = new EventEmitter<{value: string, column: TFColumn, entity: any}>();
+  @Output() lookupCreation = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
+  @Output() lookupAction = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
 
   @ViewChild(DataTable) datatable: DataTable;
 
@@ -173,6 +174,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.lookupCreation.emit({ value, column, entity });
   }
 
+  handleLookupAction(value: any, column: TFColumn, entity: any) {
+    this.lookupAction.emit({ value, column, entity });
+  }
+
   applyFilters() {
     if (this.data) {
       this.filteredData = this.filterHelper.applyFilters(this.appliedFilters, this.data);
@@ -241,9 +246,9 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.hideManageColumnsModal = false;
   }
 
-  isPropertyShouldBeHidden(entity: any, proprty: string): boolean {
+  isPropertyShouldBeHidden(entity: any, property: string): boolean {
     if (this.hide) {
-      const hide = this.hide(entity, proprty);
+      const hide = this.hide(entity, property);
       return hide;
     }
     return false;
@@ -298,7 +303,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     const options = [];
     selectedArray.forEach(element => {
       if (element && element.findEmpty) {
-        options.push('null');
+        options.push(0);
       } else if (element && element.id) {
         options.push(`${element.id}`);
       } else if (element && this.transformationsService.getPropertyValue(element, property).id) {
@@ -363,9 +368,6 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       if (col.lookup.objectWithId) {
         return x.property === col.lookup.objectWithId;
       }
-      if (col.lookup.entity) {
-        return x.property === col.lookup.entity;
-      }
       return x.property === col.property;
     });
 
@@ -375,6 +377,12 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       selectedOpts = col.lookup.values.filter(x => {
         return selectedOptIds.find(y => (x.id ? x.id : this.transformationsService.getPropertyValue(x, filter.property).id) === +y);
       });
+      if (selectedOptIds.find(y => +y === 0)) {
+        selectedOpts.push({
+          id: 0,
+          findEmpty: true
+        });
+      }
     }
     return selectedOpts;
   }

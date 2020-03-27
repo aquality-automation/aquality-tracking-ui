@@ -17,8 +17,9 @@ import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../..
 import { TestService } from '../../../../services/test.service';
 import { Issue } from '../../../../shared/models/issue';
 import { IssueService } from '../../../../services/issue.service';
-import { columns } from '../../../../../../e2e/pages/project/list.po/constants';
 import { User } from '../../../../shared/models/user';
+import { columns } from '../../../../../../e2e/pages/project/list.po/constants';
+import { TestRun } from '../../../../shared/models/testRun';
 
 @Component({
   selector: 'results-grid',
@@ -35,25 +36,26 @@ import { User } from '../../../../shared/models/user';
 export class ResultGridComponent implements OnInit {
   @Input() testResultTempalte: TestResult;
   @ViewChild(ResultSearcherComponent) resultSearcher: ResultSearcherComponent;
-  @Input() testResults: TestResult[];
+  public testResults: TestResult[];
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
   @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue'];
   @Output() resultUpdated = new EventEmitter<TestResult[]>();
-  listOfResolutions: ResultResolution[];
-  finalResults: FinalResult[];
-  listOfIssues: Issue[];
-  users: User[];
+  public listOfResolutions: ResultResolution[];
+  public finalResults: FinalResult[];
+  public listOfIssues: Issue[];
+  public users: User[];
   public showSearcher = false;
   public searcherText = '';
-  redirect: { url: string, property: string };
+  public redirect: { url: string, property: string };
   public tbCols: TFColumn[];
   public tbHiddenCols: TFColumn[];
   public allColumns: TFColumn[];
   canEdit: boolean;
   projectId: number;
   hideCreateModal = true;
-  newIssueTitle: string;
+  issueForModal: Issue;
   resultToAddIssue: TestResult;
+  issueFailReason: string;
 
   constructor(
     private resultResolutionService: ResultResolutionService,
@@ -76,20 +78,10 @@ export class ResultGridComponent implements OnInit {
 
     this.listOfResolutions = await this.resultResolutionService.getResolution().toPromise();
     this.finalResults = await this.finalResultService.getFinalResult({});
-    this.listOfIssues = await this.issueService.getIssues({ project_id: this.projectId });
-    const testruns = await this.testRunService.getTestRun({ project_id: this.projectId });
     const projectUsers = (await this.userService.getProjectUsers(this.projectId).toPromise())
       .filter((x: LocalPermissions) => x.admin === 1 || x.manager === 1 || x.engineer === 1);
     this.users = projectUsers.map((x: LocalPermissions) => x.user);
-
-    this.testResults.forEach(result => {
-      result['developer'] = this.users.find(x => x.id === result.test.developer_id);
-      result['testrun'] = testruns.find(x => x.id === result.test_run_id);
-      result['duration'] = this.calculateDuration(result);
-      result['combinedLastResults'] = this.testService.combineLastResults(result.test);
-    });
-
-    this.createColumns();
+    this.refreshResults();
   }
 
   rowClicked($event) {
@@ -104,7 +96,7 @@ export class ResultGridComponent implements OnInit {
       debug: result.debug,
       issue_id: result.issue ? result.issue.id : 0
     };
-    await this.testResultService.createTestResult(testResultUpdateTemplate);
+    result = await this.testResultService.createTestResult(testResultUpdateTemplate);
     this.resultUpdated.emit([result]);
   }
 
@@ -171,7 +163,10 @@ export class ResultGridComponent implements OnInit {
 
   handleLookupCreation(event: { value: string, column: TFColumn, entity: TestResult }) {
     if (event.column.property === 'issue') {
-      this.newIssueTitle = event.value;
+      this.issueForModal = {
+        title: event.value
+      };
+      this.issueFailReason = event.entity.fail_reason;
       this.hideCreateModal = false;
       this.resultToAddIssue = event.entity;
     }
@@ -182,16 +177,47 @@ export class ResultGridComponent implements OnInit {
     if (result.executed) {
       this.listOfIssues = await this.issueService.getIssues({ project_id: this.projectId });
       await this.assignCreatedIssue(this.listOfIssues.find(x => x.id === result.result.id));
+      await this.refreshResults();
     }
   }
 
   async assignCreatedIssue(issue: Issue) {
-    this.resultToAddIssue.issue = issue;
-    return this.resultUpdate(this.resultToAddIssue);
+    if (this.resultToAddIssue) {
+      this.resultToAddIssue.issue = issue;
+      await this.resultUpdate(this.resultToAddIssue);
+      this.resultToAddIssue = undefined;
+    }
   }
 
   wasClosed() {
     this.hideCreateModal = true;
+    this.issueFailReason = undefined;
+    this.issueForModal = undefined;
+  }
+
+  handleLookupAction(event: { value: any, column: TFColumn, entity: TestResult }) {
+    if (event.column.property === 'issue') {
+      this.issueForModal = event.value;
+      this.issueFailReason = event.entity.fail_reason;
+      this.hideCreateModal = false;
+    }
+  }
+
+  private async refreshResults() {
+    let testruns: TestRun[];
+    [testruns, this.listOfIssues, this.testResults] = await Promise.all([
+      this.testRunService.getTestRun({ project_id: this.projectId }),
+      this.issueService.getIssues({ project_id: this.projectId }),
+      this.testResultService.getTestResult(this.testResultTempalte)
+    ]);
+    this.testResults.forEach(result => {
+      result['developer'] = this.users.find(x => x.id === result.test.developer_id);
+      result['testrun'] = testruns.find(x => x.id === result.test_run_id);
+      result['duration'] = this.calculateDuration(result);
+      result['combinedLastResults'] = this.testService.combineLastResults(result.test);
+    });
+    this.createColumns();
+
   }
 
   private createColumns() {
@@ -242,12 +268,11 @@ export class ResultGridComponent implements OnInit {
       },
       {
         name: 'Result',
-        property: 'final_result.name',
+        property: 'final_result',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'final_result',
           values: this.finalResults,
           propToShow: ['name']
         },
@@ -255,12 +280,11 @@ export class ResultGridComponent implements OnInit {
       },
       {
         name: 'Resolution',
-        property: 'issue.resolution.name',
+        property: 'issue.resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'issue.resolution',
           values: this.listOfResolutions,
           propToShow: ['name']
         },
@@ -273,13 +297,14 @@ export class ResultGridComponent implements OnInit {
         sorting: false,
         type: TFColumnType.autocomplete,
         editable: this.canEdit,
+        bulkEdit: this.canEdit,
         nullFilter: true,
         lookup: {
           allowCreation: true,
           allowEmpty: true,
-          entity: 'issue',
           values: this.listOfIssues,
-          propToShow: ['id', 'title']
+          propToShow: ['id', 'title'],
+          addAction: true
         },
         class: 'ft-width-250'
       },
@@ -291,7 +316,6 @@ export class ResultGridComponent implements OnInit {
         type: TFColumnType.autocomplete,
         lookup: {
           propToShow: ['first_name', 'second_name'],
-          entity: 'developer',
           objectWithId: 'developer',
           values: this.users,
         },

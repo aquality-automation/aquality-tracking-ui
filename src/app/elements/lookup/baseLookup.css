@@ -101,3 +101,9 @@ li.default-option {
 .caret {
   margin: 4px 0px 0px 4px;
 }
+
+li > p {
+  margin: 0;
+  display: inline-block;
+  width: calc(100% - 20px);
+}

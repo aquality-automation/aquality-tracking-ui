@@ -17,8 +17,8 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
   @Input() resolutions: ResultResolution[];
   @Input() existingIssues: Issue[];
   @Input() users: User[];
-  @Input() title: string;
-  issue: Issue;
+  @Input() issue: Issue;
+  @Input() failReason: string;
   updateResults = true;
   overlappedIssues: Issue[] = [];
   validateExpressionTimeout = null;
@@ -49,27 +49,31 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     private issueService: IssueService
   ) {
     super();
+  }
+
+  async ngOnInit() {
+    console.log(this.failReason);
+    if (!this.issue) {
+      this.issue = new Issue();
+    }
+    if (!this.issue.id) {
+      this.issue.project_id = this.route.snapshot.params.projectId;
+      this.issue.creator_id = this.userService.currentUser().id;
+      this.issue.status_id = 1;
+      this.updateResolution(this.resolutions.find(x => x.id === 1));
+    } else {
+      this.updateResults = false;
+    }
+    if (!this.existingIssues) {
+      this.existingIssues = await this.issueService.getIssues({ project_id: this.issue.project_id });
+    }
     this.buttons = [{
-      name: 'Create',
+      name: this.issue.id ? 'Update' : 'Create',
       execute: true
     }, {
       name: 'Cancel',
       execute: false
     }];
-  }
-
-  async ngOnInit() {
-    this.issue = new Issue();
-    if (this.title) {
-      this.issue.title = this.title;
-    }
-    this.issue.project_id = this.route.snapshot.params.projectId;
-    this.issue.creator_id = this.userService.currentUser().id;
-    this.issue.status_id = 1;
-    this.updateResolution(this.resolutions.find(x => x.id === 1));
-    if (!this.existingIssues) {
-      this.existingIssues = await this.issueService.getIssues({ project_id: this.issue.project_id });
-    }
   }
 
   updateResolution(resolution: ResultResolution) {
@@ -87,7 +91,7 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     this.validateExpressionTimeout = setTimeout(() => {
       if (this.issue.expression) {
         const newIssueRegExp = new RegExp(this.issue.expression);
-        this.overlappedIssues = this.existingIssues.filter(existingIssue => existingIssue.expression
+        this.overlappedIssues = this.existingIssues.filter(existingIssue => existingIssue.expression && existingIssue.id !== this.issue.id
           ? newIssueRegExp.test(existingIssue.expression) || new RegExp(existingIssue.expression).test(this.issue.expression)
           : false);
       } else {

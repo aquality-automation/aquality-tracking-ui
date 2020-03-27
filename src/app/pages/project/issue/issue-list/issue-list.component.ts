@@ -93,6 +93,10 @@ export class IssueListComponent implements OnInit {
     this.hideCreateModal = true;
   }
 
+  rowClicked(issue: Issue) {
+    return this.router.navigate(['/project/' + this.route.snapshot.params['projectId'] + '/issue/' + issue.id]);
+  }
+
   private async updateList() {
     this.issues = await this.issueService.getIssues({ project_id: this.projectId });
     this.addLinks();
@@ -108,26 +112,24 @@ export class IssueListComponent implements OnInit {
         class: 'fit',
       }, {
         name: 'Status',
-        property: 'status.name',
+        property: 'status',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         editable: this.canEdit,
         lookup: {
-          entity: 'status',
           values: this.statuses,
           propToShow: ['name']
         },
         class: 'fit'
       }, {
         name: 'Resolution',
-        property: 'resolution.name',
+        property: 'resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         editable: this.canEdit,
         lookup: {
-          entity: 'resolution',
           values: this.resolutions,
           propToShow: ['name']
         },
@@ -150,7 +152,6 @@ export class IssueListComponent implements OnInit {
         filter: true,
         editable: this.canEdit,
         lookup: {
-          entity: 'assignee',
           values: this.users,
           propToShow: ['first_name', 'second_name']
         },

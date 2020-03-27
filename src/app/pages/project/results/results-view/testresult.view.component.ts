@@ -201,10 +201,9 @@ export class TestResultViewComponent implements OnInit {
       },
       {
         name: 'Result',
-        property: 'final_result.name',
+        property: 'final_result',
         type: TFColumnType.colored,
         lookup: {
-          entity: 'final_result',
           values: this.listOfFinalResults,
           propToShow: ['name']
         },
