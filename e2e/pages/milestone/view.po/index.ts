@@ -31,17 +31,18 @@ class MilestoneView extends BasePage {
         return elements.resolutionsChart.clickNotAssigned();
     }
 
-    async resultsAreFilteredByResult(result: string): Promise<boolean> {
-        return this.resultsAreFiltered(columns.result, result);
+    async resultsAreFilteredByResult(valueInFilter: string): Promise<boolean> {
+        return this.resultsAreFiltered(columns.result, valueInFilter);
     }
 
-    async resultsAreFilteredByResolution(result: string): Promise<boolean> {
-        return this.resultsAreFiltered(columns.resolution, result);
+    async resultsAreFilteredByIssue(valueInFilter: string, valueInRows?: string): Promise<boolean> {
+        return this.resultsAreFiltered(columns.issue, valueInFilter, valueInRows);
     }
 
-    async resultsAreFiltered(column: string, value: string): Promise<boolean> {
-        const isSelected = await elements.milestonesTable.isFilterSelected(column, value);
-        const isFiltered = await elements.milestonesTable.isContainOnlyRowsWith(column, value);
+    async resultsAreFiltered(column: string, valueInFilter: string, valueInRows?: string): Promise<boolean> {
+        const isSelected = await elements.milestonesTable.isFilterSelected(column, valueInFilter);
+        const isFiltered = await elements.milestonesTable
+            .isContainOnlyRowsWith(column, valueInRows !== undefined ? valueInRows : valueInFilter);
         return isSelected && isFiltered;
     }
 

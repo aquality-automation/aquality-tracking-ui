@@ -116,7 +116,7 @@ export class IssueViewComponent implements OnInit {
 
   updateAssignee(user: User) {
     this.issue.assignee = user;
-    this.issue.assignee_id = user.id;
+    this.issue.assignee_id = user ? user.id : 0;
   }
 
   setStatus(statusId: number) {

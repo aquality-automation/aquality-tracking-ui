@@ -67,9 +67,7 @@ export class IssueListComponent implements OnInit {
       issue.resolution_id = issue.resolution.id;
     }
 
-    if (issue.assignee) {
-      issue.assignee_id = issue.assignee.id;
-    }
+    issue.assignee_id = issue.assignee ? issue.assignee.id : 0;
 
     if (issue.status) {
       issue.status_id = issue.status.id;
@@ -151,8 +149,10 @@ export class IssueListComponent implements OnInit {
         type: TFColumnType.autocomplete,
         filter: true,
         editable: this.canEdit,
+        nullFilter: true,
         lookup: {
           values: this.users,
+          allowEmpty: true,
           propToShow: ['first_name', 'second_name']
         },
         class: 'fit'

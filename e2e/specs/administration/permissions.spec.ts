@@ -109,9 +109,8 @@ describe('Administartion:', () => {
             });
 
             it('I can not Open Permissions page using Menu Bar', async () => {
-                await projectList.menuBar.administration();
-                return expect(permissionsAdministration.sidebar.isPermissionsExist())
-                    .toBe(false, `Permissions should not be visible for ${description}`);
+                return expect(projectList.menuBar.isAdministrationExists())
+                    .toBe(false, `Administration should not be visible for ${description}`);
             });
 
             it('I can not Open Permissions page using url', async () => {

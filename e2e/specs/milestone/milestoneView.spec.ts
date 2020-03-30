@@ -167,7 +167,7 @@ describe('Milestone:', () => {
 
         it('I can Filter results by clicking Result Resolution chart', async () => {
             const clickedSectionName = await milestoneView.clickResolutionPieChartNotAssignedSection();
-            return expect(milestoneView.resultsAreFilteredByResolution(clickedSectionName))
+            return expect(milestoneView.resultsAreFilteredByIssue(clickedSectionName, ''))
                 .toBe(true, 'Results are not filtered by Resolution');
         });
     });

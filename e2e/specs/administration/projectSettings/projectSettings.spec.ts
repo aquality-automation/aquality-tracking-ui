@@ -9,6 +9,7 @@ import { TestResult } from '../../../../src/app/shared/models/test-result';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import cucumberImport from '../../../data/import/cucumber.json';
+import resolutions from '../../../data/resolutions.json';
 import { notFound } from '../../../pages/notFound.po';
 import { Issue } from '../../../../src/app/shared/models/issue';
 
@@ -97,7 +98,10 @@ describe('Administartion: Project Settings:', () => {
                 const results: TestResult[] = await projectHelper.editorAPI
                     .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id });
                 results.forEach(result => {
-                    expect(result.test.resolution_colors).toBe(`${result.issue.resolution.color}`, 'resolution_colors is wrong!');
+                    expect(result.test.resolution_colors)
+                        .toBe(`${result.issue
+                            ? result.issue.resolution.color
+                            : resolutions.global.notAssigned.color}`, 'resolution_colors is wrong!');
                     expect(result.test.result_colors).toBe(`${result.final_result.color}`, 'result_colors is wrong!');
                     expect(result.test.result_ids).toBe(`${result.id}`, 'result_ids is wrong!');
                 });
@@ -158,9 +162,8 @@ describe('Administartion: Project Settings:', () => {
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {
-                await projectList.menuBar.administration();
-                return expect(projectSettingsAdministration.sidebar.isProjectSettingsExist())
-                    .toBe(false, `Project Settings should not be visible for ${description}`);
+                return expect(projectList.menuBar.isAdministrationExists())
+                    .toBe(false, `Administration should not be visible for ${description}`);
             });
 
             it('I can not Open Project Settings page using url', async () => {

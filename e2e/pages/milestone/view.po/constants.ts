@@ -31,5 +31,6 @@ export const columns = {
     finished: 'Finished',
     result: 'Result',
     resolution: 'Resolution',
-    testrun: 'Test Run'
+    testrun: 'Test Run',
+    issue: 'Issue'
 };

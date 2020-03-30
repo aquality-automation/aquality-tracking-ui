@@ -2,7 +2,7 @@ import { by, element } from 'protractor';
 import { SmartTable } from '../../../elements/smartTable.element';
 
 export const elements = {
-    uniqueElement: element(by.css('issues-list')),
+    uniqueElement: element(by.id('issues-list')),
     issuesTable: new SmartTable(by.id('issues-table')),
     createButton: element(by.id('create-issue-button'))
 };

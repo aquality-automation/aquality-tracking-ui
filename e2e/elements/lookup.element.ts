@@ -9,7 +9,7 @@ export class Lookup extends BaseElement {
 
     private selector = this.element.element(by.css('.selector-main-button'));
 
-    public async getSelectedValue() {
+    public async getValue() {
         if (await this.selector.isPresent()) {
             return this.selector.getText();
         }

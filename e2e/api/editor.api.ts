@@ -71,6 +71,7 @@ export class EditorAPI extends BaseAPI {
     }
 
     public async getResults(testResult: TestResult): Promise<TestResult[]> {
+        testResult.project_id = this.project.id;
         return sendGet(Endpoints.testresult, testResult, this.token, this.project.id);
     }
 

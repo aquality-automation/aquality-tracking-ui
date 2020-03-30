@@ -1,5 +1,5 @@
 import { BasePage } from '../../base.po';
-import { elements, names } from './constants';
+import { elements, names, overlappedIssuesColumns } from './constants';
 import { promise } from 'protractor';
 
 class IssueCreateModal extends BasePage {
@@ -25,6 +25,42 @@ class IssueCreateModal extends BasePage {
 
     setResolution(name: string): Promise<void> {
         return elements.resolution.select(name);
+    }
+
+    isIssueInOverlappedTable(title: string): Promise<boolean> {
+        return elements.overlappedIssues.isRowExists(title, overlappedIssuesColumns.title);
+    }
+
+    isOverlappedIssuesTableExist(): Promise<boolean> {
+        return elements.overlappedIssues.isPresent();
+    }
+
+    getExpressionError(): promise.Promise<string> {
+        return elements.expressionError.getText();
+    }
+
+    setExpression(expression: string): Promise<void> {
+        return elements.expression.typeText(expression);
+    }
+
+    getExternalIssue(): promise.Promise<string> {
+        return elements.externalIssue.getValue();
+    }
+
+    setExternalIssue(external_url: string): Promise<void> {
+        return elements.externalIssue.typeText(external_url);
+    }
+
+    getAssignee(): Promise<string> {
+        return elements.assignee.getValue();
+    }
+
+    setAssignee(assignee: string): Promise<void> {
+        return elements.assignee.select(assignee);
+    }
+
+    getResolution(): Promise<string> {
+        return elements.resolution.getValue();
     }
 }
 

@@ -54,20 +54,20 @@ export class SmartTable extends BaseElement {
         return result;
     }
 
-    public async getRow(value: string | number, columnName: string): Promise<Row> {
-        const rows = await this.getRows(value, columnName);
+    public async getRow(containsValue: string | number, columnName: string): Promise<Row> {
+        const rows = await this.getRows(containsValue, columnName);
         if (rows.length < 1) {
             const isPaginatorPresent = await this.paginator.isPresent();
             const isOnLastPage = !(await this.paginator.isNextExist());
             if (isPaginatorPresent && !isOnLastPage) {
                 await this.paginator.next();
-                return new Row((await this.getRow(value, columnName)).element);
+                return new Row((await this.getRow(containsValue, columnName)).element);
             }
-            throw new Error(`No rows were found by '${value}' value in '${columnName}' column`);
+            throw new Error(`No rows were found by '${containsValue}' value in '${columnName}' column`);
         }
 
         if (rows.length > 1) {
-            logger.warn(`Multiple rows were found by '${value}' value in '${columnName}' column, the first will be used`);
+            logger.warn(`Multiple rows were found by '${containsValue}' value in '${columnName}' column, the first will be used`);
         }
         return new Row(rows[0]);
     }
@@ -193,8 +193,8 @@ export class SmartTable extends BaseElement {
         return row.clickAction();
     }
 
-    public async isRowExists(value: string, columnName: string) {
-        const rows = await this.getRows(value, columnName);
+    public async isRowExists(containsValue: string, columnName: string) {
+        const rows = await this.getRows(containsValue, columnName);
         return rows.length > 0;
     }
 
@@ -411,9 +411,9 @@ export class SmartTable extends BaseElement {
         return row.getCellFromRow(columnIndex);
     }
 
-    private async getRows(value: string | number, columnName: string) {
+    private async getRows(containsValue: string | number, columnName: string) {
         const columnIndex = await this.getColumnIndex(columnName);
-        const locator = `.//tbody/tr[contains(@class,'ft-row') and td[${columnIndex + 1}]//*[contains(text(),'${value}')]]`;
+        const locator = `.//tbody/tr[contains(@class,'ft-row') and td[${columnIndex + 1}]//*[contains(text(),'${containsValue}')]]`;
         logger.info(`Looking for rows using ${locator} xpath`);
         return this.element.all(by.xpath(locator));
     }

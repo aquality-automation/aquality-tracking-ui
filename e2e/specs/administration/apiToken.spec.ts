@@ -81,9 +81,8 @@ describe('API Token:', () => {
             });
 
             it('I can not Open API Token page using Menu Bar', async () => {
-                await projectList.menuBar.administration();
-                return expect(apiTokenAdministration.sidebar.isApiTokenExist())
-                    .toBe(false, `API Token should not be visible for ${description}`);
+                return expect(projectList.menuBar.isAdministrationExists())
+                    .toBe(false, `Administration should not be visible for ${description}`);
             });
 
             it('I can not Open API Token page using url', async () => {

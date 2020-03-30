@@ -296,6 +296,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
         property: 'result.issue',
         filter: true,
         type: TFColumnType.autocomplete,
+        nullFilter: true,
         lookup: {
           values: this.issues,
           propToShow: ['title']
