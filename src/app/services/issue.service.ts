@@ -3,6 +3,7 @@ import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
 import { Issue } from '../shared/models/issue';
 import { Label } from '../shared/models/general';
+import { DefaultProperties } from '../shared/utils/property.util';
 
 @Injectable()
 export class IssueService extends SimpleRequester {
@@ -20,6 +21,15 @@ export class IssueService extends SimpleRequester {
         if (!issue.expression) {
             updateResults = false;
         }
+
+        if (issue.description === '') {
+            issue.description = DefaultProperties.blank;
+        }
+
+        if (issue.external_url === '') {
+            issue.external_url = DefaultProperties.blank;
+        }
+
         return this.doPost(this.endpoints.issues, issue, { assign: updateResults }).map(res => {
             issue.id
                 ? this.handleSuccess(`The issue '${issue.title}' was updated.`)

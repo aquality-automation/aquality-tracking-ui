@@ -1,5 +1,5 @@
 <div *ngIf="disabled" class="disabled-lookup">
-    {{selectedItemText}}
+    {{selectedItemText ? selectedItemText : 'Not Assigned'}}
 </div>
 <div *ngIf="array && !disabled" class="selector-container form-group" (clickOutside)="onClickedOutside($event)"
     (keyup.esc)="toggleOff()" [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'" [ngClass]="{
