@@ -3,13 +3,15 @@ import { userAdministration } from '../../../pages/administration/users.po';
 import { ProjectHelper } from '../../../helpers/project.helper';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
-import { predefinedResolutions } from '../../../pages/administration/predefinedResolutions.po';
 import { Test } from '../../../../src/app/shared/models/test';
 import { TestRun } from '../../../../src/app/shared/models/testRun';
 import { TestResult } from '../../../../src/app/shared/models/test-result';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';
 import cucumberImport from '../../../data/import/cucumber.json';
+import resolutions from '../../../data/resolutions.json';
+import { notFound } from '../../../pages/notFound.po';
+import { Issue } from '../../../../src/app/shared/models/issue';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -96,7 +98,10 @@ describe('Administartion: Project Settings:', () => {
                 const results: TestResult[] = await projectHelper.editorAPI
                     .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id });
                 results.forEach(result => {
-                    expect(result.test.resolution_colors).toBe(`${result.test_resolution.color}`, 'resolution_colors is wrong!');
+                    expect(result.test.resolution_colors)
+                        .toBe(`${result.issue
+                            ? result.issue.resolution.color
+                            : resolutions.global.notAssigned.color}`, 'resolution_colors is wrong!');
                     expect(result.test.result_colors).toBe(`${result.final_result.color}`, 'result_colors is wrong!');
                     expect(result.test.result_ids).toBe(`${result.id}`, 'result_ids is wrong!');
                 });
@@ -114,11 +119,15 @@ describe('Administartion: Project Settings:', () => {
                 let result: TestResult = (await projectHelper.editorAPI
                     .getResults({ test_run_id: imported[0].id, project_id: projectHelper.project.id }))
                     .find(x => x.final_result_id === 5);
+                const issue: Issue = await projectHelper.editorAPI.createIssue({
+                    title: `${user.user_name} issue`,
+                    resolution_id: 4
+                });
                 result.final_result_id = 1;
-                result.test_resolution_id = 4;
+                result.issue_id = issue.id;
                 result = await projectHelper.editorAPI.createResult(result);
                 result = (await projectHelper.editorAPI.getResults(result))[0];
-                expect(result.test.resolution_colors).toBe(`${result.test_resolution.color},3,3,3,3`, 'resolution_colors is wrong!');
+                expect(result.test.resolution_colors).toBe(`${result.issue.resolution.color},3,3,3,3`, 'resolution_colors is wrong!');
                 expect(result.test.result_colors).toBe(`${result.final_result.color},4,4,4,4`, 'result_colors is wrong!');
                 expect(result.test.result_ids.startsWith(`${result.id}`)).toBe(true, 'result_ids is wrong!');
             });
@@ -153,15 +162,14 @@ describe('Administartion: Project Settings:', () => {
             });
 
             it('I can not Open Project Settings page using Menu Bar', async () => {
-                await projectList.menuBar.administration();
-                return expect(projectSettingsAdministration.sidebar.isProjectSettingsExist())
-                    .toBe(false, `Project Settings should not be visible for ${description}`);
+                return expect(projectList.menuBar.isAdministrationExists())
+                    .toBe(false, `Administration should not be visible for ${description}`);
             });
 
             it('I can not Open Project Settings page using url', async () => {
                 await projectSettingsAdministration.navigateTo();
                 await expect(projectSettingsAdministration.isOpened()).toBe(false, `Project Settings page is opened for ${description}`);
-                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
+                return expect(notFound.isOpened()).toBe(true, `Not Found page is not opened for ${description}`);
             });
         });
     });

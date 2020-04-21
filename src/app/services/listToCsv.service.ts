@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LocalPermissions } from '../shared/models/LocalPermissions';
 import { TestSuiteStat } from '../shared/models/testSuite';
 import { ElementFinder } from 'protractor';
+import { TFColumn } from '../elements/table/tfColumn';
 
 @Injectable()
 export class ListToCsvService {
@@ -26,19 +27,19 @@ export class ListToCsvService {
     return csv;
   }
 
-  generateCSVString(data: any[], columns) {
+  generateCSVString(data: any[], columns: TFColumn[]) {
     const columnsForCSV: string[] = [];
     const rowsCSV: string[] = [];
-    columns.forEach((element: ElementFinder) => {
+    columns.forEach((element: TFColumn) => {
       if (element.name !== 'Selector' && element.name !== 'Action') {
         columnsForCSV.push(element.name);
       }
     });
     data.forEach(entity => {
       const rowValues: string[] = [];
-      columns.forEach((element: ElementFinder) => {
+      columns.forEach((element: TFColumn) => {
         if (element.name !== 'Selector' && element.name !== 'Action') {
-          rowValues.push(this.correctValue(this.getPropertyValue(entity, element)));
+          rowValues.push(this.correctValue(this.getColumnValue(entity, element), element));
         }
       });
       rowsCSV.push(rowValues.join(','));
@@ -48,23 +49,37 @@ export class ListToCsvService {
     return rowsCSV.join('\n');
   }
 
-  correctValue(object: any) {
-    if (object === undefined) {
+  correctValue(entityValue: object | string, columnn: TFColumn) {
+    if (entityValue === undefined) {
       return '';
     }
-    const stringValue: String = object.toString();
+    let lookupTextValue: string;
+    if (columnn.lookup) {
+      const stringsToShow = [];
+      columnn.lookup.propToShow.forEach(property => {
+        stringsToShow.push(this.getPropertyValue(entityValue, property));
+      });
+
+      lookupTextValue = stringsToShow.join(' ');
+    }
+    const stringValue = lookupTextValue ? lookupTextValue : entityValue.toString();
     return `"${stringValue.replace(/(\r\n|\r|\n)/g, ' ')}"`;
   }
 
-  getPropertyValue(entity: any, column) {
-    const props = column.property.toString().split('.');
+  getColumnValue(entity: any, column: TFColumn) {
+    let val = this.getPropertyValue(entity, column.property.toString());
+    if (column.type === 'date') {
+      val = new Date(val).toLocaleString();
+    }
+    return val;
+  }
+
+  getPropertyValue(entity: any, property: string) {
+    const props = property.split('.');
     let val = entity;
     props.forEach(prop => {
       if (val) { val = val[prop]; }
     });
-    if (column.type === 'date') {
-      val = new Date(val).toLocaleString();
-    }
     return val;
   }
 }

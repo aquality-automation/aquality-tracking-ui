@@ -156,13 +156,15 @@ export class Row extends BaseElement {
         if (await rowElements.input().element.isPresent()) {
             return rowElements.input().getValue();
         } else if (await rowElements.coloredLookup().element.isPresent()) {
-            return rowElements.coloredLookup().getSelectedValue();
+            return rowElements.coloredLookup().getValue();
         } else if (await rowElements.lookup().element.isPresent()) {
-            return rowElements.lookup().getSelectedValue();
+            return rowElements.lookup().getValue();
         } else if (await rowElements.checkbox().element.isPresent()) {
             return rowElements.checkbox().isSelected();
         } else if (await rowElements.multiselect().element.isPresent()) {
             return rowElements.multiselect().getValue();
+        } else if (await rowElements.autocomplete().element.isPresent()) {
+            return rowElements.autocomplete().getValue();
         } else {
             return (await this.getCellFromRow(columnIndex)).getText();
         }

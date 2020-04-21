@@ -21,6 +21,8 @@ import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfCo
 import { Subscription } from 'rxjs/Subscription';
 import { PermissionsService, ELocalPermissions, EGlobalPermissions } from '../../../../services/current-permissions.service';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { Issue } from '../../../../shared/models/issue';
+import { IssueService } from '../../../../services/issue.service';
 
 @Component({
   templateUrl: './view-milestone.component.html',
@@ -39,7 +41,8 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     private suitesService: TestSuiteService,
     private testRunService: TestRunService,
     private transformationsService: TransformationsService,
-    private permissions: PermissionsService
+    private permissions: PermissionsService,
+    private issueService: IssueService
   ) { }
 
   @ViewChild(ResultResolutionsChartsComponent) resultResolutionsChart: ResultResolutionsChartsComponent;
@@ -49,6 +52,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   resolutions: ResultResolution[];
   finalResults: FinalResult[];
   testRuns: TestRun[];
+  issues: Issue[];
   resultsToShow: TestResult[];
   latestResults: TestResult[];
   suites: TestSuite[];
@@ -91,7 +95,8 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
       this.resolutions,
       this.finalResults,
       this.latestResults,
-      this.tests
+      this.tests,
+      this.issues
     ] = await this.getInitialInfo();
 
     this.columns = this.getColumns();
@@ -119,7 +124,8 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
       this.resultResolutionService.getResolution(this.milestone.project_id).toPromise(),
       this.finalResultService.getFinalResult({}),
       this.milestoneService.getMilestoneResults(this.milestone),
-      this.testService.getTest({ project_id: this.milestone.project_id })
+      this.testService.getTest({ project_id: this.milestone.project_id }),
+      this.issueService.getIssues({ project_id: this.milestone.project_id })
     ]);
   }
 
@@ -158,7 +164,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   hideTableValue(entity: ViewData, property: string) {
-    if ((property === 'test_resolution.name') && entity.result.final_result.color === 5) {
+    if ((property === 'issue.resolution.name') && entity.result.final_result.color === 5) {
       return true;
     }
     return false;
@@ -172,10 +178,13 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   resolutionChartClick(resolution: ResultResolution) {
+    const queryParams = resolution.id === 1
+      ? { 'f_result.issue_opt': 0 }
+      : { 'f_result.issue.resolution_opt': resolution.id };
+
     this.router.navigate(
       [`/project/${this.milestone.project_id}/milestone/${this.milestone.id}`],
-      { queryParams: { 'f_result.test_resolution_opt': resolution.id } }
-    );
+      { queryParams });
   }
 
   async updateMilestone() {
@@ -233,8 +242,6 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   private getNotExecutedResult(): TestResult {
     return {
       final_result: this.finalResults.find(x => x.id === 3),
-      test_resolution: this.resolutions.find(x => x.id === 1),
-      comment: undefined,
       start_date: undefined
     };
   }
@@ -243,12 +250,11 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     return [
       { name: 'Test', property: 'testName', filter: true, sorting: true, type: TFColumnType.text, class: 'ft-width-150' },
       {
-        name: 'Test Suite', property: 'suite.name',
+        name: 'Test Suite', property: 'suite',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'suite',
           propToShow: ['name'],
           values: this.suites
         },
@@ -264,30 +270,39 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
         class: 'fit'
       }, {
         name: 'Result',
-        property: 'result.final_result.name',
+        property: 'result.final_result',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'result.final_result',
           values: this.finalResults,
           propToShow: ['name']
         },
         class: 'fit'
       }, {
         name: 'Resolution',
-        property: 'test_resolution.name',
+        property: 'issue.resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'result.test_resolution',
           values: this.resolutions,
           propToShow: ['name']
         },
         class: 'fit'
       },
-      { name: 'Comment', property: 'result.comment', filter: true, type: TFColumnType.text, class: 'ft-width-150' },
+      {
+        name: 'Issue',
+        property: 'result.issue',
+        filter: true,
+        type: TFColumnType.autocomplete,
+        nullFilter: true,
+        lookup: {
+          values: this.issues,
+          propToShow: ['title']
+        },
+        class: 'ft-width-150'
+      },
       { name: 'Finished', property: 'result.finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' }
     ];
   }

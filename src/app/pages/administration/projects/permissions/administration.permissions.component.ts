@@ -39,12 +39,11 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.tbCols = [
       {
         name: 'Username',
-        property: 'user.user_name',
+        property: 'user',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'user',
           propToShow: ['user_name'],
           values: this.externalUsers,
         },

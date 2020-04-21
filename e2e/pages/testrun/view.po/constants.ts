@@ -43,6 +43,5 @@ export const columns = {
     failReason: 'Fail Reason',
     result: 'Result',
     resolution: 'Resolution',
-    assignee: 'Assignee',
-    comment: 'Comment',
+    issue: 'Issue'
 };

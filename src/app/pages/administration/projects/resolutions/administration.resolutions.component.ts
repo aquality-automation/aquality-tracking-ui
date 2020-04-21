@@ -56,12 +56,11 @@ export class AdministrationResolutionsComponent {
         },
         {
           name: 'Color',
-          property: 'colorObject.title',
+          property: 'colorObject',
           filter: true,
           sorting: true,
           type: TFColumnType.colored,
           lookup: {
-            entity: 'colorObject',
             values: this.colors,
             propToShow: ['title']
           },

@@ -8,7 +8,6 @@ export const elements = {
     bodyPattern: element(by.css('#body-pattern-administration')),
     apiToken: element(by.css('#api-token-administration')),
     settings: element(by.css('#projectSettings-administration')),
-    predefinedResolutions: element(by.css('#predefined-resolution')),
 };
 
 

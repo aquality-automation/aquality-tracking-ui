@@ -141,12 +141,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'First Result',
-                property: 'f_result.final_result.name',
+                property: 'f_result.final_result',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 'f_result.final_result',
                     values: this.finalResults,
                     propToShow: ['name']
                 },
@@ -154,12 +153,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'First Resolution',
-                property: 'f_result.test_resolution.name',
+                property: 'f_result.issue.resolution',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 'f_result.test_resolution',
                     values: this.listOfResolutions,
                     propToShow: ['name']
                 },
@@ -177,12 +175,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'Second Result',
-                property: 's_result.final_result.name',
+                property: 's_result.final_result',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 's_result.final_result',
                     values: this.finalResults,
                     propToShow: ['name']
                 },
@@ -191,12 +188,11 @@ export class TestrunCompareComponent implements OnInit {
             },
             {
                 name: 'Second Resolution',
-                property: 's_result.test_resolution.name',
+                property: 's_result.issue.resolution',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: 's_result.test_resolution',
                     values: this.listOfResolutions,
                     propToShow: ['name']
                 },
@@ -207,43 +203,41 @@ export class TestrunCompareComponent implements OnInit {
         this.tbHiddenCols = [
             {
                 name: 'First Assignee',
-                property: 'f_result.assigned_user.user',
+                property: 'f_result.issue.assignee',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.autocomplete,
                 lookup: {
-                    entity: 'f_result.assigned_user',
-                    propToShow: ['user.first_name', 'user.second_name'],
+                    propToShow: ['first_name', 'second_name'],
                     placeholder: 'Unassinged',
-                    objectWithId: 'f_result.assigned_user.user',
+                    objectWithId: 'f_result.issue.assignee',
                     values: this.users,
                 },
                 class: 'fit'
             },
             {
                 name: 'First Comment',
-                property: 'f_result.comment',
+                property: 'f_result.issue.title',
                 filter: true,
                 type: TFColumnType.textarea,
                 class: 'ft-width-250'
             },
             {
                 name: 'Second Assignee',
-                property: 's_result.assigned_user.user',
+                property: 's_result.issue.assignee',
                 filter: true,
                 sorting: true,
                 type: TFColumnType.autocomplete,
                 lookup: {
                     values: this.users,
-                    entity: 's_result.assigned_user',
-                    propToShow: ['user.first_name', 'user.second_name'],
-                    objectWithId: 's_result.assigned_user.user',
+                    propToShow: ['first_name', 'second_name'],
+                    objectWithId: 's_result.issue.assignee',
                 },
                 class: 'fit'
             },
             {
                 name: 'Second Comment',
-                property: 's_result.comment',
+                property: 's_result.issue.title',
                 filter: true,
                 type: TFColumnType.textarea,
                 class: 'ft-width-250'
@@ -269,10 +263,10 @@ export class TestrunCompareComponent implements OnInit {
     }
 
     hideVal(entity, property: string) {
-        if (entity.f_result && (property === 'f_result.test_resolution.name') && entity.f_result.final_result.color === 5) {
+        if (entity.f_result && (property === 'f_result.issue.resolution.name') && entity.f_result.final_result.color === 5) {
             return true;
         }
-        if (entity.s_result && (property === 's_result.test_resolution.name') && entity.s_result.final_result.color === 5) {
+        if (entity.s_result && (property === 's_result.issue.resolution.name') && entity.s_result.final_result.color === 5) {
             return true;
         }
         return false;

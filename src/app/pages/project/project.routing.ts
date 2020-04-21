@@ -35,6 +35,8 @@ import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ListMilestoneComponent } from './milestone/list-milestone/list-milestone.component';
 import { ViewMilestoneComponent } from './milestone/view-milestone/view-milestone.component';
 import { AuthGuard } from '../../shared/guards/login-guard.service';
+import { IssueListComponent } from './issue/issue-list/issue-list.component';
+import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 
 
 const projectRoutes: Routes = [
@@ -67,7 +69,9 @@ const projectRoutes: Routes = [
           },
           { path: 'tests', component: TestSuiteViewComponent, canActivate: [TestSuiteGuard] },
           { path: 'steps', component: StepsListComponent, canActivate: [TestSuiteGuard] },
+          { path: 'issues', component: IssueListComponent, canActivate: [TestSuiteGuard] },
           { path: 'import', component: ImportComponent, canActivate: [ProjectImportGuard] },
+          { path: 'issue/:issueId', component: IssueViewComponent, canActivate: [TestGuard] },
           { path: 'test/:testId', component: TestViewComponent, canActivate: [TestGuard], canDeactivate: [TestViewCanDeactivate] },
           { path: 'testresult/:testresultId', component: TestResultViewComponent,
             canActivate: [TestResultGuard], canDeactivate: [ResultViewCanDeactivate] },

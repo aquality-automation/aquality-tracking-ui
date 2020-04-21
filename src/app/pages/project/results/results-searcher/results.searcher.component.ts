@@ -79,12 +79,11 @@ export class ResultSearcherComponent {
       },
       {
         name: 'Result',
-        property: 'final_result.name',
+        property: 'final_result',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'final_result',
           values: this.finalResults,
           propToShow: ['name']
         },
@@ -92,18 +91,17 @@ export class ResultSearcherComponent {
       },
       {
         name: 'Resolution',
-        property: 'test_resolution.name',
+        property: 'issue.resolution',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'test_resolution',
           values: this.listOfResolutions,
           propToShow: ['name']
         },
         class: 'fit'
       },
-      { name: 'Comment', property: 'comment', filter: true, type: TFColumnType.text, class: 'ft-width-250' }
+      { name: 'Issue', property: 'issue.title', filter: true, type: TFColumnType.text, class: 'ft-width-250' }
     ];
     if (this.failReasonSearch.length > 150) {
       this.failReasonSearch = this.failReasonSearch.slice(0, 150);

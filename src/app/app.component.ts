@@ -156,6 +156,12 @@ export class AppComponent {
           show: this.isLogged && this.projectId !== undefined,
           routerOptions: { exact: true }
         }, {
+          name: 'Issues',
+          link: `/project/${this.projectId}/issues`,
+          show: this.isLogged
+            && this.projectId !== undefined,
+          routerOptions: { exact: false }
+        }, {
           name: 'Create',
           show: this.projectId
             && (await this.permissionsService.hasPermissions(
@@ -228,7 +234,7 @@ export class AppComponent {
           id: 'administration-nav',
           icon: faCog,
           show: await this.permissionsService.hasPermissions([EGlobalPermissions.admin, EGlobalPermissions.manager],
-            [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]),
+            [ELocalPermissions.admin, ELocalPermissions.manager]),
           routerOptions: { exact: false }
         }, {
           name: 'Report an Issue',

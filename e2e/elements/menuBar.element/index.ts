@@ -51,6 +51,10 @@ export class MenuBar {
         return element(by.id('Test Runs')).click();
     }
 
+    issues() {
+        return element(by.id('Issues')).click();
+    }
+
     project(projectName: string) {
         return element(by.id(projectName)).click();
     }

@@ -16,7 +16,7 @@ class Matrix extends BasePage {
     }
 
     getResultsNumberLookupValue() {
-        return elements.resultsNumberLookup.getSelectedValue();
+        return elements.resultsNumberLookup.getValue();
     }
 
     setLabelLookupValue(value: string) {

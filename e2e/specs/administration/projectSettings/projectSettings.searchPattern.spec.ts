@@ -12,6 +12,7 @@ import { testRunList } from '../../../pages/testrun/list.po';
 import { testRunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../src/app/shared/models/user';
 import { ProjectHelper } from '../../../helpers/project.helper';
+import { Issue } from '../../../../src/app/shared/models/issue';
 
 const importFiles = {
     differentError: differentError,
@@ -25,19 +26,30 @@ const builds = {
     build_3: 'build_3',
 };
 
+let issueApp: Issue;
+let issueEnv: Issue;
+
 const localManager: User = usersTestData.localManager;
 
 describe('Administartion: Project Settings:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const testFailed = 'Test Feature with all results: step failed';
     const testPending = 'Test Feature with all results: Step skipped';
-    const commentRegex = 'Should be filled by regex';
-    const commentFulText = 'Should be filled by full text';
 
     beforeAll(async () => {
         await projectHelper.init({
             localManager: usersTestData.localManager
         });
+        [issueApp, issueEnv] = await Promise.all([
+            projectHelper.editorAPI.createIssue({
+                title: 'Import Compare Results Pattern App Issue',
+                resolution_id: resolutions.global.appIssue.id
+            }),
+            projectHelper.editorAPI.createIssue({
+                title: 'Import Compare Results Pattern Env Issue',
+                resolution_id: resolutions.global.environmentIssue.id
+            })
+        ]);
     });
 
     afterAll(async () => {
@@ -64,21 +76,19 @@ describe('Administartion: Project Settings:', () => {
             await projectHelper.openProject();
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_1);
-            await testRunView.setResolution(resolutions.global.appIssue.name, testFailed);
-            await testRunView.setComment(commentRegex, testFailed);
-            await testRunView.setResolution(resolutions.global.environmentIssue.name, testPending);
-            await testRunView.setComment(commentFulText, testPending);
+            await testRunView.setIssue(`${issueApp.id} ${issueApp.title}`, testFailed);
+            await testRunView.setIssue(`${issueEnv.id} ${issueEnv.title}`, testPending);
             await projectHelper.importer.executeCucumberImport('Regex', [importFiles.sameError], [`${builds.build_2}.json`]);
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_2);
             expect(await testRunView.getResolution(testFailed))
                 .toBe(resolutions.global.appIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getComment(testFailed))
-                .toBe(commentRegex, 'Comment was not autofilled!');
+            expect(await testRunView.getIssue(testFailed))
+                .toBe(`${issueApp.id} ${issueApp.title}`, 'Issue was not autofilled!');
             expect(await testRunView.getResolution(testPending))
                 .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getComment(testPending))
-                .toBe(commentFulText, 'Comment was not autofilled!');
+            expect(await testRunView.getIssue(testPending))
+                .toBe(`${issueEnv.id} ${issueEnv.title}`, 'Issue was not autofilled!');
         });
 
         it('Results is not inherithed when Regex group is not equal', async () => {
@@ -86,13 +96,13 @@ describe('Administartion: Project Settings:', () => {
             await projectView.menuBar.testRuns();
             await testRunList.openTestRun(builds.build_3);
             expect(await testRunView.getResolution(testFailed))
-                .toBe(resolutions.global.notAssigned.name, 'Resolution was autofilled!');
-            expect(await testRunView.getComment(testFailed))
-                .toBe('Add...', 'Comment was autofilled!');
+                .toBe('', 'Resolution was autofilled!');
+            expect(await testRunView.getIssue(testFailed))
+                .toBe('', 'Issue was autofilled!');
             expect(await testRunView.getResolution(testPending))
                 .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getComment(testPending))
-                .toBe(commentFulText, 'Comment was not autofilled!');
+            expect(await testRunView.getIssue(testPending))
+                .toBe(`${issueEnv.id} ${issueEnv.title}`, 'Issue was not autofilled!');
         });
     });
 });

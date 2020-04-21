@@ -36,7 +36,6 @@ import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { InputTrimModule } from 'ng2-trim-directive';
-import { LoaderComponent } from '../elements/loader/loader.component';
 import { MatMenuModule, MatListModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { LabeledSwitchComponent } from '../elements/labeled-element/labeled-switch/labeled-switch.component';
@@ -45,7 +44,9 @@ import { LabeledInputComponent } from '../elements/labeled-element/labeled-input
 import { LabeledBaseComponent } from '../elements/labeled-element/labeled-base.component';
 import { TristateCheckboxComponent } from '../elements/tristate-checkbox/tristate-checkbox.component';
 import { ColorDotsComponent } from '../elements/color-dots/color-dots.component';
-import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
+import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
+import { HighliteTextDirective } from '../derectives/highlite-text.derective';
+import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
 
 @NgModule({
   imports: [
@@ -73,7 +74,8 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     FontAwesomeModule,
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
-    ModalModule.forRoot()
+    ModalModule.forRoot(),
+    PopoverModule.forRoot()
   ],
   declarations: [
     ClickableLinks,
@@ -97,13 +99,14 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     MaxLength,
     ManageColumnsModalComponent,
     OverflowDirective,
-    LoaderComponent,
     LabeledSwitchComponent,
     AttachmentInlineComponent,
     LabeledInputComponent,
     LabeledBaseComponent,
     TristateCheckboxComponent,
-    ColorDotsComponent
+    ColorDotsComponent,
+    HighliteTextDirective,
+    RegexpTesterComponent
   ],
   exports: [
     ClickableLinks,
@@ -143,7 +146,6 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     ChartsModule,
     HttpModule,
     InputTrimModule,
-    LoaderComponent,
     MatMenuModule,
     MatIconModule,
     MatListModule,
@@ -157,7 +159,11 @@ import { BsDropdownModule, TooltipModule, ModalModule } from 'ngx-bootstrap';
     ColorDotsComponent,
     BsDropdownModule,
     TooltipModule,
-    ModalModule
+    ModalModule,
+    PopoverModule,
+    CommonModule,
+    HighliteTextDirective,
+    RegexpTesterComponent
   ]
 })
 export class SharedModule {}

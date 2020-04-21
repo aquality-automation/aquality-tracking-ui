@@ -1,6 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { BrowserModule } from '@angular/platform-browser';
 import { ProjectService } from '../../../services/project.service';
 import { UserService } from '../../../services/user.services';
 import { administrationRouting } from './administration.routing';
@@ -13,8 +11,6 @@ import { GuardService } from '../../../shared/guards/guard.service';
 @NgModule({
   imports: [
     administrationRouting,
-    CommonModule,
-    BrowserModule,
     SharedModule
   ],
   declarations: [

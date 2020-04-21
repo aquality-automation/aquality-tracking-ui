@@ -18,7 +18,7 @@
             'btn-warning': getColorId(model) === 2,
             'btn-info': getColorId(model) === 4,
             'btn-success': getColorId(model) === 5
-            }" [ngStyle]="getColorFromHash(model)" [disabled]="disabled">{{textToShow(model)}}
+            }" [ngStyle]="getColorFromHash(model)" [disabled]="disabled"><p class="pull-left button-text">{{textToShow(model)}}</p>
             <fa-icon class="icon pull-right caret" [icon]="icons.faCaretDown" ></fa-icon>
         </button>
     </div>

@@ -15,6 +15,7 @@ import { FinalResult } from '../../../../shared/models/final-result';
 import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { ResultGridComponent } from '../../results/results-grid/results.grid.component';
 
 @Component({
   templateUrl: './testrun.view.component.html',
@@ -29,6 +30,7 @@ import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid
 })
 export class TestRunViewComponent implements OnInit {
   @ViewChild(ResultResolutionsChartsComponent) resultResolutionsCharts: ResultResolutionsChartsComponent;
+  @ViewChild(ResultGridComponent) resultGridComponent: ResultGridComponent;
   users: LocalPermissions[];
   projectId: number;
   hideNotifyModal = true;
@@ -63,12 +65,11 @@ export class TestRunViewComponent implements OnInit {
         [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
     this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
-
-    this.testRun = (await this.testRunService.getTestRunWithChilds({ id: this.route.snapshot.params.testRunId }))[0];
+    this.testRun = (await this.testRunService.getTestRun({ id: this.route.snapshot.params.testRunId }))[0];
+    this.testResultTempalte = {test_run_id: this.route.snapshot.params.testRunId };
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 });
-    this.testResults = this.testRun.testResults;
-
     await this.setTestRunsToCompare();
+    this.testResults = this.resultGridComponent.testResults;
   }
 
   async setTestRunsToCompare() {
@@ -144,13 +145,6 @@ export class TestRunViewComponent implements OnInit {
     testUpdatedTestRun = await this.testRunService.createTestRun(testUpdatedTestRun);
   }
 
-  updateResult(updatedResults: TestResult[]) {
-    updatedResults.forEach(updatedResult => {
-      this.testResults[this.testResults.findIndex(x => x.id === updatedResult.id)] = updatedResult;
-    });
-    this.resultResolutionsCharts.ngOnChanges();
-  }
-
   createMilestone($event) {
     this.milestoneService.createMilestone({ name: $event, project_id: this.testRun.project_id }).then(() => {
       this.milestoneService.getMilestone({ project_id: this.testRun.project_id, active: 1 }).then(milestones => {
@@ -168,9 +162,13 @@ export class TestRunViewComponent implements OnInit {
   }
 
   resolutionChartClick(resolution: ResultResolution) {
+    const queryParams = resolution.id === 1
+      ? { 'f_issue_opt': 0 }
+      : { 'f_issue.resolution_opt': resolution.id };
+
     this.router.navigate(
       [`/project/${this.projectId}/testrun/${this.testRun.id}`],
-      { queryParams: { f_test_resolution_opt: resolution.id } });
+      { queryParams });
   }
 
   canFinish() {

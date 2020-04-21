@@ -323,7 +323,6 @@ export class TestSuiteViewComponent implements OnInit {
         filter: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'developer',
           propToShow: ['user.first_name', 'user.second_name'],
           allowEmpty: true,
           values: this.users,
@@ -340,7 +339,6 @@ export class TestSuiteViewComponent implements OnInit {
         filter: true,
         type: TFColumnType.multiselect,
         lookup: {
-          entity: 'suites',
           propToShow: ['name'],
           values: this.testSuites,
         },

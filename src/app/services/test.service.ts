@@ -20,6 +20,10 @@ export class TestService extends SimpleRequester {
     return this.doGet('/test', params).map(res => res.json()).toPromise();
   }
 
+  getTestByIssue(byIssue: {issueId: number, projectId: number}): Promise<Test[]> {
+    return this.doGet('/test/issue', byIssue).map(res => res.json()).toPromise();
+  }
+
   createTest(test: Test): Promise<Test> {
     return this.doPost('/test', test).map(res => {
       this.handleSuccess(`Test '${test.name}' was updated.`);

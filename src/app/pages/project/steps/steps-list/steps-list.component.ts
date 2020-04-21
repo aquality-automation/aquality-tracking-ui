@@ -78,7 +78,6 @@ export class StepsListComponent implements OnInit {
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
-          entity: 'type',
           propToShow: ['name'],
           values: this.stepTypes,
         },

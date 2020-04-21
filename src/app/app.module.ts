@@ -1,9 +1,6 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule, BrowserXhr } from '@angular/http';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { BrowserXhr, HttpModule } from '@angular/http';
+import { HashLocationStrategy, LocationStrategy, CommonModule } from '@angular/common';
 import { CookieService, CookieOptions } from 'angular2-cookie/core';
 import { appRouting } from './app.routing';
 import { AppComponent } from './app.component';
@@ -17,7 +14,6 @@ import { SimpleRequester } from './services/simple-requester';
 import { UserService } from './services/user.services';
 import { ProjectModule } from './pages/project/project.module';
 import { SimpleNotificationsModule } from 'angular2-notifications';
-import { SharedModule } from './shared/shared.module';
 import { AuditModule } from './pages/audit/audit.module';
 import { AuditService } from './services/audits.service';
 import { CalcHeightsDirective } from './derectives/bodyHeight.derective';
@@ -26,29 +22,42 @@ import { CustomerModule } from './pages/customer/customer.module';
 import { CustomerService } from './services/customer.service';
 import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.service';
 import { GuardService } from './shared/guards/guard.service';
+import { LoaderComponent } from './elements/loader/loader.component';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { MatMenuModule, MatIconModule, MatListModule, MatButtonModule } from '@angular/material';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 @NgModule({
-  imports: [
-    BrowserAnimationsModule,
-    AdministrationModule,
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    appRouting,
-    HttpModule,
-    ProjectModule,
-    AuditModule,
-    CustomerModule,
-    NgProgressModule,
-    SharedModule,
-    SimpleNotificationsModule.forRoot()
-  ],
   declarations: [
     AppComponent,
     NotFoundComponent,
     UserSettingsComponent,
     LoginComponent,
-    CalcHeightsDirective
+    CalcHeightsDirective,
+    LoaderComponent,
+  ],
+  imports: [
+    FormsModule,
+    CommonModule,
+    BrowserAnimationsModule,
+    HttpModule,
+    HttpClientModule,
+    AdministrationModule,
+    MatMenuModule,
+    MatIconModule,
+    MatListModule,
+    MatButtonModule,
+    FontAwesomeModule,
+    UiSwitchModule,
+    appRouting,
+    ProjectModule,
+    AuditModule,
+    CustomerModule,
+    NgProgressModule,
+    SimpleNotificationsModule.forRoot()
   ],
   providers: [
     ResultViewCanDeactivate,

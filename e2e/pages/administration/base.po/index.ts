@@ -15,7 +15,6 @@ export class AdministrationBase extends BasePage {
     resolutions: () => elements.resolutions.click(),
     users: () => elements.users.click(),
     projectSettings: () => elements.settings.click(),
-    predefinedResolutions: () => elements.predefinedResolutions.click(),
     isPermissionsExist: (): promise.Promise<boolean> => elements.permissions.isPresent(),
     isProjectSettingsExist: (): promise.Promise<boolean> => elements.settings.isPresent(),
     isApiTokenExist: (): promise.Promise<boolean> => elements.apiToken.isPresent()

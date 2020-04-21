@@ -10,7 +10,6 @@ import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
 import { Importer } from '../api/importer.api';
 import { EditorAPI } from '../api/editor.api';
-import projects from '../data/projects.json';
 import usersTestData from '../data/users.json';
 import { PublicAPI } from '../api/public.api';
 
@@ -26,15 +25,20 @@ export enum PermissionType {
 }
 
 export class ProjectHelper {
-    public project: Project = projects.customerOnly;
+    public project: Project;
     public importer: Importer;
     public editorAPI: EditorAPI;
     public publicAPI: PublicAPI;
     private admin = usersTestData.admin;
 
-    constructor(name?: string) {
-        this.project.name = name
-            ? name
+    constructor(projectName?: string) {
+        this.project = {
+            customer: {
+                name: '-'
+            }
+        };
+        this.project.name = projectName !== undefined
+            ? `${projectName} ${new Date().getTime().toString()}`
             : new Date().getTime().toString();
     }
 

@@ -143,7 +143,7 @@ export class FilterHelper {
                     ? selectedOpts.some(y => propertyValue.find(z => z.id === +y))
                     : selectedOpts.every(y => propertyValue.id === +y);
             }
-            return selectedOpts.some(y => y === 'null');
+            return selectedOpts.some(y => +y === 0);
         });
 
         return data;

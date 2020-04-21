@@ -20,6 +20,6 @@ export class BaseAPI {
         }
 
         expect(atError).toBeDefined(ApiAssertMessages.errorNotRaised);
-        expect(atError.message).toBe(expectedError, ApiAssertMessages.errorIsWrong);
+        expect(atError).toBe(expectedError, ApiAssertMessages.errorIsWrong);
     }
 }

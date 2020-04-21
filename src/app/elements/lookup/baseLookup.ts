@@ -50,10 +50,15 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
   @Input() model: any;
   @Input() disabled: boolean;
   @Input() sortBy: { property: string, order: string };
+  @Input() addAction = false;
   @Output() modelChange = new EventEmitter();
+  @Output() actionClick = new EventEmitter<any>();
   selectedItemText: string;
   emptyValue = undefined;
-  emptyValueForFilter = { findEmpty: true };
+  emptyValueForFilter = {
+    id: 0,
+    findEmpty: true
+  };
   icons = {
     faCaretDown
   };
@@ -79,6 +84,10 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
 
   onClickedOutside($event: Event) {
     this.toggleOff();
+  }
+
+  onActionClick(item: any) {
+    this.actionClick.emit(item);
   }
 
   select(item: any) {
@@ -120,7 +129,7 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
             }
             itemValue = itemValue[prop];
           });
-          if (typeof itemValue === 'number') {
+          if (typeof itemValue === 'number' && itemValue.toString().length < 14 && itemValue.toString().length > 9) {
             itemValue = this.datepipe.transform(new Date(itemValue), 'yyyy-MM-dd hh:mm:ss a');
           }
           textToShow = `${textToShow} ${itemValue}`;
@@ -130,7 +139,7 @@ export class BaseLookupComponent implements OnInit, OnChanges, A1qaLookup {
       }
       return textToShow.trim();
     }
-    return '';
+    return this.placeholder;
   }
 
   sort() {
