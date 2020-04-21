@@ -1,0 +1,121 @@
+[
+  {
+    "description": "Test Report",
+    "keyword": "Feature",
+    "name": "Test Feature with all results",
+    "line": 2,
+    "id": "Test-Report",
+    "tags": [],
+    "uri": "features/testdeature.feature",
+    "elements": [
+      {
+        "id": "passed",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "All passed",
+        "tags": [],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 8,
+            "name": "passed step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1684328900
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "passed step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1684328900
+            }
+          }
+        ]
+      }, {
+        "id": "failed",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "step failed",
+        "tags": [],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 8,
+            "name": "passed step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2667613100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "failed step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 2667613100,
+              "error_message": "step was failed\n as expected"
+            }
+          }
+        ]
+      }, {
+        "id": "failed",
+        "keyword": "Scenario",
+        "line": 7,
+        "name": "Step skipped",
+        "tags": [],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 8,
+            "name": "passed step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2667613100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "skipped step",
+            "match": {
+              "location": "Projects/nodejs-cucumber-sample-master/node_modules/cucumber/lib/support_code_library_builder/define_helpers.js:135"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 1684328900,
+              "error_message": "step was skipped\n as not expected"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

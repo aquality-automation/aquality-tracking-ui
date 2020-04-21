@@ -82,7 +82,6 @@ export class AuditComponent implements OnInit {
               filter: true,
               type: TFColumnType.autocomplete,
               lookup: {
-                entity: 'project.customer.coordinator',
                 propToShow: ['first_name', 'second_name'],
                 values: this.coordinators,
               },
@@ -90,12 +89,11 @@ export class AuditComponent implements OnInit {
             },
             {
               name: 'Service',
-              property: 'service.name',
+              property: 'service',
               filter: true,
               sorting: true,
               type: TFColumnType.colored,
               lookup: {
-                entity: 'service',
                 values: this.services,
                 propToShow: ['name']
               },
@@ -126,7 +124,6 @@ export class AuditComponent implements OnInit {
               filter: true,
               type: TFColumnType.multiselect,
               lookup: {
-                entity: 'auditors_last',
                 propToShow: ['first_name', 'second_name'],
                 values: this.auditors,
               },
@@ -148,7 +145,6 @@ export class AuditComponent implements OnInit {
               sorting: false,
               type: TFColumnType.link,
               lookup: {
-                entity: 'next_action',
                 values: this.linkNames,
                 propToShow: []
               },
@@ -162,7 +158,6 @@ export class AuditComponent implements OnInit {
               sorting: false,
               type: TFColumnType.multiselect,
               lookup: {
-                entity: 'auditors_next',
                 propToShow: ['first_name', 'second_name'],
                 values: this.auditors,
               },

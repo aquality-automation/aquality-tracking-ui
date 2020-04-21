@@ -47,6 +47,7 @@ describe('Create Test Run:', () => {
 
             beforeAll(async () => {
                 await logIn.logInAs(user.user_name, user.password);
+                testRun.build_name = `${new Date().getTime()}`;
                 return projectHelper.openProject();
             });
 

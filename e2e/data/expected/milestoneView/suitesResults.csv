@@ -1,4 +1,4 @@
-Test,Test Suite,Result,Resolution,Comment
+Test,Test Suite,Result,Resolution,Issue
 "Login: should not be able to login with wrong username","Login","Failed",,
 "Test Run: Test Run can be created with Milestone","Test Run: Manager","Failed",,
 "Test Run: Test Run can be created with Milestone","Test Run: Viewer","Failed",,

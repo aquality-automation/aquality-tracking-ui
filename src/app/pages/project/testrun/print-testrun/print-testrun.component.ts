@@ -21,8 +21,6 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
     @Input() buttons: any[];
     @Input() testResults: TestResult[];
     @Input() testRun: TestRun;
-    @Input() finalResultsChart;
-    @Input() resultResolutionsChart;
     @Output() closed = new EventEmitter();
     @Output() execute = new EventEmitter();
     project: Project;
@@ -36,7 +34,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
     showOtherResolutions = true;
     testResultsToPrint: TestResult[] = [];
     pdf: any;
-    rows: { name: string, final_result_name: string, test_resolution_name: string, comment: string }[] = [];
+    rows: { name: String, final_result_name: String, test_resolution_name: String, issue: String }[] = [];
     doc: any;
     orAnd = true;
     text = '';
@@ -78,7 +76,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
             this.total = this.testResults.length;
             this.failed = this.testResults.filter(x => x.final_result.color === 1).length;
             this.passed = this.testResults.filter(x => x.final_result.color === 5).length;
-            this.appIssues = this.testResults.filter(x => x.test_resolution && x.test_resolution.color === 1).length;
+            this.appIssues = this.testResults.filter(x => x.issue && x.issue.resolution.color === 1).length;
         }
     }
 
@@ -138,7 +136,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
             { title: 'Test Name', dataKey: 'name' },
             { title: 'Result', dataKey: 'final_result_name' },
             { title: 'Resolution', dataKey: 'test_resolution_name' },
-            { title: 'Comment', dataKey: 'comment' },
+            { title: 'Issue', dataKey: 'issue' },
         ];
 
         const options = {
@@ -299,10 +297,10 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
                 && this.showOtherResolutions) || (!this.showAppIssue
                     && !this.showTestIssue
                     && !this.showOtherResolutions);
-            if (x.test_resolution) {
-                resolution = (x.test_resolution.color === 1 && this.showAppIssue)
-                    || (x.test_resolution.color === 2 && this.showTestIssue)
-                    || (x.test_resolution.color !== 2 && x.test_resolution.color !== 1 && this.showOtherResolutions);
+            if (x.issue) {
+                resolution = (x.issue.resolution.color === 1 && this.showAppIssue)
+                    || (x.issue.resolution.color === 2 && this.showTestIssue)
+                    || (x.issue.resolution.color !== 2 && x.issue.resolution.color !== 1 && this.showOtherResolutions);
             }
 
             return this.orAnd ? result && resolution : result || resolution;
@@ -314,9 +312,9 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         this.testResultsToPrint.forEach(result => {
             this.rows.push({
                 name: result.test.name,
-                test_resolution_name: result.test_resolution ? result.test_resolution.name : '',
+                test_resolution_name: result.issue ? result.issue.resolution.name : '',
                 final_result_name: result.final_result ? result.final_result.name : '',
-                comment: result.comment ? result.comment : ''
+                issue: result.issue ? result.issue.title : ''
             });
         });
     }

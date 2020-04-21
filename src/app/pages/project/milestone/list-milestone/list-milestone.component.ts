@@ -75,7 +75,6 @@ export class ListMilestoneComponent implements OnInit {
         editable: this.canEdit,
         notEditableByProperty: { property: 'active', value: false },
         lookup: {
-          entity: 'suites',
           propToShow: ['name'],
           values: this.suites,
         }

@@ -56,7 +56,7 @@ const sendGet = async (endpoint: string, params: object, token: string, projectI
         return resp.body;
     } catch (error) {
         logger.error(`Was not able to get ${getFullURL(endpoint, params)}`);
-        throw error.response.body;
+        throw error.response.body.message;
     }
 };
 
@@ -66,7 +66,7 @@ const sendPost = async (endpoint: string, params: object, body: any, token: stri
         return resp.body;
     } catch (error) {
         logger.error(`Was not able to post ${getFullURL(endpoint, params)}`);
-        throw error.response.body;
+        throw error.response.body.message;
     }
 };
 
@@ -76,7 +76,7 @@ const sendDelete = async (endpoint: string, params: object, body: any, token: st
         return resp.body;
     } catch (error) {
         logger.error(`Was not able to delete ${getFullURL(endpoint, params)}`);
-        throw error.response.body;
+        throw error.response.body.message;
     }
 };
 

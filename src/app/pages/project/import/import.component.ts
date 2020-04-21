@@ -103,12 +103,11 @@ export class ImportComponent {
       this.resultsColumnsToShow = [
         {
           name: 'Status',
-          property: 'status.name',
+          property: 'status',
           filter: true,
           sorting: true,
           type: TFColumnType.colored,
           lookup: {
-            entity: 'status',
             values: this.statuses,
             propToShow: ['name']
           },

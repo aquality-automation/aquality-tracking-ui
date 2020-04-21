@@ -96,7 +96,7 @@ export class TestrunMatrixComponent implements OnInit {
                     const result = testRun.testResults.find(x => x.test.id === test.id);
                     if (result) {
                         if (result.final_result.id !== 2) {
-                            dataEntity[`${testRun.id}_resolution`] = result.test_resolution;
+                            dataEntity[`${testRun.id}_resolution`] = result.issue ? result.issue.resolution : undefined;
                             dataEntity[`${testRun.id}_result`] = result.final_result;
                         } else {
                             const frFilter = result.final_result;
@@ -104,7 +104,7 @@ export class TestrunMatrixComponent implements OnInit {
                             dataEntity[`${testRun.id}_resolution`] = frFilter;
                             dataEntity[`${testRun.id}_result`] = result.final_result;
                         }
-                        dataEntity[`${testRun.id}_result`]['comment'] = result.comment;
+                        dataEntity[`${testRun.id}_result`]['comment'] = result.issue ? result.issue.title : '';
                     } else {
                         dataEntity[`${testRun.id}_result`] = { name: 'Not Implemented' };
                         dataEntity[`${testRun.id}_resolution`] = { name: 'Not Implemented' };
@@ -164,12 +164,11 @@ export class TestrunMatrixComponent implements OnInit {
             this.tbCols.push({
                 name: `${testRun.id} | ${testRun.label.name} | ${this.datepipe.transform(new Date(testRun.start_time), 'MM/dd/yy')}`,
                 title: `${testRun.id}_result.comment`,
-                property: state ? `${testRun.id}_resolution.name` : `${testRun.id}_result.name`,
+                property: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
                 lookup: {
-                    entity: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
                     values: this.filterValues,
                     propToShow: ['name']
                 },

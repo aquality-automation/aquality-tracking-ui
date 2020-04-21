@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { ProjectService } from '../../../services/project.service';
 import { UserService } from '../../../services/user.services';
 import { administrationChildsRouting } from './administration.childs.routing';
-import { DataTableModule } from 'angular2-datatable';
-import { FormsModule } from '@angular/forms';
-import { CommonModule, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { SharedModule } from '../../../shared/shared.module';
 import { ImportBodyPatternsComponent } from '../projects/importBodyPatterns/ImportBodyPatterns.component';
 import { AppSettingsComponent } from '../global/app-settings/app-settings.component';
@@ -18,16 +16,12 @@ import {
   AdministrationProjectGuard
 } from '../../../shared/guards/administration-guard.service';
 import { AdministrationProjectSettingsComponent } from '../projects/settings/administration.projectSettings.component';
-import { PredefinedResolutionComponent } from '../projects/predefinedResolution/predefinedResolution.component';
 import { PermissionsService } from '../../../services/current-permissions.service';
 import { GuardService } from '../../../shared/guards/guard.service';
 
 @NgModule({
   imports: [
     administrationChildsRouting,
-    DataTableModule,
-    FormsModule,
-    CommonModule,
     SharedModule
   ],
   declarations: [
@@ -37,8 +31,7 @@ import { GuardService } from '../../../shared/guards/guard.service';
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
     APITokenComponent,
-    AdministrationProjectSettingsComponent,
-    PredefinedResolutionComponent
+    AdministrationProjectSettingsComponent
   ],
   providers: [
     ProjectService,

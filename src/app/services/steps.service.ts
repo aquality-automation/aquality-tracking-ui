@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
 import { SimpleRequester } from './simple-requester';
-import { Step, StepType, StepToTest, StepResult } from '../shared/models/steps';
-
+import { Step, StepResult, StepType, StepToTest } from '../shared/models/steps';
 
 @Injectable()
 export class StepsService extends SimpleRequester {
-
   getSteps(step: Step): Promise<Step[]> {
     return this.doGet('/steps', step).map(res => res.json()).toPromise();
   }
@@ -60,6 +58,6 @@ export class StepsService extends SimpleRequester {
   }
 
   removeStepFromTest(link_id: number, projectId: number) {
-    return this.doDelete('/test/steps', {id: link_id, project_id: projectId}).toPromise();
+    return this.doDelete('/test/steps', { id: link_id, project_id: projectId }).toPromise();
   }
 }

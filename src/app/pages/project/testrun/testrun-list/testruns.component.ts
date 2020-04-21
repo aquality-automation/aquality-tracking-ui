@@ -78,6 +78,7 @@ export class TestRunsComponent implements OnInit {
       if (run.finish_time && run.start_time) {
         run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
         run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
+        run['failed'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'failed': 0 }).failed;
         run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
         run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
       }
@@ -85,12 +86,11 @@ export class TestRunsComponent implements OnInit {
     this.tbCols = [
       {
         name: 'Label',
-        property: 'label.name',
+        property: 'label',
         filter: true,
         sorting: true,
         type: TFColumnType.colored,
         lookup: {
-          entity: 'label',
           values: this.labels,
           propToShow: ['name']
         },
@@ -115,21 +115,20 @@ export class TestRunsComponent implements OnInit {
       },
       {
         name: 'Test Suite',
-        property: 'test_suite.name',
+        property: 'test_suite',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
         lookup: {
           values: this.suites,
           propToShow: ['name'],
-          entity: 'test_suite',
           allowEmpty: true
         },
         class: 'fit'
       },
       {
         name: 'Milestone',
-        property: 'milestone.name',
+        property: 'milestone',
         filter: true,
         sorting: true,
         type: TFColumnType.autocomplete,
@@ -137,7 +136,6 @@ export class TestRunsComponent implements OnInit {
           values: this.activeMilestones,
           filterValues: this.milestones,
           propToShow: ['name'],
-          entity: 'milestone',
           allowEmpty: true
         },
         editable: this.canEdit,
@@ -159,8 +157,9 @@ export class TestRunsComponent implements OnInit {
         class: 'fit'
       },
       { name: 'Total', property: 'totalTests', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Failed', property: 'failed', sorting: true, type: TFColumnType.text, class: 'fit' },
       {
-        name: 'No Resolution',
+        name: 'No Issue',
         property: 'not_assigned',
         filter: true,
         sorting: true,
@@ -169,7 +168,7 @@ export class TestRunsComponent implements OnInit {
         link: {
           template: `/project/${this.route.snapshot.params.projectId}/testrun/{id}`,
           properties: ['id'],
-          params: { f_test_resolution_opt: 1 }
+          params: { f_issue_opt: 0 }
         },
         class: 'ft-width-250'
       },
@@ -235,9 +234,9 @@ export class TestRunsComponent implements OnInit {
       { name: 'Test Run Started', property: 'test_run_started', type: 'date' },
       { name: 'Test Name', property: 'name' },
       { name: 'Result', property: 'status' },
-      { name: 'Resolution', property: 'resolution' },
-      { name: 'Comment', property: 'comment' },
-      { name: 'Assignee', property: 'assignee' },
+      { name: 'Resolution', property: 'issue.resolution' },
+      { name: 'Issue', property: 'issue.title' },
+      { name: 'Assignee', property: 'issue.assignee' },
       { name: 'Developer', property: 'developer' }];
     const from = this.route.snapshot.queryParamMap.get('f_start_time_from')
       ? new Date(this.route.snapshot.queryParamMap.get('f_start_time_from')).toISOString()

@@ -21,7 +21,7 @@ class Import extends BasePage {
   }
 
   getSelectedImportType() {
-    return elements.selectImportTypeLookup.getSelectedValue();
+    return elements.selectImportTypeLookup.getValue();
   }
 
   async getLatestImportedTestRunDate(): Promise<Date> {

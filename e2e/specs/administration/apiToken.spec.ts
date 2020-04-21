@@ -5,7 +5,7 @@ import using from 'jasmine-data-provider';
 import usersTestData from '../../data/users.json';
 import { userAdministration } from '../../pages/administration/users.po';
 import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
-import { predefinedResolutions } from '../../pages/administration/predefinedResolutions.po';
+import { notFound } from '../../pages/notFound.po';
 
 const editorExamples = {
     admin: usersTestData.admin,
@@ -81,15 +81,14 @@ describe('API Token:', () => {
             });
 
             it('I can not Open API Token page using Menu Bar', async () => {
-                await projectList.menuBar.administration();
-                return expect(apiTokenAdministration.sidebar.isApiTokenExist())
-                    .toBe(false, `API Token should not be visible for ${description}`);
+                return expect(projectList.menuBar.isAdministrationExists())
+                    .toBe(false, `Administration should not be visible for ${description}`);
             });
 
             it('I can not Open API Token page using url', async () => {
                 await apiTokenAdministration.navigateTo();
                 await expect(apiTokenAdministration.isOpened()).toBe(false, `API Token page is opened for ${description}`);
-                return expect(predefinedResolutions.isOpened()).toBe(true, `Predefined Resolutions page is not opened for ${description}`);
+                return expect(notFound.isOpened()).toBe(true, `Not Found page is not opened for ${description}`);
             });
         });
     });

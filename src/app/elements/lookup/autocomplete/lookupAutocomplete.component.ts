@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, OnInit} from '@angular/core';
 import { BaseLookupComponent } from '../baseLookup';
 import { TransformationsService } from '../../../services/transformations.service';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'lookup-autocomplete',
@@ -14,6 +15,7 @@ export class LookupAutocompleteComponent extends BaseLookupComponent implements 
   @Input() maxlength = '100';
   @Input() allowCreation = false;
   @Output() searchText = new EventEmitter();
+  faExternalLinkAlt = faExternalLinkAlt;
 
   toggleOff() {
     this.hidden = true;

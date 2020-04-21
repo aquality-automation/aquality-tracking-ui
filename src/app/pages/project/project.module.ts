@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { DatepickerModule } from 'ngx-bootstrap';
 import { FileUploadModule } from 'ng2-file-upload';
 import {
@@ -65,12 +64,14 @@ import { FinalResultService } from '../../services/final_results.service';
 import { ResultResolutionService } from '../../services/result-resolution.service';
 import { TransformationsService } from '../../services/transformations.service';
 import { TestSuiteService } from '../../services/testSuite.service';
+import { IssueListComponent } from './issue/issue-list/issue-list.component';
+import { IssueService } from '../../services/issue.service';
+import { CreateIssueModalComponent } from './issue/issue-create.modal/issue-create.modal.component';
+import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 
 @NgModule({
   imports: [
     FileUploadModule,
-    FormsModule,
-    CommonModule,
     projectRouting,
     DatepickerModule.forRoot(),
     SharedModule,
@@ -109,9 +110,13 @@ import { TestSuiteService } from '../../services/testSuite.service';
     StepsListComponent,
     StepsContainerComponent,
     SafePipe,
-    SyncSuiteModalComponent
+    SyncSuiteModalComponent,
+    IssueListComponent,
+    CreateIssueModalComponent,
+    IssueViewComponent
   ],
   providers: [
+    IssueService,
     ProjectService,
     StepsService,
     DatePipe,

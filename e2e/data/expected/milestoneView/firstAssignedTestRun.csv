@@ -1,4 +1,4 @@
-Test,Test Suite,Result,Resolution,Comment
+Test,Test Suite,Result,Resolution,Issue
 "Login: should not be able to login with wrong username","Login","Failed",,
 "Login: should be able to login as admin","Login","Passed",,
 "Login: should not be able to login with wrong password","Login","Pending",,

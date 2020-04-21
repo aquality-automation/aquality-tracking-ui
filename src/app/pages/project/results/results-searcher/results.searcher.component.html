@@ -24,7 +24,7 @@
     </form>
   </div>
   <div *ngIf="toggledOn && testResults" class="result-searcher-table">
-    <loader-component [show]="pendingSearch"></loader-component>
+    <!-- <loader-component [show]="pendingSearch"></loader-component> -->
     <table-filter *ngIf="testResults" id="resultSearcherTable" [hide]="hideVal" [queryParams]="false"
       [columnManagement]="false" [data]="testResults" [columns]="tbCols" [defaultSortBy]="sortBy"></table-filter>
   </div>

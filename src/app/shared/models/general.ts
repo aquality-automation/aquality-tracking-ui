@@ -5,3 +5,10 @@ export class BaseComment {
   author?: User;
   created?: Date;
 }
+
+export class Label {
+  id?: number;
+  name?: String;
+  color?: number;
+  project_id?: number;
+}

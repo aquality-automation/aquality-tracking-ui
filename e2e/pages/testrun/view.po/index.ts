@@ -101,20 +101,16 @@ class TestRunView extends BasePage {
     return elements.buildName.isEnabled();
   }
 
-  async setResolution(resolution: string, testName: string): Promise<void> {
-    return elements.resultsTable.editRow(resolution, columns.resolution, testName, columns.testName);
+  async setIssue(title: string, testName: string): Promise<void> {
+    return elements.resultsTable.editRow(title, columns.issue, testName, columns.testName);
+  }
+
+  async getIssue(testName: string): Promise<string> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().getValue();
   }
 
   async getResolution(testName: string): Promise<string> {
     return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.resolution];
-  }
-
-  async getComment(testName: string): Promise<string> {
-    return (await elements.resultsTable.getRowValues(testName, columns.testName))[columns.comment];
-  }
-
-  setComment(comment: string, testName: string): Promise<void> {
-    return elements.resultsTable.editRow(comment, columns.comment, testName, columns.testName);
   }
 
   async isResolutionPresent(resolutionName: string, testName: string): Promise<boolean> {
@@ -176,6 +172,22 @@ class TestRunView extends BasePage {
 
   checkIfTableEqualToCSV(path: string): Promise<{ result: boolean, message: string }> {
     return elements.resultsTable.checkIfTableEqualToCSv(path);
+  }
+
+  async addIssue(title: string, testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickAddOption(title);
+  }
+
+  async openNotSelectedIssue(title: string, testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickActionForOption(title);
+  }
+
+  async openSelectedIssue(testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickActionForSelected();
+  }
+
+  async isIssuePresent(title: string, testName: string): Promise<boolean> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().hasOption(title);
   }
 }
 
