@@ -7,6 +7,7 @@ import { IssueService } from '../../../../services/issue.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../../services/user.services';
 import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 
 @Component({
   selector: 'issue-create-modal',
@@ -19,6 +20,7 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
   @Input() users: User[];
   @Input() issue: Issue;
   @Input() failReason: string;
+  canEdit = false;
   updateResults = true;
   overlappedIssues: Issue[] = [];
   validateExpressionTimeout = null;
@@ -46,13 +48,13 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
   constructor(
     public userService: UserService,
     private route: ActivatedRoute,
+    private permissions: PermissionsService,
     private issueService: IssueService
   ) {
     super();
   }
 
   async ngOnInit() {
-    console.log(this.failReason);
     if (!this.issue) {
       this.issue = new Issue();
     }
@@ -67,13 +69,24 @@ export class CreateIssueModalComponent extends BasePopupComponent implements OnI
     if (!this.existingIssues) {
       this.existingIssues = await this.issueService.getIssues({ project_id: this.issue.project_id });
     }
+    
+    this.canEdit = await this.permissions.hasProjectPermissions(
+      this.issue.project_id,
+      [EGlobalPermissions.manager],
+      [ELocalPermissions.manager, ELocalPermissions.engineer]
+    );
+
     this.buttons = [{
-      name: this.issue.id ? 'Update' : 'Create',
-      execute: true
-    }, {
       name: 'Cancel',
       execute: false
     }];
+
+    if(this.canEdit) {
+      this.buttons.unshift({
+        name: this.issue.id ? 'Update' : 'Create',
+        execute: true
+      })
+    }
   }
 
   updateResolution(resolution: ResultResolution) {

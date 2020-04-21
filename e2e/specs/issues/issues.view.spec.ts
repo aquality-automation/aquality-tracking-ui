@@ -35,7 +35,7 @@ const issue: Issue = {
 
 let issueIsUse: Issue;
 
-fdescribe('Issue Create from List:', () => {
+describe('Issue Create from List:', () => {
   using(editorExamples, (user, description) => {
     describe(`Permissions: ${description} role:`, () => {
       const projectHelper: ProjectHelper = new ProjectHelper();

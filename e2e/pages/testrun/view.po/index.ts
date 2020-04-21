@@ -173,6 +173,22 @@ class TestRunView extends BasePage {
   checkIfTableEqualToCSV(path: string): Promise<{ result: boolean, message: string }> {
     return elements.resultsTable.checkIfTableEqualToCSv(path);
   }
+
+  async addIssue(title: string, testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickAddOption(title);
+  }
+
+  async openNotSelectedIssue(title: string, testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickActionForOption(title);
+  }
+
+  async openSelectedIssue(testName: string): Promise<void> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().clickActionForSelected();
+  }
+
+  async isIssuePresent(title: string, testName: string): Promise<boolean> {
+    return (await elements.resultsTable.getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().hasOption(title);
+  }
 }
 
 export const testRunView = new TestRunView();

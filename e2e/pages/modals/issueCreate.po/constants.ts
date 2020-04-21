@@ -3,18 +3,24 @@ import { Autocomplete } from '../../../elements/autocomplete.element';
 import { Input } from '../../../elements/input.element';
 import { Lookup } from '../../../elements/lookup.element';
 import { SmartTable } from '../../../elements/smartTable.element';
+import { UiSwitch } from '../../../elements/ui-switch';
+
+const baseElement = element(by.tagName('issue-create-modal'));
 
 export const elements = {
-    uniqueElement: element(by.tagName('issue-create-modal')),
-    title: new Input(by.id('title')),
-    resolution: new Lookup(by.id('issue-resolution')),
-    assignee: new Autocomplete(by.id('issue-assignee')),
-    save: element(by.css('issue-create-modal  div.modal-buttons-form > button.btn-success')),
-    cancel: element(by.css('issue-create-modal  div.modal-buttons-form > button.btn-secondary')),
-    overlappedIssues: new SmartTable(by.id('overlapped-issues-table')),
-    expressionError: element(by.css('#issue-expression + div.invalid-feedback')),
-    expression: new Input(by.id('issue-expression')),
-    externalIssue: new Input(by.id('issue-external-url')),
+    uniqueElement: baseElement,
+    title: new Input(baseElement.element(by.id('title'))),
+    resolution: new Lookup(baseElement.element(by.id('issue-resolution'))),
+    assignee: new Autocomplete(baseElement.element(by.id('issue-assignee'))),
+    save: baseElement.element(by.css('div.modal-buttons-form > button.btn-success')),
+    cancel: baseElement.element(by.css('div.modal-buttons-form > button.btn-secondary')),
+    matchExample: baseElement.element(by.css('.regexp-tester > .text-base')),
+    overlappedIssues: new SmartTable(baseElement.element(by.id('overlapped-issues-table'))),
+    expressionError: baseElement.element(by.css('#issue-expression + div.invalid-feedback')),
+    expression: new Input(baseElement.element(by.id('issue-expression'))),
+    externalIssue: new Input(baseElement.element(by.id('issue-external-url'))),
+    addToResults: new UiSwitch(baseElement.element(by.css('#update-results'))),
+    description: new Input(baseElement.element(by.id('issue-description'))),
 };
 
 export const names = {

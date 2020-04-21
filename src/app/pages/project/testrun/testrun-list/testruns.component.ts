@@ -78,6 +78,7 @@ export class TestRunsComponent implements OnInit {
       if (run.finish_time && run.start_time) {
         run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
         run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
+        run['failed'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'failed': 0 }).failed;
         run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
         run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
       }
@@ -156,6 +157,7 @@ export class TestRunsComponent implements OnInit {
         class: 'fit'
       },
       { name: 'Total', property: 'totalTests', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Failed', property: 'failed', sorting: true, type: TFColumnType.text, class: 'fit' },
       {
         name: 'No Issue',
         property: 'not_assigned',

@@ -64,7 +64,7 @@ export class TestResultViewComponent implements OnInit {
     this.projectId = this.route.snapshot.params.projectId;
     this.listOfResolutions = await this.resultResolutionService.getResolution().toPromise();
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
-    this.issues = await this.issueService.getIssues({project_id: this.projectId});
+    this.issues = (await this.issueService.getIssues({project_id: this.projectId})).filter(x => x.status_id != 4);
     let projectUsers: LocalPermissions[] = await this.userService.getProjectUsers(this.projectId).toPromise();
     projectUsers = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
     this.users = projectUsers.map(x => x.user);

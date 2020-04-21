@@ -1,6 +1,6 @@
 {
   "name": "portal",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -91,7 +91,7 @@
     "jasmine-spec-reporter": "~4.2.1",
     "moment": "^2.24.0",
     "node-jsencrypt": "^1.0.0",
-    "protractor": "~5.4.2",
+    "protractor": "5.4.2",
     "request": "^2.88.0",
     "superagent": "^5.1.0",
     "ts-node": "~3.3.0",

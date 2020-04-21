@@ -1,5 +1,6 @@
 <div *ngIf="disabled" class="disabled-lookup">
     {{selectedItemText ? selectedItemText : 'Not Assigned'}}
+    <fa-icon *ngIf="addAction && model && model.id !== 0" class="btn autocomplete-action" [icon]="faExternalLinkAlt" (click)="onActionClick(model)"></fa-icon>
 </div>
 <div *ngIf="array && !disabled" class="selector-container form-group" (clickOutside)="onClickedOutside($event)"
     (keyup.esc)="toggleOff()" [clickOutsideEnabled]="!hidden" [clickOutsideEvents]="'mousedown'" [ngClass]="{
@@ -14,7 +15,7 @@
             #lookupField name="lookupField" [maxlength]="maxlength" (focus)="toggleOn()" class="form-control"
             (click)="toggleOn()" (keyup.esc)="toggleOff()" (ngModelChange)="onKey($event)" [ngModel]="selectedItemText">
         <div *ngIf="addAction && model && model.id !== 0" class="input-group-append">
-            <label class="input-group-text btn" (click)="onActionClick(model)">
+            <label class="input-group-text btn autocomplete-action" (click)="onActionClick(model)">
                 <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
             </label>
         </div>
@@ -54,7 +55,7 @@
             <li tabindex="0" [title]="textToShow(item)" class="selector-button btn-default wrap-text"
                 *ngFor="let item of filteredArray" (keyup.enter)="select(item)">
                 <p (mousedown)="select(item)">{{textToShow(item)}}</p>
-                <fa-icon *ngIf="addAction" [icon]="faExternalLinkAlt" (click)="onActionClick(item)"></fa-icon>
+                <fa-icon *ngIf="addAction" class="autocomplete-action" [icon]="faExternalLinkAlt" (click)="onActionClick(item)"></fa-icon>
             </li>
         </ul>
     </div>

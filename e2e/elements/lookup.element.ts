@@ -14,7 +14,7 @@ export class Lookup extends BaseElement {
             return this.selector.getText();
         }
 
-        logger.warn(`Colored Lookup '${this.element.locator()}' is hidden!`);
+        logger.warn(`Lookup '${this.element.locator()}' is hidden!`);
         return '';
     }
 
@@ -32,7 +32,7 @@ export class Lookup extends BaseElement {
     }
 
     private findOption(value: string) {
-        return this.element.element(by.xpath(`//*[contains(@class, "selector-suggestions")]//li[@title="${value}"]`));
+        return this.element.element(by.xpath(`.//*[contains(@class, "selector-suggestions")]//li[@title="${value}"]`));
     }
 
     public async isEnabled() {

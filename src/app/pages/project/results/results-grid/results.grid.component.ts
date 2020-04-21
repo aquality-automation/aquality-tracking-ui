@@ -43,6 +43,7 @@ export class ResultGridComponent implements OnInit {
   public listOfResolutions: ResultResolution[];
   public finalResults: FinalResult[];
   public listOfIssues: Issue[];
+  public listOfActiveIssues: Issue[];
   public users: User[];
   public showSearcher = false;
   public searcherText = '';
@@ -216,8 +217,8 @@ export class ResultGridComponent implements OnInit {
       result['duration'] = this.calculateDuration(result);
       result['combinedLastResults'] = this.testService.combineLastResults(result.test);
     });
+    this.listOfActiveIssues = this.listOfIssues.filter(x => x.status_id != 4);
     this.createColumns();
-
   }
 
   private createColumns() {
@@ -302,7 +303,8 @@ export class ResultGridComponent implements OnInit {
         lookup: {
           allowCreation: true,
           allowEmpty: true,
-          values: this.listOfIssues,
+          filterValues: this.listOfIssues,
+          values: this.listOfActiveIssues,
           propToShow: ['id', 'title'],
           addAction: true
         },

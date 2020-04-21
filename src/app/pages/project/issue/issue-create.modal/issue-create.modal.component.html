@@ -12,7 +12,7 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-sm-12">
-            <input id="title" type="text" class="form-control" placeholder="Title" [(ngModel)]="issue.title">
+            <input id="title" type="text" class="form-control" placeholder="Title" [(ngModel)]="issue.title" [disabled]="!canEdit">
           </div>
         </div>
 
@@ -24,27 +24,31 @@
           <div class="col-sm-8">
             <label for="issue-description">Description:</label>
             <textarea id="issue-description" class="form-control" placeholder="Description" name="description"
-              [(ngModel)]="issue.description"></textarea>
+              [(ngModel)]="issue.description" [disabled]="!canEdit"></textarea>
           </div>
           <div class="col-sm-4 issue-fields">
+            <div *ngIf="issue.creator" class="col-sm-12 no-padding">
+                <label>Creator: {{issue.creator.first_name}}
+                    {{issue.creator.second_name}}</label>
+            </div>
             <div class="col-sm-12 no-padding">
               <label for="issue-resolution">Resolution*:</label>
               <lookup-colored *ngIf="resolutions" id="issue-resolution" [cutLongText]="true" [colorProperty]="'color'"
                 [propertiesToShow]="['name']" [array]="resolutions" placeholder="Resolution" [allowEmptyValue]="false"
-                [model]="issue.resolution" (modelChange)="updateResolution($event)">
+                [model]="issue.resolution" (modelChange)="updateResolution($event)" [disabled]="!canEdit">
               </lookup-colored>
             </div>
             <div class="col-sm-12 no-padding">
               <label for="issue-assignee">Assignee:</label>
               <lookup-autocomplete *ngIf="users" id="issue-assignee" [cutLongText]="true"
                 [propertiesToShow]="['first_name', 'second_name']" [array]="users" placeholder="Assignee"
-                [allowEmptyValue]="true" [model]="issue.assignee" (modelChange)="updateAssignee($event)">
+                [allowEmptyValue]="true" [model]="issue.assignee" (modelChange)="updateAssignee($event)" [disabled]="!canEdit">
               </lookup-autocomplete>
             </div>
             <div class="col-sm-12 no-padding">
               <label for="issue-external-url">External Issue:</label>
               <input id="issue-external-url" type="text" class="form-control" placeholder="External Issue"
-                [(ngModel)]="issue.external_url">
+                [(ngModel)]="issue.external_url" [disabled]="!canEdit">
             </div>
           </div>
         </div>
@@ -54,15 +58,15 @@
           <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" [ngClass]="{
               'is-valid': isExpressionOverlapped(), 
               'is-invalid': isExpressionOverlapped()
-              }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate($event)">
+              }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate($event)" [disabled]="!canEdit">
           <div class="invalid-feedback">
             Expression is overlapped!
           </div>
         </div>
 
-        <div *ngIf="issue.expression" class="col-sm-12 no-padding row-with-switch"
+        <div *ngIf="issue.expression && canEdit" class="col-sm-12 no-padding row-with-switch"
           title="Assign this issue to all results where Fail Reason fits the Expression and without assigned issue">
-          <ui-switch class="clearfix" size="small" [(ngModel)]="updateResults" id="update-results"></ui-switch>
+          <ui-switch class="clearfix" size="small" [(ngModel)]="updateResults" id="update-results" ></ui-switch>
           <label class="update-results-label" for="update-results">Add to Results without issue</label>
         </div>
 
