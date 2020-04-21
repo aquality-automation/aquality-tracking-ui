@@ -58,7 +58,7 @@
           <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" [ngClass]="{
               'is-valid': isExpressionOverlapped(), 
               'is-invalid': isExpressionOverlapped()
-              }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate($event)" [disabled]="!canEdit">
+              }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate()" [disabled]="!canEdit">
           <div class="invalid-feedback">
             Expression is overlapped!
           </div>
