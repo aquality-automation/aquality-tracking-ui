@@ -224,7 +224,7 @@ describe('Milestone:', () => {
                 await milestoneView.notification.assertIsSuccess(`The milestone '${milestones.version3.name}' was updated.`);
                 await expect(milestoneView.isWarningPresent()).toBe(true, 'Warning should present when due date is today!');
                 return expect(milestoneView.getWarningTitle())
-                    .toBe(`Today is the last day for the '${milestones.version3.name}' Milestone`);
+                    .toBe(`Today is the last day for the '${milestones.version3.name}' Milestone`, `Title is wrong! Current date: ${new Date()}, Due date: ${date}`);
             });
 
             it('I can see warning when Due date is in past', async () => {
@@ -232,7 +232,7 @@ describe('Milestone:', () => {
                 date.setDate(date.getDate() - 1);
                 await milestoneView.setDueDate(date);
                 await milestoneView.notification.assertIsSuccess(`The milestone '${milestones.version3.name}' was updated.`);
-                await expect(milestoneView.isWarningPresent()).toBe(true, 'Warning should present when due date is in past!');
+                await expect(milestoneView.isWarningPresent()).toBe(true, `Warning should present when due date is in past! Current date: ${new Date()}, Due date: ${date}`);
                 return expect(milestoneView.getWarningTitle())
                     .toBe(`Past due by 1 day`);
             });
