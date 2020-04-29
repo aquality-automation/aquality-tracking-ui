@@ -60,14 +60,21 @@ export class TestRunViewComponent implements OnInit {
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
-    this.canSendEmail = !!(await this.emailSettingService.getEmailsStatus()).enabled
-      && await this.permissions.hasProjectPermissions(this.projectId,
-        [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
-    this.canEdit = await this.permissions.hasProjectPermissions(this.projectId,
-      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
-    this.testRun = (await this.testRunService.getTestRun({ id: this.route.snapshot.params.testRunId }))[0];
-    this.testResultTempalte = {test_run_id: this.route.snapshot.params.testRunId };
-    this.milestones = await this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 });
+    const testRunId = this.route.snapshot.params.testRunId
+    let isEmailEnabled: boolean;
+    let testRuns: TestRun[];
+
+    [ isEmailEnabled, this.canEdit, testRuns, this.milestones ] = await Promise.all([
+      this.emailSettingService.getEmailsStatus(),
+      this.permissions.hasProjectPermissions(this.projectId,
+        [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]),
+      this.testRunService.getTestRun({ id: testRunId }),
+      this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 })
+    ]);
+
+    this.canSendEmail = isEmailEnabled && this.canEdit;
+    this.testRun = testRuns[0];
+    this.testResultTempalte = { test_run_id: testRunId };
     await this.setTestRunsToCompare();
     this.testResults = this.resultGridComponent.testResults;
   }
