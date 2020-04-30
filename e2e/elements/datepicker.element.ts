@@ -19,7 +19,7 @@ export class DatePicker extends BaseElement {
             `.//*[contains(@class, 'main-calendar-years')]//*[contains(@class, 'year-unit') and normalize-space(text())='${year}']`))
     dayButton = (day: number) => this.element
         .element(by.xpath(
-            `.//*[contains(@class, 'main-calendar-days')]//*[contains(@class, 'day-unit') and normalize-space(text())='${day}']`))
+            `.//*[contains(@class, 'main-calendar-days')]//*[contains(@class, 'day-unit') and not(contains(@class, 'is-prev-month')) and normalize-space(text())='${day}']`))
 
     openCalendar() {
         return this.linkInput.click();
