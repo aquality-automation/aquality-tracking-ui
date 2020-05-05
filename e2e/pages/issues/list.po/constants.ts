@@ -16,6 +16,7 @@ export const columns = {
     resolution: 'Resolution',
     status: 'Status',
     title: 'Title',
-    assignee: 'Assignee'
+    assignee: 'Assignee',
+    externalIssue: 'External Issue'
 };
 
