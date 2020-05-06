@@ -40,17 +40,18 @@
                 </tr>
                 <tr class="names-header">
                     <th *ngFor="let col of columns" [setClass]="col.class" [id]="'tf_header_' + col.property"
-                        [sorter]="getDefaultSorter(col)"
-                        (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
+                        [sorter]="getDefaultSorter(col)" (sorted)="sort($event)" class="{{col.property}}" [ngClass]="{
                             'fit': col.type === 'checkbox' || col.property === 'action',
                             'percent':col.type === 'percent' || col.type === 'number'
                         }">
                         <fa-icon class="icon up sorter" [icon]="icons.faArrowUp" style="display: none"></fa-icon>
                         <fa-icon class="icon down sorter" [icon]="icons.faArrowDown" style="display: none"></fa-icon>
 
-                        <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</div>
+                        <div *ngIf="!col.headerlink && col.type !== 'selector'" class="pull-left">
+                            {{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</div>
                         <a *ngIf="col.headerlink" class="pull-left" oncontextmenu="return false;"
-                            (contextmenu)="openlink(col.headerlink)" title="Right click to open">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</a>
+                            (contextmenu)="openlink(col.headerlink)"
+                            title="Right click to open">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</a>
                         <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
                             [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
                             (ngModelChange)="toggleSelectAll($event)" />
@@ -77,12 +78,12 @@
                         </div>
                         <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
                             [model]="textFilterData(col.property)" *ngIf="col.type === 'link' && col.filter"
-                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true" [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
+                            placeholder="{{col?.name}} Filter" [allowEmptyValue]="true"
+                            [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
                             (modelChange)="handleFilterChange(col, $event)"></lookup>
 
                         <lookup-colored *ngIf="col.type === 'lookup-colored' && col.filter" [cutLongText]="true"
-                            [small]="true" [colorProperty]="'color'"
-                            [propertiesToShow]="col.lookup.propToShow"
+                            [small]="true" [colorProperty]="'color'" [propertiesToShow]="col.lookup.propToShow"
                             [array]="col.lookup.values"
                             [placeholder]="col.lookup.placeholder ? col.lookup.placeholder : 'None'"
                             [allowEmptyValue]="true" [model]="getLookupFilterValue(col)[0]"
@@ -107,18 +108,21 @@
                             <input placeholder="from" class="inline form-control input-sm ft-range-selector"
                                 (keyup)="rangeKeyUp($event, col)"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
-                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0" [max]="col.type === 'percent' ? 100 : undefined"
+                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0"
+                                [max]="col.type === 'percent' ? 100 : undefined"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <input placeholder="to" class="inline form-control input-sm ft-range-selector"
                                 (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
-                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0" [max]="col.type === 'percent' ? 100 : undefined"
-                                (keyup)="rangeKeyUp($event, col)" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0"
+                                [max]="col.type === 'percent' ? 100 : undefined" (keyup)="rangeKeyUp($event, col)"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                             <fa-icon class="icon" [icon]="icons.faTimes" (click)="removeRangeFilter(col.property)">
                             </fa-icon>
                         </div>
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
-                            [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
+                            [propertiesToShow]="col.lookup.propToShow"
+                            [array]="col.lookup.filterValues ? col.lookup.filterValues : col.lookup.values"
                             [model]="getLookupFilterValue(col)"
                             (modelChange)="handleLookupFilterChange(col.property, $event)">
                         </lookup-autocomplete-multiselect>
@@ -176,8 +180,8 @@
 
                         <lookup-colored *ngIf="col.creation && col.type === 'lookup-colored'" [cutLongText]="true"
                             [small]="true" placeholder="col?.name" [allowEmptyValue]="!col.creation.required"
-                            [propertiesToShow]="col.lookup.propToShow"
-                            [array]="col.lookup.values" [model]="getFilterLookupModel(col.property)"
+                            [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.values"
+                            [model]="getFilterLookupModel(col.property)"
                             (modelChange)="setNewValueFromLookup(col.property, $event)" [colorProperty]="'color'">
                         </lookup-colored>
 
@@ -227,8 +231,7 @@
                             </lookup-autocomplete>
 
                             <lookup-colored *ngIf="col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
-                                [colorProperty]="'color'"
-                                [propertiesToShow]="col.lookup.propToShow"
+                                [colorProperty]="'color'" [propertiesToShow]="col.lookup.propToShow"
                                 [array]="col.lookup.values" placeholder="Not Assigned"
                                 [allowEmptyValue]="col.lookup.allowEmpty"
                                 [model]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
@@ -286,8 +289,8 @@
 
                             <lookup-autocomplete *ngIf="col.type === 'lookup-autocomplete'" [cutLongText]="true"
                                 [small]="true" [allowEmptyValue]="col.lookup.allowEmpty"
-                                [allowCreation]="col.lookup.allowCreation"
-                                [propertiesToShow]="col.lookup.propToShow" [array]="col.lookup.values"
+                                [allowCreation]="col.lookup.allowCreation" [propertiesToShow]="col.lookup.propToShow"
+                                [array]="col.lookup.values"
                                 [model]="transformationsService.getPropertyValue(entity, col.property)"
                                 [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)"
                                 placeholder="Not Assigned" [addAction]="col.lookup.addAction"
@@ -297,8 +300,7 @@
                             </lookup-autocomplete>
 
                             <lookup-colored *ngIf="col.type === 'lookup-colored'" [cutLongText]="true" [small]="true"
-                                [colorProperty]="'color'"
-                                [propertiesToShow]="col.lookup.propToShow"
+                                [colorProperty]="'color'" [propertiesToShow]="col.lookup.propToShow"
                                 [array]="col.lookup.values"
                                 [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)"
                                 placeholder="Not Assigned" [allowEmptyValue]="col.lookup.allowEmpty"
@@ -327,6 +329,9 @@
                             <a *ngIf="!col.editable && col.link" [routerLink]="createRouterLink(col, entity)"
                                 [queryParams]="col?.link.params">{{transformationsService.getPropertyValue(entity, col.property)}}</a>
 
+                            <a *ngIf="col.type === 'externalLink' && transformationsService.getPropertyValue(entity, col.property).link"
+                                [href]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
+
                             <div
                                 *ngIf="col.type === 'link' && !transformationsService.getPropertyValue(entity, col.property).link">
                                 {{transformationsService.getPropertyValue(entity, col.property).text}}</div>
@@ -343,18 +348,21 @@
                                 (modelChange)="setPropertyValue(entity, col.property, $event)">
                             </lookup-autocomplete-multiselect>
 
-                            <div *ngIf="col.type === 'date' && col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))" class="nowrap">
+                            <div *ngIf="col.type === 'date' && col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))"
+                                class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:col.format}}
                             </div>
 
-                            <div *ngIf="col.type === 'date' && !col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))" class="nowrap">
+                            <div *ngIf="col.type === 'date' && !col.format && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))"
+                                class="nowrap">
                                 {{transformationsService.getPropertyValue(entity, col.property) | date:'MM/dd/yy hh:mm:ss a'}}
                             </div>
-                            
-                            <ng-datepicker *ngIf="col.type === 'date' && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)" 
+
+                            <ng-datepicker
+                                *ngIf="col.type === 'date' && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
-                                (ngModelChange)="setPropertyValue(entity, col.property, $event)"
-                                [options]="col.format"></ng-datepicker>
+                                (ngModelChange)="setPropertyValue(entity, col.property, $event)" [options]="col.format">
+                            </ng-datepicker>
 
                             <div
                                 *ngIf="col.type === 'time' && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))">

@@ -164,7 +164,7 @@ export class IssueListComponent implements OnInit {
       }, {
         name: 'External Issue',
         property: 'external_link',
-        type: TFColumnType.link,
+        type: TFColumnType.externalLink,
         class: 'ft-width-250'
       },
     ];

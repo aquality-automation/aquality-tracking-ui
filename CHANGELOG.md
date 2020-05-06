@@ -8,6 +8,7 @@ Features:
 Bugfixes:
   - Test run View Page performance is bad -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/99)
   - API Token page: Link to Aquality Tracking API leads to null -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/84)
+  - External Link does not work on Issues List -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/97)
 
 ## 0.3.9 (2020-04-21)
 

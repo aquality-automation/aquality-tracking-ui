@@ -9,6 +9,7 @@ import { issueView } from '../../pages/issues/view.po';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 import resolutions from '../../data/resolutions.json';
+import { browser } from 'protractor';
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -24,8 +25,10 @@ const notEditorExamples = {
 const issue: Issue = {
     resolution_id: 1,
     title: 'Issue list example',
-    status_id: 1
+    status_id: 1,
+    external_url: 'https://github.com/aquality-automation/aquality-tracking',
 };
+
 let createdIssue: Issue;
 
 describe('Issues List:', () => {
@@ -100,6 +103,15 @@ describe('Issues List:', () => {
                 return expect(issuesList.getAssignee(createdIssue.title))
                     .toBe(`${usersTestData.localEngineer.first_name} ${usersTestData.localEngineer.second_name}`
                         , 'Status was not updated!');
+            });
+            
+            it('I can open external issue link', async () => {
+                browser.ignoreSynchronization = true;
+                await issuesList.openExternalIssueLink(createdIssue.title);
+                await expect(browser.getCurrentUrl()).toBe(createdIssue.external_url, 'Should be navigated to github!');
+                await browser.navigate().back();
+                browser.ignoreSynchronization = false;
+
             });
 
             it('I can open Issue by clicking row', async () => {

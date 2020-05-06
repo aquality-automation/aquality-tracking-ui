@@ -58,6 +58,10 @@ class IssuesList extends BasePage {
     isIssuePresent(title: string): any {
         return elements.issuesTable.isRowExists(title, columns.title);
     }
+
+    openExternalIssueLink(title: string) {
+        return elements.issuesTable.clickCellLink(columns.externalIssue, title, columns.title)
+    }
 }
 
 export const issuesList = new IssuesList();
