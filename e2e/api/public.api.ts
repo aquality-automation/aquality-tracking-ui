@@ -1,9 +1,7 @@
 import { TestSuite } from '../../src/app/shared/models/testSuite';
 import { Test } from '../../src/app/shared/models/test';
 import { TestRun } from '../../src/app/shared/models/testRun';
-import { sendPost, sendGet } from '../utils/aqualityTrackingAPI.util';
 import { TestResult } from '../../src/app/shared/models/test-result';
-import { Project } from '../../src/app/shared/models/project';
 import { BaseAPI } from './base.api';
 
 enum Endpoints {
@@ -18,26 +16,26 @@ enum Endpoints {
 export class PublicAPI extends BaseAPI {
 
     public createOrUpdateSuite(suite: TestSuite): Promise<TestSuite> {
-        return sendPost(Endpoints.suite_create_or_update, undefined, suite, this.token, this.project.id);
+        return this.sendPost(Endpoints.suite_create_or_update, undefined, suite);
     }
 
     public createOrUpdateTest(test: Test): Promise<Test> {
-        return sendPost(Endpoints.test_create_or_update, undefined, test, this.token, this.project.id);
+        return this.sendPost(Endpoints.test_create_or_update, undefined, test);
     }
 
     public startTestrun(testrun: TestRun): Promise<TestRun> {
-        return sendPost(Endpoints.testrun_start, undefined, testrun, this.token, this.project.id);
+        return this.sendPost(Endpoints.testrun_start, undefined, testrun);
     }
 
     public finishTestRun(project_id: number, id: number) {
-        return sendGet(Endpoints.testrun_finish, { project_id, id }, this.token, this.project.id);
+        return this.sendGet(Endpoints.testrun_finish, { project_id, id });
     }
 
     public testResultStart(test_id: number, test_run_id: number, project_id: number) {
-        return sendGet(Endpoints.test_result_start, { test_id, test_run_id, project_id }, this.token, this.project.id);
+        return this.sendGet(Endpoints.test_result_start, { test_id, test_run_id, project_id });
     }
 
     public testResultFinish(testResult: TestResult): Promise<TestResult> {
-        return sendPost(Endpoints.test_result_finish, undefined, testResult, this.token, this.project.id);
+        return this.sendPost(Endpoints.test_result_finish, undefined, testResult);
     }
 }

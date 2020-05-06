@@ -1,4 +1,3 @@
-import { sendPostFiles } from '../utils/aqualityTrackingAPI.util';
 import { logger } from '../utils/log.util';
 import { Project } from '../../src/app/shared/models/project';
 import { EditorAPI } from './editor.api';
@@ -21,13 +20,7 @@ export enum ImportFormats {
 
 const CHECK_IMPORTED_DELAY = 2000;
 
-export class Importer extends BaseAPI {
-    editorAPI: EditorAPI;
-
-    constructor(project: Project, token: string) {
-        super(project, token);
-        this.editorAPI = new EditorAPI(this.project, this.token);
-    }
+export class Importer extends EditorAPI {
 
     public async executeImport(importParameters: ImportParams, files: string[], fileNames: string[]): Promise<TestRun[]> {
         importParameters.projectId = this.project.id;
@@ -84,7 +77,7 @@ export class Importer extends BaseAPI {
     }
 
     private async isAllBuildsAreImported(buildNames: string[]): Promise<TestRun[]> {
-        const testRuns = await this.editorAPI.getTestRuns({ project_id: this.project.id });
+        const testRuns = await this.getTestRuns({ project_id: this.project.id });
         let imported = true;
         const importedTestRuns: TestRun[] = [];
         buildNames.forEach(buildName => {
@@ -102,7 +95,7 @@ export class Importer extends BaseAPI {
             logger.info(`Start API import with params: ${JSON.stringify(params)}`);
             logger.info(`Files count: ${filesAsString.length}`);
             logger.info(`File Names count: ${filesAsString.length}`);
-            await sendPostFiles('/import', params, filesAsString, fileNames, this.token, this.project.id);
+            await this.sendPostFiles('/import', params, filesAsString, fileNames, this.token, this.project.id);
             return true;
         } catch (err) {
             logger.error(`Import was failed: ${err.message}`);
