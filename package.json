@@ -47,7 +47,7 @@
     "custom-a1qa-ng2-datepicker": "^1.0.0",
     "d3": "^4.11.0",
     "jasmine-allure-reporter": "^1.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jsencrypt": "^3.0.0-rc.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^2.3.5",
