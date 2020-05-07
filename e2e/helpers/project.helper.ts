@@ -55,6 +55,7 @@ export class ProjectHelper {
                 await this.assigneProjectPermissions(this.project, permissions)
             }
             if (steps) {
+                this.project.steps = 1;
                 await this.adminAPI.updateProject(this.project);
             }
 
