@@ -31,7 +31,7 @@ describe('Full Admin Administartion User Flow', () => {
     };
 
     beforeAll(async () => {
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.autoAdmin.user_name, users.autoAdmin.password);
         return projectList.menuBar.administration();
     });
 
@@ -99,7 +99,7 @@ describe('Full Admin Administartion User Flow', () => {
             await logIn.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logIn.logInAs(users.admin.user_name, users.admin.password);
+            await logIn.logInAs(users.autoAdmin.user_name, users.autoAdmin.password);
             return projectList.menuBar.administration();
         });
     });
@@ -164,7 +164,7 @@ describe('Full Admin Administartion User Flow', () => {
             await logIn.logInAs(userToCreate.user_name, userToCreate.password);
             await expect(projectList.isOpened()).toBe(true, 'New user is not able to log in');
             await projectList.menuBar.clickLogOut();
-            await logIn.logInAs(users.admin.user_name, users.admin.password);
+            await logIn.logInAs(users.autoAdmin.user_name, users.autoAdmin.password);
             return projectList.menuBar.administration();
         });
     });

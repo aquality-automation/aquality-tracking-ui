@@ -14,11 +14,13 @@ describe('Test Run View Charts', () => {
     const builds = { build_1: 'Build_1' };
 
     beforeAll(async () => {
-        await projectHelper.init();
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.init({
+            manager: users.manager
+        });
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         const imported = await projectHelper.importer.executeCucumberImport('Test', [cucumberImport], [`${builds.build_1}.json`]);
-        const issue = await projectHelper.editorAPI.createIssue({title: 'Test Issue', resolution_id: resolutions.global.testIssue.id});
-        const results = await projectHelper.editorAPI.getResults({test_run_id: imported[0].id});
+        const issue = await projectHelper.editorAPI.createIssue({ title: 'Test Issue', resolution_id: resolutions.global.testIssue.id });
+        const results = await projectHelper.editorAPI.getResults({ test_run_id: imported[0].id });
         const result = results.find(x => x.test.name === `${cucumberImport[0].name}: ${cucumberImport[0].elements[2].name}`);
         result.issue_id = issue.id;
         await projectHelper.editorAPI.createResult(result);

@@ -37,7 +37,7 @@ describe('Test Steps:', () => {
 
     beforeAll(async () => {
         await projectHelper.init({
-            admin: usersTestData.admin,
+            admin: usersTestData.autoAdmin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,

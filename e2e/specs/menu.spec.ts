@@ -7,7 +7,7 @@ describe('Report an Issue', () => {
     const githubUrl = 'https://github.com/aquality-automation/aquality-tracking/issues';
 
     beforeAll(async () => {
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.autoAdmin.user_name, users.autoAdmin.password);
     });
 
     afterAll(async () => {

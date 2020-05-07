@@ -14,7 +14,7 @@ import { notFound } from '../../../pages/notFound.po';
 import { Issue } from '../../../../src/app/shared/models/issue';
 
 const editorExamples = {
-    admin: usersTestData.admin,
+    admin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager
@@ -25,7 +25,7 @@ const notEditorExamples = {
 };
 
 describe('Administartion: Project Settings:', () => {
-    const projectHelper: ProjectHelper = new ProjectHelper();
+    let projectHelper: ProjectHelper;
 
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
@@ -33,6 +33,7 @@ describe('Administartion: Project Settings:', () => {
             beforeAll(async () => {
                 const projectUsers = {};
                 projectUsers[description] = user;
+                projectHelper = new ProjectHelper();
                 await projectHelper.init(projectUsers);
                 await logIn.logInAs(user.user_name, user.password);
                 return projectHelper.openProject();
@@ -152,6 +153,7 @@ describe('Administartion: Project Settings:', () => {
             beforeAll(async () => {
                 const projectUsers = {};
                 projectUsers[description] = user;
+                projectHelper = new ProjectHelper();
                 await projectHelper.init(projectUsers);
                 await logIn.logInAs(user.user_name, user.password);
                 return projectHelper.openProject();

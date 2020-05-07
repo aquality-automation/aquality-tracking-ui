@@ -10,7 +10,7 @@ describe('Full Admin Administartion User Flow', () => {
     const userToCreate: User = users.patternTest;
 
     beforeAll(async () => {
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.autoAdmin.user_name, users.autoAdmin.password);
         return projectList.menuBar.administration();
     });
 

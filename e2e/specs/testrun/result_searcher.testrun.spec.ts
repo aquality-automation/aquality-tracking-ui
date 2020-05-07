@@ -11,8 +11,10 @@ describe('Test Run Result Searcher', () => {
     const builds = { build_1: 'Build_1', build_2: 'Build_2' };
 
     beforeAll(async () => {
-        await projectHelper.init();
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHelper.init({
+            manager: users.manager
+        });
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         await projectHelper.openProject();
         await projectHelper.importer.executeCucumberImport(
             'Test Suite',

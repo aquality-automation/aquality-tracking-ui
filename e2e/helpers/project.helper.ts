@@ -3,7 +3,6 @@ import { projectView } from '../pages/project/view.po';
 import { logIn } from '../pages/login.po';
 import { Project } from '../../src/app/shared/models/project';
 import { apiTokenAdministration } from '../pages/administration/apiToken.po';
-import { permissionsAdministration } from '../pages/administration/permissions.po';
 import { User } from '../../src/app/shared/models/user';
 import { logger } from '../utils/log.util';
 import { Importer } from '../api/importer.api';
@@ -31,6 +30,7 @@ export class ProjectHelper {
     public publicAPI: PublicAPI;
     public adminAPI: UserAPI;
     private admin = usersTestData.admin;
+    private disposed = false;
 
     constructor(projectName?: string) {
         this.project = {
@@ -44,6 +44,7 @@ export class ProjectHelper {
     }
 
     public async init(permissions?: { [key: string]: User; }, steps?: boolean) {
+        this.ifDisposed();
         try {
             await logIn.logInAs(this.admin.user_name, this.admin.password);
             const authCookie = await browser.manage().getCookie('iio78');
@@ -67,15 +68,19 @@ export class ProjectHelper {
     }
 
     public async openProject() {
+        this.ifDisposed();
         await apiTokenAdministration.menuBar.clickLogo();
         return projectList.openProject(this.project.name);
     }
 
     public async dispose() {
+        this.ifDisposed();
         await this.adminAPI.removeProject(this.project);
+        this.disposed = true;
     }
 
     public generateBuilds = (count: number): { names: any, filenames: string[] } => {
+        this.ifDisposed();
         const names = {};
         const filenames: string[] = [];
 
@@ -94,6 +99,12 @@ export class ProjectHelper {
             const key = keys[i];
             const user: User = users[key];
             await this.adminAPI.assigneProjectPermission(this.project, user, key as PermissionType);
+        }
+    }
+
+    private ifDisposed() {
+        if(this.disposed){
+            throw new Error(`'${this.project.name}' project was disposed! please create new project helper!`);
         }
     }
 }

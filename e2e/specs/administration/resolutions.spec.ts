@@ -16,7 +16,7 @@ import resolutions from '../../data/resolutions.json';
 
 
 const editorExamples = {
-    admin: usersTestData.admin,
+    admin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager

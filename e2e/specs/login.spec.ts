@@ -14,22 +14,22 @@ describe('Log in', () => {
   });
 
   it('should be able to login as admin', async () => {
-    await logIn.setUserName(users.admin.user_name);
-    await logIn.setPassword(users.admin.password);
+    await logIn.setUserName(users.autoAdmin.user_name);
+    await logIn.setPassword(users.autoAdmin.password);
     await logIn.clickLogIn();
     return expect(logIn.menuBar.isLogged()).toBe(true);
   });
 
   it('should not be able to login with wrong username', async () => {
     await logIn.setUserName('admin1');
-    await logIn.setPassword(users.admin.password);
+    await logIn.setPassword(users.autoAdmin.password);
     await logIn.clickLogIn();
     await expect(logIn.menuBar.isLogged()).toBe(false);
     return logIn.notification.assertIsError();
   });
 
   it('should not be able to login with wrong password', async () => {
-    await logIn.setUserName(users.admin.user_name);
+    await logIn.setUserName(users.autoAdmin.user_name);
     await logIn.setPassword('1234567');
     await logIn.clickLogIn();
     await expect(logIn.menuBar.isLogged()).toBe(false);

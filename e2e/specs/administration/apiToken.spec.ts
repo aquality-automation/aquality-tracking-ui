@@ -8,7 +8,7 @@ import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
 import { notFound } from '../../pages/notFound.po';
 
 const editorExamples = {
-    admin: usersTestData.admin,
+    admin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager
