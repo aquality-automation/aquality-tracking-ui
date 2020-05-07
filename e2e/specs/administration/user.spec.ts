@@ -5,7 +5,7 @@ import { userAdministration } from '../../pages/administration/users.po';
 import { projectList } from '../../pages/project/list.po';
 import { browser } from 'protractor';
 
-fdescribe('Full Admin Administartion User Flow', () => {
+describe('Full Admin Administartion User Flow', () => {
     const userToCreate: User = users.creationTest;
 
     const validateUser = async () => {
