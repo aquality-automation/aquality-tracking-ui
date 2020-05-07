@@ -8,7 +8,7 @@ import { apiTokenAdministration } from '../../pages/administration/apiToken.po';
 import { notFound } from '../../pages/notFound.po';
 
 const editorExamples = {
-    admin: usersTestData.autoAdmin,
+    autoAdmin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager
@@ -23,6 +23,8 @@ describe('API Token:', () => {
 
     beforeAll(async () => {
         await projectHelper.init({
+            autoAdmin: usersTestData.autoAdmin,
+            manager: usersTestData.manager,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer

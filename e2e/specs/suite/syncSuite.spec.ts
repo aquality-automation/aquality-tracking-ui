@@ -51,11 +51,13 @@ describe('Sync Test Suite', () => {
 
   beforeAll(async () => {
     return projectHelper.init({
-      admin: users.autoAdmin,
       localAdmin: users.localAdmin,
       localManager: users.localManager,
       localEngineer: users.localEngineer,
-      viewer: users.viewer
+      manager: users.manager,
+      viewer: users.viewer,
+      audit_admin: users.auditAdmin,
+      auditor: users.assignedAuditor
     });
   });
 

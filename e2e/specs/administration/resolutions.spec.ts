@@ -16,7 +16,7 @@ import resolutions from '../../data/resolutions.json';
 
 
 const editorExamples = {
-    admin: usersTestData.autoAdmin,
+    autoAdmin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager
@@ -36,14 +36,18 @@ describe('Administartion: Custom Resolution:', () => {
 
     beforeAll(async () => {
         await baseProjectHelper.init({
+            autoAdmin: usersTestData.autoAdmin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
-            localEngineer: usersTestData.localEngineer
+            localEngineer: usersTestData.localEngineer,
+            manager: usersTestData.manager
         });
         await extraProjectHelper.init({
+            autoAdmin: usersTestData.autoAdmin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
-            localEngineer: usersTestData.localEngineer
+            localEngineer: usersTestData.localEngineer,
+            manager: usersTestData.manager
         });
         issueExisting = await baseProjectHelper.editorAPI.createIssue(issueExisting);
     });
