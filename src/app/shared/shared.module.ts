@@ -47,6 +47,7 @@ import { ColorDotsComponent } from '../elements/color-dots/color-dots.component'
 import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
 import { HighliteTextDirective } from '../derectives/highlite-text.derective';
 import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
+import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/single-line-bar-chart.component';
 
 @NgModule({
   imports: [
@@ -106,7 +107,8 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     TristateCheckboxComponent,
     ColorDotsComponent,
     HighliteTextDirective,
-    RegexpTesterComponent
+    RegexpTesterComponent,
+    SingleLineBarChartComponent
   ],
   exports: [
     ClickableLinks,
@@ -163,7 +165,8 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     PopoverModule,
     CommonModule,
     HighliteTextDirective,
-    RegexpTesterComponent
+    RegexpTesterComponent,
+    SingleLineBarChartComponent
   ]
 })
 export class SharedModule {}

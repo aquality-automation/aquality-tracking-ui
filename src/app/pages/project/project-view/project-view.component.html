@@ -12,11 +12,56 @@
     </div>
   </div>
 </div>
-<div *ngIf="!IsHideAll()" class="col-sm-12">
-  <executed-rate-chart [allTestRunStats]="testRunStats"></executed-rate-chart>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="text-centered">{{(quality?.current.passed + quality?.current.appIssue)*100/quality?.current.total | number: '1.0-1'}}% of last results are meanigful</h2>
+    <app-single-line-bar-chart [data]="chartData"></app-single-line-bar-chart>
+  </div>
 </div>
-<table-filter *ngIf="!IsHideAll()" [data]="testRuns" [actionsHeader]="false" [columns]="columns" [allowDelete]="false"
-  (rowClick)="openTestRun($event.id)" rowsOnPage="5"></table-filter>
+
+<div class="row">
+  <div class="col-sm-2">
+    <h3 class="text-centered">Project Quality</h3>
+    <h2 class="text-centered">{{quality?.current.quality | number: '1.0-1'}}/100</h2>
+  </div>
+  <div class="col-sm-2">
+    <h3 class="text-centered">Project Quality Avg.</h3>
+    <h2 class="text-centered">{{quality?.average | number: '1.0-1'}}/100</h2>
+  </div>
+  <div class="col-sm-2">
+    <h3 class="text-centered">Open Issues</h3>
+    <h2 class="text-centered">{{issueStat?.open}}</h2>
+  </div>
+  <div class="col-sm-2">
+    <h3 class="text-centered">Open App Issues</h3>
+    <h2 class="text-centered">{{issueStat?.openApp}}</h2>
+  </div>
+  <div class="col-sm-2">
+    <h3 class="text-centered">Total Issues</h3>
+    <h2 class="text-centered">{{issueStat?.total}}</h2>
+  </div>
+  <div class="col-sm-2">
+    <h3 class="text-centered">Total App Issues</h3>
+    <h2 class="text-centered">{{issueStat?.totalApp}}</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6">
+    <h4>Last Test Runs</h4>
+    <table-filter *ngIf="!IsHideAll()" [data]="testRuns" [actionsHeader]="false" [columns]="testRunColumns"
+      [allowDelete]="false" [hideFilter]="true" (rowClick)="openTestRun($event.id)" rowsOnPage="5"></table-filter>
+  </div>
+  <div class="col-sm-6">
+    <h4>My Open Issues</h4>
+    <table-filter *ngIf="!IsHideAll()" [data]="myIssues" [actionsHeader]="false" [columns]="issueColumns"
+      [allowDelete]="false" [hideFilter]="true" (rowClick)="openIssue($event)" rowsOnPage="5"></table-filter>
+  </div>
+</div>
+
+
+
 <div *ngIf="IsHideAll()">
   <div id="empty" class="well well-sm">
     This project is empty, add Test Run to see any information.
