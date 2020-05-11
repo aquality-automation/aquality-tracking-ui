@@ -8,7 +8,7 @@ import { Project, ImportBodyPattern } from '../shared/models/project';
 export class ProjectService extends SimpleRequester {
 
   getProjects(project: Project) {
-    return this.doGet('/project', project).map(res => res.json());
+    return this.doGet('/project', project, true).map(res => res.json());
   }
 
   async getProject(id: number): Promise<Project> {

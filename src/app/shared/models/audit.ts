@@ -30,12 +30,6 @@ export class Auditor extends User {
   audit_id?: number;
 }
 
-export class AuditNotification {
-  last_submitted?: Audit;
-  has_opened_audit?: boolean;
-  next_due_date?: Date|string|number;
-}
-
 export class AuditStatus {
   id?: number;
   name?: string;

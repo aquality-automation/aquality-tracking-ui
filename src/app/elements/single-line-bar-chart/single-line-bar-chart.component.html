@@ -1,9 +1,8 @@
 <div class="row">
-  <div class="col-sm-12">
-    <div *ngFor="let item of dataToShow" class="slc-part" [style.width.%]="item.percent" [style.background-color]="item.color">
-      <div class="slc-title text-centered">
-        {{item.percent | number: '1.0-1'}}% {{item.label}}
-      </div>
+  <div class="col-sm-12" #lineHolder>
+    <div *ngFor="let item of dataToShow" [class]="'slc-part slc-part-' + item.index" [style.width.%]="item.percent"
+      [style.background-color]="item.color" (mouseenter)="setActive($event)" (mouseleave)="setInactive($event)"
+      tooltip="{{item.percent | number: '1.0-1'}}% {{item.label}}" placement="bottom">
     </div>
   </div>
 </div>

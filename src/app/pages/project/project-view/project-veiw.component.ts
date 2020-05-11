@@ -6,7 +6,7 @@ import { TestRunService } from '../../../services/testRun.service';
 import { ProjectService } from '../../../services/project.service';
 import { TestRunStat } from '../../../shared/models/testrunStats';
 import { AuditService } from '../../../services/audits.service';
-import { Audit, AuditNotification } from '../../../shared/models/audit';
+import { Audit } from '../../../shared/models/audit';
 import { GlobalDataService } from '../../../services/globaldata.service';
 import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
 import { IssueService } from '../../../services/issue.service';
@@ -14,12 +14,15 @@ import { Issue } from '../../../shared/models/issue';
 import { SingleLineBarChartData } from '../../../elements/single-line-bar-chart/single-line-bar-chart.component';
 import { TestSuiteService } from '../../../services/testSuite.service';
 import { TestSuite } from '../../../shared/models/testSuite';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   templateUrl: './project-view.component.html',
   styleUrls: ['./project-view.component.css']
 })
 export class ProjectViewComponent implements OnInit {
+  icons = { faExclamationTriangle };
+  activateParts: number[] = [];
   audits: Audit[];
   suites: TestSuite[];
   project: Project;
@@ -27,13 +30,12 @@ export class ProjectViewComponent implements OnInit {
   testRun: TestRun;
   testRunStats: TestRunStat[];
   hideAll = true;
-  auditNotification: AuditNotification;
-  notification: { text: string, type: string };
+  notification: string;
   testRunColumns: TFColumn[] = [
     { name: 'Build Name', property: 'build_name', type: TFColumnType.text },
     { name: 'Execution Environment', property: 'execution_environment', type: TFColumnType.text },
+    { name: 'Suite', property: 'test_suite.name', type: TFColumnType.text },
     { name: 'Start Time', property: 'start_time', type: TFColumnType.date, class: 'fit' },
-    { name: 'Finish Time', property: 'finish_time', type: TFColumnType.date, class: 'fit' },
     { name: 'Pass Rate', property: 'failed', type: TFColumnType.percent, class: 'fit' },
   ];
   issueColumns: TFColumn[] = [{ name: 'Id', property: 'id', type: TFColumnType.text, class: 'fit' },
@@ -73,25 +75,22 @@ export class ProjectViewComponent implements OnInit {
     this.testRun = { project_id: projectId, debug: 0 };
     this.project = { id: projectId };
 
-    this.allIssues = await this.issueService.getIssues({
-      project_id: projectId
-    });
+    this.project = (await this.projectService.getProjects(this.project).toPromise())[0];
+
+    [this.allIssues,this.suites, this.testRuns, this.testRunStats] = await Promise.all([
+      this.issueService.getIssues({ project_id: projectId }),
+      this.testSuiteService.getTestSuite({ project_id: projectId }),
+      this.testrunService.getTestRun(this.testRun, 5),
+      this.testrunService.getTestsRunStats(this.testRun)
+    ])
 
     this.myIssues = this.allIssues.filter(x => x.status_id != 4 && x.status_id != 2 && x.assignee_id === this.globaldata.currentUser.id);
 
-    this.suites = await this.testSuiteService.getTestSuite({ project_id: projectId });
-    this.project = (await this.projectService.getProjects(this.project).toPromise())[0];
-
     if (this.globaldata.auditModule) {
-      this.auditService.getAudits({ project: { id: this.project.id } }).subscribe(audits => {
-        this.audits = audits;
-        this.generateAuditNotification();
-        this.setAuditNotification();
-      });
+      this.audits = await this.auditService.getAudits({ project: { id: this.project.id } }).toPromise();
+      this.notification = this.generateAuditNotification(this.audits);
     }
 
-    this.testRuns = await this.testrunService.getTestRun(this.testRun, 5);
-    this.testRunStats = await this.testrunService.getTestsRunStats(this.testRun);
     this.testRuns.forEach(testrun => {
       testrun['failed'] = this.getNumberOfFails(testrun.id);
     });
@@ -114,77 +113,37 @@ export class ProjectViewComponent implements OnInit {
     return this.testrunService.getPassRate(stats);
   }
 
-  openTestRun(testRunId: number) {
-    this.router.navigate(['/project/' + this.project.id + '/testrun/' + testRunId]);
+  openTestRun(testRun: TestRun) {
+    this.router.navigate([`/project/${testRun.project_id}/testrun/${testRun.id}`]);
   }
 
-  generateAuditNotification() {
-    const latest: Audit = this.audits.filter(x => x.submitted).length > 0
+  openIssue(issue: Issue) {
+    this.router.navigate([`/project/${issue.project_id}/issue/${issue.id}`]);
+  }
+
+  generateAuditNotification(audits: Audit[]): string {
+    if (!audits || audits.length === 0) {
+      return `This project has no audits! Please contact your audit administrator to schedule a new Audit for your project.`
+    }
+    const lastSubmitted: Audit = this.audits.filter(x => x.submitted).length > 0
       ? this.audits.sort(function (a, b) { return new Date(b.submitted).getTime() - new Date(a.submitted).getTime(); })[0]
       : undefined;
-    const opened: Audit = this.audits.find(x => x.status.id !== 4);
-    this.auditNotification = {
-      last_submitted: latest,
-      has_opened_audit: opened !== undefined,
-      next_due_date: opened
-        ? opened.due_date
-        : latest
-          ? this.auditService.createDueDate(new Date(new Date(latest.submitted).setHours(0, 0, 0, 0)))
-          : this.auditService.createDueDate(new Date(new Date(this.project.created).setHours(0, 0, 0, 0)))
-    };
-  }
-
-  setAuditNotification() {
-    if (new Date(this.auditNotification.next_due_date)
-      < new Date(new Date(new Date().setDate(new Date().getDate())).setHours(0, 0, 0, 0))) {
-      this.notification = {
-        text: `Next Audit should have been submitted on ${
-          new Date(this.auditNotification.next_due_date).toDateString()
-          } and is now overdue! Please contact your audit administrator to get more details on next audit progress.`,
-        type: 'danger'
-      };
-    } else if (!this.auditNotification.has_opened_audit
-      && new Date(this.auditNotification.next_due_date.toString()) >= new Date(new Date().setHours(0, 0, 0, 0))
-      && new Date(this.auditNotification.next_due_date.toString()) <= new Date(new Date().setDate(new Date().getDate() + 14))) {
-      const days = this.daysdifference(new Date(new Date().setHours(0, 0, 0, 0)),
-        new Date(this.auditNotification.next_due_date.toString()));
-      this.notification = {
-        text: `Next Audit should be submitted ${
-          days === 0 ? 'today' : `in ${days} ${days > 1 ? 'days' : 'day'}`
-          } but is still not created in the system. Please contact your audit administrator to schedule a new Audit for your project.`,
-        type: 'warning'
-      };
-    } else if (this.auditNotification.has_opened_audit && this.audits.length > 0) {
-      this.notification = {
-        text: `New Audit is created and planned to be finished by ${new Date(this.auditNotification.next_due_date).toDateString()}`,
-        type: 'success'
-      };
-    }
-
-    if (this.auditNotification.last_submitted && this.audits.length > 0) {
-      const message = `Last project Audit was submitted on ${
-        new Date(this.auditNotification.last_submitted.submitted).toDateString()
-        } with a result of ${this.auditNotification.last_submitted.result}%`;
-
-      if (!this.notification) { this.notification = { text: undefined, type: undefined }; }
-      this.notification.text = this.notification.text
-        ? `${this.notification.text} \r\n ${message}`
-        : message;
-
-      this.notification.type = this.notification.type ? this.notification.type : this.notification.type = 'success';
-    }
-
-    if (!this.notification || !this.notification.text) {
-      this.notification = {
-        text: `This project has no audits! Please contact your audit administrator to schedule a new Audit for your project.`,
-        type: 'warning'
-      };
+    if (lastSubmitted) {
+      const lastSubmittedDate = new Date(lastSubmitted.submitted);
+      const nextDueDate = new Date(lastSubmittedDate).setMonth(lastSubmittedDate.getMonth() + 6);
+      if (nextDueDate < new Date().getTime()) {
+        return `Over half a year has passed since last submitted Audit. Please make sure the process of the new Audit is going well.`
+      }
     }
   }
 
-  getDateAsText(date: Date) {
-    return date.toDateString();
-  }
+  showMeaningful() {
+    this.activateParts = [0, 1];
+  };
+
+  hideMeaningful() {
+    this.activateParts = [];
+  };
 
   IsHideAll() {
     if (this.testRunStats) {
@@ -193,14 +152,6 @@ export class ProjectViewComponent implements OnInit {
       this.hideAll = true;
     }
     return this.hideAll;
-  }
-
-  daysdifference(date1, date2) {
-    const ONEDAY = 1000 * 60 * 60 * 24;
-    const date1_ms = date1.getTime();
-    const date2_ms = date2.getTime();
-    const difference_ms = Math.abs(date1_ms - date2_ms);
-    return Math.round(difference_ms / ONEDAY);
   }
 
   getQualityInfo(suites: TestSuite[], testRunStats: TestRunStat[]): { current: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number }, average: number } {

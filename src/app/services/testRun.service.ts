@@ -12,7 +12,7 @@ export class TestRunService extends SimpleRequester {
   getTestRun(testRun: TestRun, limit: number = 0): Promise<TestRun[]> {
     testRun = this.setProjectId(testRun);
     testRun['limit'] = limit;
-    return this.doGet(`/testrun`, testRun).map(res => res.json()).toPromise();
+    return this.doGet(`/testrun`, testRun, true).map(res => res.json()).toPromise();
   }
 
   getTestRunWithChilds(testRun: TestRun, limit: number = 0): Promise<TestRun[]> {

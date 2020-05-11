@@ -60,6 +60,10 @@ ng-component>.panel-heading {
   min-width: 200px;
 }
 
+h2, h3, h4 {
+  cursor: default;
+}
+
 h2 {
   margin: 0 !important;
   font-style: normal !important;
