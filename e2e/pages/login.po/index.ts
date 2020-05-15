@@ -10,6 +10,7 @@ class LogIn extends BasePage {
   }
 
   async navigateTo() {
+    await browser.manage().deleteCookie('iio78');
     await browser.get(baseUrl);
     return this.waitForIsOpened();
   }

@@ -44,6 +44,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() actionsHeader = true;
   @Input() allowRefresh = false;
   @Input() allowBulkUpdate = false;
+  @Input() allowBulkDelete = false;
   @Input() withSelector = false;
 
   @Output() createEntity = new EventEmitter();
@@ -54,6 +55,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Output() shownData = new EventEmitter();
   @Output() refresh = new EventEmitter();
   @Output() bulkChanges = new EventEmitter();
+  @Output() bulkDelete = new EventEmitter()
   @Output() lookupCreation = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
   @Output() lookupAction = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
 
@@ -93,6 +95,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   lastSelectedRow = 0;
   errorMessage: string;
   hideManageColumnsModal = true;
+  hideBulkDeleteModal = true;
   animate = false;
   timerToken: NodeJS.Timer;
   timer: NodeJS.Timer;
@@ -131,10 +134,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       });
     }
 
-    if (this.allowDelete || this.allowCreate || this.allowBulkUpdate) {
+    if ((this.allowDelete || this.allowCreate || this.allowBulkUpdate) && (this.columns && !this.columns.find(x => x.name === 'Action'))) {
       this.columns.push({ name: 'Action', property: 'action', type: TFColumnType.button, editable: true });
     }
-    if (this.allowBulkUpdate || this.withSelector) {
+    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete)  && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
       this.columns.unshift({ name: 'Selector', property: 'ft_select', type: TFColumnType.selector, editable: true, class: 'fit' });
     }
   }
@@ -237,6 +240,20 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.bulkChanges.emit(entitiesToUpdate);
     this.bulkChangeEntity = {};
   }
+
+  confirmBulkDelete() {
+    this.hideBulkDeleteModal = false;
+  }
+
+  async executeBulkDelete($event) {
+    console.log(await $event)
+    if (await $event) {
+      const entitiesToDelete = this.getSelectedEntitites();
+      this.bulkDelete.emit(entitiesToDelete);
+    }
+    this.hideBulkDeleteModal = true;
+  }
+
 
   getSelectedEntitites() {
     return this.filteredData.filter(entity => entity.ft_select === true || entity.ft_select === 1);
@@ -649,6 +666,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   wasClosed() {
     this.hideManageColumnsModal = true;
+    this.hideBulkDeleteModal = true;
   }
 
   openlink(link) {

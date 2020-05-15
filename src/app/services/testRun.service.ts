@@ -5,7 +5,6 @@ import { TestRun, TestRunLabel } from '../shared/models/testRun';
 import { User } from '../shared/models/user';
 import { TestRunStat } from '../shared/models/testrunStats';
 
-
 @Injectable()
 export class TestRunService extends SimpleRequester {
 
@@ -30,8 +29,12 @@ export class TestRunService extends SimpleRequester {
     return this.doPost('/testrun', testRun).map(res => res.json()).toPromise();
   }
 
-  removeTestRun(testRun: TestRun): Promise<void> {
-    testRun = this.setProjectId(testRun);
+  removeTestRun(toRemove: TestRun | TestRun[]): Promise<void> {
+    if(Array.isArray(toRemove)) {
+      return this.doDelete(`/testrun`, undefined, toRemove)
+        .map(() => this.handleSuccess(`Test runs were deleted.`)).toPromise();
+    }
+    const testRun = this.setProjectId(toRemove as TestRun);
     return this.doDelete(`/testrun`, { id: testRun.id, project_id: testRun.project_id })
       .map(() => this.handleSuccess(`Test run '${testRun.build_name}/${testRun.start_time}' was deleted.`)).toPromise();
   }

@@ -18,7 +18,7 @@ export class UserService extends SimpleRequester {
     }).toPromise();
   }
 
-  doAuth(userName: string, password, ldap: boolean): Promise<Response> {
+  doAuth(userName: string, password: string, ldap: boolean): Promise<Response> {
     const authString = btoa(`${userName}:${password}`);
     const query = `/users/auth?auth=${authString}&ldap=${ldap}`;
     return this.doGetWithoutAuthHeader(query).map(res => {
