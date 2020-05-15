@@ -5,6 +5,8 @@ import { Customer } from '../../src/app/shared/models/customer';
 import { LocalPermissions } from '../../src/app/shared/models/LocalPermissions';
 import { PermissionType } from '../helpers/project.helper';
 import { logger } from '../utils/log.util';
+import { logIn } from '../pages/login.po';
+import { browser } from 'protractor';
 
 enum Endpoints {
     project = '/project',
@@ -15,9 +17,11 @@ enum Endpoints {
 }
 
 export class UserAPI extends BaseAPI {
+    private user: User;
 
-    constructor(authCookie: string) {
+    constructor(authCookie: string, user: User) {
         super(null, null, authCookie)
+        this.user = user;
     }
 
     public async createProject(project: Project): Promise<Project> {
@@ -73,5 +77,11 @@ export class UserAPI extends BaseAPI {
 
     public removeProject(project: Project): Promise<string> {
         return this.sendDelete(Endpoints.project, { id: project.id });
+    }
+
+    public async relogin(): Promise<void> {
+        await logIn.logInAs(this.user.user_name, this.user.password);
+        const authCookie = await browser.manage().getCookie('iio78');
+        this.cookie = decodeURIComponent(authCookie.value)
     }
 }

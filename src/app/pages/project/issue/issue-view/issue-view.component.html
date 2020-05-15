@@ -21,7 +21,7 @@
                     (click)="setStatus(1)">Re Open</button>
                 <button *ngIf="+issue.status.id === 3" id="cannot-reproduce" type="button" class="btn btn-info"
                     (click)="setStatus(2)">Can Not Reproduce</button>
-                <button id="save" type="button" class="btn btn-success" (click)="saveIssue()">Save</button>
+                <button *ngIf="+issue.status.id !== 4" id="save" type="button" class="btn btn-success" (click)="saveIssue()">Save</button>
             </div>
         </div>
     </div>
@@ -70,9 +70,8 @@
                     </div>
                     <div class="col-sm-12 no-padding">
                         <label for="issue-external-url">External Issue:</label>
-                        <input id="issue-external-url" type="text" class="form-control"
-                            [disabled]="!canEdit || issue.status_id === 4" placeholder="External Issue"
-                            [(ngModel)]="issue.external_url">
+                        <inline-editor placeholder="External Issue" id="issue-external-url" [(ngModel)]="issue.external_url"
+                          [disabled]="!canEdit || issue.status_id === 4" [config]="{type:'link', saveOnEnter:true, saveOnBlur:true}"></inline-editor>
                     </div>
                 </div>
             </div>

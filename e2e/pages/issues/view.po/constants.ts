@@ -3,6 +3,7 @@ import { Lookup } from '../../../elements/lookup.element';
 import { Input } from '../../../elements/input.element';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 import { SmartTable } from '../../../elements/smartTable.element';
+import { InlineEditor } from '../../../elements/inlineEditor.element';
 
 export const elements = {
     uniqueElement: element(by.id('issue-view')),
@@ -10,7 +11,7 @@ export const elements = {
     save: element(by.id('save')),
     title: new Input(by.id('issue-title')),
     assignee: new Autocomplete(by.id('issue-assignee')),
-    extarnalIssue: new Input(by.id('issue-external-url')),
+    extarnalIssue: new InlineEditor(by.id('issue-external-url')),
     description: new Input(by.id('issue-description')),
     expressionError: element(by.css('#issue-expression + .invalid-feedback')),
     overlappedIssues: new SmartTable(by.id('overlapped-issues-table')),

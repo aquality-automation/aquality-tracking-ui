@@ -23,7 +23,6 @@ import { AutofocusDirective } from '../derectives/auto-focus.derective';
 import { NgDatepickerModule } from 'custom-a1qa-ng2-datepicker';
 import { BaseLookupComponent } from '../elements/lookup/baseLookup';
 import { ClickableLinks } from '../derectives/clickableLinks.derective';
-import { InlineEditorModule } from '@qontu/ngx-inline-editor';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MaxLength } from '../derectives/maxLength.derective';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -48,6 +47,7 @@ import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx
 import { HighliteTextDirective } from '../derectives/highlite-text.derective';
 import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
 import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/single-line-bar-chart.component';
+import { InlineEditorComponent } from '../elements/inline-editor/inline-editor.component';
 
 @NgModule({
   imports: [
@@ -55,7 +55,6 @@ import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/s
     ReactiveFormsModule,
     DataTableModule,
     CommonModule,
-    InlineEditorModule,
     NgxEditorModule,
     FileUploadModule,
     RouterModule,
@@ -108,7 +107,8 @@ import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/s
     ColorDotsComponent,
     HighliteTextDirective,
     RegexpTesterComponent,
-    SingleLineBarChartComponent
+    SingleLineBarChartComponent,
+    InlineEditorComponent
   ],
   exports: [
     ClickableLinks,
@@ -118,7 +118,6 @@ import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/s
     DisabledInlineDerective,
     FormsModule,
     ReactiveFormsModule,
-    InlineEditorModule,
     DataTableModule,
     BasePopupComponent,
     TableFilterComponent,
@@ -166,7 +165,8 @@ import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/s
     CommonModule,
     HighliteTextDirective,
     RegexpTesterComponent,
-    SingleLineBarChartComponent
+    SingleLineBarChartComponent,
+    InlineEditorComponent
   ]
 })
 export class SharedModule {}

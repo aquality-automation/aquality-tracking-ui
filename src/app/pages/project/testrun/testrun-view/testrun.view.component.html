@@ -2,12 +2,18 @@
   [buttons]="[{name:'Send Email', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
   (closed)="wasClosed()"></notify-team-modal>
 
-<print-testrun-modal *ngIf="resultGridComponent && resultGridComponent.testResults" [(isHidden)]="hidePrintModal" [testRun]="testRun" [testResults]="resultGridComponent.testResults"
+<print-testrun-modal *ngIf="resultGridComponent && resultGridComponent.testResults" [(isHidden)]="hidePrintModal"
+  [testRun]="testRun" [testResults]="resultGridComponent.testResults"
   [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
   (closed)="wasClosed()"></print-testrun-modal>
 
-<div *ngIf="testRun" class="panel-body">
-  <div class="row panel-padding">
+
+
+
+
+<div *ngIf="testRun" class="container-fluid panel-padding">
+
+  <div class="row">
     <div class="col-sm-2">
       <h2 id="test-run-view">
         Test Run
@@ -52,64 +58,112 @@
 
   <div class="dropdown-divider"></div>
 
-  <div class="col-sm-12">
-
-    <div class="form-row">
-      <div class="form-group col-md-4">
-        <label for="build_name">Build Name:</label>
-        <inline-editor id='build_name' [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500"
-          [name]="buildName" (onError)="buildNameError($event)" min="3" placeholder="Build Name" type="text" trim="blur"
-          [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()" [required]="true">
-        </inline-editor>
-      </div>
-      <div *ngIf="testRun.test_suite" class="form-group col-md-4">
-        <label for="suite_link">Test Suite:</label>
-        <a id="suite_link" routerLink="/project/{{testRun.project_id}}/tests"
-          [queryParams]="{suite:testRun.test_suite.id}">{{testRun.test_suite.name}}</a>
-      </div>
-      <div class="form-group col-md-4">
-        <label for="start-time">Start Time:</label>
-        <p class="inline" id="start-time">{{testRun?.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</p>
-      </div>
-
-      <div *ngIf="testRun.author || canEdit" class="form-group col-md-4">
-        <label for="executor">Executor:</label>
-        <inline-editor id="executor" [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500" [name]="Executor"
-          placeholder="Executor" type="text" trim="blur" [(ngModel)]="testRun.author" (onSave)="testRunUpdate()"
-          [required]="false" [config]="{empty:'Add...'}">
-        </inline-editor>
-      </div>
-      <div *ngIf="testRun.execution_environment || canEdit" class="form-group col-md-4">
-        <label for="execution_environment">Execution Environment:</label>
-        <inline-editor id="execution_environment" [disabled]="!canEdit" [disabledInline]="!canEdit" maxLength="500"
-          [name]="ExecutionEnvironment" placeholder="Execution Environment" type="text" trim="blur"
-          [(ngModel)]="testRun.execution_environment" (onSave)="testRunUpdate()" [required]="false"
-          [config]="{empty:'Add...'}"></inline-editor>
-      </div>
-      <div *ngIf="testRun?.finish_time" class="form-group col-md-4">
-        <label for="duration">Duration:</label>
-        <p id="duration" class="inline">{{calculateDuration()}}</p>
-      </div>
-
-      <div class="form-group col-md-4">
-        <div class="form-check">
-          <input id="debug" class="form-check-input" (change)="changeDebugState($event.srcElement)" type="checkbox"
-            name="isActive" [(ngModel)]="testRun.debug" [disabled]="!canEdit">
-          <label for="debug" class="form-check-label">Debug</label>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="build_name">Build Name:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id='build_name' [disabled]="!canEdit" [disabled]="!canEdit" maxLength="500" [name]="buildName"
+            min="3" placeholder="Build Name" trim="blur" [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()"
+            [required]="true">
+          </inline-editor>
         </div>
       </div>
-      <div *ngIf="(testRun.ci_build || canEdit) && testRun.label_id !== 2" class="form-group col-md-4">
-        <label>CI Build:</label>
-        <a *ngIf="testRun.ci_build" class="ci-link" [href]="testRun.ci_build">CI Build</a>
-        <inline-editor *ngIf="canEdit" maxLength="500" [name]="Executor" placeholder="CI Build" type="text" trim="blur"
-          [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false" [config]="{empty:'Add...'}">
-        </inline-editor>
+    </div>
+    <div *ngIf="testRun.test_suite" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="suite_link">Test Suite:</label>
+        </div>
+        <div class="col-sm-9">
+          <a id="suite_link" routerLink="/project/{{testRun.project_id}}/tests"
+            [queryParams]="{suite:testRun.test_suite.id}">{{testRun.test_suite.name}}</a>
+        </div>
       </div>
-      <div *ngIf="testRun.milestone || canEdit" class="form-group col-md-4 row">
-        <div class="col-md-2">
+    </div>
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="start-time">Start Time:</label>
+        </div>
+        <div class="col-sm-9">
+          <p class="inline" id="start-time">{{testRun?.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div *ngIf="testRun.author || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="executor">Executor:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id="executor" [disabled]="!canEdit" maxLength="500" name="Executor" placeholder="Executor"
+            trim="blur" [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false">
+          </inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun.execution_environment || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="execution_environment">Environment:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id="execution_environment" [disabled]="!canEdit" maxLength="500" name="ExecutionEnvironment"
+            placeholder="Execution Environment" trim="blur" [(ngModel)]="testRun.execution_environment"
+            (onSave)="testRunUpdate()" [required]="false"></inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun?.finish_time" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="duration">Duration:</label>
+        </div>
+        <div class="col-sm-9">
+          <p id="duration" class="inline">{{calculateDuration()}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="debug">Debug</label>
+        </div>
+        <div class="col-sm-9">
+          <input id="debug" (change)="changeDebugState($event.srcElement)" type="checkbox" name="isActive"
+            [(ngModel)]="testRun.debug" [disabled]="!canEdit">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="(testRun.ci_build || canEdit) && testRun.label_id !== 2" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label>CI Build:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor *ngIf="canEdit" maxLength="500" [config]="{typr:'link', size:'sm'}" placeholder="CI Build"
+            trim="blur" [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false">
+          </inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun.milestone || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
           <label for="milestone">Milestone:</label>
         </div>
-        <div class="col-md-10">
+        <div class="col-sm-9">
           <lookup-autocomplete [disabled]="!canEdit" (searchText)="createMilestone($event)" [allowCreation]="true"
             id="milestone" name="milestone" [(model)]="testRun.milestone" (modelChange)="testRunUpdate()"
             [allowEmptyValue]="true" [small]="true" [propertiesToShow]="['name']" [array]="milestones"
@@ -120,15 +174,19 @@
     </div>
   </div>
 
+
   <div class="dropdown-divider"></div>
 
   <div class="row">
     <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
-      <final-result-chart [testResults]="resultGridComponent.testResults" (clickedResult)="finalResultChartClick($event)">Loading...
+      <final-result-chart [testResults]="resultGridComponent.testResults"
+        (clickedResult)="finalResultChartClick($event)">
+        Loading...
       </final-result-chart>
     </div>
     <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
-      <result-resolution-chart [testResults]="resultGridComponent.testResults" (clickedResult)="resolutionChartClick($event)">Loading...
+      <result-resolution-chart [testResults]="resultGridComponent.testResults"
+        (clickedResult)="resolutionChartClick($event)">Loading...
       </result-resolution-chart>
     </div>
   </div>
@@ -137,3 +195,4 @@
     <results-grid id="testRunViewResultsGrid" (resultUpdated)="updateResult($event)"
       [testResultTempalte]="testResultTempalte">Loading...</results-grid>
   </div>
+</div>

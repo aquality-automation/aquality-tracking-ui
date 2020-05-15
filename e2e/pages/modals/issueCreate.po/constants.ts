@@ -4,6 +4,7 @@ import { Input } from '../../../elements/input.element';
 import { Lookup } from '../../../elements/lookup.element';
 import { SmartTable } from '../../../elements/smartTable.element';
 import { UiSwitch } from '../../../elements/ui-switch';
+import { InlineEditor } from '../../../elements/inlineEditor.element';
 
 const baseElement = element(by.tagName('issue-create-modal'));
 
@@ -18,7 +19,7 @@ export const elements = {
     overlappedIssues: new SmartTable(baseElement.element(by.id('overlapped-issues-table'))),
     expressionError: baseElement.element(by.css('#issue-expression + div.invalid-feedback')),
     expression: new Input(baseElement.element(by.id('issue-expression'))),
-    externalIssue: new Input(baseElement.element(by.id('issue-external-url'))),
+    externalIssue: new InlineEditor(baseElement.element(by.id('issue-external-url'))),
     addToResults: new UiSwitch(baseElement.element(by.css('#update-results'))),
     description: new Input(baseElement.element(by.id('issue-description'))),
 };

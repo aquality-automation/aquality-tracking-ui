@@ -205,19 +205,19 @@
                     <td *ngFor="let col of columns" class="vert-aligned" [setClass]="col.class">
 
                         <div *ngIf="col.editable && col.bulkEdit" class="ft-cell">
-                            <inline-editor class="full-width" [placeholder]="col?.name"
-                                [config]="{empty:'Add ' + col?.name}"
+                            <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" type="text" trim="blur"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
 
-                            <inline-editor [placeholder]="col?.name" *ngIf="(col.type === 'textarea')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
-                                [config]="{empty:'Add...'}"
+                            <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
+                                *ngIf="col.type === 'textarea'"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
+                                [config]="{type:'textarea', size:'sm'}"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
@@ -272,17 +272,17 @@
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" type="text" trim="blur"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>
 
-                            <inline-editor [placeholder]="col?.name"
+                            <inline-editor class="full-width" [placeholder]="col?.name"
+                                [config]="{type:'textarea', size:'sm'}"
                                 *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
-                                [config]="{empty:'Add...'}"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>

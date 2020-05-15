@@ -22,7 +22,7 @@ class IssuesView extends BasePage {
     }
 
     setExternalIssue(value: string): Promise<void> {
-        return elements.extarnalIssue.typeText(value);
+        return elements.extarnalIssue.changeAndSetValue(value);
     }
 
     setAssignee(fullName: string): Promise<void> {

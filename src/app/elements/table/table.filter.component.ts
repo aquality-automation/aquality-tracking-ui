@@ -660,12 +660,21 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   rowClicked(entity: any, col: any, $event: any) {
     const el: HTMLElement = $event.target;
-    const canClick = (!col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell'))
-      && col.type !== TFColumnType.link
+    const notInlineEditorButton = col.type === TFColumnType.text
+      && el.tagName.toLowerCase() !== 'input'
+      && el.tagName.toLowerCase() !== 'button'
+      && el.tagName.toLowerCase() !== 'path'
+      && el.tagName.toLowerCase() !== 'svg'
+      && el.tagName.toLowerCase() !== 'fa-icon';
+    const notClickableElement = col.type !== TFColumnType.link
       && col.type !== TFColumnType.externalLink
       && col.type !== TFColumnType.longtext
       && col.type !== TFColumnType.autocomplete
-      && !col.link;
+      && !col.link
+    const notEditable = !col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell');
+
+    const canClick = (notInlineEditorButton) || (notClickableElement && notEditable);
+    
     if (canClick) {
       this.rowClick.emit(entity);
     }

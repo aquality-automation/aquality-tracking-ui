@@ -15,6 +15,7 @@ import { SingleLineBarChartData } from '../../../elements/single-line-bar-chart/
 import { TestSuiteService } from '../../../services/testSuite.service';
 import { TestSuite } from '../../../shared/models/testSuite';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { PermissionsService, ELocalPermissions } from '../../../services/current-permissions.service';
 
 @Component({
   templateUrl: './project-view.component.html',
@@ -58,6 +59,7 @@ export class ProjectViewComponent implements OnInit {
   quality: { current: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number }, average: number };
   chartData: SingleLineBarChartData[];
   issueStat: { open: number, openApp: number, total: number, totalApp: number };
+  isProjectUser: boolean = false;
 
   constructor(
     public globaldata: GlobalDataService,
@@ -66,6 +68,7 @@ export class ProjectViewComponent implements OnInit {
     private issueService: IssueService,
     private auditService: AuditService,
     private testSuiteService: TestSuiteService,
+    private permissionsService: PermissionsService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
@@ -74,6 +77,8 @@ export class ProjectViewComponent implements OnInit {
     const projectId = this.route.snapshot.params.projectId;
     this.testRun = { project_id: projectId, debug: 0 };
     this.project = { id: projectId };
+    this.isProjectUser = await this.permissionsService.hasProjectPermissions(this.project.id, undefined,
+      [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]);
 
     this.project = (await this.projectService.getProjects(this.project).toPromise())[0];
 
