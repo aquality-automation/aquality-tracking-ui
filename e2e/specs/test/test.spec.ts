@@ -15,10 +15,12 @@ describe('Test', () => {
     const testName = 'Test Feature with all results: step failed';
 
     beforeAll(async () => {
-        await projectHelper.init();
+        await projectHelper.init({
+            manager: users.manager
+          });
         await projectHelper.importer.executeCucumberImport(suites.suite_1, [cucumberImport], [builds.filenames[0]]);
         await projectHelper.importer.executeCucumberImport(suites.suite_2, [cucumberImport], [builds.filenames[1]]);
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         await projectHelper.openProject();
     });
 

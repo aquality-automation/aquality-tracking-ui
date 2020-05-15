@@ -41,7 +41,7 @@ export class AdministrationProjectGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.guardService.redirect({
-      global: [EGlobalPermissions.manager],
+      global: [EGlobalPermissions.admin, EGlobalPermissions.manager],
       local: [ELocalPermissions.admin, ELocalPermissions.manager, ELocalPermissions.engineer]
     }, ['**']);
   }

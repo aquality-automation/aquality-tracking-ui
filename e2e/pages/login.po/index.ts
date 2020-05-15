@@ -11,6 +11,9 @@ class LogIn extends BasePage {
 
   async navigateTo() {
     await browser.get(baseUrl);
+    if (await this.menuBar.isLogged()) {
+      await this.menuBar.clickLogOut();
+    }
     return this.waitForIsOpened();
   }
 

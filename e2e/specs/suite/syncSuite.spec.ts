@@ -51,11 +51,13 @@ describe('Sync Test Suite', () => {
 
   beforeAll(async () => {
     return projectHelper.init({
-      admin: users.admin,
       localAdmin: users.localAdmin,
       localManager: users.localManager,
       localEngineer: users.localEngineer,
-      viewer: users.viewer
+      manager: users.manager,
+      viewer: users.viewer,
+      audit_admin: users.auditAdmin,
+      auditor: users.assignedAuditor
     });
   });
 
@@ -83,8 +85,6 @@ describe('Sync Test Suite', () => {
       let syncTestRuns: TestResult[];
 
       beforeAll(async () => {
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await projectHelper.openProject();
         notSyncTestRun = await projectHelper.importer.executeCucumberImport(testSuite, [cucumberImport], [builds.filenames[0]]);
         syncTestRuns = await projectHelper.importer.executeCucumberImport(
           testSuite, [syncImport, syncImport], [builds.filenames[1], builds.filenames[2]]);
