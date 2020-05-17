@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.3.10 (unreleased)
+## 0.3.10 (2020-05-17)
 
 Features:
   - Update Tests to use Admin API to create preconditions -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/100)
