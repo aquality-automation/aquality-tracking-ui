@@ -22,8 +22,8 @@ export class MenuBar {
     }
 
     async clickLogOut() {
-        if(element(by.css('.loader')).isPresent()) {
-            browser.navigate().back();
+        if(await element(by.css('.loader')).isPresent()) {
+            await browser.navigate().back();
         }
         return element(by.id('logout')).click();
     }
