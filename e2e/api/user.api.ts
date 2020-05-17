@@ -86,7 +86,7 @@ export class UserAPI extends BaseAPI {
         this.cookie = decodeURIComponent(authCookie.value)
     }
 
-    public async removeTestRun(testRunId: number) {
-        return this.sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id }, null);
+    public async removeTestRun(id: number, project_id: number) {
+        return this.sendDelete(Endpoints.testrun, { id, project_id }, null);
     }
 }
