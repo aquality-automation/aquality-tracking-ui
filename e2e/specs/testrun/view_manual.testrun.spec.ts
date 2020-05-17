@@ -73,6 +73,8 @@ describe('View Manual Test Run:', () => {
 
             it('Can not set empty Build Name', async () => {
                 await testRunView.setBuildName('');
+                await expect(testRunView.getBuildNameErrorMessage()).toBe('This field is required!', 'Error is not correct!')
+                await testRunView.cancelBuilNameEditor();
                 return expect(testRunView.getBuildName()).toBe(testrun.build_name, 'Build Name was cleared!');
             });
 
@@ -99,7 +101,7 @@ describe('View Manual Test Run:', () => {
                 testrun.author = '';
                 await testRunView.setExecutor(testrun.author);
                 await testRunView.refreshByBackButton();
-                return expect(testRunView.getExecutor()).toBe('Add...', 'Executor was not cleared!');
+                return expect(testRunView.getExecutor()).toBe('', 'Executor was not cleared!');
             });
 
             it('Can edit Execution Environment', async () => {
@@ -115,7 +117,7 @@ describe('View Manual Test Run:', () => {
                 await testRunView.setExecutionEnvironment(testrun.execution_environment);
                 await testRunView.refreshByBackButton();
                 return expect(testRunView.getExecutionEnvironment())
-                    .toBe('Add...', 'Execution Environment was not cleared!');
+                    .toBe('', 'Execution Environment was not cleared!');
             });
 
             it('Can not see CI Build', async () => {

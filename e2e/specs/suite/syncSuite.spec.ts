@@ -51,11 +51,13 @@ describe('Sync Test Suite', () => {
 
   beforeAll(async () => {
     return projectHelper.init({
-      admin: users.admin,
       localAdmin: users.localAdmin,
       localManager: users.localManager,
       localEngineer: users.localEngineer,
-      viewer: users.viewer
+      manager: users.manager,
+      viewer: users.viewer,
+      audit_admin: users.auditAdmin,
+      auditor: users.assignedAuditor
     });
   });
 
@@ -83,8 +85,6 @@ describe('Sync Test Suite', () => {
       let syncTestRuns: TestResult[];
 
       beforeAll(async () => {
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
-        await projectHelper.openProject();
         notSyncTestRun = await projectHelper.importer.executeCucumberImport(testSuite, [cucumberImport], [builds.filenames[0]]);
         syncTestRuns = await projectHelper.importer.executeCucumberImport(
           testSuite, [syncImport, syncImport], [builds.filenames[1], builds.filenames[2]]);
@@ -96,9 +96,9 @@ describe('Sync Test Suite', () => {
       });
 
       afterAll(async () => {
-        await projectHelper.editorAPI.removeTestRun(notSyncTestRun[0].id);
-        await projectHelper.editorAPI.removeTestRun(syncTestRuns[0].id);
-        return projectHelper.editorAPI.removeTestRun(syncTestRuns[1].id);
+        await projectHelper.adminAPI.removeTestRun(notSyncTestRun[0].id, projectHelper.project.id);
+        await projectHelper.adminAPI.removeTestRun(syncTestRuns[0].id, projectHelper.project.id);
+        return projectHelper.adminAPI.removeTestRun(syncTestRuns[1].id, projectHelper.project.id);
       });
 
       it('Check default fields if suite was not chosen', async () => {

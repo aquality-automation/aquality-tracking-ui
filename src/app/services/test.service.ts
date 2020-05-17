@@ -4,7 +4,6 @@ import { SimpleRequester } from './simple-requester';
 import { Test } from '../shared/models/test';
 import { TestSuite } from '../shared/models/testSuite';
 
-
 @Injectable()
 export class TestService extends SimpleRequester {
 

@@ -1,6 +1,7 @@
 import { elements, names, columns } from './constants';
 import { BasePage } from '../../base.po';
 import { waiter } from '../../../utils/wait.util';
+import { promise } from 'protractor';
 
 class TestRunList extends BasePage {
     constructor() {
@@ -11,8 +12,16 @@ class TestRunList extends BasePage {
         return elements.testRunsTable.clickAction(buildName, columns.build);
     }
 
-    isTestRunRowDisplayed(buildName: string) {
-        return elements.testRunsTable.isRowExists(buildName, columns.build);
+    async areAllTestRunsDisplayed(...buildNames: string[]) {
+        for (let i = 0; i < buildNames.length; i++) {
+            const buildName = buildNames[i];
+            const displayed = await elements.testRunsTable.isRowExists(buildName, columns.build);
+            if(!displayed) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     openTestRun(buildName: string) {
@@ -37,13 +46,13 @@ class TestRunList extends BasePage {
 
     async waitForTestRun(buildName: string) {
         return waiter.forTrue(async () => {
-            const isDisplayed = await this.isTestRunRowDisplayed(buildName);
+            const isDisplayed = await this.areAllTestRunsDisplayed(buildName);
             if (isDisplayed) {
                 return true;
             }
             await this.menuBar.import();
             await this.menuBar.testRuns();
-            return await this.isTestRunRowDisplayed(buildName);
+            return await this.areAllTestRunsDisplayed(buildName);
         }, 5, 3000);
     }
 
@@ -56,8 +65,23 @@ class TestRunList extends BasePage {
         return elements.testRunsTable.editRow(name, columns.milestone, build_name, columns.build);
     }
 
-    isTableEditable(): any {
+    isTableEditable(): Promise<boolean> {
         return elements.testRunsTable.isRowEditableByIndex(0);
+    }
+
+    clickDeleteAll(): promise.Promise<void> {
+        return elements.testRunsTable.deleteAll();
+    }
+
+    async selectTestRun(...build_names: string[]): Promise<void> {
+        for (let i = 0; i < build_names.length; i++) {
+            const build_name = build_names[i];
+            await elements.testRunsTable.selectRow(build_name, columns.build);
+        }
+    }
+
+    isSelectorAvailable(): Promise<boolean> {
+        return elements.testRunsTable.isSelectorAvailable();
     }
 }
 

@@ -23,7 +23,6 @@ import { AutofocusDirective } from '../derectives/auto-focus.derective';
 import { NgDatepickerModule } from 'custom-a1qa-ng2-datepicker';
 import { BaseLookupComponent } from '../elements/lookup/baseLookup';
 import { ClickableLinks } from '../derectives/clickableLinks.derective';
-import { InlineEditorModule } from '@qontu/ngx-inline-editor';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MaxLength } from '../derectives/maxLength.derective';
 import { UiSwitchModule } from 'ngx-ui-switch';
@@ -47,6 +46,8 @@ import { ColorDotsComponent } from '../elements/color-dots/color-dots.component'
 import { BsDropdownModule, TooltipModule, ModalModule, PopoverModule } from 'ngx-bootstrap';
 import { HighliteTextDirective } from '../derectives/highlite-text.derective';
 import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.component';
+import { SingleLineBarChartComponent } from '../elements/single-line-bar-chart/single-line-bar-chart.component';
+import { InlineEditorComponent } from '../elements/inline-editor/inline-editor.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,6 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     ReactiveFormsModule,
     DataTableModule,
     CommonModule,
-    InlineEditorModule,
     NgxEditorModule,
     FileUploadModule,
     RouterModule,
@@ -106,7 +106,9 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     TristateCheckboxComponent,
     ColorDotsComponent,
     HighliteTextDirective,
-    RegexpTesterComponent
+    RegexpTesterComponent,
+    SingleLineBarChartComponent,
+    InlineEditorComponent
   ],
   exports: [
     ClickableLinks,
@@ -116,7 +118,6 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     DisabledInlineDerective,
     FormsModule,
     ReactiveFormsModule,
-    InlineEditorModule,
     DataTableModule,
     BasePopupComponent,
     TableFilterComponent,
@@ -163,7 +164,9 @@ import { RegexpTesterComponent } from '../elements/regexp-tester/regexp-tester.c
     PopoverModule,
     CommonModule,
     HighliteTextDirective,
-    RegexpTesterComponent
+    RegexpTesterComponent,
+    SingleLineBarChartComponent,
+    InlineEditorComponent
   ]
 })
 export class SharedModule {}

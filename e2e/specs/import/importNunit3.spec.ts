@@ -22,8 +22,10 @@ describe('Import Test Run: Nunit V3', () => {
     };
 
     beforeAll(async () => {
-        await projectHepler.init();
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await projectHepler.init({
+            manager: users.manager
+        });
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         await projectHepler.openProject();
     });
 

@@ -21,6 +21,14 @@ class TestRunView extends BasePage {
     return elements.buildName.changeAndSetValue(build_name);
   }
 
+  getBuildNameErrorMessage(): Promise<string> {
+    return elements.buildName.getError();
+  }
+
+  cancelBuilNameEditor(): Promise<void> {
+    return elements.buildName.cancel();
+  }
+
   getMilestone(): Promise<string> {
     return elements.milestoneField.getValue();
   }

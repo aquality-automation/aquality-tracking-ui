@@ -14,7 +14,7 @@ export class IssueService extends SimpleRequester {
     };
 
     getIssues(issue: Issue): Promise<Issue[]> {
-        return this.doGet(this.endpoints.issues, issue).map(res => res.json()).toPromise();
+        return this.doGet(this.endpoints.issues, issue, true).map(res => res.json()).toPromise();
     }
 
     createIssue(issue: Issue, updateResults: boolean = false): Promise<Issue> {

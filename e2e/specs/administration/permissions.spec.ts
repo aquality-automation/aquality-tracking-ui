@@ -10,7 +10,7 @@ import projects from '../../data/projects.json';
 import { notFound } from '../../pages/notFound.po';
 
 const editorExamples = {
-    admin: usersTestData.admin,
+    autoAdmin: usersTestData.autoAdmin,
     localAdmin: usersTestData.localAdmin,
     localManager: usersTestData.localManager,
     manager: usersTestData.manager
@@ -27,12 +27,13 @@ describe('Administartion:', () => {
 
     beforeAll(async () => {
         await projectHelper.init({
-            admin: usersTestData.admin,
+            autoAdmin: usersTestData.autoAdmin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,
             manager: usersTestData.manager
         });
+        projectHelper.adminAPI.createUser(usersTestData.projectTemp);
     });
 
     afterAll(async () => {

@@ -21,9 +21,11 @@ describe('Test Run Matrix', () => {
     ];
 
     beforeAll(async () => {
-        await projectHepler.init();
+        await projectHepler.init({
+            manager: users.manager
+        });
         await projectHepler.importer.executeCucumberImport('Test', imports, builds.filenames);
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         await projectHepler.openProject();
     });
 

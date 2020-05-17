@@ -19,7 +19,7 @@ export class EmailSettingsService extends SimpleRequester {
     }
   }
 
-  getEmailsStatus(): Promise<EmailSettings> {
-    return this.doGet('/settings/email/status').map(res => res.json()).toPromise();
+  async getEmailsStatus(): Promise<boolean> {
+    return !!(await this.doGet('/settings/email/status').map(res => res.json()).toPromise()).enabled;
   }
 }

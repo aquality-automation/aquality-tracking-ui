@@ -48,7 +48,7 @@ class IssueCreateModal extends BasePage {
     }
 
     setExternalIssue(external_url: string): Promise<void> {
-        return elements.externalIssue.typeText(external_url);
+        return elements.externalIssue.changeAndSetValue(external_url);
     }
 
     getAssignee(): Promise<string> {

@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 import { NotificationsService } from 'angular2-notifications';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GlobalDataService } from './globaldata.service';
+import { ATError } from '../shared/models/error';
 
 @Injectable()
 export class SimpleRequester extends Http {
@@ -30,18 +31,18 @@ export class SimpleRequester extends Http {
     return !!this.cookieService.get('iio78');
   }
 
-  public handleError(err) {
-    let errorMessage: string = err.headers.get('errormessage');
-    if (errorMessage.startsWith('Duplicate entry')) {
-      const matches = errorMessage.match(/'([^']+)'/);
-      errorMessage = `The '${matches[1]}' value is duplicated by another entity!`;
+  public handleError(err:Response) {
+    let errorMessage: ATError = err.json()
+    if (errorMessage.message.startsWith('Duplicate entry')) {
+      const matches = errorMessage.message.match(/'([^']+)'/);
+      errorMessage.message = `The '${matches[1]}' value is duplicated by another entity!`;
     }
     if (+err.status === 401) {
       this.cookieService.remove('iio78');
     }
     this.notificationsService.error(
       `Ooops! ${err.status} code`,
-      errorMessage
+      errorMessage.message
     );
   }
 
@@ -88,10 +89,10 @@ export class SimpleRequester extends Http {
     return this.intercept(super.put(this.api + url, jsonString, { headers: headers }), true);
   }
 
-  protected doDelete(url: string, params: { [key: string]: any | any[]; } = null) {
+  protected doDelete(url: string, params: { [key: string]: any | any[]; } = null, body: any = undefined) {
     const headers = new Headers();
     this.createAuthorizationHeader(headers);
-    return this.intercept(super.delete(this.api + url, { headers, params }), false);
+    return this.intercept(super.delete(this.api + url, { headers, params, body }), false);
   }
 
   protected doPostFiles(url: string, fileList: File[], params: { [key: string]: any | any[]; }) {

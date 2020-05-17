@@ -23,6 +23,10 @@ export class BaseElement {
         return this.element.isPresent();
     }
 
+    async isDisplayed(): Promise<boolean> {
+        return this.element.isDisplayed();
+    }
+
     async isEnabled(): Promise<boolean> {
         return this.element.isEnabled();
     }

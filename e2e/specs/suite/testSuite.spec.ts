@@ -13,8 +13,10 @@ describe('Full Admin Test Suite', () => {
   const suite: TestSuite = suites.suiteCreation;
 
   beforeAll(async () => {
-    await projectHelper.init();
-    await logIn.logInAs(users.admin.user_name, users.admin.password);
+    await projectHelper.init({
+      manager: users.manager
+    });
+    await logIn.logInAs(users.manager.user_name, users.manager.password);
     await projectHelper.openProject();
   });
 

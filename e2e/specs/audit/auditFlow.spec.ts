@@ -23,7 +23,10 @@ describe('Audit:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
 
     beforeAll(async () => {
-        return projectHelper.init();
+        return projectHelper.init({
+            auditAdmin: usersTestData.auditAdmin,
+            assignedAuditor: usersTestData.assignedAuditor
+        });
     });
 
     afterAll(async () => {

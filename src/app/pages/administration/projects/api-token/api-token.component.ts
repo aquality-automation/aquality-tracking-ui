@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SimpleRequester } from '../../../../services/simple-requester';
 import { ProjectService } from '../../../../services/project.service';
 import { Project } from '../../../../shared/models/project';
-import { environment } from '../../../../../environments/environment';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   templateUrl: 'api-token.component.html',
@@ -20,10 +20,11 @@ export class APITokenComponent {
   token: string;
   public selectedProject: Project;
 
-  public hostUrl: string = environment.host;
+  public hostUrl = this.sanitizer.bypassSecurityTrustUrl(`${window.location.protocol}//${window.location.host}/api`);
 
   constructor(
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private sanitizer:DomSanitizer
   ) {
     this.projectService.getProjects({}).subscribe(result => {
       this.projects = result;

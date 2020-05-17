@@ -83,6 +83,63 @@ export class TestRunsComponent implements OnInit {
         run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
       }
     });
+
+    this.generateColumns();
+  }
+
+  handleAction($event) {
+    this.removeTestRun($event.entity);
+  }
+
+  tableDataUpdate($event: TestRun[]) {
+    this.testRunStatsFiltered = this.testRunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
+  }
+
+  rowClicked($event: TestRun) {
+    this.router.navigate([`/project/${$event.project_id}/testrun/${$event.id}`]);
+  }
+
+  bulkDelete(testRuns: TestRun[]){
+    this.testrunService.removeTestRun(testRuns);
+    this.testRuns = this.testRuns.filter(x => !testRuns.find(y => y.id === x.id));
+  }
+  
+  removeTestRun(testrun: TestRun) {
+    this.testrunToRemove = testrun;
+    this.removeModalTitle = `Remove Test Run: ${testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')}`;
+    this.removeModalMessage = `Are you sure that you want to delete the '${
+      testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
+      }' test run? This action cannot be undone.`;
+    this.hideModal = false;
+  }
+
+  async testRunUpdate(testrun: TestRun) {
+    await this.testrunService.createTestRun({
+      id: testrun.id,
+      label_id: testrun.label.id,
+      debug: testrun.debug,
+      milestone_id: testrun.milestone ? testrun.milestone.id : 0
+    });
+    this.testrunService.handleSuccess(`Test run '${
+      testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
+      }' was updated!`);
+    this.tableDataUpdate(this.testRunsTable.filteredData);
+  }
+
+  async execute($event) {
+    if (await $event) {
+      this.testrunService.removeTestRun(this.testrunToRemove).then(() => {
+        this.testRuns = this.testRuns.filter(x => x.id !== this.testrunToRemove.id);
+      });
+    }
+    this.hideModal = true;
+  }
+
+  wasClosed() {
+    this.hideModal = true;
+  }
+
+  generateColumns() {
     this.tbCols = [
       {
         name: 'Label',
@@ -179,53 +236,6 @@ export class TestRunsComponent implements OnInit {
       { name: 'Debug', property: 'debug', filter: true, sorting: true, type: TFColumnType.checkbox, editable: true },
       { name: 'Finish Time', property: 'finish_time', filter: true, sorting: true, type: TFColumnType.date }
     ];
-  }
-
-  handleAction($event) {
-    this.removeTestRun($event.entity);
-  }
-
-  tableDataUpdate($event: TestRun[]) {
-    this.testRunStatsFiltered = this.testRunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
-  }
-
-  rowClicked($event: TestRun) {
-    this.router.navigate([`/project/${$event.project_id}/testrun/${$event.id}`]);
-  }
-
-  removeTestRun(testrun: TestRun) {
-    this.testrunToRemove = testrun;
-    this.removeModalTitle = `Remove Test Run: ${testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')}`;
-    this.removeModalMessage = `Are you sure that you want to delete the '${
-      testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
-      }' test run? This action cannot be undone.`;
-    this.hideModal = false;
-  }
-
-  async testRunUpdate(testrun: TestRun) {
-    await this.testrunService.createTestRun({
-      id: testrun.id,
-      label_id: testrun.label.id,
-      debug: testrun.debug,
-      milestone_id: testrun.milestone ? testrun.milestone.id : 0
-    });
-    this.testrunService.handleSuccess(`Test run '${
-      testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
-      }' was updated!`);
-    this.tableDataUpdate(this.testRunsTable.filteredData);
-  }
-
-  async execute($event) {
-    if (await $event) {
-      this.testrunService.removeTestRun(this.testrunToRemove).then(() => {
-        this.testRuns = this.testRuns.filter(x => x.id !== this.testrunToRemove.id);
-      });
-    }
-    this.hideModal = true;
-  }
-
-  wasClosed() {
-    this.hideModal = true;
   }
 
   uploadResults() {

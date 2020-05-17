@@ -24,7 +24,6 @@ describe('Steps:', () => {
 
     beforeAll(async () => {
         return projectHelper.init({
-            admin: usersTestData.admin,
             localAdmin: usersTestData.localAdmin,
             localManager: usersTestData.localManager,
             localEngineer: usersTestData.localEngineer,

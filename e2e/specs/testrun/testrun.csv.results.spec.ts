@@ -11,9 +11,11 @@ describe('TestRun view manual:', () => {
     const builds = projectHelper.generateBuilds(1);
 
     beforeAll(async () => {
-        await projectHelper.init();
+        await projectHelper.init({
+            manager: users.manager
+        });
         await projectHelper.importer.executeCucumberImport('test', [cucumberImport], builds.filenames)[0];
-        await logIn.logInAs(users.admin.user_name, users.admin.password);
+        await logIn.logInAs(users.manager.user_name, users.manager.password);
         await projectHelper.openProject();
         await projectView.menuBar.testRuns();
         return testRunList.openTestRun(builds.names.build_1);

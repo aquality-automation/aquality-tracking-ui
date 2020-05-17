@@ -9,6 +9,7 @@ import { Row, CellElements } from './row.element';
 import { ManageColumns } from './manageCollumns.element';
 import { compareCSVStrings } from '../../utils/csv.util';
 import { Dots } from '../dots.element';
+import { Checkbox } from '../checkbox.element';
 
 const EC = protractor.ExpectedConditions;
 
@@ -23,6 +24,8 @@ export class SmartTable extends BaseElement {
     private refreshButton = this.element.element(by.css('.actions-header .ft-refresh'));
     private totalLabel = this.element.element(by.css('.ft-total-label'));
     private getCSVButton = this.element.element(by.id('getSCV'));
+    private deleteAllButton = this.element.element(by.css('.bulk-delete'));
+    private selectAllCheckbox = new Checkbox(this.element.element(by.css('th input[name="select_all"]')));
 
     constructor(locator: Locator) {
         super(locator);
@@ -167,6 +170,10 @@ export class SmartTable extends BaseElement {
 
     public clickBulkAction() {
         return this.bulkEditRow.clickAction();
+    }
+
+    public deleteAll() {
+        return this.deleteAllButton.click();
     }
 
     public async getCreationTextFieldValue(columnName: string) {
@@ -367,6 +374,10 @@ export class SmartTable extends BaseElement {
         const index = await this.getColumnIndex(column);
         const row = await this.getRow(searchValue, searchColumn);
         return row.removeMultiselectValueByColumnIndex(value, index);
+    }
+    
+    public isSelectorAvailable(): Promise<boolean> {
+        return this.selectAllCheckbox.isPresent();
     }
 
     private isCreationOpened() {
