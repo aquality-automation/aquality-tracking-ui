@@ -82,7 +82,7 @@ export class ProjectViewComponent implements OnInit {
 
     this.project = (await this.projectService.getProjects(this.project).toPromise())[0];
 
-    [this.allIssues,this.suites, this.testRuns, this.testRunStats] = await Promise.all([
+    [this.allIssues, this.suites, this.testRuns, this.testRunStats] = await Promise.all([
       this.issueService.getIssues({ project_id: projectId }),
       this.testSuiteService.getTestSuite({ project_id: projectId }),
       this.testrunService.getTestRun(this.testRun, 5),
@@ -175,16 +175,20 @@ export class ProjectViewComponent implements OnInit {
   calculateAutomationQuality(testRunStatsBySuites: { suite: TestSuite, stats: TestRunStat[] }[]): { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number } {
     let stat = { quality: 0, NA: 0, testIssue: 0, other: 0, appIssue: 0, passed: 0, total: 0 }
 
+    console.log(testRunStatsBySuites)
+
     for (const suiteStat of testRunStatsBySuites) {
       if (suiteStat.stats[0]) {
-        stat.NA += suiteStat.stats[0].not_assigned;
-        stat.appIssue += suiteStat.stats[0].app_issue;
-        stat.passed += suiteStat.stats[0].passed;
-        stat.testIssue += suiteStat.stats[0].warning;
-        stat.other += suiteStat.stats[0].other;
-        stat.total += suiteStat.stats[0].total;
+        stat.NA += suiteStat.stats[0].not_assigned ? suiteStat.stats[0].not_assigned : 0;
+        stat.appIssue += suiteStat.stats[0].app_issue ? suiteStat.stats[0].app_issue : 0;
+        stat.passed += suiteStat.stats[0].passed ? suiteStat.stats[0].passed : 0;
+        stat.testIssue += suiteStat.stats[0].warning ? suiteStat.stats[0].warning : 0;
+        stat.other += suiteStat.stats[0].other ? suiteStat.stats[0].other : 0;
+        stat.total += suiteStat.stats[0].total ? suiteStat.stats[0].total : 0;
       }
     }
+
+    console.log(stat)
 
     stat.quality = stat.total > 0 ? (1 - ((stat.NA * 1 + stat.testIssue * 0.75 + stat.other * 0.5) / (stat.total))) * 100 : 0;
     if (stat.quality < 0) {
@@ -204,10 +208,10 @@ export class ProjectViewComponent implements OnInit {
     for (const suiteStat of testRunStatsBySuite) {
       for (const stat of suiteStat.stats) {
         if (Math.floor(new Date().getTime() - new Date(stat.finish_time).getTime()) / (1000 * 60 * 60 * 24) < 90) {
-          ttlNA += stat.not_assigned;
-          ttltestIssue += stat.warning;
-          ttlOther += stat.other;
-          ttl += stat.total;
+          ttlNA += stat.not_assigned ? stat.not_assigned : 0;
+          ttltestIssue += stat.warning ? stat.warning : 0;
+          ttlOther += stat.other ? stat.other : 0;
+          ttl += stat.total ? stat.total : 0;
         }
       }
     }
@@ -220,6 +224,7 @@ export class ProjectViewComponent implements OnInit {
   }
 
   createChartData(data: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number }) {
+    console.log(data);
     return [{
       value: data.passed,
       color: '#28A745',

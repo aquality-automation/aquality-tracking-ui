@@ -76,6 +76,7 @@ export class ProjectHelper {
 
     public async dispose() {
         this.ifDisposed();
+        browser.navigate().back();
         try {
             await this.adminAPI.removeProject(this.project);
         } catch(err ) {

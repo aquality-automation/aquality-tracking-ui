@@ -13,7 +13,8 @@ enum Endpoints {
     customer = '/customer',
     apiToken = '/project/apiToken',
     projectPermission = '/users/permissions',
-    users = '/users'
+    users = '/users',
+    testrun = '/testrun',
 }
 
 export class UserAPI extends BaseAPI {
@@ -83,5 +84,9 @@ export class UserAPI extends BaseAPI {
         await logIn.logInAs(this.user.user_name, this.user.password);
         const authCookie = await browser.manage().getCookie('iio78');
         this.cookie = decodeURIComponent(authCookie.value)
+    }
+
+    public async removeTestRun(testRunId: number) {
+        return this.sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id }, null);
     }
 }

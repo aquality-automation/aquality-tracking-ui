@@ -96,9 +96,9 @@ describe('Sync Test Suite', () => {
       });
 
       afterAll(async () => {
-        await projectHelper.editorAPI.removeTestRun(notSyncTestRun[0].id);
-        await projectHelper.editorAPI.removeTestRun(syncTestRuns[0].id);
-        return projectHelper.editorAPI.removeTestRun(syncTestRuns[1].id);
+        await projectHelper.adminAPI.removeTestRun(notSyncTestRun[0].id);
+        await projectHelper.adminAPI.removeTestRun(syncTestRuns[0].id);
+        return projectHelper.adminAPI.removeTestRun(syncTestRuns[1].id);
       });
 
       it('Check default fields if suite was not chosen', async () => {
