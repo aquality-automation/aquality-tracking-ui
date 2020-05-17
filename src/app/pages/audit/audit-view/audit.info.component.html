@@ -93,10 +93,8 @@
             }">Audit Result:</label>
         </div>
         <div *ngIf="audit.status.id !== 1" class="col-sm-8">
-          <inline-editor [disabledInline]="!canEdit" [config]="{saveOnBlur: true, placeholder: 'Set Result'}"
-            *ngIf="canEdit" id="result" size="3" empty="Set Result" type="number" min="1" max="100" name="result"
+          <inline-editor [disabled]="!canEdit" [config]="{type:'number', size:'sm', saveOnBlur: true}" id="result" minlength=1 maxlength=3
             [(ngModel)]="audit.result" (onSave)="updateResult()" (onError)="resultError($event)"></inline-editor>
-          <div *ngIf="!canEdit">{{audit.result}}</div>
         </div>
 
         <div class="col-sm-12">

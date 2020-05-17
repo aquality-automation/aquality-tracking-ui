@@ -19,4 +19,3 @@ export const columns = {
     assignee: 'Assignee',
     externalIssue: 'External Issue'
 };
-

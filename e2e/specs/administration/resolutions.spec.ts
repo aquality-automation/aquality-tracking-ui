@@ -53,8 +53,8 @@ describe('Administartion: Custom Resolution:', () => {
     });
 
     afterAll(async () => {
-        await baseProjectHelper.dispose();
         await extraProjectHelper.dispose();
+        await baseProjectHelper.dispose();
     });
 
     using(editorExamples, (user, description) => {

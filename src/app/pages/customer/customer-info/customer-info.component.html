@@ -22,8 +22,8 @@
             <label for="name" class="label-inline">Name:</label>
           </div>
           <div class="col-sm-6 col-field no-padding">
-            <inline-editor [disabledInline]="!canEdit" maxLength="150" [name]="name" (onError)="nameError($event)"
-              min="3" placeholder="Name" type="text" trim="blur" [(ngModel)]="customer.name" [required]="true">
+            <inline-editor [disabled]="!canEdit" maxlength="150" [name]="name"
+              minlength="3" placeholder="Name" trim="blur" [(ngModel)]="customer.name" [required]="true">
             </inline-editor>
           </div>
         </div>

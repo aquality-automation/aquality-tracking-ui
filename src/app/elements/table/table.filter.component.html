@@ -1,6 +1,9 @@
 <manage-columns-modal *ngIf="columnManagement && columns" [(isHidden)]="hideManageColumnsModal" [shownColumns]="columns"
-    [hiddenColumns]="hiddenColumns" [buttons]="[{name:'Apply', execute:true }, {name:'Cancel', execute:false}]"
+    [hiddenColumns]="hiddenColumns" [buttons]="[{name:'Apply', execute:true }, {name:'cancel', execute:false}]"
     (execute)="execute($event)" (closed)="wasClosed()"></manage-columns-modal>
+<simple-popup *ngIf="!hideBulkDeleteModal" title="Bulk Delete" message="You are about to permanently delete selected Test Runs. You will not be able to recover these Test Runs. This action cannot be undone!"
+    [type]="'warning'" [buttons]="[{name:'I know what I`m doing', execute:true }, {name:'cancel', execute:false}]"
+    (execute)="executeBulkDelete($event)" (closed)="wasClosed()"></simple-popup>
 
 <div class="ft-wrapper-overflow">
     <div *ngIf="columns" overflowParent class="no-padding ft-content-overflow">
@@ -12,6 +15,7 @@
                         <mfBootstrapPaginator class="pull-left"></mfBootstrapPaginator>
                         <p class="pull-left ft-total-label">Total Rows: {{filteredData?.length}} ({{data?.length}})</p>
                         <div class="btn-group pull-right" role="group">
+                            <button *ngIf="allowBulkDelete && hasSelectedRows()" class="bulk-delete btn btn-sm btn-danger" (click)="confirmBulkDelete()">Delete All</button>
                             <button *ngIf="filteredData && allowExport" id="getSCV" class="btn btn-sm btn-secondary"
                                 [matMenuTriggerFor]="appMenu">Get CSV</button>
                             <mat-menu #appMenu="matMenu" xPosition="before">
@@ -205,19 +209,19 @@
                     <td *ngFor="let col of columns" class="vert-aligned" [setClass]="col.class">
 
                         <div *ngIf="col.editable && col.bulkEdit" class="ft-cell">
-                            <inline-editor class="full-width" [placeholder]="col?.name"
-                                [config]="{empty:'Add ' + col?.name}"
+                            <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" type="text" trim="blur"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
 
-                            <inline-editor [placeholder]="col?.name" *ngIf="(col.type === 'textarea')"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
-                                [config]="{empty:'Add...'}"
+                            <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
+                                *ngIf="col.type === 'textarea'"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
+                                [config]="{type:'textarea', size:'sm'}"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
@@ -272,17 +276,17 @@
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" type="text" trim="blur"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>
 
-                            <inline-editor [placeholder]="col?.name"
+                            <inline-editor class="full-width" [placeholder]="col?.name"
+                                [config]="{type:'textarea', size:'sm'}"
                                 *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxLength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
-                                [name]="col.property" [saveOnEnter]=false type="textarea" trim="blur"
-                                [config]="{empty:'Add...'}"
+                                [maxlength]="col.creation ? col.creation.creationLength ? col.creation.creationLength : '100' : '100'"
+                                [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
                             </inline-editor>

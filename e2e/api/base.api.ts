@@ -14,7 +14,7 @@ enum RequestType {
 export class BaseAPI {
     project: Project;
     token: string;
-    cookie: string;
+    protected cookie: string;
 
     constructor(project: Project, token: string, cookie: string = undefined) {
         this.project = project;

@@ -39,9 +39,9 @@
       <div *ngIf="testSuite && testSuite.name" class="col-md-6">
         <label class="pull-left label-inline">Name: </label>
         <div class="pull-left">
-          <inline-editor id="name" name="name" type="text" trim="blur" empty="not set" max="50" min="4"
-            [(ngModel)]="testSuite.name" (onError)="nameError()" (onSave)="updateSuite()"
-            [disabledInline]="!allowEdit">
+          <inline-editor id="name" name="name" trim="blur" empty="not set" maxlenght="50" minlenght="4"
+            [(ngModel)]="testSuite.name" (onSave)="updateSuite()"
+            [disabled]="!allowEdit">
           </inline-editor>
         </div>
       </div>

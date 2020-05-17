@@ -37,9 +37,11 @@ export class ResultGridComponent implements OnInit {
   @Input() testResultTempalte: TestResult;
   @ViewChild(ResultSearcherComponent) resultSearcher: ResultSearcherComponent;
   public testResults: TestResult[];
+  public refreshedResults: Promise<void>;
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
   @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue'];
   @Output() resultUpdated = new EventEmitter<TestResult[]>();
+  @Output() refreshed = new EventEmitter<TestResult[]>();
   public listOfResolutions: ResultResolution[];
   public finalResults: FinalResult[];
   public listOfIssues: Issue[];
@@ -82,7 +84,7 @@ export class ResultGridComponent implements OnInit {
     const projectUsers = (await this.userService.getProjectUsers(this.projectId).toPromise())
       .filter((x: LocalPermissions) => x.admin === 1 || x.manager === 1 || x.engineer === 1);
     this.users = projectUsers.map((x: LocalPermissions) => x.user);
-    this.refreshResults();
+    this.refreshedResults = this.refreshResults();
   }
 
   rowClicked($event) {
@@ -178,7 +180,8 @@ export class ResultGridComponent implements OnInit {
     if (result.executed) {
       this.listOfIssues = await this.issueService.getIssues({ project_id: this.projectId });
       await this.assignCreatedIssue(this.listOfIssues.find(x => x.id === result.result.id));
-      await this.refreshResults();
+      this.refreshedResults = this.refreshResults();
+      await this.refreshedResults;
     }
   }
 
@@ -219,6 +222,7 @@ export class ResultGridComponent implements OnInit {
     });
     this.listOfActiveIssues = this.listOfIssues.filter(x => x.status_id != 4);
     this.createColumns();
+    this.refreshed.emit(this.testResults);
   }
 
   private createColumns() {

@@ -48,7 +48,7 @@ export class ProjectHelper {
         try {
             await logIn.logInAs(this.admin.user_name, this.admin.password);
             const authCookie = await browser.manage().getCookie('iio78');
-            this.adminAPI = new UserAPI(decodeURIComponent(authCookie.value));
+            this.adminAPI = new UserAPI(decodeURIComponent(authCookie.value), this.admin);
             this.project = await this.adminAPI.createProject(this.project);
             const token = await this.adminAPI.createToken(this.project);
             if (permissions) {
@@ -76,7 +76,15 @@ export class ProjectHelper {
 
     public async dispose() {
         this.ifDisposed();
-        await this.adminAPI.removeProject(this.project);
+        browser.navigate().back();
+        try {
+            await this.adminAPI.removeProject(this.project);
+        } catch(err ) {
+            if((err as string).endsWith(`Credentials you've provided are not valid. Reenter please.`)) {
+                await this.adminAPI.relogin();
+                await this.adminAPI.removeProject(this.project);
+            }
+        }
         this.disposed = true;
     }
 

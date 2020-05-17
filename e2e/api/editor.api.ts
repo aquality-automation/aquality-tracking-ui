@@ -83,10 +83,6 @@ export class EditorAPI extends BaseAPI {
         return this.sendGet(Endpoints.milestone, milestone);
     }
 
-    public async removeTestRun(testRunId: number) {
-        return this.sendDelete(Endpoints.testrun, { id: testRunId, project_id: this.project.id }, null);
-    }
-
     public async createIssue(issue: Issue): Promise<Issue> {
         issue.project_id = this.project.id;
         issue.creator_id = 1;

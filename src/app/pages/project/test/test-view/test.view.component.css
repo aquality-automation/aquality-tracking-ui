@@ -16,12 +16,8 @@
   overflow: auto;
 }
 
-.inline-page-label{
-  margin-top: 5px !important;
-}
-
 .name-field{
-  font-size: 25px;
+  padding-top: 5px;
   margin-left: 70px;
 }
 

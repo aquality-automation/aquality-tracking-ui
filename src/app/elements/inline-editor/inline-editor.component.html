@@ -1,0 +1,51 @@
+<div class="ie-container"
+  [ngClass]="{'disabled': disabled}">
+  <div *ngIf="!editMode || disabled" #valueViewer class="btn-group" role="group">
+    <a *ngIf="value && config.type === 'link'" [href]="value" class="ie-value-holder link-holder form-control"
+      [ngClass]="{'form-control-sm': config.size == 'sm', 'form-control-lg': config.size == 'lg'}">{{placeholder}}</a>
+    <div *ngIf="value && config.type !== 'link'" class="ie-value-holder text-holder form-control"
+      [ngClass]="{'form-control-sm': config.size == 'sm', 'form-control-lg': config.size == 'lg', 'pre': config.type ==='textarea'}">{{value}}</div>
+    <div *ngIf="!value" class="ie-value-holder placeholder form-control"
+      [ngClass]="{'form-control-sm': config.size == 'sm', 'form-control-lg': config.size == 'lg'}">{{placeholder}}</div>
+    <button *ngIf="!disabled" type="button" class="btn btn-secondary ie-edit" (click)="toggleEditMode()">
+      <fa-icon class="icon" [icon]="icons.faMarker"></fa-icon>
+    </button>
+  </div>
+
+  <div *ngIf="editMode && !disabled" class="input-group" [formGroup]="inputForm">
+    <input *ngIf="editMode && config.type !== 'textarea'" formControlName="inputControl" class="form-control ie-editor" type="text"
+      [placeholder]="placeholder" [(ngModel)]="editValue"
+      [ngClass]="{
+        'form-control-sm': config.size == 'sm', 
+        'form-control-lg': config.size == 'lg',
+        'is-invalid': inputForm.invalid
+      }" (keydown.enter)="onEnter()" (blur)="onBlur()">
+    <textarea *ngIf="editMode && config.type ==='textarea'" formControlName="inputControl" class="form-control ie-editor" type="text"
+    [placeholder]="placeholder" [(ngModel)]="editValue"
+    [ngClass]="{
+      'form-control-sm': config.size == 'sm', 
+      'form-control-lg': config.size == 'lg',
+      'is-invalid': inputForm.invalid
+    }" (keydown.enter)="onEnter()" (blur)="onBlur()"></textarea>
+    <div *ngIf="inputForm.controls.inputControl.errors?.required" class="invalid-feedback order-last">
+      This field is required!
+    </div>
+    <div *ngIf="inputForm.controls.inputControl.errors?.minlength" class="invalid-feedback order-last">
+      Must be at least {{minlength}} characters long.
+    </div>
+    <div *ngIf="inputForm.controls.inputControl.errors?.maxlength" class="invalid-feedback order-last">
+      Only {{maxlength}} characters allowed.
+    </div>
+    <div *ngIf="inputForm.controls.inputControl.errors?.pattern && config.type === 'number'" class="invalid-feedback order-last">
+      Should be a number.
+    </div>
+    <div class="input-group-append">
+      <button type="button" class="btn btn-success" (click)="save()" [disabled]="inputForm.invalid">
+        <fa-icon class="icon ie-save" [icon]="icons.faCheck"></fa-icon>
+      </button>
+      <button type="button" class="btn btn-danger" (click)="cancel()">
+        <fa-icon class="icon ie-cancel" [icon]="icons.faTimes"></fa-icon>
+      </button>
+    </div>
+  </div>
+</div>

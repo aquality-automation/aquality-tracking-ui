@@ -1,0 +1,40 @@
+.ie-container .ie-value-holder {
+    border: 1px solid var(--main-border-color-light);
+    height: auto;
+}
+
+.ie-container:hover .ie-value-holder {
+    border: 1px solid var(--main-border-color);
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box
+}
+
+.ie-container.disabled .ie-value-holder,
+.ie-container.disabled:hover .ie-value-holder,
+.ie-value-holder {
+    border: none;
+}
+
+.ie-edit {
+    display: none;
+}
+
+.ie-container:hover .ie-edit {
+    display: block;
+}
+
+.placeholder {
+    color: var(--main-hover-text-color);
+}
+
+.link-holder {
+    text-decoration: underline;
+}
+
+.pre {
+    white-space: pre-line;
+    height: auto;
+}

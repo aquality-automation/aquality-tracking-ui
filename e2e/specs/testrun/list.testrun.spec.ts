@@ -78,17 +78,17 @@ describe('Test Run List:', () => {
 
             it('Can filter by inactive Milestone', async () => {
                 await testRunList.filterByMilestone(milestones.inactive.name);
-                await expect(testRunList.isTestRunRowDisplayed(testRuns.build_2.build_name))
+                await expect(testRunList.areAllTestRunsDisplayed(testRuns.build_2.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
-                return expect(testRunList.isTestRunRowDisplayed(testRuns.build_1.build_name))
+                return expect(testRunList.areAllTestRunsDisplayed(testRuns.build_1.build_name))
                     .toBe(true, 'Test run with milestone is not present');
             });
 
             it('Can filter by active Milestone', async () => {
                 await testRunList.filterByMilestone(milestones.active.name);
-                await expect(testRunList.isTestRunRowDisplayed(testRuns.build_1.build_name))
+                await expect(testRunList.areAllTestRunsDisplayed(testRuns.build_1.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
-                return expect(testRunList.isTestRunRowDisplayed(testRuns.build_2.build_name))
+                return expect(testRunList.areAllTestRunsDisplayed(testRuns.build_2.build_name))
                     .toBe(true, 'Test run with milestone is not present');
             });
 
@@ -121,17 +121,17 @@ describe('Test Run List:', () => {
 
             it('Can filter by inactive Milestone', async () => {
                 await testRunList.filterByMilestone(milestones.inactive.name);
-                await expect(testRunList.isTestRunRowDisplayed(testRuns.build_2.build_name))
+                await expect(testRunList.areAllTestRunsDisplayed(testRuns.build_2.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
-                return expect(testRunList.isTestRunRowDisplayed(testRuns.build_1.build_name))
+                return expect(testRunList.areAllTestRunsDisplayed(testRuns.build_1.build_name))
                     .toBe(true, 'Test run with milestone is not present');
             });
 
             it('Can filter by active Milestone', async () => {
                 await testRunList.filterByMilestone(milestones.active.name);
-                await expect(testRunList.isTestRunRowDisplayed(testRuns.build_1.build_name))
+                await expect(testRunList.areAllTestRunsDisplayed(testRuns.build_1.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
-                return expect(testRunList.isTestRunRowDisplayed(testRuns.build_2.build_name))
+                return expect(testRunList.areAllTestRunsDisplayed(testRuns.build_2.build_name))
                     .toBe(true, 'Test run with milestone is not present');
             });
         });

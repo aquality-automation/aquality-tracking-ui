@@ -1,4 +1,4 @@
-import { by, element, promise } from 'protractor';
+import { by, element, promise, browser } from 'protractor';
 import { CreateOptions } from './create.options';
 import { TestsOptions } from './tests.options';
 import { AuditsOptions } from './audits.options';
@@ -21,7 +21,10 @@ export class MenuBar {
             : undefined;
     }
 
-    clickLogOut() {
+    async clickLogOut() {
+        if(await element(by.css('.loader')).isPresent()) {
+            await browser.navigate().back();
+        }
         return element(by.id('logout')).click();
     }
 

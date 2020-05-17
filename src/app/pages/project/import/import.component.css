@@ -30,6 +30,7 @@ ui-switch{
   padding-bottom: 4px;
 }
 
-label.btn {
+.btn {
   margin: 0;
+  height: 33px;
 }
