@@ -3,12 +3,11 @@
 </div>
 
 <div class="panel-body">
-  <simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
+  <app-modal *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
     [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
-    (closed)="wasClosed()"></simple-popup>
+    (closed)="wasClosed()"></app-modal>
 
   <table-filter id="milestones-table" *ngIf="milestones && columns" [data]="milestones" [columns]="columns" [defaultSortBy]="defSort"
     (action)="handleAction($event)" [queryParams]="true" [allowDelete]="canEdit" [allowCreate]="canEdit"
     (dataChange)="updateMilestone($event)" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
-
 </div>

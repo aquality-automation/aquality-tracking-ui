@@ -1,6 +1,5 @@
 import {
-  Directive, ElementRef, AfterViewChecked,
-  Input, HostListener
+  Directive, ElementRef, AfterViewChecked, HostListener
 } from '@angular/core';
 
 @Directive({

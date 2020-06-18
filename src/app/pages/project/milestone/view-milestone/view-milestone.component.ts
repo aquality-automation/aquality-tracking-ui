@@ -1,32 +1,33 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
-import { TestRunService } from '../../../../services/testRun.service';
 import { TestRun } from '../../../../shared/models/testRun';
 import { FinalResult } from '../../../../shared/models/final-result';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { TestService } from '../../../../services/test.service';
 import { Test } from '../../../../shared/models/test';
 import { TestResult } from '../../../../shared/models/test-result';
-import { TestSuite } from '../../../../shared/models/testSuite';
-import { FinalResultService } from '../../../../services/final_results.service';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { ResultResolutionsChartsComponent } from '../../../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { FinalResultChartsComponent } from '../../../../elements/charts/finalResults/finalResults.charts.component';
-import { TestSuiteService } from '../../../../services/testSuite.service';
-import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
-import { Subscription } from 'rxjs/Subscription';
-import { PermissionsService, ELocalPermissions, EGlobalPermissions } from '../../../../services/current-permissions.service';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { Issue } from '../../../../shared/models/issue';
-import { IssueService } from '../../../../services/issue.service';
+import { MilestoneService } from 'src/app/services/milestone/milestones.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { TestService } from 'src/app/services/test/test.service';
+import { FinalResultService } from 'src/app/services/final-result/final_results.service';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { PermissionsService, ELocalPermissions, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { IssueService } from 'src/app/services/issue/issue.service';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ConditionalExpr } from '@angular/compiler';
 
 @Component({
   templateUrl: './view-milestone.component.html',
-  styleUrls: ['./view-milestone.component.css']
+  styleUrls: ['./view-milestone.component.scss']
 })
 export class ViewMilestoneComponent implements OnInit, OnDestroy {
 
@@ -65,6 +66,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   canEdit: boolean;
   icons = { faExclamationTriangle };
   warningMessage: string;
+  myDate = new Date().getTime();
 
   async ngOnInit() {
     this.paramsSubscription = this.route.params.subscribe(params => {
@@ -121,7 +123,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     return Promise.all([
       this.suitesService.getTestSuite({ project_id: this.milestone.project_id }),
       this.testRunService.getTestRun({ project_id: this.milestone.project_id, milestone_id: this.milestone.id }),
-      this.resultResolutionService.getResolution(this.milestone.project_id).toPromise(),
+      this.resultResolutionService.getResolution(this.milestone.project_id),
       this.finalResultService.getFinalResult({}),
       this.milestoneService.getMilestoneResults(this.milestone),
       this.testService.getTest({ project_id: this.milestone.project_id }),

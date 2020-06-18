@@ -1,21 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { TestRunService } from '../../../../services/testRun.service';
-import { TestSuiteService } from '../../../../services/testSuite.service';
-import { MilestoneService } from '../../../../services/milestones.service';
-import { TestSuite } from '../../../../shared/models/testSuite';
 import { Milestone } from '../../../../shared/models/milestone';
 import { TestRun } from '../../../../shared/models/testRun';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 
 @Component({
   templateUrl: './create-testrun.component.html',
-  providers: [
-    TestRunService,
-    SimpleRequester,
-    TestSuiteService,
-    MilestoneService
-  ]
 })
 export class CreateTestRunComponent implements OnInit {
   newBuildName: string;
@@ -64,7 +57,7 @@ export class CreateTestRunComponent implements OnInit {
       testRun.milestone_id = this.milestone.id;
     }
     const result = await this.postService.createTestRun(testRun);
-    this.router.navigate(['/project/' + this.projectId + '/testrun/' + result.id]);
+    this.router.navigate([`/project/${this.projectId}/testrun/${result.id}`]);
   }
 
   async createTestSuite(name: string) {

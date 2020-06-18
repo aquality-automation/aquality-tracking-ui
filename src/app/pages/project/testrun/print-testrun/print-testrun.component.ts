@@ -1,20 +1,20 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { BasePopupComponent } from '../../../../elements/modals/basePopup.component';
 import { TestResult } from '../../../../shared/models/test-result';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { TestRun } from '../../../../shared/models/testRun';
-import { TestRunService } from '../../../../services/testRun.service';
-import { TestRunStat } from '../../../../shared/models/testrunStats';
-import { ProjectService } from '../../../../services/project.service';
 import { Project } from '../../../../shared/models/project';
+import { TestRunStat } from 'src/app/shared/models/testrun-stats';
+import { ProjectService } from 'src/app/services/project/project.service';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { ModalComponent } from 'src/app/elements/modals/modal.component';
 
 @Component({
     selector: 'print-testrun-modal',
     templateUrl: 'print-testrun.component.html',
-    styleUrls: ['print-testrun.component.css']
+    styleUrls: ['print-testrun.component.scss']
 })
-export class PrintTestrunComponent extends BasePopupComponent implements OnInit {
+export class PrintTestrunComponent extends ModalComponent implements OnInit {
     @Input() isHidden: boolean;
     @Input() title = 'PDF Report';
     @Input() type = '';
@@ -51,18 +51,15 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         super();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.testResultsToPrint = this.testResults;
-        this.projectService.getProjects({ id: this.testRun.project_id }).subscribe(projects => {
-            this.project = projects[0];
-            this.testRunService.getTestsRunStats({
-                project_id: this.testRun.project_id,
-                test_suite: this.testRun.test_suite
-            }).then(testRuns => {
-                this.testRunStats = testRuns;
-                this.regenerate();
-            });
+        this.project = (await this.projectService.getProjects({ id: this.testRun.project_id }))[0];
+        this.testRunStats = await this.testRunService.getTestsRunStats({
+            project_id: this.testRun.project_id,
+            test_suite: this.testRun.test_suite
         });
+
+        this.regenerate();
     }
 
     regenerate() {
@@ -131,26 +128,28 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         return textLines.length * fontSize * lineHeight;
     }
 
-    addTable(textHeight) {
+    addTable(textHeight: number) {
         const columns = [
-            { title: 'Test Name', dataKey: 'name' },
-            { title: 'Result', dataKey: 'final_result_name' },
-            { title: 'Resolution', dataKey: 'test_resolution_name' },
-            { title: 'Issue', dataKey: 'issue' },
+            { header: 'Test Name', dataKey: 'name' },
+            { header: 'Result', dataKey: 'final_result_name' },
+            { header: 'Resolution', dataKey: 'test_resolution_name' },
+            { header: 'Issue', dataKey: 'issue' },
         ];
 
         const options = {
+            columns,
+            body: this.rows,
             startY: (this.showChart ? 134 : 84) + textHeight,
             styles: { overflow: 'linebreak' },
             columnStyles: {
-                name: { columnWidth: 100 },
-                final_result_name: { columnWidth: 20 },
-                test_resolution_name: { columnWidth: 25 },
-                comment: { columnWidth: 45 },
+                name: { cellWidth: 'auto' },
+                final_result_name: { cellWidth: 20 },
+                test_resolution_name: { cellWidth: 25 },
+                comment: { cellWidth: 45 },
             }
         };
         if (this.rows.length > 0) {
-            this.doc.autoTable(columns, this.rows, options);
+            this.doc.autoTable(options);
         }
     }
 
@@ -200,7 +199,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         const startHeight = 84;
         const trsNumber = this.testRunsToShow < this.testRunStats.length ? this.testRunsToShow : this.testRunStats.length;
         const step = (200 / trsNumber);
-        const testValue = 40 / (this.testRunStats[0].total + 10);
+        const testValue = 40 / (this.testRunStats[0].total ? this.testRunStats[0].total : 0  + 10);
         const failedPoints = this.getPoints(step, testValue, 'failed', startHeight + 40);
         const passedPoints = this.getPoints(step, testValue, 'passed', startHeight + 40);
         const totalPoints = this.getPoints(step, testValue, 'total', startHeight + 40);
@@ -260,7 +259,7 @@ export class PrintTestrunComponent extends BasePopupComponent implements OnInit 
         });
     }
 
-    getPoints(step, value, property, startValue): {startStep: number, startValue: number}[] {
+    getPoints(step, value, property, startValue): { startStep: number, startValue: number }[] {
         let reversed = [];
         reversed = reversed.concat(this.testRunStats);
         if (reversed.length > this.testRunsToShow) {

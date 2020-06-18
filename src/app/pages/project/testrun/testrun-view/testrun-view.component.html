@@ -1,0 +1,193 @@
+<notify-team-modal *ngIf="users" [(isHidden)]="hideNotifyModal" [testRun]="testRun" [users]="users"
+  [buttons]="[{name:'Send Email', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
+  (closed)="wasClosed()"></notify-team-modal>
+
+<print-testrun-modal *ngIf="resultGridComponent && resultGridComponent.testResults" [(isHidden)]="hidePrintModal"
+  [testRun]="testRun" [testResults]="resultGridComponent.testResults"
+  [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
+  (closed)="wasClosed()"></print-testrun-modal>
+
+<div *ngIf="testRun" class="container-fluid panel-padding">
+
+  <div class="row">
+    <div class="col-sm-2">
+      <h2 id="test-run-view">
+        Test Run
+      </h2>
+    </div>
+    <div *ngIf="testRun" class="col-sm-10">
+      <div class="btn-group pull-right margin-right-cut-md">
+        <button *ngIf="canEdit && !isFinished() && canFinish()" id="finish" class="btn btn-success"
+          (click)="finishTestRun()">Finish
+          <fa-icon class="icon" [icon]="icons.faStop"></fa-icon>
+        </button>
+        <button *ngIf="canEdit && isFinished() && canFinish()" id="reopen" class="btn btn-success"
+          (click)="reopenTestRun()">Reopen
+          <fa-icon class="icon" [icon]="icons.faPlay"></fa-icon>
+        </button>
+        <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
+          <fa-icon class="icon" [icon]="icons.faFilePdf"></fa-icon>
+        </button>
+        <button *ngIf="canSendEmail" class="btn btn-success" (click)="sendReport()">Notify Team
+          <fa-icon class="icon" [icon]="icons.faPaperPlane"></fa-icon>
+        </button>
+        <div class="btn-group" role="group">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Compare With
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a *ngIf="prevTR" class="dropdown-item" routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:prevTR, suite:testRun.test_suite.id, second_tr:testRun.id}">Previous Test Run</a>
+            <a *ngIf="nextTR" class="dropdown-item" routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id, second_tr:nextTR}">Next Test Run</a>
+            <a *ngIf="latestTR" class="dropdown-item" routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id, second_tr:latestTR}">Latest Test Run</a>
+            <div *ngIf="prevTR || nextTR || latestTR" class="dropdown-divider"></div>
+            <a class="dropdown-item" routerLink="/project/{{testRun.project_id}}/testrun/compare"
+              [queryParams]="{first_tr:testRun.id, suite:testRun.test_suite.id}">Select Test Run ...</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown-divider"></div>
+
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="build_name">Build Name:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id='build_name' [disabled]="!canEdit" [disabled]="!canEdit" maxLength="500" min="3"
+            placeholder="Build Name" trim="blur" [(ngModel)]="testRun.build_name" (onSave)="testRunUpdate()"
+            [required]="true">
+          </inline-editor>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="testRun.test_suite" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="suite_link">Test Suite:</label>
+        </div>
+        <div class="col-sm-9">
+          <a id="suite_link" routerLink="/project/{{testRun.project_id}}/tests"
+            [queryParams]="{suite:testRun.test_suite.id}">{{testRun.test_suite.name}}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="start-time">Start Time:</label>
+        </div>
+        <div class="col-sm-9">
+          <p class="inline" id="start-time">{{testRun?.start_time | date:'MMM dd, yyyy hh:mm:ss a'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div *ngIf="testRun.author || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="executor">Executor:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id="executor" [disabled]="!canEdit" maxLength="500" name="Executor" placeholder="Executor"
+            trim="blur" [(ngModel)]="testRun.author" (onSave)="testRunUpdate()" [required]="false">
+          </inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun.execution_environment || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="execution_environment">Environment:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor id="execution_environment" [disabled]="!canEdit" maxLength="500" name="ExecutionEnvironment"
+            placeholder="Execution Environment" trim="blur" [(ngModel)]="testRun.execution_environment"
+            (onSave)="testRunUpdate()" [required]="false"></inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun?.finish_time" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="duration">Duration:</label>
+        </div>
+        <div class="col-sm-9">
+          <p id="duration" class="inline">{{calculateDuration()}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="debug">Debug</label>
+        </div>
+        <div class="col-sm-9">
+          <input id="debug" (change)="changeDebugState($event.srcElement)" type="checkbox" name="isActive"
+            [(ngModel)]="testRun.debug" [disabled]="!canEdit">
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="(testRun.ci_build || canEdit) && testRun.label_id !== 2" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label>CI Build:</label>
+        </div>
+        <div class="col-sm-9">
+          <inline-editor *ngIf="canEdit" maxLength="500" [config]="{type:'link', size:'sm'}" placeholder="CI Build"
+            trim="blur" [(ngModel)]="testRun.ci_build" (onSave)="testRunUpdate()" [required]="false">
+          </inline-editor>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="testRun.milestone || canEdit" class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-3">
+          <label for="milestone">Milestone:</label>
+        </div>
+        <div class="col-sm-9">
+          <lookup-autocomplete [disabled]="!canEdit" (searchText)="createMilestone($event)" [allowCreation]="true"
+            id="milestone" name="milestone" [(model)]="testRun.milestone" (modelChange)="testRunUpdate()"
+            [allowEmptyValue]="true" [small]="true" [propertiesToShow]="['name']" [array]="milestones"
+            placeholder="Not Selected">
+          </lookup-autocomplete>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="dropdown-divider"></div>
+
+  <div class="row">
+    <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
+      <final-result-chart [testResults]="resultGridComponent.testResults"
+        (clickedResult)="finalResultChartClick($event)">
+        Loading...
+      </final-result-chart>
+    </div>
+    <div class="col-sm-6" *ngIf="resultGridComponent && resultGridComponent.testResults?.length">
+      <result-resolution-chart [testResults]="resultGridComponent.testResults"
+        (clickedResult)="resolutionChartClick($event)">Loading...
+      </result-resolution-chart>
+    </div>
+  </div>
+
+  <div *ngIf="testResultTempalte">
+    <results-grid id="testRunViewResultsGrid" [testResultTempalte]="testResultTempalte" (refreshed)="assigneResults($event)">Loading...</results-grid>
+  </div>
+</div>

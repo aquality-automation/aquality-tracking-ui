@@ -9,7 +9,7 @@
                 'badge-success': +issue.status.color === 5
             }">{{issue.status.name}}</span></h2>
         </div>
-        <div *ngIf="canEdit" class="col-sm-6">
+        <div *ngIf="!isExpressionOverlapped() && !isExpressionInvalid() && canEdit" class="col-sm-6">
             <div id="flow-buttons" class="btn-group pull-right" role="group">
                 <button *ngIf="+issue.status.id === 1" id="start-progress" type="button" class="btn btn-warning"
                     (click)="setStatus(3)">Start Progress</button>
@@ -21,7 +21,8 @@
                     (click)="setStatus(1)">Re Open</button>
                 <button *ngIf="+issue.status.id === 3" id="cannot-reproduce" type="button" class="btn btn-info"
                     (click)="setStatus(2)">Can Not Reproduce</button>
-                <button *ngIf="+issue.status.id !== 4" id="save" type="button" class="btn btn-success" (click)="saveIssue()">Save</button>
+                <button *ngIf="+issue.status.id !== 4" id="save" type="button" class="btn btn-success"
+                    (click)="saveIssue()">Save</button>
             </div>
         </div>
     </div>
@@ -70,24 +71,28 @@
                     </div>
                     <div class="col-sm-12 no-padding">
                         <label for="issue-external-url">External Issue:</label>
-                        <inline-editor placeholder="External Issue" id="issue-external-url" [(ngModel)]="issue.external_url"
-                          [disabled]="!canEdit || issue.status_id === 4" [config]="{type:'link', saveOnEnter:true, saveOnBlur:true}"></inline-editor>
+                        <inline-editor placeholder="External Issue" id="issue-external-url"
+                            [(ngModel)]="issue.external_url" [disabled]="!canEdit || issue.status_id === 4"
+                            [config]="{type:'link', saveOnEnter:true, saveOnBlur:true}"></inline-editor>
                     </div>
                 </div>
             </div>
             <div class="col-sm-12 no-padding">
                 <label for="issue-expression">Regular Expression:</label>
                 <div class="input-group">
-                    <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
+                    <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" name="expression" #expression="ngModel" 
                         [ngClass]="{
-                    'is-valid': isExpressionOverlapped(), 
-                    'is-invalid': isExpressionOverlapped()
+                    'is-valid': !isExpressionOverlapped() && !isExpressionInvalid() && expression.touched, 
+                    'is-invalid': isExpressionOverlapped() || isExpressionInvalid()
                     }" [(ngModel)]="issue.expression" [disabled]="!canEdit || issue.status_id === 4"
-                        (keyup)="onExpressionUpdate($event)">
-                    <div class="invalid-feedback">
+                        (keyup)="onExpressionUpdate()">
+                    <div *ngIf="isExpressionOverlapped()" class="invalid-feedback">
                         Expression is overlapped!
                     </div>
-                    <div *ngIf="!isExpressionOverlapped() && canEdit && issue.status_id !== 4"
+                    <div *ngIf="isExpressionInvalid()" class="invalid-feedback">
+                        Expression is not valid!
+                    </div>
+                    <div *ngIf="!isExpressionOverlapped() && !isExpressionInvalid() && canEdit && issue.status_id !== 4"
                         class="input-group-append">
                         <button class="btn btn-success" type="button" id="save-and-assign"
                             (click)="saveExpressionAndAssignIssue()"

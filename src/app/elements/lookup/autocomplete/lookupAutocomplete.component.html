@@ -10,7 +10,7 @@
     <div class="input-group">
         <input [ngClass]="{
         'inline-selector': inline,
-        'lookup-selector-sm': small
+        'form-control-sm': small
       }" [disabled]="disabled" autocomplete="off" [required]="!allowEmptyValue" [placeholder]="placeholder"
             #lookupField name="lookupField" [maxlength]="maxlength" (focus)="toggleOn()" class="form-control"
             (click)="toggleOn()" (keyup.esc)="toggleOff()" (ngModelChange)="onKey($event)" [ngModel]="selectedItemText">

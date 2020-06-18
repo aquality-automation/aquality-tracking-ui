@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { CanActivate, CanDeactivate } from '@angular/router';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { GuardService } from './guard.service';
-import { EGlobalPermissions, ELocalPermissions } from '../../services/current-permissions.service';
-
-
+import { EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { GuardService } from 'src/app/services/guard.service';
+import { TestResultViewComponent } from 'src/app/pages/project/results/results-view/testresult-view.component';
+import { TestViewComponent } from 'src/app/pages/project/test/test-view/test-view.component';
 
 @Injectable()
 export class ProjectGuard implements CanActivate {
@@ -183,3 +183,19 @@ export class ProjectImportGuard implements CanActivate {
 }
 
 
+
+@Injectable()
+export class ResultViewCanDeactivate implements CanDeactivate<TestResultViewComponent> {
+  async canDeactivate(component: TestResultViewComponent) {
+    const result = await component.canDeactivate();
+    return result;
+  }
+}
+
+@Injectable()
+export class TestViewCanDeactivate implements CanDeactivate<TestViewComponent> {
+  async canDeactivate(component: TestViewComponent) {
+    const result = await component.canDeactivate();
+    return result;
+  }
+}

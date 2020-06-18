@@ -1,25 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Audit, AuditAttachment, AuditComment, Service } from '../../../shared/models/audit';
-import { AuditService } from '../../../services/audits.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../services/user.services';
 import { User } from '../../../shared/models/user';
 import { BaseComment } from '../../../shared/models/general';
-import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
-import * as enLocale from 'date-fns/locale/en';
-import { TransformationsService } from '../../../services/transformations.service';
 import BlobUtils from '../../../shared/utils/blob.utils';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../services/current-permissions.service';
 import { faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { UserService } from 'src/app/services/user/user.services';
+import { AuditService } from 'src/app/services/audit/audits.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 
 @Component({
   templateUrl: './audit.info.component.html',
-  styleUrls: ['./audit.info.component.css'],
-  providers: [
-    TransformationsService,
-    AuditService,
-    UserService
-  ]
+  styleUrls: ['./audit.info.component.scss']
 })
 
 export class AuditInfoComponent implements OnInit {
@@ -39,13 +31,13 @@ export class AuditInfoComponent implements OnInit {
   modalMessage: string;
   disableComments: boolean;
   buttons: { execute: string, name: string }[] = [];
-  DateOpts: DatepickerOptions = {
-    locale: enLocale,
-    minYear: new Date().getFullYear(),
-    displayFormat: 'MM/DD/YY',
-    barTitleFormat: 'MMMM YYYY',
-    firstCalendarDay: 1,
-  };
+  // DateOpts: DatepickerOptions = {
+  //   locale: enLocale,
+  //   minYear: new Date().getFullYear(),
+  //   displayFormat: 'MM/DD/YY',
+  //   barTitleFormat: 'MMMM YYYY',
+  //   firstCalendarDay: 1,
+  // };
   auditors: User[];
   URL: string;
   events = { remove: 'remove', start: 'start', submit: 'submit', finish: 'finish' };
@@ -62,9 +54,9 @@ export class AuditInfoComponent implements OnInit {
   async ngOnInit() {
     const auditId = this.route.snapshot.params.auditId;
     this.URL = `/audit/attachment?audit_id=${auditId}`;
-    this.auditors = await this.userService.getUsers({ auditor: 1 }).toPromise();
-    this.auditService.getServices().subscribe(services => this.services = services);
-    const audits = await this.auditService.getAudits({ id: auditId }).toPromise();
+    this.auditors = await this.userService.getUsers({ auditor: 1 });
+    this.services = await this.auditService.getServices();
+    const audits = await this.auditService.getAudits({ id: auditId });
 
     if (audits.length === 0) {
       this.router.navigate(['**']);
@@ -105,21 +97,20 @@ export class AuditInfoComponent implements OnInit {
   }
 
   async updateAttachments() {
-    this.attachments = await this.auditService.getAuditAttachments(this.audit.id, this.audit.project.id).toPromise();
+    this.attachments = await this.auditService.getAuditAttachments(this.audit.id, this.audit.project.id);
   }
 
-  removeAttachment(id: number) {
+  async removeAttachment(id: number) {
     this.removingInProgress = true;
-    this.auditService.removeAuditAttachment(id, this.audit.project.id).subscribe(() => {
-      this.updateAttachments();
-      this.removingInProgress = false;
-    });
+    await this.auditService.removeAuditAttachment(id, this.audit.project.id);
+    this.updateAttachments();
+    this.removingInProgress = false;
   }
 
-  downloadAttach(attach: AuditAttachment) {
-    this.auditService.downloadAuditAttachment(attach.id, this.audit.project.id).subscribe(blob => {
-      BlobUtils.download(blob, this.getAttachName(attach));
-    }, () => this.updateAttachments());
+  async downloadAttach(attach: AuditAttachment) {
+    const blob = await this.auditService.downloadAuditAttachment(attach.id, this.audit.project.id);
+    BlobUtils.download(blob, this.getAttachName(attach));
+    this.updateAttachments();
   }
 
   getAttachName(attach: AuditAttachment) {
@@ -135,13 +126,10 @@ export class AuditInfoComponent implements OnInit {
     return this.audit.due_date ? new Date(this.audit.due_date.toString()) : new Date();
   }
 
-  auditorsChange($event) {
-    this.auditService.updateAuditors($event, this.audit.id).finally(() => {
-      this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(res => {
-        this.audit.auditors = res[0].auditors;
-        this.updateCanEdit();
-      });
-    }).subscribe();
+  async auditorsChange($event) {
+    await this.auditService.updateAuditors($event, this.audit.id);
+    await this.auditService.getAudits({ id: this.audit.id });
+    this.updateCanEdit();
   }
 
   getAuditorsString() {
@@ -153,43 +141,33 @@ export class AuditInfoComponent implements OnInit {
   }
 
   async updateResult() {
-    try {
-      await this.auditService.createOrUpdateAudit({
-        id: this.audit.id,
-        result: this.audit.result,
-        project: this.audit.project
-      }).toPromise();
-      this.auditService.handleSuccess('Audit Result updated.');
-    } catch (error) {
-      this.auditService.handleError(error);
-    }
+    await this.auditService.createOrUpdateAudit({
+      id: this.audit.id,
+      result: this.audit.result,
+      project: this.audit.project
+    });
+    this.auditService.handleSuccess('Audit Result updated.');
   }
 
   async updateService() {
-    try {
-      await this.auditService.createOrUpdateAudit({
-        id: this.audit.id,
-        service: this.audit.service,
-        project: this.audit.project
-      }).toPromise();
-      this.auditService.handleSuccess('Audit Service updated.');
-    } catch (error) {
-      this.auditService.handleError(error);
-    }
+    await this.auditService.createOrUpdateAudit({
+      id: this.audit.id,
+      service: this.audit.service,
+      project: this.audit.project
+    });
+    this.auditService.handleSuccess('Audit Service updated.');
   }
 
-  update() {
-    this.auditService.createOrUpdateAudit(this.audit).subscribe(() => {
-      this.getAudit();
-      this.auditService.handleSuccess('Audit was saved.');
-    });
+  async update() {
+    await this.auditService.createOrUpdateAudit(this.audit);
+
+    this.getAudit();
+    this.auditService.handleSuccess('Audit was saved.');
   }
 
-  getAudit() {
-    this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }).subscribe(res => {
-      this.audit = res[0];
-      this.updateCanEdit();
-    });
+  async getAudit() {
+    this.audit = (await this.auditService.getAudits({ id: this.route.snapshot.params['auditId'] }))[0];
+    this.updateCanEdit();
   }
 
   resultError($event) {
@@ -258,10 +236,11 @@ export class AuditInfoComponent implements OnInit {
     this.hideModal = true;
   }
 
-  changeAuditStatus(value: String | boolean) {
+  async changeAuditStatus(value: String | boolean) {
     switch (value) {
       case this.events.remove:
-        this.auditService.removeAudit(this.audit).subscribe(() => this.router.navigate(['/audit']));
+        await this.auditService.removeAudit(this.audit);
+        this.router.navigate(['/audit']);
         break;
       case this.events.start:
         this.start();
@@ -275,13 +254,14 @@ export class AuditInfoComponent implements OnInit {
     }
   }
 
-  wasClosed($event: boolean) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
-  addComment(comment: BaseComment) {
+  async addComment(comment: BaseComment) {
     const auditComment: AuditComment = comment;
     auditComment.audit_id = this.audit.id;
-    this.auditService.createOrUpdateAuditComment(auditComment, this.audit.project.id).subscribe(res => this.getAudit());
+    await this.auditService.createOrUpdateAuditComment(auditComment, this.audit.project.id);
+    this.getAudit();
   }
 }

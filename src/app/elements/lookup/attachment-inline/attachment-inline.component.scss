@@ -1,0 +1,56 @@
+label {
+    cursor: pointer;
+}
+
+label:hover {
+    color: var(--main-hover-text-color);
+}
+
+.img-modal-overlay {
+    padding-top: 120px;
+    display: block;
+    cursor: default;
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+}
+
+.modal-content {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
+
+.close {
+    position: absolute;
+    color: black;
+    top: 85px;
+    right: 35px;
+    font-size: 40px;
+    -webkit-transition: 0.3s;
+    transition: 0.3s;
+}
+
+.close:hover, .close:focus {
+    color: var(--main-hover-text-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 700px) {
+    .modal-content {
+        width: 100%;
+    }
+}

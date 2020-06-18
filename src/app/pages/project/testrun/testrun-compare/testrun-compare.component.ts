@@ -1,34 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { TestRunService } from '../../../../services/testRun.service';
-import { TestSuiteService } from '../../../../services/testSuite.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { TestSuite } from '../../../../shared/models/testSuite';
 import { TestRun } from '../../../../shared/models/testRun';
 import { Test } from '../../../../shared/models/test';
-import { TestService } from '../../../../services/test.service';
 import { TestResult } from '../../../../shared/models/test-result';
-import { TestResultService } from '../../../../services/test-result.service';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
 import { FinalResult } from '../../../../shared/models/final-result';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
-import { FinalResultService } from '../../../../services/final_results.service';
-import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
-import { UserService } from '../../../../services/user.services';
-import { TFColumnType, TFColumn, TFOrder } from '../../../../elements/table/tfColumn';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { FinalResultService } from 'src/app/services/final-result/final_results.service';
+import { TestService } from 'src/app/services/test/test.service';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { UserService } from 'src/app/services/user/user.services';
 
 @Component({
     templateUrl: 'testrun-compare.component.html',
-    styleUrls: ['testrun-compare.component.css'],
-    providers: [
-        TestRunService,
-        SimpleRequester,
-        TestSuiteService,
-        TestService,
-        ResultResolutionService,
-        FinalResultService,
-        TestResultService
-    ]
+    styleUrls: ['testrun-compare.component.scss']
 })
 export class TestrunCompareComponent implements OnInit {
     suites: TestSuite[];
@@ -52,6 +41,7 @@ export class TestrunCompareComponent implements OnInit {
     onlyDiffs = true;
     sortBy = { property: 'name', order: TFOrder.desc };
     lookupSortBy = { property: 'start_time', order: TFOrder.desc };
+    projectId: number;
 
     constructor(
         private resultResolutionService: ResultResolutionService,
@@ -65,22 +55,20 @@ export class TestrunCompareComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
-        this.testRuns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params['projectId'] });
+        this.projectId = this.route.snapshot.params['projectId'];
+        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
+        this.testRuns = await this.testrunService.getTestRun({ project_id: this.projectId });
         this.finalResults = await this.finalResultService.getFinalResult({});
-        await this.resultResolutionService.getResolution().toPromise().then(resolutions => {
-            this.listOfResolutions = resolutions;
-            this.userService.getProjectUsers(this.route.snapshot.params['projectId']).subscribe(projectUsers => {
-                this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
-            });
-            this.route.queryParams.subscribe(params => {
-                this.selectedSuite = params['suite'] ? this.suites.find(x => x.id === +params['suite']) : undefined;
-                this.testRunFirst = params['first_tr'] ? this.testRuns.find(x => x.id === +params['first_tr']) : undefined;
-                this.testRunSecond = params['second_tr'] ? this.testRuns.find(x => x.id === +params['second_tr']) : undefined;
-                this.fitTestRuns();
-            });
-            if (this.selectedSuite && this.testRunFirst && this.testRunSecond) { this.compare(); }
+        this.listOfResolutions = await this.resultResolutionService.getResolution();
+        const projectUsers = await this.userService.getProjectUsers(this.projectId);
+        this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
+        this.route.queryParams.subscribe(params => {
+            this.selectedSuite = params.suite ? this.suites.find(x => x.id === +params.suite) : undefined;
+            this.testRunFirst = params.first_tr ? this.testRuns.find(x => x.id === +params.first_tr) : undefined;
+            this.testRunSecond = params.second_tr ? this.testRuns.find(x => x.id === +params.second_tr) : undefined;
+            this.fitTestRuns();
         });
+        if (this.selectedSuite && this.testRunFirst && this.testRunSecond) { this.compare(); }
     }
 
     async compare() {
@@ -273,6 +261,6 @@ export class TestrunCompareComponent implements OnInit {
     }
 
     rowClicked($event) {
-        const win = window.open(`#/project/${this.route.snapshot.params['projectId']}/test/${$event.id}`);
+        const win = window.open(`/project/${this.projectId}/test/${$event.id}`);
     }
 }

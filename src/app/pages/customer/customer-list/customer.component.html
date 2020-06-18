@@ -1,6 +1,6 @@
-<simple-popup *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
+<app-modal *ngIf="!hideModal" [title]="removeModalTitle" [message]="removeModalMessage" [type]="'warning'"
   [buttons]="[{name:'yes', execute:true }, {name:'no', execute:false}]" (execute)="execute($event)"
-  (closed)="wasClosed()"></simple-popup>
+  (closed)="wasClosed()"></app-modal >
 
 <div class="panel-heading form-row">
   <div class="pull-left col-sm-8">

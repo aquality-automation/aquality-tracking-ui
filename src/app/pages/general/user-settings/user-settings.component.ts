@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../services/user.services';
-import { GlobalDataService } from '../../../services/globaldata.service';
 import { User } from '../../../shared/models/user';
-import { CookieService } from 'angular2-cookie/core';
+import { UserService } from 'src/app/services/user/user.services';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
     templateUrl: 'user-settings.component.html',
-    styleUrls: ['user-settings.component.css']
+    styleUrls: ['user-settings.component.scss']
 })
 export class UserSettingsComponent implements OnInit {
     public user: User;
@@ -15,12 +14,11 @@ export class UserSettingsComponent implements OnInit {
     public newPass: string;
     public constructor(
         private userService: UserService,
-        private globalDataService: GlobalDataService,
         private cookieService: CookieService
     ) { }
 
     ngOnInit() {
-        this.user = this.globalDataService.currentUser;
+        this.user = this.userService.currentUser();
         this.user.password = undefined;
     }
 
@@ -37,21 +35,23 @@ export class UserSettingsComponent implements OnInit {
         return true;
     }
 
-    updateUser() {
+    async updateUser() {
         this.user.audit_notifications = +this.user.audit_notifications;
-        this.userService.createOrUpdateUser(this.user).subscribe();
+        await this.userService.createOrUpdateUser(this.user);
     }
 
-    updatePassword() {
-        this.userService.UpdatePassword({ password: this.newPass, old_password: this.oldPass, user_id: this.user.id }).subscribe(res => {
+    async updatePassword() {
+        try {
+            const res = await this.userService
+                .UpdatePassword({ password: this.newPass, old_password: this.oldPass, user_id: this.user.id });
             this.userService.handleSuccess('Password was changed.');
             const header = res.headers.get('iio78');
-            this.cookieService.put('iio78', header);
+            this.cookieService.set('iio78', header, undefined, '/');
             this.oldPass = '';
             this.confirmPass = '';
             this.newPass = '';
-        }, err => {
+        } catch (err) {
             this.oldPass = '';
-        });
+        }
     }
 }

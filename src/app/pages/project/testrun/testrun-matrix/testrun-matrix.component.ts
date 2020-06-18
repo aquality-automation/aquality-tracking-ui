@@ -1,34 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { TestSuite } from '../../../../shared/models/testSuite';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
-import { FinalResultService } from '../../../../services/final_results.service';
-import { TestService } from '../../../../services/test.service';
-import { TestRunService } from '../../../../services/testRun.service';
-import { TestResultService } from '../../../../services/test-result.service';
-import { TestSuiteService } from '../../../../services/testSuite.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SimpleRequester } from '../../../../services/simple-requester';
 import { Test } from '../../../../shared/models/test';
-import { TransformationsService } from '../../../../services/transformations.service';
 import { TestRun, TestRunLabel } from '../../../../shared/models/testRun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { DatePipe } from '@angular/common';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { FinalResultService } from 'src/app/services/final-result/final_results.service';
+import { TestService } from 'src/app/services/test/test.service';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 
 @Component({
     templateUrl: 'testrun-matrix.component.html',
-    styleUrls: ['testrun-matrix.component.css'],
-    providers: [
-        TestRunService,
-        SimpleRequester,
-        TestSuiteService,
-        TestService,
-        ResultResolutionService,
-        FinalResultService,
-        TestResultService,
-        TransformationsService
-    ]
+    styleUrls: ['testrun-matrix.component.scss']
 })
 export class TestrunMatrixComponent implements OnInit {
     suites: TestSuite[];
@@ -45,6 +32,7 @@ export class TestrunMatrixComponent implements OnInit {
     filterValues: any[] = [];
     listOfResolutions: ResultResolution[];
     showResolutions = true;
+    projectId: number;
 
     constructor(
         private resultResolutionService: ResultResolutionService,
@@ -58,10 +46,11 @@ export class TestrunMatrixComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
+        this.projectId = this.route.snapshot.params['projectId'];
+        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
         this.finalResults = await this.finalResultService.getFinalResult({});
-        this.labels = await this.testrunService.getTestsRunLabels().toPromise();
-        this.listOfResolutions = await this.resultResolutionService.getResolution(this.route.snapshot.params['projectId']).toPromise();
+        this.labels = await this.testrunService.getTestsRunLabels();
+        this.listOfResolutions = await this.resultResolutionService.getResolution(this.projectId);
         const frFilter = this.finalResults.find(x => x.id === 2);
         frFilter.id = 100000;
         this.listOfResolutions.push(frFilter);
@@ -158,7 +147,7 @@ export class TestrunMatrixComponent implements OnInit {
             type: TFColumnType.text,
             editable: false,
             class: 'ft-width-180',
-            link: { template: `/project/${this.route.snapshot.params['projectId']}/test/{id}`, properties: ['id'] }
+            link: { template: `/project/${this.projectId}/test/{id}`, properties: ['id'] }
         });
         this.testRuns.forEach(testRun => {
             this.tbCols.push({
@@ -173,7 +162,7 @@ export class TestrunMatrixComponent implements OnInit {
                     propToShow: ['name']
                 },
                 class: 'fit',
-                headerlink: `/project/${this.route.snapshot.params['projectId']}/testrun/${testRun.id}`
+                headerlink: `/project/${this.projectId}/testrun/${testRun.id}`
             });
         });
     }

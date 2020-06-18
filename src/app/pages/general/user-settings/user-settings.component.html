@@ -49,11 +49,8 @@
     <div class="panel-body">
       <div>
         <div class="margin-y-sm ma-notifications">
-          <ui-switch class="pull-right" size="small" [(ngModel)]="user.audit_notifications"
-            (ngModelChange)="updateUser()"></ui-switch>
-        </div>
-        <div class="no-padding margin-top-6px">
-          <label class="pull-left" [ngClass]="{ 'greyout':!user.audit_notifications }">Audit Notifications</label>
+          <mat-slide-toggle [(ngModel)]="user.audit_notifications"
+          (ngModelChange)="updateUser()">Audit Notifications</mat-slide-toggle>
         </div>
       </div>
     </div>

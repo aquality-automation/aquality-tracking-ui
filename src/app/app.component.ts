@@ -1,30 +1,26 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { User } from './shared/models/user';
-import { SimpleRequester } from './services/simple-requester';
-import { UserService } from './services/user.services';
-import { GlobalDataService } from './services/globaldata.service';
+import { Component, OnInit } from '@angular/core';
 import { Project } from './shared/models/project';
-import { ProjectService } from './services/project.service';
-import { ApplicationSettingsService } from './services/applicationSettings.service';
-import { Navigation } from './shared/models/navigation.model';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from './services/current-permissions.service';
+import { User } from './shared/models/user';
+import { ActivatedRoute } from '@angular/router';
 import { faCog, faBug, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { Navigation } from './shared/models/navigation';
+import { GlobalDataService } from './services/globaldata.service';
+import { UserService } from './services/user/user.services';
+import { ProjectService } from './services/project/project.service';
+import { ApplicationSettingsService } from './services/application-settings/application-settings.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from './services/permissions/current-permissions.service';
+import { AuthService } from './services/auth/auth.service';
+import RouteUtils from './shared/utils/route.utils';
 
 declare var require: any;
 const { version: appVersion } = require('../../package.json');
 
 @Component({
-  selector: 'app-component',
-  styleUrls: ['./app.component.css'],
+  selector: 'app-root',
   templateUrl: './app.component.html',
-  providers: [
-    SimpleRequester,
-    UserService,
-    ApplicationSettingsService
-  ]
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   showLoader = false;
   projectId: number;
   currentProject: Project;
@@ -50,16 +46,21 @@ export class AppComponent {
 
   constructor(
     private route: ActivatedRoute,
-    public globaldata: GlobalDataService,
-    public userService: UserService,
-    public projectService: ProjectService,
-    public settingsService: ApplicationSettingsService,
+    private globaldata: GlobalDataService,
+    private auth: AuthService,
+    private userService: UserService,
+    private projectService: ProjectService,
+    private settingsService: ApplicationSettingsService,
     private permissionsService: PermissionsService
   ) {
     this.appVersion = appVersion;
     this.globaldata.showLoader.subscribe(value => {
       this.showLoader = value;
     });
+  }
+
+  async ngOnInit() {
+    await this.getInfo();
   }
 
   async changeOfRoutes() {
@@ -69,20 +70,19 @@ export class AppComponent {
   }
 
   async getInfo() {
-    this.isLogged = await this.userService.handleIsLogged(false);
-    this.globaldata.auditModule = (await this.settingsService.getGeneralSettings().toPromise()).audits;
+    this.isLogged = await this.auth.handleIsLogged();
+    this.globaldata.auditModule = !!(await this.settingsService.getGeneralSettings()).audits;
     if (this.isLogged && this.route.firstChild && this.route.firstChild.firstChild) {
       await this.getProjectInfo();
     }
   }
 
   async getProjectInfo() {
-    this.route.firstChild.firstChild.params.subscribe(params => {
-      this.projectId = params.projectId ? parseInt(params.projectId, 10) : undefined;
-    });
+    this.projectId = RouteUtils.getProjectId(this.route);
+    this.globaldata.announceCurrentProject({id: this.projectId});
 
     if (this.projectId) {
-      this.currentUser = this.globaldata.currentUser;
+      this.currentUser = this.userService.currentUser();
 
       if (!this.currentProject || this.currentProject.id !== this.projectId) {
         this.currentProject = await this.projectService.getProject(this.projectId);
@@ -95,8 +95,8 @@ export class AppComponent {
   }
 
   async Logout() {
-    this.userService.logOut();
-    await this.userService.redirectToLogin();
+    this.auth.logOut();
+    await this.auth.redirectToLogin();
     await this.updateNavigation();
   }
 
@@ -223,7 +223,7 @@ export class AppComponent {
       ];
       this.rightNavigations = [
         {
-          name: this.userService.getUserFullName(this.globaldata.currentUser),
+          name: this.userService.getUserFullName(this.userService.currentUser()),
           id: 'user-mb',
           link: `/settings`,
           show: true,

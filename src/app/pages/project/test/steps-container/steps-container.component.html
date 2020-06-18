@@ -1,6 +1,6 @@
 <div class="no-padding clearfix me-drop-parent">
   <ul class="col-sm-12 no-padding me-droppable steps-can-be-empty" [dragula]="'steps-bag'"
-    [dragulaModel]='newStepsOrder'>
+    [(dragulaModel)]='newStepsOrder'>
     <li class="step-row added-step" *ngFor="let step of newStepsOrder; let i = index" [ngClass]="{'me-draggable': editable}">
       <fa-icon *ngIf="editable" class="icon-remove" [icon]="icons.faMinus" (click)="removeStep(i)"></fa-icon>
       <b>{{step.type.name}}</b>

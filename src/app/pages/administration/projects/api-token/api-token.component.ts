@@ -1,18 +1,13 @@
-import { Component } from '@angular/core';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { ProjectService } from '../../../../services/project.service';
+import { Component, OnInit } from '@angular/core';
 import { Project } from '../../../../shared/models/project';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ProjectService } from 'src/app/services/project/project.service';
 
 @Component({
   templateUrl: 'api-token.component.html',
-  styleUrls: ['../../global/app-settings/app-settings.component.css'],
-  providers: [
-    ProjectService,
-    SimpleRequester
-  ]
+  styleUrls: ['../../global/app-settings/app-settings.component.scss'],
 })
-export class APITokenComponent {
+export class APITokenComponent implements OnInit {
   hideModal = true;
   removeModalTitle: string;
   removeModalMessage: string;
@@ -24,12 +19,12 @@ export class APITokenComponent {
 
   constructor(
     private projectService: ProjectService,
-    private sanitizer:DomSanitizer
-  ) {
-    this.projectService.getProjects({}).subscribe(result => {
-      this.projects = result;
-      this.selectedProject = this.projects[0];
-    }, error => console.log(error));
+    private sanitizer: DomSanitizer
+  ) { }
+
+  async ngOnInit() {
+    this.projects = await this.projectService.getProjects({});
+    this.selectedProject = this.projects[0];
   }
 
   onProjectChange($event) {
@@ -45,10 +40,8 @@ export class APITokenComponent {
     this.hideModal = false;
   }
 
-  generateToken() {
-    this.projectService.createAPIToken(this.selectedProject).subscribe(res => {
-      this.token = res.api_token;
-    });
+  async generateToken() {
+    this.token = (await this.projectService.createAPIToken(this.selectedProject)).api_token;
   }
 
   async execute($event) {

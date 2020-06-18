@@ -1,25 +1,16 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { TestSuiteService } from '../../../../services/testSuite.service';
-import { TestService } from '../../../../services/test.service';
-
 import { Test } from '../../../../shared/models/test';
-import { TestSuite } from '../../../../shared/models/testSuite';
-import { TransformationsService } from '../../../../services/transformations.service';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { TestService } from 'src/app/services/test/test.service';
 
 @Component({
   templateUrl: './create-test.component.html',
-  providers: [
-    TransformationsService,
-    SimpleRequester,
-    TestSuiteService,
-    TestService
-   ]
 })
 export class CreateTestComponent {
-  newTestName= '';
-  body= '';
+  newTestName = '';
+  body = '';
   testSuitesSelected: TestSuite[];
   testSuites: TestSuite[];
 

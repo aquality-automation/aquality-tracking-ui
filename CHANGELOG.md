@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 1.0.0 (Unreleased)
+
+Features:
+  - Migrate to Angular 9 -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/101)
+  - Add Execution environment column to Test History table -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/107)
+
+Bugfixes:
+  - [API] /api/public/test/create-or-update does not update list of suites -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/105)
+  - External issue link is incorrect on Issues table -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/108)
+  - Import is blocked when invalid regular expression was saved for issue -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/103)
+
 ## 0.3.10 (2020-05-17)
 
 Features:

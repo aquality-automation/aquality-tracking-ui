@@ -1,29 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImportBodyPattern } from '../../../shared/models/project';
-import { ProjectService } from '../../../services/project.service';
-import { ImportService, ImportParameters, importTypes } from '../../../services/import.service';
-import { TransformationsService } from '../../../services/transformations.service';
-import { TestSuite } from '../../../shared/models/testSuite';
-import { TestSuiteService } from '../../../services/testSuite.service';
 import { TestRun } from '../../../shared/models/testRun';
-import { TestRunService } from '../../../services/testRun.service';
 import { Import } from '../../../shared/models/import';
-import { TFColumnType, TFColumn, TFOrder } from '../../../elements/table/tfColumn';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { ProjectService } from 'src/app/services/project/project.service';
+import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { importTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
 
 @Component({
   templateUrl: './import.component.html',
-  styleUrls: ['./import.component.css'],
-  providers: [
-    ImportService,
-    ProjectService,
-    TransformationsService,
-    TestRunService,
-    TestSuiteService
-  ]
+  styleUrls: ['./import.component.scss']
 })
-export class ImportComponent {
+export class ImportComponent implements OnInit {
   testNameOptions:
     {
       testName: boolean;
@@ -82,11 +74,11 @@ export class ImportComponent {
     private projectService: ProjectService,
     private testrunService: TestRunService,
     private route: ActivatedRoute
-  ) {
+  ) { }
+
+  async ngOnInit() {
     this.testNameOptions = this.testNameTypes();
-    this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId }).subscribe(res => {
-      this.bodyPatterns = res;
-    });
+    this.bodyPatterns = await this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId });
     this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId }).then(res => {
       this.suites = res;
     });
@@ -94,31 +86,30 @@ export class ImportComponent {
     this.getImportResults();
   }
 
-  private getImportResults() {
-    this.importService.importResults(this.route.snapshot.params.projectId).subscribe(res => {
-      this.importResults = res;
-      this.importResults.forEach(result => {
-        result['status'] = this.statuses.find(status => status.id === result.finish_status);
-      });
-      this.resultsColumnsToShow = [
-        {
-          name: 'Status',
-          property: 'status',
-          filter: true,
-          sorting: true,
-          type: TFColumnType.colored,
-          lookup: {
-            values: this.statuses,
-            propToShow: ['name']
-          },
-          class: 'fit'
-        },
-        { name: 'Test Run ID', property: 'testrun_id', sorting: true, type: TFColumnType.text, class: 'fit' },
-        { name: 'Started', property: 'started', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-        { name: 'Finished', property: 'finished', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
-        { name: 'Logs', property: 'log', filter: true, sorting: true, type: TFColumnType.longtext, class: 'ft-width-250' }
-      ];
+  public async getImportResults() {
+    this.importResults = await this.importService.importResults(this.route.snapshot.params.projectId);
+
+    this.importResults.forEach(result => {
+      result['status'] = this.statuses.find(status => status.id === result.finish_status);
     });
+    this.resultsColumnsToShow = [
+      {
+        name: 'Status',
+        property: 'status',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          values: this.statuses,
+          propToShow: ['name']
+        },
+        class: 'fit'
+      },
+      { name: 'Test Run ID', property: 'testrun_id', sorting: true, type: TFColumnType.text, class: 'fit' },
+      { name: 'Started', property: 'started', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      { name: 'Finished', property: 'finished', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
+      { name: 'Logs', property: 'log', filter: true, sorting: true, type: TFColumnType.longtext, class: 'ft-width-250' }
+    ];
   }
 
   fileChange(event) {
@@ -159,7 +150,7 @@ export class ImportComponent {
     this.loadingInProgress = true;
     try {
       this.buildParams();
-      await this.importServiceForUpload.upload(this.importParameters, filesToImport).toPromise();
+      await this.importServiceForUpload.upload(this.importParameters, filesToImport);
       for (let i = 0; i < filesToImport.length; i++) {
         const index = this.fileListArray.indexOf(filesToImport[i]);
         if (index > -1) {
@@ -167,8 +158,6 @@ export class ImportComponent {
           this.fileListArray.splice(index, 1);
         }
       }
-    } catch (error) {
-      this.importService.handleError(error);
     } finally {
       this.loadingInProgress = false;
       this.setButtonImport(event, oldname);
@@ -197,13 +186,10 @@ export class ImportComponent {
     }
   }
 
-  createBodyPattern($event) {
-    this.projectService.createImportBodyPattern({ name: $event, project_id: this.route.snapshot.params.projectId }).subscribe(() => {
-      this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId }).subscribe(patterns => {
-        this.bodyPatterns = patterns;
-        this.pattern = this.bodyPatterns.find(x => x.name === $event);
-      });
-    });
+  async createBodyPattern($event) {
+    await this.projectService.createImportBodyPattern({ name: $event, project_id: this.route.snapshot.params.projectId });
+    this.bodyPatterns = await this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId });
+    this.pattern = this.bodyPatterns.find(x => x.name === $event);
   }
 
   async createTestSuite($event) {

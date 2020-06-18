@@ -1,0 +1,40 @@
+.ms-main-selector {
+    min-width: 135px !important;
+    width: 100% !important;
+    height: fit-content !important;
+    height: -moz-fit-content !important;
+    min-height: 34px;
+    padding: 2px;
+    overflow-x: auto;
+}
+
+.ms-box {
+    width: max-content !important;
+    width: -moz-fit-content !important;
+    display: inline-block;
+    padding: 0 4px;
+    height: -moz-fit-content;
+    height: max-content;
+    margin: 2px;
+    font-size: 13px;
+    border: 1px solid var(--main-border-color);
+    border-radius: 4px;
+}
+
+.ms-box-text {
+    float: left;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 3px;
+}
+
+.ms-placeholder {
+    padding: 4px;
+    color: var(--main-border-color);
+}
+
+.remove-ms-box {
+    cursor: pointer;
+}

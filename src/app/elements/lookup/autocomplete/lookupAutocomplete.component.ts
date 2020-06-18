@@ -6,7 +6,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'lookup-autocomplete',
   templateUrl: 'lookupAutocomplete.component.html',
-  styleUrls: ['../baseLookup.css'],
+  styleUrls: ['../baseLookup.scss'],
   providers: [
     TransformationsService
   ]

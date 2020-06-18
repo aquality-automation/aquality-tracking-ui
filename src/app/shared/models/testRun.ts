@@ -1,6 +1,6 @@
 import { TestResult } from './test-result';
 import { Milestone } from './milestone';
-import { TestSuite } from './testSuite';
+import { TestSuite } from './test-suite';
 
 export class TestRun {
   test_suite_id?: number;

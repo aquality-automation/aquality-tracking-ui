@@ -31,14 +31,11 @@
         <button id="matrix-show" class="btn btn-primary btn-sm  form-control" (click)="getMatrix()">Show</button>
       </div>
       <div *ngIf="dataToshow && tbCols && testRuns" class="col-sm-2 line-margin form-group row">
-        <div class="col-sm-2 margin-y-sm">
-          <ui-switch id="matrix-resolution-toggler" class="pull-right" size="small" [ngModel]="showResolutions"
-            (ngModelChange)="refreshTable($event)"></ui-switch>
+        <div class="col-sm-12 margin-y-sm">
+          <mat-slide-toggle id="matrix-resolution-toggler" [ngModel]="showResolutions"
+            (ngModelChange)="refreshTable($event)">Show Resolutions
+          </mat-slide-toggle>
         </div>
-        <div class="col-sm-10 no-padding margin-top-6px"><label class="pull-left" (click)="toggleShowResolutions()"
-            [ngClass]="{
-                'greyout':!showResolutions
-            }">Show Resolutions</label></div>
       </div>
     </div>
     <div *ngIf="dataToshow && dataToshow.length > 0" class="col-sm-12">

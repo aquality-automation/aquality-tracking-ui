@@ -4,7 +4,7 @@ import { BaseLookupComponent } from '../baseLookup';
 @Component({
   selector: 'lookup-colored',
   templateUrl: './lookupColors.component.html',
-  styleUrls: ['./lookupColors.component.css', '../baseLookup.css']
+  styleUrls: ['./lookupColors.component.scss', '../baseLookup.scss']
 })
 export class LookupColorsComponent extends BaseLookupComponent {
   @Input() colorProperty: string;

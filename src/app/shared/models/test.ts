@@ -1,6 +1,6 @@
 import { TestResult } from './test-result';
-import { LocalPermissions } from './LocalPermissions';
-import { TestSuite } from './testSuite';
+import { LocalPermissions } from './local-permissions';
+import { TestSuite } from './test-suite';
 
 export class Test {
   id?: number;

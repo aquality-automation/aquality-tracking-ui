@@ -1,14 +1,14 @@
 export class InlineEditorConfig {
     size?: InlineEditorSize;
     type: InlineEditorType;
-    saveOnEnter?: boolean = false;
-    saveOnBlur?: boolean = false;
+    saveOnEnter = false;
+    saveOnBlur = false;
 }
 
 export enum InlineEditorSize {
     sm = 'sm',
     lg = 'lg'
-};
+}
 
 export enum InlineEditorType {
     text = 'text',

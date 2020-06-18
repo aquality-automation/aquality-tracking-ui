@@ -1,6 +1,6 @@
 <div *ngIf="disabled && model">
     <button class="btn form-control optional-selectbox selector-main-button disabled" [ngClass]="{
-      'lookup-selector-sm': small,
+      'btn-sm': small,
       'btn-danger': getColorId(model) === 1,
       'btn-primary': getColorId(model) === 3,
       'btn-warning': getColorId(model) === 2,
@@ -12,7 +12,7 @@
     <div>
         <button (click)="toggle()" (keyup.esc)="toggleOff()" (blur)="toggleOff()"
             class="form-control optional-selectbox selector-main-button" [ngClass]="{
-            'lookup-selector-sm': small,
+            'btn-sm': small,
             'btn-danger': getColorId(model) === 1,
             'btn-primary': getColorId(model) === 3,
             'btn-warning': getColorId(model) === 2,

@@ -1,19 +1,15 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { BasePopupComponent } from '../../../../elements/modals/basePopup.component';
 import { Test } from '../../../../shared/models/test';
-import { TestService } from '../../../../services/test.service';
-import { SimpleRequester } from '../../../../services/simple-requester';
 import { faPlus, faArrowRight, faArrowDown, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { ModalComponent } from 'src/app/elements/modals/modal.component';
+import { TestService } from 'src/app/services/test/test.service';
 
 @Component({
     selector: 'move-test-modal',
     templateUrl: 'move-test-modal.component.html',
-    styleUrls: ['move-test-modal.component.css'],
-    providers: [
-        SimpleRequester
-    ]
+    styleUrls: ['move-test-modal.component.scss']
 })
-export class MoveTestModalComponent extends BasePopupComponent implements OnInit {
+export class MoveTestModalComponent extends ModalComponent implements OnInit {
     @Input() title: string;
     @Input() type = '';
     @Input() buttons: any[];
@@ -27,8 +23,7 @@ export class MoveTestModalComponent extends BasePopupComponent implements OnInit
     icons = { faPlus, faMinus, faArrowRight, faArrowDown };
 
     constructor(
-        private testService: TestService,
-        private simpleRequester: SimpleRequester
+        private testService: TestService
     ) {
         super();
     }
@@ -37,24 +32,23 @@ export class MoveTestModalComponent extends BasePopupComponent implements OnInit
         this.pairsToMove.push({ from: this.testMoveFrom, to: this.testMoveTo });
     }
 
-    onClick(event) {
-        const bar = new Promise((resolve) => {
+    async onClick(event) {
+        const bar = new Promise(async (resolve) => {
             for (let i = 0; i < this.pairsToMove.length; i++) {
                 const pair = this.pairsToMove[i];
-                this.testService.moveTest(pair.from, pair.to, true, pair.from.project_id).subscribe(() => {
-                    if (i === this.pairsToMove.length - 1) {
-                        resolve();
-                    }
-                });
+                await this.testService.moveTest(pair.from, pair.to, true, pair.from.project_id);
+                if (i === this.pairsToMove.length - 1) {
+                    resolve();
+                }
             }
         });
-        bar.then(() => {
-            this.testMovedTo.emit(this.pairsToMove[0].to);
-            this.execute.emit(event);
-            this.pairsToMove = [];
-            this.pairsToMove.push({ from: this.testMoveFrom, to: this.testMoveTo });
-            this.hideModal();
-        });
+
+        await bar;
+        this.testMovedTo.emit(this.pairsToMove[0].to);
+        this.execute.emit(event);
+        this.pairsToMove = [];
+        this.pairsToMove.push({ from: this.testMoveFrom, to: this.testMoveTo });
+        this.hideModal();
     }
 
     validatePairs(event) {
@@ -62,12 +56,12 @@ export class MoveTestModalComponent extends BasePopupComponent implements OnInit
             const bar = new Promise((resolve, reject) => {
                 this.pairsToMove.forEach(pair => {
                     if (!pair.from || !pair.to) {
-                        this.simpleRequester.handleSimpleError(
+                        this.testService.handleSimpleError(
                             'Empty Pair', 'Some Pairs are not valid, \'From\' and \'To\' fields should be filled!');
                         reject(false);
                     }
                     if (pair.from.id === pair.to.id) {
-                        this.simpleRequester.handleSimpleError(
+                        this.testService.handleSimpleError(
                             'Invalid Pair', `You are trying to move test into itself: '${pair.from.name}'!`);
                         reject(false);
                     }
