@@ -10,7 +10,7 @@ import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { FinalResultService } from 'src/app/services/final-result/final_results.service';
 import { TestService } from 'src/app/services/test/test.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 
 @Component({

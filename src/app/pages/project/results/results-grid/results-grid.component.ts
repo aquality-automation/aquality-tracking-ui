@@ -6,7 +6,7 @@ import { FinalResult } from '../../../../shared/models/final-result';
 import { Issue } from '../../../../shared/models/issue';
 import { User } from '../../../../shared/models/user';
 import { TestRun } from '../../../../shared/models/testRun';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { UserService } from 'src/app/services/user/user.services';
 import { PermissionsService, ELocalPermissions, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';

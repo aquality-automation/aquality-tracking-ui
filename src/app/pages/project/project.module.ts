@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectListComponent } from './project-list.component';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import {
   ProjectGuard, CreateProjectGuard, TestRunGuard, MilestoneGuard,
   TestResultGuard, TestGuard, CreateTestGuard, TestSuiteGuard, CreateTestSuiteGuard,

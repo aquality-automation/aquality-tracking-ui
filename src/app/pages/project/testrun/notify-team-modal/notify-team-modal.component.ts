@@ -4,7 +4,7 @@ import { User } from '../../../../shared/models/user';
 import { DragulaService } from 'ng2-dragula';
 import { ModalComponent } from 'src/app/elements/modals/modal.component';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 
 @Component({
     selector: 'notify-team-modal',

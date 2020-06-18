@@ -10,7 +10,7 @@ import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/t
 import { TableFilterComponent } from 'src/app/elements/table-filter/table-filter.component';
 import { UserService } from 'src/app/services/user/user.services';
 import { TestResultService } from 'src/app/services/test-result/test-result.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';

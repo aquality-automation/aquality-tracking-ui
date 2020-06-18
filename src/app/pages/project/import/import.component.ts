@@ -8,7 +8,7 @@ import { TestSuite } from 'src/app/shared/models/test-suite';
 import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { ProjectService } from 'src/app/services/project/project.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { importTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
 
 @Component({

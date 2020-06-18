@@ -15,7 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuite, SuiteDashboard } from 'src/app/shared/models/test-suite';
 import { colors } from 'src/app/shared/colors.service';
 import { TestRunStat } from 'src/app/shared/models/testrun-stats';

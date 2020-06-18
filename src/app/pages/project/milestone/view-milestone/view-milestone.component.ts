@@ -16,7 +16,7 @@ import { TestService } from 'src/app/services/test/test.service';
 import { FinalResultService } from 'src/app/services/final-result/final_results.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { PermissionsService, ELocalPermissions, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { IssueService } from 'src/app/services/issue/issue.service';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';

@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Milestone } from '../../../../shared/models/milestone';
 import { TestRun } from '../../../../shared/models/testRun';
 import { TestSuite } from 'src/app/shared/models/test-suite';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 

@@ -6,7 +6,7 @@ import { TestRun } from '../../../../shared/models/testRun';
 import { Project } from '../../../../shared/models/project';
 import { TestRunStat } from 'src/app/shared/models/testrun-stats';
 import { ProjectService } from 'src/app/services/project/project.service';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { ModalComponent } from 'src/app/elements/modals/modal.component';
 
 @Component({

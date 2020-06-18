@@ -12,7 +12,7 @@ import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { ProjectService } from 'src/app/services/project/project.service';
 import { PermissionsService, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { UserService } from 'src/app/services/user/user.services';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { IssueService } from 'src/app/services/issue/issue.service';
 import { AuditService } from 'src/app/services/audit/audits.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';

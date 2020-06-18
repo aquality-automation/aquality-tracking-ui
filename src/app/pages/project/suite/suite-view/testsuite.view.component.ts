@@ -7,7 +7,7 @@ import { Test } from 'src/app/shared/models/test';
 import { TestSuite, TestSuiteStat } from 'src/app/shared/models/test-suite';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
 import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestService } from 'src/app/services/test/test.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { UserService } from 'src/app/services/user/user.services';

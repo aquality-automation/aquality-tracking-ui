@@ -6,7 +6,7 @@ import { Milestone } from '../../../../shared/models/milestone';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
-import { TestRunService } from 'src/app/services/testrun/testRun.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { UserService } from 'src/app/services/user/user.services';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';
