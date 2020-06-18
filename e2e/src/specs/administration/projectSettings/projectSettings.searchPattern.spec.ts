@@ -8,8 +8,8 @@ import sameError from '../../../data/import/regexImportErrorSearch/sameError.jso
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { userAdministration } from '../../../pages/administration/users.po';
 import { projectView } from '../../../pages/project/view.po';
-import { testRunList } from '../../../pages/testrun/list.po';
-import { testRunView } from '../../../pages/testrun/view.po';
+import { testrunList } from '../../../pages/testrun/list.po';
+import { testrunView } from '../../../pages/testrun/view.po';
 import { User } from '../../../../../src/app/shared/models/user';
 import { ProjectHelper } from '../../../helpers/project.helper';
 import { Issue } from '../../../../../src/app/shared/models/issue';
@@ -74,34 +74,34 @@ describe('Administartion: Project Settings:', () => {
 
         it('Results can be inherithed from previous run using Regexp', async () => {
             await projectHelper.openProject();
-            await projectView.menuBar.testRuns();
-            await testRunList.openTestRun(builds.build_1);
-            await testRunView.setIssue(`${issueApp.id} ${issueApp.title}`, testFailed);
-            await testRunView.setIssue(`${issueEnv.id} ${issueEnv.title}`, testPending);
+            await projectView.menuBar.testruns();
+            await testrunList.openTestRun(builds.build_1);
+            await testrunView.setIssue(`${issueApp.id} ${issueApp.title}`, testFailed);
+            await testrunView.setIssue(`${issueEnv.id} ${issueEnv.title}`, testPending);
             await projectHelper.importer.executeCucumberImport('Regex', [importFiles.sameError], [`${builds.build_2}.json`]);
-            await projectView.menuBar.testRuns();
-            await testRunList.openTestRun(builds.build_2);
-            expect(await testRunView.getResolution(testFailed))
+            await projectView.menuBar.testruns();
+            await testrunList.openTestRun(builds.build_2);
+            expect(await testrunView.getResolution(testFailed))
                 .toBe(resolutions.global.appIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getIssue(testFailed))
+            expect(await testrunView.getIssue(testFailed))
                 .toBe(`${issueApp.id} ${issueApp.title}`, 'Issue was not autofilled!');
-            expect(await testRunView.getResolution(testPending))
+            expect(await testrunView.getResolution(testPending))
                 .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getIssue(testPending))
+            expect(await testrunView.getIssue(testPending))
                 .toBe(`${issueEnv.id} ${issueEnv.title}`, 'Issue was not autofilled!');
         });
 
         it('Results is not inherithed when Regex group is not equal', async () => {
             await projectHelper.importer.executeCucumberImport('Regex', [importFiles.differentError], [`${builds.build_3}.json`]);
-            await projectView.menuBar.testRuns();
-            await testRunList.openTestRun(builds.build_3);
-            expect(await testRunView.getResolution(testFailed))
+            await projectView.menuBar.testruns();
+            await testrunList.openTestRun(builds.build_3);
+            expect(await testrunView.getResolution(testFailed))
                 .toBe('', 'Resolution was autofilled!');
-            expect(await testRunView.getIssue(testFailed))
+            expect(await testrunView.getIssue(testFailed))
                 .toBe('', 'Issue was autofilled!');
-            expect(await testRunView.getResolution(testPending))
+            expect(await testrunView.getResolution(testPending))
                 .toBe(resolutions.global.environmentIssue.name, 'Resolution was not autofilled!');
-            expect(await testRunView.getIssue(testPending))
+            expect(await testrunView.getIssue(testPending))
                 .toBe(`${issueEnv.id} ${issueEnv.title}`, 'Issue was not autofilled!');
         });
     });

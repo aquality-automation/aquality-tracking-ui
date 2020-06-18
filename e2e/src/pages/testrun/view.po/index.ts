@@ -9,8 +9,8 @@ class TestRunView extends BasePage {
 
   public resultSearcher = elements.resultSearcher;
 
-  navigateTo(projectId: number, testRunId: number) {
-    return browser.get(baseUrl(projectId, testRunId));
+  navigateTo(projectId: number, testrunId: number) {
+    return browser.get(baseUrl(projectId, testrunId));
   }
 
   getBuildName(): Promise<string> {
@@ -203,4 +203,4 @@ class TestRunView extends BasePage {
   }
 }
 
-export const testRunView = new TestRunView();
+export const testrunView = new TestRunView();

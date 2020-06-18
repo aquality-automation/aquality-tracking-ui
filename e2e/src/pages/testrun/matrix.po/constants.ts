@@ -6,7 +6,7 @@ import { UiSwitch } from '../../../elements/ui-switch';
 
 export const elements = {
     uniqueElement: element(by.id('matrix-page')),
-    testRunsTable: new SmartTable(by.id('matrix-table')),
+    testrunsTable: new SmartTable(by.id('matrix-table')),
     suiteAutocomplete: new Autocomplete(by.id('matrix-suite')),
     resultsNumberLookup: new Lookup(by.id('matrix-results-number')),
     labelLookup: new Lookup(by.id('matrix-label')),

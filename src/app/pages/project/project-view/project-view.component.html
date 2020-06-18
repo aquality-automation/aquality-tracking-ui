@@ -46,7 +46,7 @@
 <div *ngIf="!IsHideAll()" class="row">
   <div class="col-sm-6" [ngClass]="{'col-sm-6': isProjectUser, 'col-sm-12': !isProjectUser}">
     <h4>Last Test Runs</h4>
-    <table-filter *ngIf="!IsHideAll()" [data]="testRuns" [actionsHeader]="false" [columns]="testRunColumns"
+    <table-filter *ngIf="!IsHideAll()" [data]="testruns" [actionsHeader]="false" [columns]="testrunColumns"
       [allowDelete]="false" [hideFilter]="true" (rowClick)="openTestRun($event)" rowsOnPage="5"></table-filter>
   </div>
   <div *ngIf="isProjectUser" class="col-sm-6">

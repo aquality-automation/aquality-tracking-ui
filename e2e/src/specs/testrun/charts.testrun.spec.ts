@@ -1,7 +1,7 @@
 import { logIn } from '../../pages/login.po';
 import { projectView } from '../../pages/project/view.po';
-import { testRunView } from '../../pages/testrun/view.po';
-import { testRunList } from '../../pages/testrun/list.po';
+import { testrunView } from '../../pages/testrun/view.po';
+import { testrunList } from '../../pages/testrun/list.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 
 import lookupOptions from '../../data/lookupOptions.json';
@@ -25,10 +25,10 @@ describe('Test Run View Charts', () => {
         result.issue_id = issue.id;
         await projectHelper.editorAPI.createResult(result);
         await projectHelper.openProject();
-        await projectView.menuBar.testRuns();
-        const isTestRunAppear = await testRunList.waitForTestRun(builds.build_1);
+        await projectView.menuBar.testruns();
+        const isTestRunAppear = await testrunList.waitForTestRun(builds.build_1);
         expect(isTestRunAppear).toBe(true, 'Import was not finished!');
-        await testRunList.openTestRun(builds.build_1);
+        await testrunList.openTestRun(builds.build_1);
     });
 
     afterAll(async () => {
@@ -36,15 +36,15 @@ describe('Test Run View Charts', () => {
     });
 
     it('Can Filter by Result', async () => {
-        const clickedChartSection = await testRunView.clickResultPassedChartSection();
-        return expect(testRunView.resultsAreFilteredByResult(clickedChartSection))
+        const clickedChartSection = await testrunView.clickResultPassedChartSection();
+        return expect(testrunView.resultsAreFilteredByResult(clickedChartSection))
             .toBe(true, 'Results are not filtered by Result');
     });
 
     it('Can Filter by Resolution', async () => {
-        await testRunView.setResultFilter(lookupOptions.global.none.name);
-        const clickedChartSection = await testRunView.clickResolutionTestIssueChartSection();
-        return expect(testRunView.resultsAreFilteredByResolution(clickedChartSection))
+        await testrunView.setResultFilter(lookupOptions.global.none.name);
+        const clickedChartSection = await testrunView.clickResolutionTestIssueChartSection();
+        return expect(testrunView.resultsAreFilteredByResolution(clickedChartSection))
             .toBe(true, 'Results are not filtered by Resolution');
     });
 });

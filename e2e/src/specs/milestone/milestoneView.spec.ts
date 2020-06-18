@@ -3,13 +3,13 @@ import { projectList } from '../../pages/project/list.po';
 import { milestoneList } from '../../pages/milestone/list.po';
 import { milestoneView } from '../../pages/milestone/view.po';
 import { ProjectHelper } from '../../helpers/project.helper';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { Milestone } from '../../../../src/app/shared/models/milestone';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 import loginTestRunJson from '../../data/import/milestoneView/login.json';
-import testRun_ManagerTestRunJson from '../../data/import/milestoneView/testRunManager.json';
-import testRun_ViewerTestRunJson from '../../data/import/milestoneView/testRunViewer.json';
+import testrun_ManagerTestRunJson from '../../data/import/milestoneView/testrunManager.json';
+import testrun_ViewerTestRunJson from '../../data/import/milestoneView/testrunViewer.json';
 
 const projectHelper: ProjectHelper = new ProjectHelper();
 
@@ -21,29 +21,29 @@ const milestones: { version1: Milestone, version2: Milestone, version3: Mileston
 
 const suites = {
     login: 'Login',
-    testRun_Manager: 'Test Run: Manager',
-    testRun_Viewer: 'Test Run: Viewer',
+    testrun_Manager: 'Test Run: Manager',
+    testrun_Viewer: 'Test Run: Viewer',
     base: 'Base'
 };
 
-const importedRuns: { login: TestRun, testRun_Manager: TestRun, testRun_Viewer: TestRun } = {
+const importedRuns: { login: TestRun, testrun_Manager: TestRun, testrun_Viewer: TestRun } = {
     login: undefined,
-    testRun_Manager: undefined,
-    testRun_Viewer: undefined
+    testrun_Manager: undefined,
+    testrun_Viewer: undefined
 };
 
-const assigneMilestone = (testRun: TestRun, milestone: Milestone) => {
+const assigneMilestone = (testrun: TestRun, milestone: Milestone) => {
     return projectHelper.editorAPI.createTestRun({
-        id: testRun.id,
-        project_id: testRun.project_id,
+        id: testrun.id,
+        project_id: testrun.project_id,
         milestone_id: milestone.id
     });
 };
 
-const unassigneMilestone = (testRun: TestRun) => {
+const unassigneMilestone = (testrun: TestRun) => {
     return projectHelper.editorAPI.createTestRun({
-        id: testRun.id,
-        project_id: testRun.project_id,
+        id: testrun.id,
+        project_id: testrun.project_id,
         milestone_id: 0
     });
 };
@@ -121,9 +121,9 @@ describe('Milestone:', () => {
 
         it('I can see Not Executed results from second suite', async () => {
             const imported = await projectHelper.importer
-                .executeCucumberImport(suites.testRun_Manager, [testRun_ManagerTestRunJson], ['ManagerTestRunJson.json']);
-            importedRuns.testRun_Manager = imported[0];
-            await projectHelper.editorAPI.addSuiteToMilestone(milestones.version1.name, suites.testRun_Manager);
+                .executeCucumberImport(suites.testrun_Manager, [testrun_ManagerTestRunJson], ['ManagerTestRunJson.json']);
+            importedRuns.testrun_Manager = imported[0];
+            await projectHelper.editorAPI.addSuiteToMilestone(milestones.version1.name, suites.testrun_Manager);
 
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
@@ -136,11 +136,11 @@ describe('Milestone:', () => {
 
         it('I can see Distinct Tests test results', async () => {
             const imported = await projectHelper.importer
-                .executeCucumberImport(suites.testRun_Viewer, [testRun_ViewerTestRunJson], ['ViewerTestRunJson.json']);
-            importedRuns.testRun_Viewer = imported[0];
+                .executeCucumberImport(suites.testrun_Viewer, [testrun_ViewerTestRunJson], ['ViewerTestRunJson.json']);
+            importedRuns.testrun_Viewer = imported[0];
 
-            await assigneMilestone(importedRuns.testRun_Manager, milestones.version1);
-            await assigneMilestone(importedRuns.testRun_Viewer, milestones.version1);
+            await assigneMilestone(importedRuns.testrun_Manager, milestones.version1);
+            await assigneMilestone(importedRuns.testrun_Viewer, milestones.version1);
 
             await milestoneView.menuBar.milestones();
             await milestoneList.openMilestone(milestones.version1.name);
@@ -180,7 +180,7 @@ describe('Milestone:', () => {
                 await projectHelper.openProject();
                 await projectList.menuBar.milestones();
                 testrun = (await projectHelper.importer
-                    .executeCucumberImport(suites.base, [testRun_ViewerTestRunJson], ['Base.json']))[0];
+                    .executeCucumberImport(suites.base, [testrun_ViewerTestRunJson], ['Base.json']))[0];
                 return milestoneList.openMilestone(milestones.version3.name);
             });
 

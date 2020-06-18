@@ -40,18 +40,18 @@ class Matrix extends BasePage {
     }
 
     checkIfTableEqualToCSv(path: string) {
-        return elements.testRunsTable.checkIfTableEqualToCSv(path);
+        return elements.testrunsTable.checkIfTableEqualToCSv(path);
     }
 
     async rightClickTestRunHeader(columnName: string) {
-        await elements.testRunsTable.rightClickSorter(columnName);
+        await elements.testrunsTable.rightClickSorter(columnName);
         const handles = await browser.getAllWindowHandles();
         await browser.switchTo().window(handles[handles.length - 1]);
         await browser.waitForAngular();
     }
 
     getFirstHeader() {
-        return elements.testRunsTable.getColumnName(1);
+        return elements.testrunsTable.getColumnName(1);
     }
 
     getTestRunIdFromColumnName(columnName: string): number {

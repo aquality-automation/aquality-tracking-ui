@@ -1,6 +1,6 @@
 import { TestSuite } from '../../../src/app/shared/models/test-suite';
 import { Test } from '../../../src/app/shared/models/test';
-import { TestRun } from '../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../src/app/shared/models/testrun';
 import { TestResult } from '../../../src/app/shared/models/test-result';
 import { BaseAPI } from './base.api';
 

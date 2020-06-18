@@ -30,7 +30,7 @@
       <div class="col-sm-2 show-button form-group" *ngIf="selectedSuite">
         <button id="matrix-show" class="btn btn-primary btn-sm  form-control" (click)="getMatrix()">Show</button>
       </div>
-      <div *ngIf="dataToshow && tbCols && testRuns" class="col-sm-2 line-margin form-group row">
+      <div *ngIf="dataToshow && tbCols && testruns" class="col-sm-2 line-margin form-group row">
         <div class="col-sm-12 margin-y-sm">
           <mat-slide-toggle id="matrix-resolution-toggler" [ngModel]="showResolutions"
             (ngModelChange)="refreshTable($event)">Show Resolutions

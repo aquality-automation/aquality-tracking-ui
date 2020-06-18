@@ -10,8 +10,8 @@ class TestResultView extends BasePage {
 
   private attachCell = (stepName: string) =>  elements.stepsTable.getElementsForCell(stepColumns.attachment, stepName, stepColumns.step);
 
-  navigateTo(projectId: number, testRunId: number) {
-    return browser.get(baseUrl(projectId, testRunId));
+  navigateTo(projectId: number, testrunId: number) {
+    return browser.get(baseUrl(projectId, testrunId));
   }
 
   async setResolution(name: string) {

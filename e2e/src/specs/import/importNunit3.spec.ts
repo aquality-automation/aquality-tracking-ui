@@ -1,9 +1,9 @@
 import { logIn } from '../../pages/login.po';
 import { projectView } from '../../pages/project/view.po';
-import { testRunView } from '../../pages/testrun/view.po';
+import { testrunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
 import { ProjectHelper } from '../../helpers/project.helper';
-import { testRunList } from '../../pages/testrun/list.po';
+import { testrunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 import users from '../../data/users.json';
 
@@ -76,16 +76,16 @@ describe('Import Test Run: Nunit V3', () => {
     });
 
     it('Only one testrun was created during Feature: TestName import results via UI', async () => {
-        await importPage.menuBar.testRuns();
-        await testRunList.filterByBuildName(featureName.buildName);
-        return expect(testRunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
+        await importPage.menuBar.testruns();
+        await testrunList.filterByBuildName(featureName.buildName);
+        return expect(testrunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
     });
 
     it('Results were correctly created during Feature: TestName import results via UI', async () => {
-        await testRunList.openTestRun(featureName.buildName);
-        await testRunView.sortResultsByName();
+        await testrunList.openTestRun(featureName.buildName);
+        await testrunView.sortResultsByName();
 
-        const tableComparisonResult = await testRunView.checkIfTableEqualToCSV('/resultsTable/nunitV3FeatureName.csv');
+        const tableComparisonResult = await testrunView.checkIfTableEqualToCSV('/resultsTable/nunitV3FeatureName.csv');
         return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 
@@ -102,16 +102,16 @@ describe('Import Test Run: Nunit V3', () => {
     });
 
     it('Only one testrun was created during Class Name import results via UI', async () => {
-        await importPage.menuBar.testRuns();
-        await testRunList.filterByBuildName(className.buildName);
-        return expect(testRunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
+        await importPage.menuBar.testruns();
+        await testrunList.filterByBuildName(className.buildName);
+        return expect(testrunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
     });
 
     it('Results were correctly created during Class Name import results via UI', async () => {
-        await testRunList.openTestRun(className.buildName);
-        await testRunView.sortResultsByName();
+        await testrunList.openTestRun(className.buildName);
+        await testrunView.sortResultsByName();
 
-        const tableComparisonResult = await testRunView.checkIfTableEqualToCSV('/resultsTable/nunitV3ClassName.csv');
+        const tableComparisonResult = await testrunView.checkIfTableEqualToCSV('/resultsTable/nunitV3ClassName.csv');
         return expect(tableComparisonResult.result).toBe(true, tableComparisonResult.message);
     });
 });

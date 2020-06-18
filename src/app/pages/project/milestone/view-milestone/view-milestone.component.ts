@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Milestone } from '../../../../shared/models/milestone';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Test } from '../../../../shared/models/test';
 import { TestResult } from '../../../../shared/models/test-result';
@@ -40,7 +40,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     private finalResultService: FinalResultService,
     private resultResolutionService: ResultResolutionService,
     private suitesService: TestSuiteService,
-    private testRunService: TestRunService,
+    private testrunService: TestRunService,
     private transformationsService: TransformationsService,
     private permissions: PermissionsService,
     private issueService: IssueService
@@ -52,7 +52,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   viewData: ViewData[];
   resolutions: ResultResolution[];
   finalResults: FinalResult[];
-  testRuns: TestRun[];
+  testruns: TestRun[];
   issues: Issue[];
   resultsToShow: TestResult[];
   latestResults: TestResult[];
@@ -93,7 +93,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     this.warningMessage = this.getWarningMessage();
     [
       this.suites,
-      this.testRuns,
+      this.testruns,
       this.resolutions,
       this.finalResults,
       this.latestResults,
@@ -103,7 +103,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
 
     this.columns = this.getColumns();
     this.updateStackSuites(this.stackSuites);
-    const notExecutedSuites = (this.milestone.suites.filter(suite => !this.testRuns.find(x => x.test_suite_id === suite.id)))
+    const notExecutedSuites = (this.milestone.suites.filter(suite => !this.testruns.find(x => x.test_suite_id === suite.id)))
       .map(x => x.name);
     this.notExecutedSuites = notExecutedSuites.join(', ');
   }
@@ -122,7 +122,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   getInitialInfo() {
     return Promise.all([
       this.suitesService.getTestSuite({ project_id: this.milestone.project_id }),
-      this.testRunService.getTestRun({ project_id: this.milestone.project_id, milestone_id: this.milestone.id }),
+      this.testrunService.getTestRun({ project_id: this.milestone.project_id, milestone_id: this.milestone.id }),
       this.resultResolutionService.getResolution(this.milestone.project_id),
       this.finalResultService.getFinalResult({}),
       this.milestoneService.getMilestoneResults(this.milestone),
@@ -153,7 +153,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
             viewData.push({
               testName: test.name,
               suite: testLatestResult.id
-                ? this.testRuns.find(testRun => testRun.id === testLatestResult.test_run_id).test_suite
+                ? this.testruns.find(testrun => testrun.id === testLatestResult.test_run_id).test_suite
                 : { name: 'Any Suite' },
               result: testLatestResult
             });
@@ -235,7 +235,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   }
 
   private findResultFromSuite(test: Test, suite: TestSuite, results: TestResult[]): TestResult {
-    const suiteRuns = this.testRuns.filter(testRun => testRun.test_suite_id === suite.id);
+    const suiteRuns = this.testruns.filter(testrun => testrun.test_suite_id === suite.id);
     return results.find(result => {
       return result.test_id === test.id && suiteRuns.find(run => run.id === result.test_run_id) !== undefined;
     });

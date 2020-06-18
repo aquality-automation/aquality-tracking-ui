@@ -46,7 +46,7 @@ import { TestRunStat } from 'src/app/shared/models/testrun-stats';
 export class SuiteDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private testSuiteService: TestSuiteService,
-    private testRunService: TestRunService,
+    private testrunService: TestRunService,
     private route: ActivatedRoute
   ) {}
 
@@ -228,8 +228,8 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
     return suites;
   }
 
-  getDuration(testRunStat: TestRunStat): string {
-    return this.testRunService.calculateDuration(testRunStat);
+  getDuration(testrunStat: TestRunStat): string {
+    return this.testrunService.calculateDuration(testrunStat);
   }
 
   updateSuites(suitesToShow) {
@@ -251,7 +251,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
       this.suitesToShow = newSuitesToShow;
     }
     for (const suite of this.suitesToShow) {
-      const results = await this.testRunService.getTestsRunStats(
+      const results = await this.testrunService.getTestsRunStats(
         {
           test_suite_id: suite.id,
           project_id: suite.project_id

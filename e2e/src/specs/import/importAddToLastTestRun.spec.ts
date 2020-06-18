@@ -1,9 +1,9 @@
 import { logIn } from '../../pages/login.po';
 import { projectView } from '../../pages/project/view.po';
-import { testRunView } from '../../pages/testrun/view.po';
+import { testrunView } from '../../pages/testrun/view.po';
 import { importPage } from '../../pages/import.po';
 import { ProjectHelper } from '../../helpers/project.helper';
-import { testRunList } from '../../pages/testrun/list.po';
+import { testrunList } from '../../pages/testrun/list.po';
 import { testData } from '../../utils/testData.util';
 
 import users from '../../data/users.json';
@@ -59,14 +59,14 @@ describe('Import Test Run: Add to Last Testrun', () => {
     });
 
     it('Only one testrun was created during import results via UI', async () => {
-        await importPage.menuBar.testRuns();
-        await testRunList.filterByBuildName(ui.buildName);
-        return expect(testRunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
+        await importPage.menuBar.testruns();
+        await testrunList.filterByBuildName(ui.buildName);
+        return expect(testrunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
     });
 
     it('7 results where created during import results via UI', async () => {
-        await testRunList.openTestRun(ui.buildName);
-        return expect(testRunView.getResultsCount()).toBe(7, '7 results should be imported!');
+        await testrunList.openTestRun(ui.buildName);
+        return expect(testrunView.getResultsCount()).toBe(7, '7 results should be imported!');
     });
 
     it('You can import into Last Test Run via API', async () => {
@@ -88,13 +88,13 @@ describe('Import Test Run: Add to Last Testrun', () => {
     });
 
     it('Only one testrun was created during import results via API', async () => {
-        await importPage.menuBar.testRuns();
-        await testRunList.filterByBuildName(api.buildName);
-        return expect(testRunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
+        await importPage.menuBar.testruns();
+        await testrunList.filterByBuildName(api.buildName);
+        return expect(testrunList.getTestRunsCount()).toBe(1, 'Should be only one test run in table!');
     });
 
     it('7 results where created during import results via API', async () => {
-        await testRunList.openTestRun(api.buildName);
-        return expect(testRunView.getResultsCount()).toBe(7, '7 results should be imported!');
+        await testrunList.openTestRun(api.buildName);
+        return expect(testrunView.getResultsCount()).toBe(7, '7 results should be imported!');
     });
 });

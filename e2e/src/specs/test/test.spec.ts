@@ -1,5 +1,5 @@
 import { logIn } from '../../pages/login.po';
-import { testRunView } from '../../pages/testrun/view.po';
+import { testrunView } from '../../pages/testrun/view.po';
 import { suiteView } from '../../pages/suite/view.po';
 import { testView } from '../../pages/test/test.po';
 import { browser } from 'protractor';
@@ -29,7 +29,7 @@ describe('Test', () => {
     });
 
     it('Can see all Suites assigned to test', async () => {
-        await (await testRunView.menuBar.tests()).all();
+        await (await testrunView.menuBar.tests()).all();
         await suiteView.openTest(testName);
         expect(testView.isSuiteLinkExists(suites.suite_1)).toBe(true, `Suite '${suites.suite_1}' is missed!`);
         expect(testView.isSuiteLinkExists(suites.suite_2)).toBe(true, `Suite '${suites.suite_2}' is missed!`);

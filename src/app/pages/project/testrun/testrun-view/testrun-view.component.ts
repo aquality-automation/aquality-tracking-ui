@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TestResult } from '../../../../shared/models/test-result';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { Milestone } from '../../../../shared/models/milestone';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
@@ -28,12 +28,12 @@ export class TestRunViewComponent implements OnInit {
   hidePrintModal = true;
   testResultTempalte: TestResult;
   testResults: TestResult[];
-  testRun: TestRun;
+  testrun: TestRun;
   milestones: Milestone[];
   nextTR: number;
   prevTR: number;
   latestTR: number;
-  testRuns: TestRun[];
+  testruns: TestRun[];
   showTableResults: boolean;
   canEdit: boolean;
   canSendEmail: boolean;
@@ -41,7 +41,7 @@ export class TestRunViewComponent implements OnInit {
 
   constructor(
     private milestoneService: MilestoneService,
-    private testRunService: TestRunService,
+    private testrunService: TestRunService,
     private route: ActivatedRoute,
     public userService: UserService,
     private emailSettingService: EmailSettingsService,
@@ -51,21 +51,21 @@ export class TestRunViewComponent implements OnInit {
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
-    const testRunId = this.route.snapshot.params.testRunId;
+    const testrunId = this.route.snapshot.params.testrunId;
     let isEmailEnabled: boolean;
-    let testRuns: TestRun[];
+    let testruns: TestRun[];
 
-    [ isEmailEnabled, this.canEdit, testRuns, this.milestones ] = await Promise.all([
+    [ isEmailEnabled, this.canEdit, testruns, this.milestones ] = await Promise.all([
       this.emailSettingService.getEmailsStatus(),
       this.permissions.hasProjectPermissions(this.projectId,
         [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]),
-      this.testRunService.getTestRun({ id: testRunId }),
+      this.testrunService.getTestRun({ id: testrunId }),
       this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 })
     ]);
 
     this.canSendEmail = isEmailEnabled && this.canEdit;
-    this.testRun = testRuns[0];
-    this.testResultTempalte = { test_run_id: testRunId };
+    this.testrun = testruns[0];
+    this.testResultTempalte = { test_run_id: testrunId };
     await this.setTestRunsToCompare();
   }
 
@@ -74,19 +74,19 @@ export class TestRunViewComponent implements OnInit {
   }
 
   async setTestRunsToCompare() {
-    this.testRuns = await this.testRunService.getTestRun({
+    this.testruns = await this.testrunService.getTestRun({
       project_id: this.projectId,
-      test_suite: { id: this.testRun.test_suite.id }
+      test_suite: { id: this.testrun.test_suite.id }
     });
-    const currentTR = this.testRuns.findIndex(x => x.id === this.testRun.id);
-    this.nextTR = this.testRuns[currentTR - 1] ? this.testRuns[currentTR - 1].id : undefined;
-    this.prevTR = this.testRuns[currentTR + 1] ? this.testRuns[currentTR + 1].id : undefined;
-    this.latestTR = currentTR !== 0 ? this.testRuns[0].id : undefined;
+    const currentTR = this.testruns.findIndex(x => x.id === this.testrun.id);
+    this.nextTR = this.testruns[currentTR - 1] ? this.testruns[currentTR - 1].id : undefined;
+    this.prevTR = this.testruns[currentTR + 1] ? this.testruns[currentTR + 1].id : undefined;
+    this.latestTR = currentTR !== 0 ? this.testruns[0].id : undefined;
   }
 
   calculateDuration(): string {
-    const start_time = new Date(this.testRun.start_time);
-    const finish_time = new Date(this.testRun.finish_time);
+    const start_time = new Date(this.testrun.start_time);
+    const finish_time = new Date(this.testrun.finish_time);
     const duration = (finish_time.getTime() - start_time.getTime()) / 1000;
     const hours = (duration - duration % 3600) / 3600;
     const minutes = (duration - hours * 3600 - (duration - hours * 3600) % 60) / 60;
@@ -95,15 +95,15 @@ export class TestRunViewComponent implements OnInit {
   }
 
   changeDebugState(input: HTMLInputElement) {
-    let testRunUpdateTemplate: TestRun;
-    testRunUpdateTemplate = {
+    let testrunUpdateTemplate: TestRun;
+    testrunUpdateTemplate = {
       debug: input.checked === true ? 1 : 0,
-      id: this.testRun.id,
-      build_name: this.testRun.build_name,
-      start_time: this.testRun.start_time,
-      project_id: this.testRun.project_id
+      id: this.testrun.id,
+      build_name: this.testrun.build_name,
+      start_time: this.testrun.start_time,
+      project_id: this.testrun.project_id
     };
-    this.testRunService.createTestRun(testRunUpdateTemplate).then();
+    this.testrunService.createTestRun(testrunUpdateTemplate).then();
   }
 
   async sendReport() {
@@ -125,8 +125,8 @@ export class TestRunViewComponent implements OnInit {
     this.hidePrintModal = true;
   }
 
-  async testRunUpdate() {
-    let testUpdatedTestRun = { ...this.testRun };
+  async testrunUpdate() {
+    let testUpdatedTestRun = { ...this.testrun };
     if (!testUpdatedTestRun.author) {
       testUpdatedTestRun.author = '$blank';
     }
@@ -141,22 +141,22 @@ export class TestRunViewComponent implements OnInit {
     } else {
       testUpdatedTestRun.milestone_id = 0;
     }
-    testUpdatedTestRun = await this.testRunService.createTestRun(testUpdatedTestRun);
+    testUpdatedTestRun = await this.testrunService.createTestRun(testUpdatedTestRun);
   }
 
   createMilestone($event) {
-    this.milestoneService.createMilestone({ name: $event, project_id: this.testRun.project_id }).then(() => {
-      this.milestoneService.getMilestone({ project_id: this.testRun.project_id, active: 1 }).then(milestones => {
+    this.milestoneService.createMilestone({ name: $event, project_id: this.testrun.project_id }).then(() => {
+      this.milestoneService.getMilestone({ project_id: this.testrun.project_id, active: 1 }).then(milestones => {
         this.milestones = milestones;
-        this.testRun.milestone = this.milestones.find(x => x.name === $event);
-        this.testRunUpdate();
+        this.testrun.milestone = this.milestones.find(x => x.name === $event);
+        this.testrunUpdate();
       });
     });
   }
 
   finalResultChartClick(result: FinalResult) {
     this.router.navigate(
-      [`/project/${this.projectId}/testrun/${this.testRun.id}`],
+      [`/project/${this.projectId}/testrun/${this.testrun.id}`],
       { queryParams: { f_final_result_opt: result.id } });
   }
 
@@ -166,22 +166,22 @@ export class TestRunViewComponent implements OnInit {
       : { 'f_issue.resolution_opt': resolution.id };
 
     this.router.navigate(
-      [`/project/${this.projectId}/testrun/${this.testRun.id}`],
+      [`/project/${this.projectId}/testrun/${this.testrun.id}`],
       { queryParams });
   }
 
   canFinish() {
-    return this.testRun.label_id === 2;
+    return this.testrun.label_id === 2;
   }
 
   isFinished() {
-    return this.testRun.finish_time
-      ? this.testRun.start_time !== this.testRun.finish_time
+    return this.testrun.finish_time
+      ? this.testrun.start_time !== this.testrun.finish_time
       : false;
   }
 
   async reopenTestRun() {
-    this.updateFinishTime(this.testRun.start_time);
+    this.updateFinishTime(this.testrun.start_time);
   }
 
   async finishTestRun() {
@@ -189,10 +189,10 @@ export class TestRunViewComponent implements OnInit {
   }
 
   async updateFinishTime(finish_time: Date | string) {
-    this.testRun.finish_time = (await this.testRunService.createTestRun({
-      id: this.testRun.id,
+    this.testrun.finish_time = (await this.testrunService.createTestRun({
+      id: this.testrun.id,
       finish_time: finish_time,
-      project_id: this.testRun.project_id
+      project_id: this.testrun.project_id
     })).finish_time;
   }
 }

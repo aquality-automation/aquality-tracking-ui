@@ -5,7 +5,7 @@ import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Issue } from '../../../../shared/models/issue';
 import { User } from '../../../../shared/models/user';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { UserService } from 'src/app/services/user/user.services';
@@ -53,7 +53,7 @@ export class ResultGridComponent implements OnInit {
   constructor(
     private resultResolutionService: ResultResolutionService,
     private testResultService: TestResultService,
-    private testRunService: TestRunService,
+    private testrunService: TestRunService,
     private testService: TestService,
     private route: ActivatedRoute,
     private router: Router,
@@ -187,7 +187,7 @@ export class ResultGridComponent implements OnInit {
   private async refreshResults() {
     let testruns: TestRun[];
     [testruns, this.listOfIssues, this.testResults] = await Promise.all([
-      this.testRunService.getTestRun({ project_id: this.projectId }),
+      this.testrunService.getTestRun({ project_id: this.projectId }),
       this.issueService.getIssues({ project_id: this.projectId }),
       this.testResultService.getTestResult(this.testResultTempalte)
     ]);

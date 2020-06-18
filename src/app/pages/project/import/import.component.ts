@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImportBodyPattern } from '../../../shared/models/project';
-import { TestRun } from '../../../shared/models/testRun';
+import { TestRun } from '../../../shared/models/testrun';
 import { Import } from '../../../shared/models/import';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { TestSuite } from 'src/app/shared/models/test-suite';
@@ -27,8 +27,8 @@ export class ImportComponent implements OnInit {
   importParameters: ImportParameters = new ImportParameters();
   suites: TestSuite[];
   suite: TestSuite;
-  testRuns: TestRun[] = [];
-  testRun: TestRun;
+  testruns: TestRun[] = [];
+  testrun: TestRun;
   fileListArray: File[];
   fileStatusArray: {}[] = [];
   uploadedArray: {}[] = [];
@@ -181,8 +181,8 @@ export class ImportComponent implements OnInit {
     this.importParameters.testNameKey = this.testNameOptions.selectedKey;
     this.importParameters.format = this.format.key;
     this.importParameters.suite = this.suite.name;
-    if (this.testRun) {
-      this.importParameters.testRunId = this.testRun.id;
+    if (this.testrun) {
+      this.importParameters.testrunId = this.testrun.id;
     }
   }
 
@@ -222,7 +222,7 @@ export class ImportComponent implements OnInit {
 
   async setSuite($event) {
     this.suite = $event;
-    this.testRuns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
+    this.testruns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
   }
 
   testNameTypes() {

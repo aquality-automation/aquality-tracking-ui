@@ -59,8 +59,8 @@
     </div>
     <div *ngIf="suite && !importParameters.addToLastTestRun" class="col-md-3">
       <label for="testrun">Test Run:</label>
-      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testRun" [allowEmptyValue]="true"
-        [propertiesToShow]="['start_time', 'build_name']" [array]="testRuns" placeholder="None"></lookup-autocomplete>
+      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testrun" [allowEmptyValue]="true"
+        [propertiesToShow]="['start_time', 'build_name']" [array]="testruns" placeholder="None"></lookup-autocomplete>
     </div>
     <div class="col-md-3">
       <label for="ci_build">CI Build:</label>
@@ -75,12 +75,12 @@
       <mat-slide-toggle id="singleTestrunToggler" name="singleTestrun" [(ngModel)]="importParameters.singleTestRun">One
         Test Run</mat-slide-toggle>
     </div>
-    <div *ngIf="!testRun" class="col-md-3 checbox-section"
+    <div *ngIf="!testrun" class="col-md-3 checbox-section"
       title="All selected Files will be Imported into Last Test Run.">
       <mat-slide-toggle id="lastTestRunToggler" name="lastTestRun" [(ngModel)]="importParameters.addToLastTestRun">Add
         to Last Test Run</mat-slide-toggle>
     </div>
-    <div *ngIf="!testRun" class="col-md-3 checbox-section" title="Mark this Test Run as Debug.">
+    <div *ngIf="!testrun" class="col-md-3 checbox-section" title="Mark this Test Run as Debug.">
       <mat-slide-toggle id="markAsDebug" name="markAsDebug" [(ngModel)]="importParameters.debug">Mark as Debug
       </mat-slide-toggle>
     </div>

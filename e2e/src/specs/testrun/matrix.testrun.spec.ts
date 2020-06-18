@@ -1,7 +1,7 @@
 import { logIn } from '../../pages/login.po';
 import { matrix } from '../../pages/testrun/matrix.po';
-import { testRunList } from '../../pages/testrun/list.po';
-import { testRunView } from '../../pages/testrun/view.po';
+import { testrunList } from '../../pages/testrun/list.po';
+import { testrunView } from '../../pages/testrun/view.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 
 import cucumberImport from '../../data/import/cucumber.json';
@@ -34,8 +34,8 @@ describe('Test Run Matrix', () => {
     });
 
     it('Can Open Matrix Page', async () => {
-        await testRunList.menuBar.testRuns();
-        await testRunList.clickSuiteMatrix();
+        await testrunList.menuBar.testruns();
+        await testrunList.clickSuiteMatrix();
         return expect(matrix.isOpened()).toBe(true, 'Matrix page was not opened!');
     });
 
@@ -97,9 +97,9 @@ describe('Test Run Matrix', () => {
         await matrix.setLabelLookupValue('Auto');
         await matrix.clickShow();
         const header = await matrix.getFirstHeader();
-        const testRunId = matrix.getTestRunIdFromColumnName(header);
+        const testrunId = matrix.getTestRunIdFromColumnName(header);
         await matrix.rightClickTestRunHeader(header);
-        expect(testRunView.isOpened()).toBe(true, 'Test run was not opened!');
-        expect(testRunView.getId()).toBe(testRunId, 'Wrong Test run was opened!');
+        expect(testrunView.isOpened()).toBe(true, 'Test run was not opened!');
+        expect(testrunView.getId()).toBe(testrunId, 'Wrong Test run was opened!');
     });
 });

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { TestResult } from '../../../../shared/models/test-result';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { Project } from '../../../../shared/models/project';
 import { TestRunStat } from 'src/app/shared/models/testrun-stats';
 import { ProjectService } from 'src/app/services/project/project.service';
@@ -20,12 +20,12 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
     @Input() type = '';
     @Input() buttons: any[];
     @Input() testResults: TestResult[];
-    @Input() testRun: TestRun;
+    @Input() testrun: TestRun;
     @Output() closed = new EventEmitter();
     @Output() execute = new EventEmitter();
     project: Project;
-    testRunStats: TestRunStat[];
-    testRunsToShow = 15;
+    testrunStats: TestRunStat[];
+    testrunsToShow = 15;
     showOther = true;
     showFailed = true;
     showPassed = false;
@@ -46,17 +46,17 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
 
     constructor(
         private projectService: ProjectService,
-        private testRunService: TestRunService
+        private testrunService: TestRunService
     ) {
         super();
     }
 
     async ngOnInit() {
         this.testResultsToPrint = this.testResults;
-        this.project = (await this.projectService.getProjects({ id: this.testRun.project_id }))[0];
-        this.testRunStats = await this.testRunService.getTestsRunStats({
-            project_id: this.testRun.project_id,
-            test_suite: this.testRun.test_suite
+        this.project = (await this.projectService.getProjects({ id: this.testrun.project_id }))[0];
+        this.testrunStats = await this.testrunService.getTestsRunStats({
+            project_id: this.testrun.project_id,
+            test_suite: this.testrun.test_suite
         });
 
         this.regenerate();
@@ -103,7 +103,7 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
 
         this.addStats();
 
-        if (this.showChart && this.testRunStats.length > 1) {
+        if (this.showChart && this.testrunStats.length > 1) {
             this.addChart();
         }
 
@@ -179,27 +179,27 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
     addTestrunInfo() {
         const height = 37;
         const textsize = 40;
-        if (this.testRun.test_suite) {
-            this.doc.text(95, height, this.cutText(this.testRun.test_suite.name, textsize));
+        if (this.testrun.test_suite) {
+            this.doc.text(95, height, this.cutText(this.testrun.test_suite.name, textsize));
         }
-        this.doc.text(95, height + 5, this.cutText(this.testRun.build_name, textsize));
-        if (this.testRun.milestone) { this.doc.text(95, height + 10, this.cutText(this.testRun.milestone.name, textsize)); }
-        this.doc.text(95, height + 15, new Date(this.testRun.start_time).toLocaleString());
-        this.doc.text(95, height + 20, new Date(this.testRun.finish_time).toLocaleString());
+        this.doc.text(95, height + 5, this.cutText(this.testrun.build_name, textsize));
+        if (this.testrun.milestone) { this.doc.text(95, height + 10, this.cutText(this.testrun.milestone.name, textsize)); }
+        this.doc.text(95, height + 15, new Date(this.testrun.start_time).toLocaleString());
+        this.doc.text(95, height + 20, new Date(this.testrun.finish_time).toLocaleString());
 
         this.doc.setFontType('bold');
         this.doc.text(75, height, 'Suite:');
         this.doc.text(75, height + 5, 'Build:');
-        if (this.testRun.milestone) { this.doc.text(75, height + 10, 'Milestone:'); }
+        if (this.testrun.milestone) { this.doc.text(75, height + 10, 'Milestone:'); }
         this.doc.text(75, height + 15, 'Started:');
         this.doc.text(75, height + 20, 'Finished:');
     }
 
     addChart() {
         const startHeight = 84;
-        const trsNumber = this.testRunsToShow < this.testRunStats.length ? this.testRunsToShow : this.testRunStats.length;
+        const trsNumber = this.testrunsToShow < this.testrunStats.length ? this.testrunsToShow : this.testrunStats.length;
         const step = (200 / trsNumber);
-        const testValue = 40 / (this.testRunStats[0].total ? this.testRunStats[0].total : 0  + 10);
+        const testValue = 40 / (this.testrunStats[0].total ? this.testrunStats[0].total : 0  + 10);
         const failedPoints = this.getPoints(step, testValue, 'failed', startHeight + 40);
         const passedPoints = this.getPoints(step, testValue, 'passed', startHeight + 40);
         const totalPoints = this.getPoints(step, testValue, 'total', startHeight + 40);
@@ -225,9 +225,9 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
         this.doc.setFontSize(10);
         this.doc.setFontType('normal');
         this.doc.setTextColor(0, 0, 0);
-        this.doc.text(16, startHeight + 9, `${((this.testRunStats[0].total + 10) * 3 / 4).toFixed(0)}`);
-        this.doc.text(16, startHeight + 19, `${((this.testRunStats[0].total + 10) * 2 / 4).toFixed(0)}`);
-        this.doc.text(16, startHeight + 29, `${((this.testRunStats[0].total + 10) * 1 / 4).toFixed(0)}`);
+        this.doc.text(16, startHeight + 9, `${((this.testrunStats[0].total + 10) * 3 / 4).toFixed(0)}`);
+        this.doc.text(16, startHeight + 19, `${((this.testrunStats[0].total + 10) * 2 / 4).toFixed(0)}`);
+        this.doc.text(16, startHeight + 29, `${((this.testrunStats[0].total + 10) * 1 / 4).toFixed(0)}`);
 
         this.doc.setFontSize(10);
         this.doc.setFontType('bold');
@@ -261,9 +261,9 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
 
     getPoints(step, value, property, startValue): { startStep: number, startValue: number }[] {
         let reversed = [];
-        reversed = reversed.concat(this.testRunStats);
-        if (reversed.length > this.testRunsToShow) {
-            reversed = reversed.slice(0, this.testRunsToShow);
+        reversed = reversed.concat(this.testrunStats);
+        if (reversed.length > this.testrunsToShow) {
+            reversed = reversed.slice(0, this.testrunsToShow);
         }
         reversed = reversed.reverse();
         let startStep = 20 - step;
@@ -279,7 +279,7 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
 
     doAction(button) {
         if (button.execute) {
-            this.doc.save(`Report_${this.testRun.build_name}_${this.testRun.test_suite.name}_${new Date().toDateString()}.pdf`);
+            this.doc.save(`Report_${this.testrun.build_name}_${this.testrun.test_suite.name}_${new Date().toDateString()}.pdf`);
         } else {
             this.execute.emit(false);
         }

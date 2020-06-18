@@ -1,12 +1,12 @@
 import { logIn } from '../../pages/login.po';
-import { testRunView } from '../../pages/testrun/view.po';
+import { testrunView } from '../../pages/testrun/view.po';
 import { Step } from '../../../../src/app/shared/models/steps';
 import { Test } from '../../../../src/app/shared/models/test';
 import usersTestData from '../../data/users.json';
 import results from '../../data/results.json';
 import using from 'jasmine-data-provider';
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { testResultView } from '../../pages/testresult/testresult.po';
 import { testData } from '../../utils/testData.util';
 import { ProjectHelper } from '../../helpers/project.helper';
@@ -19,7 +19,7 @@ let step2: Step = { name: 'I click project row', type_id: 2 };
 let step3: Step = { name: 'Project page is opened', type_id: 3 };
 let step1: Step = { name: 'Projects page was opened', type_id: 1 };
 let suite: TestSuite = { name: 'Smoke' };
-let testRun: TestRun;
+let testrun: TestRun;
 
 const editorExamples = {
     localManager: usersTestData.localManager,
@@ -62,15 +62,15 @@ describe('Result Steps:', () => {
     using(editorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                testRun = {
+                testrun = {
                     test_suite_id: suite.id,
                     build_name: `build_${new Date().getTime().toString()}`,
                     start_time: new Date()
                 };
-                testRun = await projectHelper.editorAPI.createTestRun(testRun);
+                testrun = await projectHelper.editorAPI.createTestRun(testrun);
                 await logIn.logInAs(user.user_name, user.password);
-                await testRunView.navigateTo(projectHelper.project.id, testRun.id);
-                await testRunView.openResult(test.name);
+                await testrunView.navigateTo(projectHelper.project.id, testrun.id);
+                await testrunView.openResult(test.name);
             });
 
             it('I can see steps section', async () => {
@@ -139,16 +139,16 @@ describe('Result Steps:', () => {
     using(notEditorExamples, (user, description) => {
         describe(`Permissions: ${description} role:`, () => {
             beforeAll(async () => {
-                testRun = {
+                testrun = {
                     test_suite_id: suite.id,
                     build_name: `build_${new Date().getTime().toString()}`,
                     start_time: new Date()
                 };
-                testRun = await projectHelper.editorAPI.createTestRun(testRun);
+                testrun = await projectHelper.editorAPI.createTestRun(testrun);
 
                 await logIn.logInAs(user.user_name, user.password);
-                await testRunView.navigateTo(projectHelper.project.id, testRun.id);
-                return testRunView.openResult(test.name);
+                await testrunView.navigateTo(projectHelper.project.id, testrun.id);
+                return testrunView.openResult(test.name);
             });
 
             it('I can see steps section', async () => {

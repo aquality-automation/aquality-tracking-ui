@@ -40,7 +40,7 @@ export class ImportParameters {
   singleTestRun: boolean;
   author: string;
   buildName: string;
-  testRunId: number;
+  testrunId: number;
   cilink: string;
   addToLastTestRun: boolean;
   debug: boolean;

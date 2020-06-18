@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { User } from '../../../../shared/models/user';
 import { DragulaService } from 'ng2-dragula';
 import { ModalComponent } from 'src/app/elements/modals/modal.component';
@@ -17,14 +17,14 @@ export class NotifyTeamModalComponent extends ModalComponent implements OnInit, 
     @Input() title = 'Send Test Run Report';
     @Input() type = '';
     @Input() buttons: any[];
-    @Input() testRun: TestRun;
+    @Input() testrun: TestRun;
     @Output() closed = new EventEmitter();
     @Output() execute = new EventEmitter();
     excludedUsers: any[] = [];
     includedUsers: any[] = [];
 
     constructor(
-        private testRunService: TestRunService,
+        private testrunService: TestRunService,
         private dragulaService: DragulaService) {
         super();
         const bag: any = this.dragulaService.find('notification-bag');
@@ -54,8 +54,8 @@ export class NotifyTeamModalComponent extends ModalComponent implements OnInit, 
             this.includedUsers.forEach(user => {
                 usersSendTo.push(user.user);
             });
-            await this.testRunService.sendReport(this.testRun, usersSendTo);
-            this.testRunService.handleSuccess('Email was sent.');
+            await this.testrunService.sendReport(this.testrun, usersSendTo);
+            this.testrunService.handleSuccess('Email was sent.');
             this.execute.emit();
             this.excludedUsers = [];
         } else {

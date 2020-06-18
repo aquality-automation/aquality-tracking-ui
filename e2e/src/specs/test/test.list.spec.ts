@@ -4,7 +4,7 @@ import { suiteView } from '../../pages/suite/view.po';
 import { Test } from '../../../../src/app/shared/models/test';
 import { ProjectHelper } from '../../helpers/project.helper';
 import { TestResult } from '../../../../src/app/shared/models/test-result';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
 

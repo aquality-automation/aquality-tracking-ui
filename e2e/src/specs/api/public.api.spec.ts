@@ -1,6 +1,6 @@
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
 import { ProjectHelper } from '../../helpers/project.helper';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { Test } from '../../../../src/app/shared/models/test';
 import { TestResult } from '../../../../src/app/shared/models/test-result';
 import { ATError } from '../../../../src/app/shared/models/error';

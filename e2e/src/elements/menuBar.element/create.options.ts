@@ -9,7 +9,7 @@ export class CreateOptions {
         return element(by.xpath('//*[@id="Create"]//a[text()="Suite"]')).click();
     }
 
-    async testRun() {
+    async testrun() {
         return element(by.xpath('//*[@id="Create"]//a[text()="Test Run"]')).click();
     }
 

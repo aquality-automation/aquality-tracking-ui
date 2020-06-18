@@ -4,7 +4,7 @@ import { ProjectHelper } from '../../../helpers/project.helper';
 import { projectSettingsAdministration } from '../../../pages/administration/projectSettings.po';
 import { logIn } from '../../../pages/login.po';
 import { Test } from '../../../../../src/app/shared/models/test';
-import { TestRun } from '../../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../../src/app/shared/models/testrun';
 import { TestResult } from '../../../../../src/app/shared/models/test-result';
 import using from 'jasmine-data-provider';
 import usersTestData from '../../../data/users.json';

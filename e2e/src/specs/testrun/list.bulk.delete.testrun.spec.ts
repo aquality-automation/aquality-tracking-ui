@@ -2,8 +2,8 @@ import { logIn } from '../../pages/login.po';
 import { projectView } from '../../pages/project/view.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
-import { testRunList } from '../../pages/testrun/list.po';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { testrunList } from '../../pages/testrun/list.po';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import users from '../../data/users.json';
 import using from 'jasmine-data-provider';
 import cucumberImport from '../../data/import/cucumber.json';
@@ -21,7 +21,7 @@ const notEditorExamples = {
 describe('Test Run List: Bulk Delete:', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const suite: TestSuite = { name: 'Smoke' };
-    let testRuns: TestRun[];
+    let testruns: TestRun[];
 
     beforeAll(async () => {
         await projectHelper.init({
@@ -41,31 +41,31 @@ describe('Test Run List: Bulk Delete:', () => {
         describe(`${description} role:`, () => {
 
             beforeAll(async () => {
-                testRuns = await projectHelper.importer
+                testruns = await projectHelper.importer
                     .executeCucumberImport(suite.name,
                         [cucumberImport, cucumberImport, cucumberImport, cucumberImport, cucumberImport],
                         [`build_1.json`, `build_2.json`, `build_3.json`, `build_4.json`, `build_5.json`]);
                 await logIn.logInAs(user.user_name, user.password);
                 await projectHelper.openProject();
-                return projectView.menuBar.testRuns();
+                return projectView.menuBar.testruns();
             });
 
             it('Can Cancel Bulk Delete', async () => {
-                await testRunList.selectTestRun(testRuns[0].build_name, testRuns[1].build_name, testRuns[2].build_name);
-                await testRunList.clickDeleteAll();
-                await expect(testRunList.modal.isVisible()).toBe(true, 'Modal was not opened on Delete All click');
-                await testRunList.modal.clickCancel();
-                await expect(testRunList.modal.isPresent()).toBe(false, 'Modal was not closed on Cancel click');
-                return expect(testRunList.areAllTestRunsDisplayed(testRuns[0].build_name, testRuns[1].build_name, testRuns[2].build_name))
+                await testrunList.selectTestRun(testruns[0].build_name, testruns[1].build_name, testruns[2].build_name);
+                await testrunList.clickDeleteAll();
+                await expect(testrunList.modal.isVisible()).toBe(true, 'Modal was not opened on Delete All click');
+                await testrunList.modal.clickCancel();
+                await expect(testrunList.modal.isPresent()).toBe(false, 'Modal was not closed on Cancel click');
+                return expect(testrunList.areAllTestRunsDisplayed(testruns[0].build_name, testruns[1].build_name, testruns[2].build_name))
                     .toBe(true, 'Test runs were removed after cancelling bulk delete');
             });
 
             it('Can Execute Bulk Delete', async () => {
-                await testRunList.clickDeleteAll();
-                await testRunList.modal.clickSuccess();
-                await expect(testRunList.modal.isPresent()).toBe(false, 'Modal was not closed on Yes click');
-                await testRunList.notification.assertIsSuccess('Test runs were deleted.');
-                return expect(testRunList.areAllTestRunsDisplayed(testRuns[0].build_name, testRuns[1].build_name, testRuns[2].build_name))
+                await testrunList.clickDeleteAll();
+                await testrunList.modal.clickSuccess();
+                await expect(testrunList.modal.isPresent()).toBe(false, 'Modal was not closed on Yes click');
+                await testrunList.notification.assertIsSuccess('Test runs were deleted.');
+                return expect(testrunList.areAllTestRunsDisplayed(testruns[0].build_name, testruns[1].build_name, testruns[2].build_name))
                     .toBe(false, 'Test runs were not removed after bulk delete');
             });
         });
@@ -75,17 +75,17 @@ describe('Test Run List: Bulk Delete:', () => {
         describe(`${description} role:`, () => {
 
             beforeAll(async () => {
-                testRuns = await projectHelper.importer
+                testruns = await projectHelper.importer
                     .executeCucumberImport(suite.name,
                         [cucumberImport],
                         [`build_1.json`]);
                 await logIn.logInAs(user.user_name, user.password);
                 await projectHelper.openProject();
-                return projectView.menuBar.testRuns();
+                return projectView.menuBar.testruns();
             });
 
             it('Table Row selector is not available', async () => {
-                return expect(testRunList.isSelectorAvailable()).toBe(false, 'Selector is available!');
+                return expect(testrunList.isSelectorAvailable()).toBe(false, 'Selector is available!');
             });
         });
     });

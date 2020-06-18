@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestRun } from '../../../shared/models/testRun';
+import { TestRun } from '../../../shared/models/testrun';
 import { Project } from '../../../shared/models/project';
 import { Audit } from '../../../shared/models/audit';
 import { Issue } from '../../../shared/models/issue';
@@ -28,12 +28,12 @@ export class ProjectViewComponent implements OnInit {
   audits: Audit[];
   suites: TestSuite[];
   project: Project;
-  testRuns: TestRun[];
-  testRun: TestRun;
-  testRunStats: TestRunStat[];
+  testruns: TestRun[];
+  testrun: TestRun;
+  testrunStats: TestRunStat[];
   hideAll = true;
   notification: string;
-  testRunColumns: TFColumn[] = [
+  testrunColumns: TFColumn[] = [
     { name: 'Build Name', property: 'build_name', type: TFColumnType.text },
     { name: 'Execution Environment', property: 'execution_environment', type: TFColumnType.text },
     { name: 'Suite', property: 'test_suite.name', type: TFColumnType.text },
@@ -83,18 +83,18 @@ export class ProjectViewComponent implements OnInit {
 
   async ngOnInit() {
     const projectId = this.route.snapshot.params.projectId;
-    this.testRun = { project_id: projectId, debug: 0 };
+    this.testrun = { project_id: projectId, debug: 0 };
     this.project = { id: projectId };
     this.isProjectUser = await this.permissionsService.hasProjectPermissions(this.project.id, undefined,
       [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]);
 
     this.project = (await this.projectService.getProjects(this.project))[0];
 
-    [this.allIssues, this.suites, this.testRuns, this.testRunStats] = await Promise.all([
+    [this.allIssues, this.suites, this.testruns, this.testrunStats] = await Promise.all([
       this.issueService.getIssues({ project_id: projectId }),
       this.testSuiteService.getTestSuite({ project_id: projectId }),
-      this.testrunService.getTestRun(this.testRun, 5),
-      this.testrunService.getTestsRunStats(this.testRun)
+      this.testrunService.getTestRun(this.testrun, 5),
+      this.testrunService.getTestsRunStats(this.testrun)
     ]);
 
     this.myIssues = this.allIssues
@@ -105,10 +105,10 @@ export class ProjectViewComponent implements OnInit {
       this.notification = this.generateAuditNotification(this.audits);
     }
 
-    this.testRuns.forEach(testrun => {
+    this.testruns.forEach(testrun => {
       testrun['failed'] = this.getNumberOfFails(testrun.id);
     });
-    this.quality = this.getQualityInfo(this.suites, this.testRunStats);
+    this.quality = this.getQualityInfo(this.suites, this.testrunStats);
     this.chartData = this.createChartData(this.quality.current);
     this.issueStat = this.getIssuesStat(this.allIssues);
   }
@@ -123,12 +123,12 @@ export class ProjectViewComponent implements OnInit {
   }
 
   getNumberOfFails(id: number) {
-    const stats: TestRunStat = this.testRunStats.filter(x => x.id === id)[0];
+    const stats: TestRunStat = this.testrunStats.filter(x => x.id === id)[0];
     return this.testrunService.getPassRate(stats);
   }
 
-  openTestRun(testRun: TestRun) {
-    this.router.navigate([`/project/${testRun.project_id}/testrun/${testRun.id}`]);
+  openTestRun(testrun: TestRun) {
+    this.router.navigate([`/project/${testrun.project_id}/testrun/${testrun.id}`]);
   }
 
   openIssue(issue: Issue) {
@@ -160,37 +160,37 @@ export class ProjectViewComponent implements OnInit {
   }
 
   IsHideAll() {
-    if (this.testRunStats) {
-      this.hideAll = this.testRunStats.length === 0;
+    if (this.testrunStats) {
+      this.hideAll = this.testrunStats.length === 0;
     } else {
       this.hideAll = true;
     }
     return this.hideAll;
   }
 
-  getQualityInfo(suites: TestSuite[], testRunStats: TestRunStat[]): {
+  getQualityInfo(suites: TestSuite[], testrunStats: TestRunStat[]): {
     current:
     { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number },
     average: number
   } {
-    const testRunStatsBySuite = [];
+    const testrunStatsBySuite = [];
     for (const suite of suites) {
-      const teStats: TestRunStat[] = testRunStats.filter(stat => stat.test_suite_id === suite.id);
-      testRunStatsBySuite.push({ suite: suite, stats: teStats });
+      const teStats: TestRunStat[] = testrunStats.filter(stat => stat.test_suite_id === suite.id);
+      testrunStatsBySuite.push({ suite: suite, stats: teStats });
     }
 
     return {
-      current: this.calculateAutomationQuality(testRunStatsBySuite),
-      average: this.calculateAverageAutomationQuality(testRunStatsBySuite)
+      current: this.calculateAutomationQuality(testrunStatsBySuite),
+      average: this.calculateAverageAutomationQuality(testrunStatsBySuite)
     };
   }
 
-  calculateAutomationQuality(testRunStatsBySuites: { suite: TestSuite, stats: TestRunStat[] }[]): {
+  calculateAutomationQuality(testrunStatsBySuites: { suite: TestSuite, stats: TestRunStat[] }[]): {
     quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number
   } {
     const stat = { quality: 0, NA: 0, testIssue: 0, other: 0, appIssue: 0, passed: 0, total: 0 };
 
-    for (const suiteStat of testRunStatsBySuites) {
+    for (const suiteStat of testrunStatsBySuites) {
       if (suiteStat.stats[0]) {
         stat.NA += suiteStat.stats[0].not_assigned ? suiteStat.stats[0].not_assigned : 0;
         stat.appIssue += suiteStat.stats[0].app_issue ? suiteStat.stats[0].app_issue : 0;
@@ -209,14 +209,14 @@ export class ProjectViewComponent implements OnInit {
     return stat;
   }
 
-  calculateAverageAutomationQuality(testRunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[]): number {
+  calculateAverageAutomationQuality(testrunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[]): number {
     let ttlNA = 0;
     let ttltestIssue = 0;
     let ttlOther = 0;
     let ttl = 0;
     let averageAutomationQuality: number;
 
-    for (const suiteStat of testRunStatsBySuite) {
+    for (const suiteStat of testrunStatsBySuite) {
       for (const stat of suiteStat.stats) {
         if (Math.floor(new Date().getTime() - new Date(stat.finish_time).getTime()) / (1000 * 60 * 60 * 24) < 90) {
           ttlNA += stat.not_assigned ? stat.not_assigned : 0;

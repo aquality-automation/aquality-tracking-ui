@@ -33,7 +33,7 @@ export const testNameTypes = {
 
 export const importResultColumns = {
     status: 'Status',
-    testRunId: 'Test Run ID',
+    testrunId: 'Test Run ID',
     started: 'Started',
     finished: 'Finished',
     logs: 'Logs'

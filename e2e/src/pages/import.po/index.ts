@@ -40,8 +40,8 @@ class Import extends BasePage {
     return status === 'Finished';
   }
 
-  getLogs(testRunId: number) {
-    return elements.importResultsTable.getCellText(importResultColumns.logs, testRunId, importResultColumns.testRunId);
+  getLogs(testrunId: number) {
+    return elements.importResultsTable.getCellText(importResultColumns.logs, testrunId, importResultColumns.testrunId);
   }
 
   getTestSuiteName() {
@@ -109,7 +109,7 @@ class Import extends BasePage {
   }
 
   async getTestRunIdFromImportRow(rowIndex: number) {
-    return +(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testRunId, rowIndex));
+    return +(await elements.importResultsTable.getCellTextUsingRowIndex(importResultColumns.testrunId, rowIndex));
   }
 
   async isFileUploaded(filePath: string) {

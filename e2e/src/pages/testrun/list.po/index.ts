@@ -9,13 +9,13 @@ class TestRunList extends BasePage {
     }
 
     clickTestRunRemoveButton(buildName: string) {
-        return elements.testRunsTable.clickAction(buildName, columns.build);
+        return elements.testrunsTable.clickAction(buildName, columns.build);
     }
 
     async areAllTestRunsDisplayed(...buildNames: string[]) {
         for (let i = 0; i < buildNames.length; i++) {
             const buildName = buildNames[i];
-            const displayed = await elements.testRunsTable.isRowExists(buildName, columns.build);
+            const displayed = await elements.testrunsTable.isRowExists(buildName, columns.build);
             if (!displayed) {
                 return false;
             }
@@ -25,19 +25,19 @@ class TestRunList extends BasePage {
     }
 
     openTestRun(buildName: string) {
-        return elements.testRunsTable.clickCell(columns.build, buildName, columns.build);
+        return elements.testrunsTable.clickCell(columns.build, buildName, columns.build);
     }
 
     getTestRunsCount() {
-        return elements.testRunsTable.getShownRows();
+        return elements.testrunsTable.getShownRows();
     }
 
     filterByBuildName(buildName: string) {
-        return elements.testRunsTable.setFilter(buildName, columns.build);
+        return elements.testrunsTable.setFilter(buildName, columns.build);
     }
 
     filterByMilestone(name: string) {
-        return elements.testRunsTable.setFilter(name, columns.milestone);
+        return elements.testrunsTable.setFilter(name, columns.milestone);
     }
 
     clickSuiteMatrix() {
@@ -51,38 +51,38 @@ class TestRunList extends BasePage {
                 return true;
             }
             await this.menuBar.import();
-            await this.menuBar.testRuns();
+            await this.menuBar.testruns();
             return this.areAllTestRunsDisplayed(buildName);
         }, 5, 3000);
     }
 
     async doesMilestonePresentInEdit(name: string, build_name: string): Promise<boolean> {
-        const cellElements = await elements.testRunsTable.getElementsForCell(columns.milestone, build_name, columns.build);
+        const cellElements = await elements.testrunsTable.getElementsForCell(columns.milestone, build_name, columns.build);
         return cellElements.autocomplete().hasOption(name);
     }
 
     setMilestone(name: string, build_name: string): Promise<void> {
-        return elements.testRunsTable.editRow(name, columns.milestone, build_name, columns.build);
+        return elements.testrunsTable.editRow(name, columns.milestone, build_name, columns.build);
     }
 
     isTableEditable(): Promise<boolean> {
-        return elements.testRunsTable.isRowEditableByIndex(0);
+        return elements.testrunsTable.isRowEditableByIndex(0);
     }
 
     clickDeleteAll(): promise.Promise<void> {
-        return elements.testRunsTable.deleteAll();
+        return elements.testrunsTable.deleteAll();
     }
 
     async selectTestRun(...build_names: string[]): Promise<void> {
         for (let i = 0; i < build_names.length; i++) {
             const build_name = build_names[i];
-            await elements.testRunsTable.selectRow(build_name, columns.build);
+            await elements.testrunsTable.selectRow(build_name, columns.build);
         }
     }
 
     isSelectorAvailable(): Promise<boolean> {
-        return elements.testRunsTable.isSelectorAvailable();
+        return elements.testrunsTable.isSelectorAvailable();
     }
 }
 
-export const testRunList = new TestRunList();
+export const testrunList = new TestRunList();

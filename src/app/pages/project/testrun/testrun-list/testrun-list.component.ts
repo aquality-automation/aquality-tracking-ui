@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestRun, TestRunLabel } from '../../../../shared/models/testRun';
+import { TestRun, TestRunLabel } from '../../../../shared/models/testrun';
 import { Milestone } from '../../../../shared/models/milestone';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TestResultStat } from '../../../../shared/models/test-result';
@@ -27,10 +27,10 @@ export class TestRunsComponent implements OnInit {
   removeModalTitle: string;
   removeModalMessage: string;
   testrunToRemove: TestRun;
-  testRunStats: TestRunStat[];
-  testRunStatsFiltered: TestRunStat[];
-  testRuns: TestRun[];
-  testRun: TestRun;
+  testrunStats: TestRunStat[];
+  testrunStatsFiltered: TestRunStat[];
+  testruns: TestRun[];
+  testrun: TestRun;
   activeMilestones: Milestone[];
   milestones: Milestone[];
   suites: TestSuite[];
@@ -38,7 +38,7 @@ export class TestRunsComponent implements OnInit {
   hiddenCols: any[];
   sortBy: { property: 'start_time', order: TFOrder.desc };
   canEdit: boolean;
-  @ViewChild(TableFilterComponent) testRunsTable: TableFilterComponent;
+  @ViewChild(TableFilterComponent) testrunsTable: TableFilterComponent;
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -53,26 +53,26 @@ export class TestRunsComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.testRun = {
+    this.testrun = {
       project_id: this.route.snapshot.params.projectId
     };
-    this.allowDelete = await this.permissions.hasProjectPermissions(this.testRun.project_id,
+    this.allowDelete = await this.permissions.hasProjectPermissions(this.testrun.project_id,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
-    this.canEdit = await this.permissions.hasProjectPermissions(this.testRun.project_id,
+    this.canEdit = await this.permissions.hasProjectPermissions(this.testrun.project_id,
       [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin, ELocalPermissions.engineer]);
     this.milestones = await this.milestoneService.getMilestone({ project_id: this.route.snapshot.params.projectId});
     this.activeMilestones = this.milestones.filter(x => !!x.active);
     this.labels = await this.testrunService.getTestsRunLabels(0);
     this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId });
-    this.testRunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params.projectId });
-    this.testRuns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params.projectId });
-    this.testRuns.forEach(run => {
+    this.testrunStats = await this.testrunService.getTestsRunStats({ project_id: this.route.snapshot.params.projectId });
+    this.testruns = await this.testrunService.getTestRun({ project_id: this.route.snapshot.params.projectId });
+    this.testruns.forEach(run => {
       if (run.finish_time && run.start_time) {
         run['duration'] = new Date(run.finish_time).getTime() - new Date(run.start_time).getTime();
-        run['totalTests'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
-        run['failed'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'failed': 0 }).failed;
-        run['not_assigned'] = (this.testRunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
-        run['passrate'] = this.testrunService.getPassRate(this.testRunStats.find(stat => stat.id === run.id) || new TestRunStat());
+        run['totalTests'] = (this.testrunStats.find(stat => stat.id === run.id) || { 'total': 0 }).total;
+        run['failed'] = (this.testrunStats.find(stat => stat.id === run.id) || { 'failed': 0 }).failed;
+        run['not_assigned'] = (this.testrunStats.find(stat => stat.id === run.id) || { 'not_assigned': 0 }).not_assigned;
+        run['passrate'] = this.testrunService.getPassRate(this.testrunStats.find(stat => stat.id === run.id) || new TestRunStat());
       }
     });
 
@@ -84,16 +84,16 @@ export class TestRunsComponent implements OnInit {
   }
 
   tableDataUpdate($event: TestRun[]) {
-    this.testRunStatsFiltered = this.testRunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
+    this.testrunStatsFiltered = this.testrunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
   }
 
   rowClicked($event: TestRun) {
     this.router.navigate([`/project/${$event.project_id}/testrun/${$event.id}`]);
   }
 
-  bulkDelete(testRuns: TestRun[]) {
-    this.testrunService.removeTestRun(testRuns);
-    this.testRuns = this.testRuns.filter(x => !testRuns.find(y => y.id === x.id));
+  bulkDelete(testruns: TestRun[]) {
+    this.testrunService.removeTestRun(testruns);
+    this.testruns = this.testruns.filter(x => !testruns.find(y => y.id === x.id));
   }
 
   removeTestRun(testrun: TestRun) {
@@ -105,7 +105,7 @@ export class TestRunsComponent implements OnInit {
     this.hideModal = false;
   }
 
-  async testRunUpdate(testrun: TestRun) {
+  async testrunUpdate(testrun: TestRun) {
     await this.testrunService.createTestRun({
       id: testrun.id,
       label_id: testrun.label.id,
@@ -115,13 +115,13 @@ export class TestRunsComponent implements OnInit {
     this.testrunService.handleSuccess(`Test run '${
       testrun.build_name} | ${new Date(testrun.start_time).toLocaleString('en-US')
       }' was updated!`);
-    this.tableDataUpdate(this.testRunsTable.filteredData);
+    this.tableDataUpdate(this.testrunsTable.filteredData);
   }
 
   async execute($event) {
     if (await $event) {
       this.testrunService.removeTestRun(this.testrunToRemove).then(() => {
-        this.testRuns = this.testRuns.filter(x => x.id !== this.testrunToRemove.id);
+        this.testruns = this.testruns.filter(x => x.id !== this.testrunToRemove.id);
       });
     }
     this.hideModal = true;

@@ -1,7 +1,7 @@
 import { logIn } from '../../pages/login.po';
 import { projectView } from '../../pages/project/view.po';
-import { testRunView } from '../../pages/testrun/view.po';
-import { testRunList } from '../../pages/testrun/list.po';
+import { testrunView } from '../../pages/testrun/view.po';
+import { testrunList } from '../../pages/testrun/list.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import usersTestData from '../../data/users.json';
 import using from 'jasmine-data-provider';
@@ -9,7 +9,7 @@ import cucumberImport from '../../data/import/cucumber.json';
 import resolutions from '../../data/resolutions.json';
 import { Issue } from '../../../../src/app/shared/models/issue';
 import { issueCreateModal } from '../../pages/modals/issueCreate.po';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { TestResult } from '../../../../src/app/shared/models/test-result';
 
 const editorExamples = {
@@ -69,8 +69,8 @@ describe('Test Run: Issue:', () => {
         imported = await projectHelper.importer.executeCucumberImport('All', [cucumberImport, cucumberImport], [`build_1.json`, `build_2.json`]);
         await logIn.logInAs(user.user_name, user.password);
         await projectHelper.openProject();
-        await projectView.menuBar.testRuns();
-        return testRunList.openTestRun('build_2');
+        await projectView.menuBar.testruns();
+        return testrunList.openTestRun('build_2');
       });
 
       afterAll(async () => {
@@ -80,7 +80,7 @@ describe('Test Run: Issue:', () => {
       it('I can Open Create Issue modal from issue lookup', async () => {
         const results = await projectHelper.editorAPI.getResults({ test_run_id: imported[1].id });
         resultCurrent = results.find(x => x.final_result_id === 1);
-        await testRunView.addIssue(onlyTitleIssue.title, resultCurrent.test.name);
+        await testrunView.addIssue(onlyTitleIssue.title, resultCurrent.test.name);
         return expect(issueCreateModal.isOpened()).toBe(true, 'Issue create modal is not opened');
       });
 
@@ -126,7 +126,7 @@ describe('Test Run: Issue:', () => {
       });
 
       it('I can fill Resolution', async () => {
-        await testRunView.addIssue(fullIssue.title, resultCurrent.test.name);
+        await testrunView.addIssue(fullIssue.title, resultCurrent.test.name);
         await issueCreateModal.setResolution(fullIssue.resolution.name);
         return expect(issueCreateModal.getResolution()).toBe(
           fullIssue.resolution.name,
@@ -199,14 +199,14 @@ describe('Test Run: Issue:', () => {
         await issueCreateModal.notification.assertIsSuccess(
           `The issue '${fullIssue.title}' was created.`
         );
-        await expect(testRunView.getIssue(resultCurrent.test.name))
+        await expect(testrunView.getIssue(resultCurrent.test.name))
           .toContain(fullIssue.title, 'Issue was not asigned to result created for');
         const previousResult = await resultPrevious();
         return expect(previousResult.issue_id).toBeUndefined('Issue was assigned to previous results!');
       });
 
       it('I can open View Issue modal for selected issue', async () => {
-        await testRunView.openSelectedIssue(resultCurrent.test.name);
+        await testrunView.openSelectedIssue(resultCurrent.test.name);
         return expect(issueCreateModal.isOpened()).toBe(true, 'View Issue modal is not opened');
       });
 
@@ -228,7 +228,7 @@ describe('Test Run: Issue:', () => {
       });
 
       it('I can open View Issue modal for not selected issue', async () => {
-        await testRunView.openNotSelectedIssue(onlyTitleIssue.title, resultCurrent.test.name);
+        await testrunView.openNotSelectedIssue(onlyTitleIssue.title, resultCurrent.test.name);
         await expect(issueCreateModal.isOpened()).toBe(true, 'View Issue modal is not opened');
       });
 
@@ -238,7 +238,7 @@ describe('Test Run: Issue:', () => {
       });
 
       it('I can not select Done issue for result', async () => {
-        return expect(testRunView.isIssuePresent(doneIssue.title, resultCurrent.test.name)).toBe(false, 'Done Issue is present in issue lookup');
+        return expect(testrunView.isIssuePresent(doneIssue.title, resultCurrent.test.name)).toBe(false, 'Done Issue is present in issue lookup');
       });
     });
   });
@@ -261,8 +261,8 @@ describe('Test Run: Issue:', () => {
         await projectHelper.editorAPI.createResult(result);
         await logIn.logInAs(user.user_name, user.password);
         await projectHelper.openProject();
-        await projectView.menuBar.testRuns();
-        return testRunList.openTestRun('build_1');
+        await projectView.menuBar.testruns();
+        return testrunList.openTestRun('build_1');
       });
 
       afterAll(async () => {
@@ -270,7 +270,7 @@ describe('Test Run: Issue:', () => {
       });
 
       it('I can open View Issue modal for selected issue', async () => {
-        await testRunView.openSelectedIssue(result.test.name);
+        await testrunView.openSelectedIssue(result.test.name);
         return expect(issueCreateModal.isOpened()).toBe(true, 'View Issue modal is not opened');
       });
 

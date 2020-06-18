@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Milestone } from '../../../../shared/models/milestone';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { TestSuite } from 'src/app/shared/models/test-suite';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
@@ -44,7 +44,7 @@ export class CreateTestRunComponent implements OnInit {
   }
 
   async processTestRunCreation() {
-    const testRun: TestRun = {
+    const testrun: TestRun = {
       build_name: this.newBuildName,
       test_suite_id: this.testSuite.id,
       execution_environment: this.executionEnvironment,
@@ -54,9 +54,9 @@ export class CreateTestRunComponent implements OnInit {
       debug: 0
     };
     if (this.milestone) {
-      testRun.milestone_id = this.milestone.id;
+      testrun.milestone_id = this.milestone.id;
     }
-    const result = await this.postService.createTestRun(testRun);
+    const result = await this.postService.createTestRun(testrun);
     this.router.navigate([`/project/${this.projectId}/testrun/${result.id}`]);
   }
 

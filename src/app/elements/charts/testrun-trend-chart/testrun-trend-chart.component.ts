@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
   styleUrls: ['./testrun-trend-chart.component.scss'],
 })
 export class TestRunsResultsTimelineComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() testRunsStat: TestRunStat[];
+  @Input() testrunsStat: TestRunStat[];
   projectSubscription: Subscription;
   switchState = false;
   switchLabels = {
@@ -142,15 +142,15 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges, OnDe
   }
 
   fillByResolution() {
-    this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
-    this.testRunsStat = this.testRunsStat.sort(
+    this.testrunsStat = this.testrunsStat.filter(x => x.finish_time);
+    this.testrunsStat = this.testrunsStat.sort(
       (a, b) =>
         new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime()
     );
     this.lineChartData = [];
     for (const color of this.orderByColor) {
       const dataArray: any[] = [];
-      for (const resultsSet of this.testRunsStat) {
+      for (const resultsSet of this.testrunsStat) {
         switch (color) {
           case 1:
             dataArray.push({
@@ -198,15 +198,15 @@ export class TestRunsResultsTimelineComponent implements OnInit, OnChanges, OnDe
   }
 
   fillByResult() {
-    this.testRunsStat = this.testRunsStat.filter(x => x.finish_time);
-    this.testRunsStat = this.testRunsStat.sort(
+    this.testrunsStat = this.testrunsStat.filter(x => x.finish_time);
+    this.testrunsStat = this.testrunsStat.sort(
       (a, b) =>
         new Date(a.finish_time).getTime() - new Date(b.finish_time).getTime()
     );
     this.lineChartData = [];
     for (const color of this.orderByColor) {
       const dataArray: any[] = [];
-      for (const resultsSet of this.testRunsStat) {
+      for (const resultsSet of this.testrunsStat) {
         switch (color) {
           case 1:
             dataArray.push({

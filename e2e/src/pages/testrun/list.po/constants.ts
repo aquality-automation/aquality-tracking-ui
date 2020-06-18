@@ -3,7 +3,7 @@ import { SmartTable } from '../../../elements/smartTable.element';
 
 export const elements = {
     uniqueElement: element(by.css('testrun-result-timeline canvas')),
-    testRunsTable: new SmartTable(by.id('datatable')),
+    testrunsTable: new SmartTable(by.id('datatable')),
     matrixButton: element(by.id('suiteMatrix'))
 };
 

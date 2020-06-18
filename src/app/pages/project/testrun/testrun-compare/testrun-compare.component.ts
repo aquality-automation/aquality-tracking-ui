@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { Test } from '../../../../shared/models/test';
 import { TestResult } from '../../../../shared/models/test-result';
 import { FinalResult } from '../../../../shared/models/final-result';
@@ -23,11 +23,11 @@ export class TestrunCompareComponent implements OnInit {
     suites: TestSuite[];
     tests: Test[];
     users: LocalPermissions[];
-    testRuns: TestRun[];
-    testRunsAvailable: TestRun[];
+    testruns: TestRun[];
+    testrunsAvailable: TestRun[];
     selectedSuite: TestSuite;
-    testRunFirst: TestRun;
-    testRunSecond: TestRun;
+    testrunFirst: TestRun;
+    testrunSecond: TestRun;
     shownTestRunFirst: TestRun;
     shownTestRunSecond: TestRun;
     shownSuite: TestSuite;
@@ -57,27 +57,27 @@ export class TestrunCompareComponent implements OnInit {
     async ngOnInit() {
         this.projectId = this.route.snapshot.params['projectId'];
         this.suites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
-        this.testRuns = await this.testrunService.getTestRun({ project_id: this.projectId });
+        this.testruns = await this.testrunService.getTestRun({ project_id: this.projectId });
         this.finalResults = await this.finalResultService.getFinalResult({});
         this.listOfResolutions = await this.resultResolutionService.getResolution();
         const projectUsers = await this.userService.getProjectUsers(this.projectId);
         this.users = projectUsers.filter(x => x.admin === 1 || x.manager === 1 || x.engineer === 1);
         this.route.queryParams.subscribe(params => {
             this.selectedSuite = params.suite ? this.suites.find(x => x.id === +params.suite) : undefined;
-            this.testRunFirst = params.first_tr ? this.testRuns.find(x => x.id === +params.first_tr) : undefined;
-            this.testRunSecond = params.second_tr ? this.testRuns.find(x => x.id === +params.second_tr) : undefined;
+            this.testrunFirst = params.first_tr ? this.testruns.find(x => x.id === +params.first_tr) : undefined;
+            this.testrunSecond = params.second_tr ? this.testruns.find(x => x.id === +params.second_tr) : undefined;
             this.fitTestRuns();
         });
-        if (this.selectedSuite && this.testRunFirst && this.testRunSecond) { this.compare(); }
+        if (this.selectedSuite && this.testrunFirst && this.testrunSecond) { this.compare(); }
     }
 
     async compare() {
-        this.shownTestRunFirst = this.testRunFirst;
-        this.shownTestRunSecond = this.testRunSecond;
+        this.shownTestRunFirst = this.testrunFirst;
+        this.shownTestRunSecond = this.testrunSecond;
         this.shownSuite = this.selectedSuite;
         await this.getTests();
-        await this.getResult(this.testRunFirst.id, 'resultsFirst');
-        await this.getResult(this.testRunSecond.id, 'resultsSecond');
+        await this.getResult(this.testrunFirst.id, 'resultsFirst');
+        await this.getResult(this.testrunSecond.id, 'resultsSecond');
         await this.completeTests();
     }
 
@@ -236,17 +236,17 @@ export class TestrunCompareComponent implements OnInit {
     setParams() {
         if (this.selectedSuite) {
             const queryParam = {};
-            queryParam['first_tr'] = this.testRunFirst ? this.testRunFirst.id : '';
-            queryParam['second_tr'] = this.testRunSecond ? this.testRunSecond.id : '';
+            queryParam['first_tr'] = this.testrunFirst ? this.testrunFirst.id : '';
+            queryParam['second_tr'] = this.testrunSecond ? this.testrunSecond.id : '';
             queryParam['suite'] = this.selectedSuite ? this.selectedSuite.id : '';
             this.router.navigate([], { queryParams: queryParam, queryParamsHandling: 'merge' });
         }
     }
 
     fitTestRuns() {
-        if (this.testRunFirst && this.testRunFirst.test_suite.id !== this.selectedSuite.id) { this.testRunFirst = undefined; }
-        if (this.testRunSecond && this.testRunSecond.test_suite.id !== this.selectedSuite.id) { this.testRunSecond = undefined; }
-        if (this.selectedSuite) { this.testRunsAvailable = this.testRuns.filter(tr => tr.test_suite_id === this.selectedSuite.id); }
+        if (this.testrunFirst && this.testrunFirst.test_suite.id !== this.selectedSuite.id) { this.testrunFirst = undefined; }
+        if (this.testrunSecond && this.testrunSecond.test_suite.id !== this.selectedSuite.id) { this.testrunSecond = undefined; }
+        if (this.selectedSuite) { this.testrunsAvailable = this.testruns.filter(tr => tr.test_suite_id === this.selectedSuite.id); }
         this.setParams();
     }
 

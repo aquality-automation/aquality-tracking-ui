@@ -1,6 +1,6 @@
 import { elements, names, baseUrl } from './constants';
 import { BasePage } from '../../base.po';
-import { TestRun } from '../../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../../src/app/shared/models/testrun';
 import { browser } from 'protractor';
 
 class TestRunCreate extends BasePage {
@@ -12,8 +12,8 @@ class TestRunCreate extends BasePage {
         return browser.get(baseUrl(projectId));
     }
 
-    async creteTestRun(testRun: TestRun, testSuite: string) {
-        await this.fillBuildNameField(testRun.build_name);
+    async creteTestRun(testrun: TestRun, testSuite: string) {
+        await this.fillBuildNameField(testrun.build_name);
         await this.selectTestSuite(testSuite);
         return this.clickCreateButton();
     }
@@ -39,4 +39,4 @@ class TestRunCreate extends BasePage {
     }
 }
 
-export const testRunCreate = new TestRunCreate();
+export const testrunCreate = new TestRunCreate();

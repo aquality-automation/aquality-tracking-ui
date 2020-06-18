@@ -46,7 +46,7 @@ const routes: Routes = [
               { path: '', component: TestRunsComponent, canActivate: [TestRunGuard] },
               { path: 'matrix', component: TestrunMatrixComponent, canActivate: [TestRunGuard] },
               { path: 'compare', component: TestrunCompareComponent, canActivate: [TestRunGuard] },
-              { path: ':testRunId', component: TestRunViewComponent, canActivate: [TestRunGuard] }
+              { path: ':testrunId', component: TestRunViewComponent, canActivate: [TestRunGuard] }
             ]
           },
           {

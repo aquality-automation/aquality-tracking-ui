@@ -2,7 +2,7 @@ import { TestSuite } from '../../../../src/app/shared/models/test-suite';
 import { ProjectHelper } from '../../helpers/project.helper';
 import suites from '../../data/suites.json';
 import cucumberImport from '../../data/import/cucumber.json';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { Test } from '../../../../src/app/shared/models/test';
 import { TestResult } from '../../../../src/app/shared/models/test-result';
 

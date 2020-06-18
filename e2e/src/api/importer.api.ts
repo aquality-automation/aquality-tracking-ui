@@ -1,6 +1,6 @@
 import { logger } from '../utils/log.util';
 import { EditorAPI } from './editor.api';
-import { TestRun } from '../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../src/app/shared/models/testrun';
 
 export class ImportParams {
     projectId?: number;
@@ -75,11 +75,11 @@ export class Importer extends EditorAPI {
     }
 
     private async isAllBuildsAreImported(buildNames: string[]): Promise<TestRun[]> {
-        const testRuns = await this.getTestRuns({ project_id: this.project.id });
+        const testruns = await this.getTestRuns({ project_id: this.project.id });
         let imported = true;
         const importedTestRuns: TestRun[] = [];
         buildNames.forEach(buildName => {
-            const importedTestRun = testRuns.find(testRun => testRun.build_name === buildName);
+            const importedTestRun = testruns.find(testrun => testrun.build_name === buildName);
             if (!importedTestRun) {
                 imported = false;
             }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestRun } from '../../../../shared/models/testRun';
+import { TestRun } from '../../../../shared/models/testrun';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { Test } from 'src/app/shared/models/test';
@@ -31,8 +31,8 @@ export class TestSuiteViewComponent implements OnInit {
   testSuites: TestSuite[];
   selectedTestSuite: TestSuite;
   test: Test;
-  testRuns: TestRun[];
-  testRun: TestRun;
+  testruns: TestRun[];
+  testrun: TestRun;
   totalManualDuration: string;
   users: LocalPermissions[];
   tbCols: TFColumn[];
@@ -43,7 +43,7 @@ export class TestSuiteViewComponent implements OnInit {
   sortBy: TFSorting;
 
   constructor(
-    private testRunService: TestRunService,
+    private testrunService: TestRunService,
     private testService: TestService,
     private testSuiteService: TestSuiteService,
     private route: ActivatedRoute,
@@ -103,10 +103,10 @@ export class TestSuiteViewComponent implements OnInit {
       const testSuites = await this.testSuiteService.getTestSuiteWithChilds({ id: suiteId });
       this.testSuite = testSuites[0];
       this.calculateManualDuration();
-      this.testRun = {
+      this.testrun = {
         test_suite: { id: this.testSuite.id }
       };
-      this.testRuns = await this.testRunService.getTestRun(this.testRun);
+      this.testruns = await this.testrunService.getTestRun(this.testrun);
     } else {
       this.testSuite = { project_id: this.projectId };
       this.testSuite.tests = await this.testService.getTest({ project_id: this.projectId });
@@ -152,17 +152,17 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   getLatestFinishedTestRun(): TestRun {
-    if (this.testRuns && this.testRuns.length > 0) {
-      this.testRuns = this.testRuns.sort((a, b) => new Date(b.finish_time).getTime() - new Date(a.finish_time).getTime());
-      return this.testRuns.find(x => x.finish_time !== undefined && x.start_time !== undefined);
+    if (this.testruns && this.testruns.length > 0) {
+      this.testruns = this.testruns.sort((a, b) => new Date(b.finish_time).getTime() - new Date(a.finish_time).getTime());
+      return this.testruns.find(x => x.finish_time !== undefined && x.start_time !== undefined);
     }
   }
 
   getLatestAutomationDuration() {
-    const testRun: TestRun = this.getLatestFinishedTestRun();
-    if (testRun) {
-      const start_time = new Date(testRun.start_time);
-      const finish_time = new Date(testRun.finish_time);
+    const testrun: TestRun = this.getLatestFinishedTestRun();
+    if (testrun) {
+      const start_time = new Date(testrun.start_time);
+      const finish_time = new Date(testrun.finish_time);
       return this.transformationsService.msToDurationString(finish_time.getTime() - start_time.getTime());
     }
   }
@@ -246,11 +246,11 @@ export class TestSuiteViewComponent implements OnInit {
         this.child.data = this.testSuite.tests;
         this.child.applyFilters();
         this.calculateManualDuration();
-        this.testRun = {
+        this.testrun = {
           test_suite_id: this.testSuite.id
         };
-        this.testRunService.getTestRun(this.testRun).then(testRuns => {
-          this.testRuns = testRuns;
+        this.testrunService.getTestRun(this.testrun).then(testruns => {
+          this.testruns = testruns;
         });
       });
     }

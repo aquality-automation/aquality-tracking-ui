@@ -7,8 +7,8 @@ import { InlineEditor } from '../../../elements/inlineEditor.element';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 import { Checkbox } from '../../../elements/checkbox.element';
 
-export const baseUrl = function (projectId: number, testRunId: number) {
-    return `project/${projectId}/testrun/${testRunId}`;
+export const baseUrl = function (projectId: number, testrunId: number) {
+    return `project/${projectId}/testrun/${testrunId}`;
 };
 
 export const names = {
@@ -27,7 +27,7 @@ export const elements = {
     executionEnvironment: new InlineEditor(by.id(`execution_environment`)),
     testSuiteLink: element(by.id(`suite_link`)),
     startTimeLabel: element(by.id(`start-time`)),
-    resultsTable: new SmartTable(by.css('#testRunViewResultsGrid #resultsGridMain')),
+    resultsTable: new SmartTable(by.css('#testrunViewResultsGrid #resultsGridMain')),
     resultSearcher: new ResultSearcher(by.id('resultSearcher')),
     resultsChart: new ResultPieChart(by.id('finalResultsChart')),
     resolutionsChart: new ResolutionPieChart(by.id('resultResolutionsChart')),

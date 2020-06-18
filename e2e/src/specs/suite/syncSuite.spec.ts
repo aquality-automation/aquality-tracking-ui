@@ -9,7 +9,7 @@ import using from 'jasmine-data-provider';
 import cucumberImport from '../../data/import/cucumber.json';
 import syncImport from '../../data/import/oneTestCucumber.json';
 import users from '../../data/users.json';
-import { TestRun } from '../../../../src/app/shared/models/testRun';
+import { TestRun } from '../../../../src/app/shared/models/testrun';
 import { EditorAPI } from '../../api/editor.api';
 
 const editorExamples = {
@@ -32,10 +32,10 @@ const isTestRunCorrect = (testResults: TestResult[], includedTests: string[], re
   return included && removed;
 };
 
-const updateTestRunDates = (api: EditorAPI, testRun: TestRun, started: Date, finished: Date) => {
-  testRun.start_time = started;
-  testRun.finish_time = finished;
-  return api.createTestRun(testRun);
+const updateTestRunDates = (api: EditorAPI, testrun: TestRun, started: Date, finished: Date) => {
+  testrun.start_time = started;
+  testrun.finish_time = finished;
+  return api.createTestRun(testrun);
 };
 
 const testSuite = 'Sync Test Suite';
