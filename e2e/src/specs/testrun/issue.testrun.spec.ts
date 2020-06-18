@@ -171,11 +171,8 @@ describe('Test Run: Issue:', () => {
       });
 
       it('I cannot create issue when expression is overlapped', async () => {
-        await issueCreateModal.save();
-        return issueCreateModal.notification.assertIsError(
-          'The Regular Expression sould not be overlapped with other issues!',
-          'Expression is overlapped!'
-        );
+        return expect(issueCreateModal.isSaveDisabled())
+          .toBe(true, 'Save Buttton is not disabled when expression is overlapped')
       });
 
       it('Overlapped expressions table is hidden when expression is not overlapped', async () => {

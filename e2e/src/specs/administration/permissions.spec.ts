@@ -78,8 +78,10 @@ describe('Administartion:', () => {
                 await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await permissionsAdministration.updateUser(false, permissionsAdministration.columns.manager,
                     tempUser.user_name, permissionsAdministration.columns.username);
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await permissionsAdministration.updateUser(true, permissionsAdministration.columns.engineer,
                     tempUser.user_name, permissionsAdministration.columns.username);
+                await permissionsAdministration.notification.assertIsSuccess('Permissions were updated.');
                 await userAdministration.sidebar.resolutions();
                 await userAdministration.sidebar.permissions();
                 await permissionsAdministration.selectProject(project.name);

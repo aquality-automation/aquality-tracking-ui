@@ -15,6 +15,10 @@ class IssueCreateModal extends BasePage {
         return elements.save.click();
     }
 
+    async isSaveDisabled(): Promise<boolean> {
+        return !(await elements.save.isEnabled());
+    }
+
     cancel(): promise.Promise<void> {
         return elements.cancel.click();
     }

@@ -44,7 +44,7 @@ describe('Full Admin Test Suite', () => {
   });
 
   it('Suite manual duration should be 0s', () => {
-    return expect(suiteView.getManualDurationeTestSuite()).toEqual('0s');
+    return expect(suiteView.getManualDurationeTestSuite()).toEqual('0');
   });
 
   it('Number of tests should be 0', () => {
