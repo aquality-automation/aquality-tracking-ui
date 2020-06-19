@@ -127,7 +127,7 @@ class TestRunView extends BasePage {
   }
 
   async openResult(testName: string): Promise<void> {
-    await elements.resultsTable.clickCell(columns.testName, testName, columns.testName);
+    await elements.resultsTable.clickCellLink(columns.testName, testName, columns.testName);
     const handles = await browser.getAllWindowHandles();
     await browser.switchTo().window(handles[handles.length - 1]);
     await browser.waitForAngular();
