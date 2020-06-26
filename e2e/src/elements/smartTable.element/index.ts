@@ -227,7 +227,7 @@ export class SmartTable extends BaseElement {
 
     public async clickCellLink(columnWithLink: string, searchValue: string, searchColumn: string) {
         const cell = await this.getCell(columnWithLink, searchValue, searchColumn);
-        const link: ElementFinder = cell.element(by.css('.ft-cell > a'));
+        const link: ElementFinder = cell.element(by.css('.ft-cell > a:not(.table-cell-link)'));
         if (await link.isPresent()) {
             return link.click();
         }

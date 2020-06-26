@@ -126,11 +126,8 @@ class TestRunView extends BasePage {
     return lookup.isOptionPresent(resolutionName);
   }
 
-  async openResult(testName: string): Promise<void> {
-    await elements.resultsTable.clickCellLink(columns.testName, testName, columns.testName);
-    const handles = await browser.getAllWindowHandles();
-    await browser.switchTo().window(handles[handles.length - 1]);
-    await browser.waitForAngular();
+  openResult(testName: string): Promise<void> {
+    return elements.resultsTable.clickCellLink(columns.testName, testName, columns.testName);
   }
 
   async rightClickFailReason(failReason: string): Promise<void> {

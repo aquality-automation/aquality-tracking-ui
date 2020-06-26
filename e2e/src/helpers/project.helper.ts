@@ -46,10 +46,14 @@ export class ProjectHelper {
     public async init(permissions?: { [key: string]: User; }, steps?: boolean) {
         this.ifDisposed();
         try {
+            logger.info('Logging as admin');
             await logIn.logInAs(this.admin.user_name, this.admin.password);
             const authCookie = await browser.manage().getCookie('iio78');
             this.adminAPI = new UserAPI(decodeURIComponent(authCookie.value), this.admin);
+            
+            logger.info('Createing project');
             this.project = await this.adminAPI.createProject(this.project);
+            logger.info(`Project created ${this.project.id}`);
             const token = await this.adminAPI.createToken(this.project);
             if (permissions) {
                 await this.assigneProjectPermissions(this.project, permissions);
@@ -76,15 +80,11 @@ export class ProjectHelper {
 
     public async dispose() {
         this.ifDisposed();
-        browser.navigate().back();
-        try {
-            await this.adminAPI.removeProject(this.project);
-        } catch (err ) {
-            if ((err as string).endsWith(`Credentials you've provided are not valid. Reenter please.`)) {
-                await this.adminAPI.relogin();
-                await this.adminAPI.removeProject(this.project);
-            }
-        }
+        logger.info('Going to relogin with admin');
+        await this.adminAPI.relogin();
+        logger.info('Trying to remove project');
+        await this.adminAPI.removeProject(this.project);
+        logger.info('Project disposed');
         this.disposed = true;
     }
 
@@ -108,6 +108,7 @@ export class ProjectHelper {
             const key = keys[i];
             const user: User = users[key];
             await this.adminAPI.assigneProjectPermission(this.project, user, key as PermissionType);
+            logger.info(`Permissions were added for ${user.user_name}`);
         }
     }
 

@@ -332,7 +332,7 @@
                                 (change)="sendUpdate(entity)"
                                 [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)" />
 
-                            <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link"
+                            <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link" class="table-cell-link"
                                 [routerLink]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
 
                             <a *ngIf="!col.editable && col.link" [routerLink]="createRouterLink(col, entity)"
