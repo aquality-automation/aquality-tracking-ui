@@ -6,9 +6,10 @@ import { AuditsOptions } from './audits.options';
 export class MenuBar {
     private auditsButton = element(by.css('#Audits > a'));
     private administrationOption = element(by.id('administration-nav'));
+    private logo = element(by.css('.navbar-brand'));
 
     clickLogo() {
-        return element(by.css('.navbar-brand')).click();
+        return this.logo.click();
     }
 
     isLogged() {
@@ -85,5 +86,9 @@ export class MenuBar {
 
     reportIssue() {
         return element(by.id('bug-nav')).click();
+    }
+
+    isPresent() {
+        return this.logo.isPresent();
     }
 }

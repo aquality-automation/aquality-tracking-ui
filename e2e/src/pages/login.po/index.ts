@@ -29,6 +29,9 @@ class LogIn extends BasePage {
   }
 
   async logInAs(userName: string, password: string) {
+    if(!(await this.menuBar.isPresent())){
+      this.navigateTo();
+    }
     if (await this.menuBar.isLogged()) {
       logger.info('Going to log out, before logging in with another user account.');
       await this.menuBar.clickLogOut();
