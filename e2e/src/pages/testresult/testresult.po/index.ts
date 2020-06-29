@@ -94,8 +94,8 @@ class TestResultView extends BasePage {
     return (await this.attachCell(name)).inlineAttachment().downloadAttach();
   }
 
-  async attachIsDownloaded(filename: string): Promise<boolean> {
-    return testData.isFileDownloadedAndRemove(filename);
+  async attachIsDownloaded(extension: string, startsWith: string): Promise<boolean> {
+    return testData.isFileDownloadedAndRemove(extension, startsWith);
   }
 
   async removeAttachForStep(name: string) {

@@ -124,7 +124,7 @@ describe('Result Steps:', () => {
             it('I can download not image attachment', async () => {
                 await expect(testResultView.isDownloadAttachExistsForStep(step2.name)).toBe(true, 'Download Attach is not exist!');
                 await testResultView.downloadAttachForStep(step2.name);
-                return expect(testResultView.attachIsDownloaded('.docx'))
+                return expect(testResultView.attachIsDownloaded(undefined, 'attachment'))
                     .toBe(true, 'Attachment is not downloaded!');
             });
 

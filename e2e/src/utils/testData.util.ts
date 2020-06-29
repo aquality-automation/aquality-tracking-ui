@@ -84,11 +84,11 @@ class TestData {
 
     /**
      * check if file was uploaded and clenup downloads
-     * @param filter Extension name, e.g: '.html'
+     * @param extension Extension name, e.g: '.html'
      * @return {Promise<boolean>} promise resolving into true is file exists
      */
-    async isFileDownloadedAndRemove(filter: string): Promise<boolean> {
-        const result = await this.waitUntilFileExists(downloadsFolderName, filter);
+    async isFileDownloadedAndRemove(extension?: string, startsWith?: string): Promise<boolean> {
+        const result = await this.waitUntilFileExists(downloadsFolderName, extension, startsWith);
         this.cleanUpDownloadsData();
         return result;
     }
@@ -96,12 +96,12 @@ class TestData {
     /**
      * Wait for file exists
      * @param pathFromDataFolder path starting from folder where test data is stored e.g. import/cucumber.json
-     * @param filter Extension name, e.g: '.html'
+     * @param extension Extension name, e.g: '.html'
      * @return {Promise<boolean>} promise resolving into true is file exists
      */
-    async waitUntilFileExists(pathFromDataFolder: string, filter: string): Promise<boolean> {
+    async waitUntilFileExists(pathFromDataFolder: string, extension?: string, startsWith?: string): Promise<boolean> {
         const isFileExist = async () => {
-                const files = this.findFilesInDir(pathFromDataFolder, filter);
+                const files = this.findFilesInDir(pathFromDataFolder, extension, startsWith);
                 const count = files ? files.length : 0;
                 logger.info(`Files in download folder: ${count}`);
                 return count > 0;
@@ -116,7 +116,7 @@ class TestData {
      * @param  {String} extension    Extension name, e.g: '.html'
      * @return {Array}               Result files with path string in an array
      */
-    findFilesInDir = (pathFromDataFolder, extension: string): Array<string> => {
+    findFilesInDir = (pathFromDataFolder, extension?: string, startsWith?: string): Array<string> => {
         const startPath = this.getFullPath(`${pathFromDataFolder}`);
         let results = [];
 
@@ -131,7 +131,10 @@ class TestData {
             const stat = fs.lstatSync(filename);
             if (stat.isDirectory()) {
                 results = results.concat(this.findFilesInDir(filename, extension));
-            } else if (filename.endsWith(extension)) {
+            } else if (extension && filename.endsWith(extension)) {
+                logger.info(`Found File: ${filename}`);
+                results.push(filename);
+            } else if (startsWith && filename.startsWith(startsWith)) {
                 logger.info(`Found File: ${filename}`);
                 results.push(filename);
             }
