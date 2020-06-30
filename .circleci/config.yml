@@ -63,7 +63,6 @@ jobs:
             sudo mkdir allure-results
             docker build --build-arg TOKEN="${TOKEN}" --build-arg TESTRUNID="${TESTRUNID}" . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
-            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
 
       - run:
           shell: "/bin/bash -eo pipefail"
