@@ -42,7 +42,12 @@ exports.config = {
             token: process.env.AT_TOKEN,
             api_url: 'http://46.243.183.199:8888/api',
             project_id: 1,
-            testrun_id: process.env.AT_TESTRUNID
+            suite: 'All',
+            testrun: {
+              build_name: `build_${process.env.AT_CIRCLE_BULD_NUM}_${process.env.AT_CIRCLE_BRANCH})`,
+              ci_build: Iprocess.env.AT_CIRCLE_BUILD_URL,
+              execution_environment: 'Docker_Chrome'
+            }
         }));
     jasmine.getEnv().afterEach(function (done) {
       browser.takeScreenshot().then(function (png) {
