@@ -44,7 +44,7 @@ exports.config = {
             project_id: 1,
             suite: 'All',
             testrun: {
-              build_name: `build_${process.env.AT_CIRCLE_BULD_NUM}_${process.env.AT_CIRCLE_BRANCH})`,
+              build_name: `build_${process.env.AT_CIRCLE_BULD_NUM}_${process.env.AT_CIRCLE_BRANCH}`,
               ci_build: process.env.AT_CIRCLE_BUILD_URL,
               execution_environment: 'Docker_Chrome'
             }
