@@ -1,25 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TestRun } from '../../../shared/models/testRun';
+import { TestRun } from '../../../shared/models/testrun';
 import { Project } from '../../../shared/models/project';
-import { TestRunService } from '../../../services/testRun.service';
-import { ProjectService } from '../../../services/project.service';
-import { TestRunStat } from '../../../shared/models/testrunStats';
-import { AuditService } from '../../../services/audits.service';
 import { Audit } from '../../../shared/models/audit';
-import { GlobalDataService } from '../../../services/globaldata.service';
-import { TFColumn, TFColumnType } from '../../../elements/table/tfColumn';
-import { IssueService } from '../../../services/issue.service';
 import { Issue } from '../../../shared/models/issue';
 import { SingleLineBarChartData } from '../../../elements/single-line-bar-chart/single-line-bar-chart.component';
-import { TestSuiteService } from '../../../services/testSuite.service';
-import { TestSuite } from '../../../shared/models/testSuite';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { PermissionsService, ELocalPermissions } from '../../../services/current-permissions.service';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TestRunStat } from 'src/app/shared/models/testrun-stats';
+import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ProjectService } from 'src/app/services/project/project.service';
+import { PermissionsService, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
+import { IssueService } from 'src/app/services/issue/issue.service';
+import { AuditService } from 'src/app/services/audit/audits.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { GlobalDataService } from 'src/app/services/globaldata.service';
 
 @Component({
   templateUrl: './project-view.component.html',
-  styleUrls: ['./project-view.component.css']
+  styleUrls: ['./project-view.component.scss']
 })
 export class ProjectViewComponent implements OnInit {
   icons = { faExclamationTriangle };
@@ -27,12 +28,12 @@ export class ProjectViewComponent implements OnInit {
   audits: Audit[];
   suites: TestSuite[];
   project: Project;
-  testRuns: TestRun[];
-  testRun: TestRun;
-  testRunStats: TestRunStat[];
+  testruns: TestRun[];
+  testrun: TestRun;
+  testrunStats: TestRunStat[];
   hideAll = true;
   notification: string;
-  testRunColumns: TFColumn[] = [
+  testrunColumns: TFColumn[] = [
     { name: 'Build Name', property: 'build_name', type: TFColumnType.text },
     { name: 'Execution Environment', property: 'execution_environment', type: TFColumnType.text },
     { name: 'Suite', property: 'test_suite.name', type: TFColumnType.text },
@@ -56,13 +57,20 @@ export class ProjectViewComponent implements OnInit {
   }];
   allIssues: Issue[];
   myIssues: Issue[];
-  quality: { current: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number }, average: number };
+  quality: {
+    current:
+    {
+      quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number
+    },
+    average: number
+  };
   chartData: SingleLineBarChartData[];
   issueStat: { open: number, openApp: number, total: number, totalApp: number };
-  isProjectUser: boolean = false;
+  isProjectUser = false;
 
   constructor(
     public globaldata: GlobalDataService,
+    private userService: UserService,
     private projectService: ProjectService,
     private testrunService: TestRunService,
     private issueService: IssueService,
@@ -75,51 +83,52 @@ export class ProjectViewComponent implements OnInit {
 
   async ngOnInit() {
     const projectId = this.route.snapshot.params.projectId;
-    this.testRun = { project_id: projectId, debug: 0 };
+    this.testrun = { project_id: projectId, debug: 0 };
     this.project = { id: projectId };
     this.isProjectUser = await this.permissionsService.hasProjectPermissions(this.project.id, undefined,
       [ELocalPermissions.admin, ELocalPermissions.engineer, ELocalPermissions.manager, ELocalPermissions.viewer]);
 
-    this.project = (await this.projectService.getProjects(this.project).toPromise())[0];
+    this.project = (await this.projectService.getProjects(this.project))[0];
 
-    [this.allIssues, this.suites, this.testRuns, this.testRunStats] = await Promise.all([
+    [this.allIssues, this.suites, this.testruns, this.testrunStats] = await Promise.all([
       this.issueService.getIssues({ project_id: projectId }),
       this.testSuiteService.getTestSuite({ project_id: projectId }),
-      this.testrunService.getTestRun(this.testRun, 5),
-      this.testrunService.getTestsRunStats(this.testRun)
-    ])
+      this.testrunService.getTestRun(this.testrun, 5),
+      this.testrunService.getTestsRunStats(this.testrun)
+    ]);
 
-    this.myIssues = this.allIssues.filter(x => x.status_id != 4 && x.status_id != 2 && x.assignee_id === this.globaldata.currentUser.id);
+    this.myIssues = this.allIssues
+      .filter(x => x.status_id !== 4 && x.status_id !== 2 && x.assignee_id === this.userService.currentUser().id);
 
-    if (this.globaldata.auditModule) {
-      this.audits = await this.auditService.getAudits({ project: { id: this.project.id } }).toPromise();
+    if (localStorage.auditModule) {
+      this.audits = await this.auditService.getAudits({ project: { id: this.project.id } });
       this.notification = this.generateAuditNotification(this.audits);
     }
 
-    this.testRuns.forEach(testrun => {
+    this.testruns.forEach(testrun => {
       testrun['failed'] = this.getNumberOfFails(testrun.id);
     });
-    this.quality = this.getQualityInfo(this.suites, this.testRunStats);
+    this.quality = this.getQualityInfo(this.suites, this.testrunStats);
     this.chartData = this.createChartData(this.quality.current);
     this.issueStat = this.getIssuesStat(this.allIssues);
   }
 
   getIssuesStat(issues: Issue[]): { open: number, openApp: number, total: number, totalApp: number } {
     return {
-      open: issues.filter(x => x.status_id != 4 && x.status_id != 2).length,
-      openApp: issues.filter(x => x.status_id != 4 && x.status_id != 2 && x.resolution.color === 1).length,
+      open: issues.filter(x => x.status_id !== 4 && x.status_id !== 2).length,
+      openApp: issues.filter(x => x.status_id !== 4 && x.status_id !== 2 && x.resolution.color === 1).length,
       total: issues.length,
       totalApp: issues.filter(x => x.resolution.color === 1).length
-    }
+    };
   }
 
   getNumberOfFails(id: number) {
-    const stats: TestRunStat = this.testRunStats.filter(x => x.id === id)[0];
+    const stats: TestRunStat = this.testrunStats.filter(x => x.id === id)[0];
     return this.testrunService.getPassRate(stats);
   }
 
-  openTestRun(testRun: TestRun) {
-    this.router.navigate([`/project/${testRun.project_id}/testrun/${testRun.id}`]);
+  openTestRun(testrun: TestRun) {
+    this.router.navigate([`/project/${testrun.project_id}/testrun/${testrun.id}`]);
   }
 
   openIssue(issue: Issue) {
@@ -128,7 +137,7 @@ export class ProjectViewComponent implements OnInit {
 
   generateAuditNotification(audits: Audit[]): string {
     if (!audits || audits.length === 0) {
-      return `This project has no audits! Please contact your audit administrator to schedule a new Audit for your project.`
+      return `This project has no audits! Please contact your audit administrator to schedule a new Audit for your project.`;
     }
     const lastSubmitted: Audit = this.audits.filter(x => x.submitted).length > 0
       ? this.audits.sort(function (a, b) { return new Date(b.submitted).getTime() - new Date(a.submitted).getTime(); })[0]
@@ -137,47 +146,51 @@ export class ProjectViewComponent implements OnInit {
       const lastSubmittedDate = new Date(lastSubmitted.submitted);
       const nextDueDate = new Date(lastSubmittedDate).setMonth(lastSubmittedDate.getMonth() + 6);
       if (nextDueDate < new Date().getTime()) {
-        return `Over half a year has passed since last submitted Audit. Please make sure the process of the new Audit is going well.`
+        return `Over half a year has passed since last submitted Audit. Please make sure the process of the new Audit is going well.`;
       }
     }
   }
 
   showMeaningful() {
     this.activateParts = [0, 1];
-  };
+  }
 
   hideMeaningful() {
     this.activateParts = [];
-  };
+  }
 
   IsHideAll() {
-    if (this.testRunStats) {
-      this.hideAll = this.testRunStats.length === 0;
+    if (this.testrunStats) {
+      this.hideAll = this.testrunStats.length === 0;
     } else {
       this.hideAll = true;
     }
     return this.hideAll;
   }
 
-  getQualityInfo(suites: TestSuite[], testRunStats: TestRunStat[]): { current: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number }, average: number } {
-    const testRunStatsBySuite = [];
+  getQualityInfo(suites: TestSuite[], testrunStats: TestRunStat[]): {
+    current:
+    { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number },
+    average: number
+  } {
+    const testrunStatsBySuite = [];
     for (const suite of suites) {
-      const teStats: TestRunStat[] = testRunStats.filter(stat => stat.test_suite_id === suite.id);
-      testRunStatsBySuite.push({ suite: suite, stats: teStats });
+      const teStats: TestRunStat[] = testrunStats.filter(stat => stat.test_suite_id === suite.id);
+      testrunStatsBySuite.push({ suite: suite, stats: teStats });
     }
 
     return {
-      current: this.calculateAutomationQuality(testRunStatsBySuite),
-      average: this.calculateAverageAutomationQuality(testRunStatsBySuite)
+      current: this.calculateAutomationQuality(testrunStatsBySuite),
+      average: this.calculateAverageAutomationQuality(testrunStatsBySuite)
     };
   }
 
-  calculateAutomationQuality(testRunStatsBySuites: { suite: TestSuite, stats: TestRunStat[] }[]): { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number } {
-    let stat = { quality: 0, NA: 0, testIssue: 0, other: 0, appIssue: 0, passed: 0, total: 0 }
+  calculateAutomationQuality(testrunStatsBySuites: { suite: TestSuite, stats: TestRunStat[] }[]): {
+    quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number, total: number
+  } {
+    const stat = { quality: 0, NA: 0, testIssue: 0, other: 0, appIssue: 0, passed: 0, total: 0 };
 
-    console.log(testRunStatsBySuites)
-
-    for (const suiteStat of testRunStatsBySuites) {
+    for (const suiteStat of testrunStatsBySuites) {
       if (suiteStat.stats[0]) {
         stat.NA += suiteStat.stats[0].not_assigned ? suiteStat.stats[0].not_assigned : 0;
         stat.appIssue += suiteStat.stats[0].app_issue ? suiteStat.stats[0].app_issue : 0;
@@ -188,8 +201,6 @@ export class ProjectViewComponent implements OnInit {
       }
     }
 
-    console.log(stat)
-
     stat.quality = stat.total > 0 ? (1 - ((stat.NA * 1 + stat.testIssue * 0.75 + stat.other * 0.5) / (stat.total))) * 100 : 0;
     if (stat.quality < 0) {
       stat.quality = 0;
@@ -198,14 +209,14 @@ export class ProjectViewComponent implements OnInit {
     return stat;
   }
 
-  calculateAverageAutomationQuality(testRunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[]): number {
+  calculateAverageAutomationQuality(testrunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[]): number {
     let ttlNA = 0;
     let ttltestIssue = 0;
     let ttlOther = 0;
     let ttl = 0;
     let averageAutomationQuality: number;
 
-    for (const suiteStat of testRunStatsBySuite) {
+    for (const suiteStat of testrunStatsBySuite) {
       for (const stat of suiteStat.stats) {
         if (Math.floor(new Date().getTime() - new Date(stat.finish_time).getTime()) / (1000 * 60 * 60 * 24) < 90) {
           ttlNA += stat.not_assigned ? stat.not_assigned : 0;
@@ -224,7 +235,6 @@ export class ProjectViewComponent implements OnInit {
   }
 
   createChartData(data: { quality: number, NA: number, testIssue: number, other: number, appIssue: number, passed: number }) {
-    console.log(data);
     return [{
       value: data.passed,
       color: '#28A745',

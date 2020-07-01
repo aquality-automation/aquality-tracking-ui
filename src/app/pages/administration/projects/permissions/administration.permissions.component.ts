@@ -1,17 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from '../../../../shared/models/project';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { ProjectService } from '../../../../services/project.service';
-import { UserService } from '../../../../services/user.services';
-import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { User } from '../../../../shared/models/user';
-import { TFColumn, TFColumnType } from '../../../../elements/table/tfColumn';
+import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ProjectService } from 'src/app/services/project/project.service';
+import { UserService } from 'src/app/services/user/user.services';
 
 @Component({
-  templateUrl: './administration.permissions.component.html',
-  providers: [
-    SimpleRequester
-  ]
+  templateUrl: './administration.permissions.component.html'
 })
 export class AdministrationPermissionsComponent implements OnInit {
 
@@ -21,7 +17,7 @@ export class AdministrationPermissionsComponent implements OnInit {
   permissionsToRemove: LocalPermissions;
   projects: Project[];
   public selectedProject: Project;
-  public users: LocalPermissions[];
+  public projectUsers: LocalPermissions[];
   public externalUsers: User[];
   public tbCols: TFColumn[];
 
@@ -32,10 +28,10 @@ export class AdministrationPermissionsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.projects = await this.projectService.getProjects({}).toPromise();
+    this.projects = await this.projectService.getProjects({});
     this.selectedProject = this.projects[0];
-    this.users = await this.userService.getProjectUsers(this.selectedProject.id).toPromise();
-    this.externalUsers = await this.userService.getUsers({}).toPromise();
+    this.projectUsers = await this.userService.getProjectUsers(this.selectedProject.id);
+    this.externalUsers = await this.userService.getUsers({});
     this.tbCols = [
       {
         name: 'Username',
@@ -123,20 +119,16 @@ export class AdministrationPermissionsComponent implements OnInit {
     this.hideModal = false;
   }
 
-  reloadUsers() {
-    this.userService.getProjectUsers(this.selectedProject.id).subscribe(res => {
-      this.users = res;
-      this.userService.getUsers({}).subscribe((users: User[]) => {
-        this.externalUsers = users.filter(x => this.users.findIndex(y => y.user.user_name === x.user_name) === -1);
-      }, error => console.log(error));
-    }, error => console.log(error));
+  async reloadUsers() {
+    this.projectUsers = await this.userService.getProjectUsers(this.selectedProject.id);
+    const allUsers = await this.userService.getUsers({});
+    this.externalUsers = allUsers.filter(x => this.projectUsers.findIndex(y => y.user.user_name === x.user_name) === -1);
   }
 
   async execute($event) {
     if (await $event) {
-      this.userService.removeProjectUser(this.permissionsToRemove).subscribe(res => {
-        this.reloadUsers();
-      });
+      await this.userService.removeProjectUser(this.permissionsToRemove);
+      this.reloadUsers();
     }
     this.hideModal = true;
   }

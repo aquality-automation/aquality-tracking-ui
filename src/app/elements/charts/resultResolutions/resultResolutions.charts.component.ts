@@ -8,20 +8,17 @@ import {
   OnInit,
   OnDestroy
 } from '@angular/core';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
-import { ResultResolution } from '../../../shared/models/result_resolution';
-import { ResultResolutionService } from '../../../services/result-resolution.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { colors } from '../../../shared/colors.service';
 import { GlobalDataService } from '../../../services/globaldata.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 
 @Component({
   selector: 'result-resolution-chart',
   templateUrl: './resultResolutions.charts.component.html',
-  providers: [SimpleRequester, ResultResolutionService, TestResultService]
 })
 export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDestroy {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
@@ -63,14 +60,9 @@ export class ResultResolutionsChartsComponent implements OnChanges, OnInit, OnDe
     }
   }
 
-  public ngOnChanges() {
-    this.resultResolutionService.getResolution(this.projectId).subscribe(
-      result => {
-        this.listOfResultResolutions = result;
-        this.getData();
-      },
-      error => this.resultResolutionService.handleError(error)
-    );
+  public async ngOnChanges() {
+    this.listOfResultResolutions = await this.resultResolutionService.getResolution(this.projectId);
+    this.getData();
   }
 
   getData() {

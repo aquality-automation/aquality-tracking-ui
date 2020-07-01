@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../../services/user.services';
-import { CustomerService } from '../../../services/customer.service';
 import { Customer } from '../../../shared/models/customer';
 import { User } from '../../../shared/models/user';
-import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
-import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
+import { TFOrder, TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { UserService } from 'src/app/services/user/user.services';
+import { CustomerService } from 'src/app/services/customer/customer.service';
+import { PermissionsService, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';
 
 @Component({
     templateUrl: 'customer.component.html',
-    styleUrls: ['customer.component.css']
+    styleUrls: ['customer.component.scss']
 })
 export class CustomerComponent implements OnInit {
     customers: Customer[];
@@ -34,36 +34,32 @@ export class CustomerComponent implements OnInit {
 
     async ngOnInit() {
         this.allowCreate = await this.permissions.hasPermissions([EGlobalPermissions.head, EGlobalPermissions.unit_coordinator]);
-        this.customerService.getCustomer(undefined, true).subscribe(res => {
-            this.customers = res;
-            this.userService.getUsers({}).subscribe(result => {
-                this.users = result;
-                this.coordinators = result.filter(x => x.unit_coordinator === 1);
-                this.accountManagers = result.filter(x => x.account_manager === 1);
-                this.columns = [
-                    { name: 'Customer Name', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
-                    {
-                        name: 'Unit Coordinator',
-                        property: 'coordinator',
-                        filter: true,
-                        type: TFColumnType.autocomplete,
-                        lookup: {
-                            propToShow: ['first_name', 'second_name'],
-                            values: this.coordinators,
-                        },
-                        class: 'ft-width-150'
-                    },
-                    {
-                        name: 'Number Of Projects',
-                        property: 'projects_count',
-                        filter: true,
-                        sorting: true,
-                        type: TFColumnType.number,
-                        class: 'fit'
-                    }
-                ];
-            });
-        });
+        this.customers = await this.customerService.getCustomer(undefined, true);
+        this.users = await this.userService.getUsers({});
+        this.coordinators = this.users.filter(x => x.unit_coordinator === 1);
+        this.accountManagers = this.users.filter(x => x.account_manager === 1);
+        this.columns = [
+            { name: 'Customer Name', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
+            {
+                name: 'Unit Coordinator',
+                property: 'coordinator',
+                filter: true,
+                type: TFColumnType.autocomplete,
+                lookup: {
+                    propToShow: ['first_name', 'second_name'],
+                    values: this.coordinators,
+                },
+                class: 'ft-width-150'
+            },
+            {
+                name: 'Number Of Projects',
+                property: 'projects_count',
+                filter: true,
+                sorting: true,
+                type: TFColumnType.number,
+                class: 'fit'
+            }
+        ];
     }
 
     rowClicked($event) {
@@ -85,10 +81,10 @@ export class CustomerComponent implements OnInit {
         this.hideModal = false;
     }
 
-    async execute($event) {
+    async execute($event: any) {
         if (await $event) {
-            this.customerService.removeCustomer(this.customerToRemove).subscribe(() =>
-                this.customers = this.customers.filter(x => x.id !== this.customerToRemove.id));
+            await this.customerService.removeCustomer(this.customerToRemove);
+            this.customers = this.customers.filter(x => x.id !== this.customerToRemove.id);
         }
         this.hideModal = true;
     }

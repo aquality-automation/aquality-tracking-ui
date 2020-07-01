@@ -46,7 +46,7 @@
 <div *ngIf="!IsHideAll()" class="row">
   <div class="col-sm-6" [ngClass]="{'col-sm-6': isProjectUser, 'col-sm-12': !isProjectUser}">
     <h4>Last Test Runs</h4>
-    <table-filter *ngIf="!IsHideAll()" [data]="testRuns" [actionsHeader]="false" [columns]="testRunColumns"
+    <table-filter *ngIf="!IsHideAll()" [data]="testruns" [actionsHeader]="false" [columns]="testrunColumns"
       [allowDelete]="false" [hideFilter]="true" (rowClick)="openTestRun($event)" rowsOnPage="5"></table-filter>
   </div>
   <div *ngIf="isProjectUser" class="col-sm-6">
@@ -58,21 +58,21 @@
 
 <div *ngIf="IsHideAll()">
   <div id="empty" class="well">
-    This project has no data yet.
+    This project has no data yet.<br><br>
 
-    If you want to run tests manually:
-    1. Create Suite (<a routerLink="create/testsuite">Open</a>)
-    2. Create Test for this Suite (<a routerLink="create/test">Open</a>)
-    3. Create Test Run (<a routerLink="create/testrun">Open</a>)
-    4. Open Test Run and fill the results of execution
-    5. Finish the Test Run
+    If you want to run tests manually:<br>
+    1. Create Suite (<a routerLink="create/testsuite">Open</a>)<br>
+    2. Create Test for this Suite (<a routerLink="create/test">Open</a>)<br>
+    3. Create Test Run (<a routerLink="create/testrun">Open</a>)<br>
+    4. Open Test Run and fill the results of execution<br>
+    5. Finish the Test Run<br><br>
 
-    If you want to Import results of Automation testing:
-    1. Open the Import tab (<a routerLink="import">Open</a>)
-    2. Follow the instuctions on page
+    If you want to Import results of Automation testing:<br>
+    1. Open the Import tab (<a routerLink="import">Open</a>)<br>
+    2. Follow the instuctions on page<br><br>
 
-    If you want to setup Import of results from CI:
-    1. Open the API key tab (<a routerLink="/administration/project/apiToken">Open</a>)
-    2. Follow the instuctions on page
+    If you want to setup Import of results from CI:<br>
+    1. Open the API key tab (<a routerLink="/administration/project/apiToken">Open</a>)<br>
+    2. Follow the instuctions on page<br>
   </div>
 </div>

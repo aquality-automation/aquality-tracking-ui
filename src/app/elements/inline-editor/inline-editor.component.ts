@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
-import { NG_VALUE_ACCESSOR, NgModel, FormControl, Validators, FormGroup } from '@angular/forms';
-import { ValueAccessorBase } from '../ValueAccessorBase';
+import { NG_VALUE_ACCESSOR, NgModel, FormControl, Validators, FormGroup, AbstractControl } from '@angular/forms';
+import { ValueAccessorBase } from '../value-accessor-base';
 import { faMarker, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { InlineEditorConfig, InlineEditorType, InlineEditorSize } from './inline-editor.config';
 let identifier = 0;
@@ -8,15 +8,15 @@ let identifier = 0;
 @Component({
   selector: 'inline-editor',
   templateUrl: './inline-editor.component.html',
-  styleUrls: ['./inline-editor.component.css'],
+  styleUrls: ['./inline-editor.component.scss'],
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: InlineEditorComponent, multi: true }
   ],
 })
 export class InlineEditorComponent extends ValueAccessorBase<string> implements OnInit {
   public identifier = `labeled-input-${identifier++}`;
-  @Input() placeholder: string;
-  @Input() config: InlineEditorConfig = { type: InlineEditorType.text, size: InlineEditorSize.sm, saveOnEnter: true };
+  @Input() placeholder = 'Set Value';
+  @Input() config: InlineEditorConfig = { type: InlineEditorType.text, size: InlineEditorSize.sm, saveOnEnter: true, saveOnBlur: false };
   @Input() saveOnEnter: InlineEditorConfig;
   @Input() maxlength: number;
   @Input() minlength: number;
@@ -28,7 +28,6 @@ export class InlineEditorComponent extends ValueAccessorBase<string> implements 
   @ViewChild('name') input: NgModel;
   icons = { faMarker, faCheck, faTimes };
   editMode = false;
-  editValue: any;
   inputForm: FormGroup;
 
   constructor(private element: ElementRef) {
@@ -37,30 +36,34 @@ export class InlineEditorComponent extends ValueAccessorBase<string> implements 
 
   ngOnInit() {
     const validators = [];
-    if(this.maxlength) { validators.push(Validators.maxLength(this.maxlength)) };
-    if(this.minlength) { validators.push(Validators.minLength(this.minlength)) };
-    if(this.required) { validators.push(Validators.required) };
-    if(this.config.type === InlineEditorType.number) {validators.push(Validators.pattern(/^\d*$/))}
+    if (this.maxlength) { validators.push(Validators.maxLength(this.maxlength)); }
+    if (this.minlength) { validators.push(Validators.minLength(this.minlength)); }
+    if (this.required) { validators.push(Validators.required); }
+    if (this.config.type === InlineEditorType.number) {validators.push(Validators.pattern(/^\d*$/)); }
     this.inputForm = new FormGroup({
       inputControl: new FormControl('', validators)
-    })
+    });
+  }
+
+  get inputControl(): AbstractControl {
+    return this.inputForm.get('inputControl');
   }
 
   toggleEditMode() {
     this.editMode = !this.editMode;
-    this.editValue = this.editMode ? this.value : undefined;
+    this.inputControl.setValue(this.editMode ? this.value : undefined);
     if (this.editMode) {
       setTimeout(() => {
         const element = this.element.nativeElement as HTMLElement;
         const editor = element.getElementsByClassName('ie-editor').item(0) as HTMLElement;
         editor.focus();
-      }, 0)
+      }, 0);
 
     }
   }
 
   save() {
-    this.value = this.editValue;
+    this.value = this.inputControl.value;
     this.toggleEditMode();
     this.onSave.emit(this.value);
   }
@@ -72,13 +75,12 @@ export class InlineEditorComponent extends ValueAccessorBase<string> implements 
   }
 
   onBlur() {
-    if (this.config.saveOnBlur && !this.input.errors) {
-      console.log(this.input)
+    if (this.config.saveOnBlur && !this.inputForm.controls.inputControl.errors) {
       this.save();
     }
   }
 
   cancel() {
-    this.toggleEditMode()
+    this.toggleEditMode();
   }
 }

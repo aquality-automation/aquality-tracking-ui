@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IssueService } from '../../../../services/issue.service';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
 import { Issue } from '../../../../shared/models/issue';
-import { TFColumn, TFColumnType, TFSorting, TFOrder } from '../../../../elements/table/tfColumn';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
 import { Label } from '../../../../shared/models/general';
 import { User } from '../../../../shared/models/user';
+import { UserService } from 'src/app/services/user/user.services';
+import { IssueService } from 'src/app/services/issue/issue.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { LocalPermissions } from 'src/app/shared/models/local-permissions';
 
 @Component({
   templateUrl: './issue-list.component.html',
-  styleUrls: ['./issue-list.component.css']
+  styleUrls: ['./issue-list.component.scss']
 })
 export class IssueListComponent implements OnInit {
 
@@ -42,10 +42,10 @@ export class IssueListComponent implements OnInit {
     this.projectId = this.route.snapshot.params.projectId;
     [this.issues, this.resolutions, this.canEdit, this.projectUsers, this.statuses] = await Promise.all([
       this.issueService.getIssues({ project_id: this.projectId }),
-      this.resolutionService.getResolution(this.projectId).toPromise(),
+      this.resolutionService.getResolution(this.projectId),
       this.permissions.hasProjectPermissions(this.projectId,
         [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]),
-      this.userService.getProjectUsers(this.projectId).toPromise(),
+      this.userService.getProjectUsers(this.projectId),
       this.issueService.getIssueStatuses()
     ]);
     this.projectUsers = this.projectUsers.filter(user => user.admin === 1 || user.manager === 1 || user.engineer === 1);

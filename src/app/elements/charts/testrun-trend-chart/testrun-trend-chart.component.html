@@ -1,0 +1,13 @@
+<div *ngIf="lineChartData.length > 0" style="display: block; padding: 0 10px 0 10px;">
+   <div class="result-switch">
+      <mat-slide-toggle id="result-switch" [ngModel]="switchState" (change)="switch()">{{switchState ? switchLabels.resolution : switchLabels.result}}</mat-slide-toggle>
+   </div>
+   <canvas baseChart height="70" *ngIf="lineChartData.length > 0"
+               [datasets]="lineChartData"
+               [labels]="lineChartLabels"
+               [options]="lineChartOptions"
+               [colors]="lineChartColors"
+               [chartType]="lineChartType"
+               (chartClick)="chartClicked($event)">
+   </canvas>
+</div>

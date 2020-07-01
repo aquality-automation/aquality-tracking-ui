@@ -5,7 +5,7 @@ import { faMinus } from '@fortawesome/free-solid-svg-icons';
 @Component({
   selector: 'lookup-autocomplete-multiselect',
   templateUrl: './lookupAutocompleteMultiselect.component.html',
-  styleUrls: ['./lookupAutocompleteMultiselect.component.css', '../baseLookup.css'],
+  styleUrls: ['./lookupAutocompleteMultiselect.component.scss', '../baseLookup.scss'],
   providers: [
   ]
 })

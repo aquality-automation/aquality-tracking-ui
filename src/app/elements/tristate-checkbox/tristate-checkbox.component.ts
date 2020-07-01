@@ -4,7 +4,7 @@ import { faCheckSquare, faSquare, faMinusSquare, IconDefinition } from '@fortawe
 @Component({
   selector: 'tristate-checkbox',
   templateUrl: './tristate-checkbox.component.html',
-  styleUrls: ['./tristate-checkbox.component.css']
+  styleUrls: ['./tristate-checkbox.component.scss']
 })
 export class TristateCheckboxComponent implements OnInit {
   public icon: IconDefinition;

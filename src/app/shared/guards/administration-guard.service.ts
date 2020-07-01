@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { ELocalPermissions, EGlobalPermissions } from '../../services/current-permissions.service';
-import { GuardService } from './guard.service';
+import { GuardService } from 'src/app/services/guard.service';
+import { EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 
 
 @Injectable()

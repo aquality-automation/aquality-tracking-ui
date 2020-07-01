@@ -1,29 +1,28 @@
 <div *ngIf="milestone" class="panel-heading form-row">
   <div class="col-sm-6">
     <h2 id="milestone-view">Milestone {{milestone.name}}
-      <fa-icon *ngIf="warningMessage" class="warning-icon" [icon]="icons.faExclamationTriangle" [title]="warningMessage"></fa-icon>
+      <fa-icon *ngIf="warningMessage" class="warning-icon" [icon]="icons.faExclamationTriangle"
+        [title]="warningMessage"></fa-icon>
     </h2>
   </div>
   <div class="col-sm-2 due-date-wrapper">
-    <label>Due Date:</label>
-    <ng-datepicker id="milestone-due-date" class="due-date" [(ngModel)]="milestone.due_date"
-      (ngModelChange)="updateMilestone()" [options]="optionsFrom" [disabled]="!canEdit || !milestone.active">
-    </ng-datepicker>
+    <app-datepicker id="milestone-due-date" label="Due Date" [(model)]="milestone.due_date"
+    [disabled]="!canEdit || !milestone.active" (modelChange)="updateMilestone()"></app-datepicker>
   </div>
   <div class="col-sm-2">
-    <labeled-switch class="pull-right" id="active-switch" label="Active" size="small" [(ngModel)]="milestone.active"
-      (ngModelChange)="updateMilestone()" title="Mark milestone as Active or Inactive" [disabled]="!canEdit"></labeled-switch>
+    <mat-slide-toggle id="active-switch" [(ngModel)]="milestone.active" (ngModelChange)="updateMilestone()"
+      title="Mark milestone as Active or Inactive" [disabled]="!canEdit">Active</mat-slide-toggle>
   </div>
   <div class="col-sm-2">
-    <labeled-switch class="pull-right" id="stack-suites" label="Distinct Tests" size="small" [ngModel]="stackSuites"
-      (ngModelChange)="updateStackSuites($event)" title="Show Latest results by uniq Test or by uniq Suite and Test">
-    </labeled-switch>
+    <mat-slide-toggle id="stack-suites" [ngModel]="stackSuites" (ngModelChange)="updateStackSuites($event)"
+      title="Show Latest results by uniq Test or by uniq Suite and Test">Distinct Tests</mat-slide-toggle>
   </div>
   <hr class="col-sm-12 no-padding">
   <div class="col-sm-12">
     <label><b>Selected Suites:</b></label>
-    <lookup-autocomplete-multiselect id="suites" *ngIf="suites" placeholder="Selected Suites" [disabled]="!canEdit || !milestone.active"
-      [propertiesToShow]="['name']" [array]="suites" [(model)]="milestone.suites" (onClosed)="updateMilestone()">
+    <lookup-autocomplete-multiselect id="suites" *ngIf="suites" placeholder="Selected Suites"
+      [disabled]="!canEdit || !milestone.active" [propertiesToShow]="['name']" [array]="suites"
+      [(model)]="milestone.suites" (onClosed)="updateMilestone()">
     </lookup-autocomplete-multiselect>
   </div>
   <div *ngIf="notExecutedSuites" class="col-sm-12">
@@ -48,5 +47,5 @@
 </div>
 
 <table-filter id="suite-results" *ngIf="columns" [hide]="hideTableValue" [allowExport]="true" [data]="viewData"
-  [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20" [columns]="columns" [defaultSortBy]="sortBy" [queryParams]="true"
-  (rowClick)="rowClicked($event)" (action)="handleAction($event)"></table-filter>
+  [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20" [columns]="columns" [defaultSortBy]="sortBy" [queryParams]="true">
+</table-filter>

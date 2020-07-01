@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { GeneralAppSettings, LDAPSettings, EmailSettings } from '../../../../shared/models/appSettings';
-import { ApplicationSettingsService } from '../../../../services/applicationSettings.service';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { EmailSettingsService } from '../../../../services/emailSettings.service';
 import { Constants } from './app-settings.constants';
-import { GlobalDataService } from '../../../../services/globaldata.service';
+import { GeneralAppSettings, LDAPSettings, EmailSettings } from 'src/app/shared/models/app-settings';
+import { ApplicationSettingsService } from 'src/app/services/application-settings/application-settings.service';
+import { EmailSettingsService } from 'src/app/services/email-settings/email-settings.service';
 
 @Component({
     templateUrl: 'app-settings.component.html',
-    styleUrls: ['app-settings.component.css'],
-    providers: [
-        SimpleRequester,
-        ApplicationSettingsService,
-        EmailSettingsService
-    ]
+    styleUrls: ['app-settings.component.scss'],
 })
 
 export class AppSettingsComponent implements OnInit {
@@ -29,13 +22,11 @@ export class AppSettingsComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        this.appSettingService.getGeneralSettings().subscribe(res => {
-            this.generalSettings = res;
-        });
-        this.appSettingService.getLDAPSettings().subscribe(res => {
-            this.ldapSettings = res;
-        });
-        this.emailSettings = await this.emailSettingsService.getEmailSettings();
+        [this.generalSettings, this.ldapSettings, this.emailSettings] = await Promise.all([
+            this.appSettingService.getGeneralSettings(),
+            this.appSettingService.getLDAPSettings(),
+            this.emailSettingsService.getEmailSettings()
+        ]);
         this.setBaseURL();
     }
 
@@ -59,7 +50,7 @@ export class AppSettingsComponent implements OnInit {
     }
 
     async saveLDAP() {
-        await this.appSettingService.updateLDAPSettings(this.ldapSettings).toPromise();
+        await this.appSettingService.updateLDAPSettings(this.ldapSettings);
         this.appSettingService.handleSuccess('LDAP settings were saved!');
     }
 

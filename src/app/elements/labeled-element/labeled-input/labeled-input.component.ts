@@ -6,7 +6,7 @@ let identifier = 0;
 @Component({
   selector: 'labeled-input',
   templateUrl: './labeled-input.component.html',
-  styleUrls: ['./labeled-input.component.css'],
+  styleUrls: ['./labeled-input.component.scss'],
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: LabeledInputComponent, multi: true }
   ],

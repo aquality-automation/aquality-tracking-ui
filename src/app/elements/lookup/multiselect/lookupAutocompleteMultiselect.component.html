@@ -21,9 +21,9 @@
         <ul>
             <li class="default-option">
                 <input (keyup)="onKey()" maxlength="100" (keyup.backspace)="onKey()"
-                    class="form-control input-sm ms-search" [(ngModel)]="searchText" placeholder="Search">
+                    class="form-control form-control-sm ms-search" [(ngModel)]="searchText" placeholder="Search">
             </li>
-            <li *ngIf="notSelectedArray.lenght === 0">
+            <li *ngIf="notSelectedArray.length === 0">
                 Nothing to select
             </li>
             <li tabindex="0" class="selector-button btn-default" *ngFor="let item of filteredArray"

@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from '../../../../services/user.services';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MilestoneService } from '../../../../services/milestones.service';
 import { Milestone } from '../../../../shared/models/milestone';
-import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
-import { TestSuite } from '../../../../shared/models/testSuite';
-import { TestSuiteService } from '../../../../services/testSuite.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { MilestoneService } from 'src/app/services/milestone/milestones.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { TestSuite } from 'src/app/shared/models/test-suite';
 
 @Component({
   templateUrl: './list-milestone.component.html',
-  styleUrls: ['./list-milestone.component.css']
+  styleUrls: ['./list-milestone.component.scss']
 })
 export class ListMilestoneComponent implements OnInit {
 
@@ -85,7 +85,8 @@ export class ListMilestoneComponent implements OnInit {
         type: TFColumnType.date,
         format: 'MMM dd, yyyy',
         notEditableByProperty: { property: 'active', value: false },
-        editable: this.canEdit
+        editable: this.canEdit,
+        class: 'fit',
       }];
   }
 
@@ -132,9 +133,7 @@ export class ListMilestoneComponent implements OnInit {
     }
   }
 
-
-
-  wasClosed(state: boolean) {
-    this.hideModal = state;
+  wasClosed() {
+    this.hideModal = false;
   }
 }

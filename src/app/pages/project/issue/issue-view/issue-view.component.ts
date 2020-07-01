@@ -1,30 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { IssueService } from '../../../../services/issue.service';
 import { Issue } from '../../../../shared/models/issue';
-import { UserService } from '../../../../services/user.services';
-import { Router, ActivatedRoute } from '@angular/router';
-import {
-  PermissionsService,
-  EGlobalPermissions,
-  ELocalPermissions,
-} from '../../../../services/current-permissions.service';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
-import {
-  TFColumn,
-  TFSorting,
-  TFOrder,
-  TFColumnType,
-} from '../../../../elements/table/tfColumn';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
+import { ActivatedRoute } from '@angular/router';
 import { User } from '../../../../shared/models/user';
 import { Label } from '../../../../shared/models/general';
 import { Test } from '../../../../shared/models/test';
-import { TestService } from '../../../../services/test.service';
+import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import { UserService } from 'src/app/services/user/user.services';
+import { IssueService } from 'src/app/services/issue/issue.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { TestService } from 'src/app/services/test/test.service';
 
 @Component({
   templateUrl: './issue-view.component.html',
-  styleUrls: ['./issue-view.component.css'],
+  styleUrls: ['./issue-view.component.scss'],
 })
 export class IssueViewComponent implements OnInit {
   issue: Issue;
@@ -86,13 +77,13 @@ export class IssueViewComponent implements OnInit {
       this.affectedTests,
     ] = await Promise.all([
       this.issueService.getIssues({ project_id: this.projectId }),
-      this.resolutionService.getResolution(this.projectId).toPromise(),
+      this.resolutionService.getResolution(this.projectId),
       this.permissions.hasProjectPermissions(
         this.projectId,
         [EGlobalPermissions.manager],
         [ELocalPermissions.manager, ELocalPermissions.engineer]
       ),
-      this.userService.getProjectUsers(this.projectId).toPromise(),
+      this.userService.getProjectUsers(this.projectId),
       this.issueService.getIssueStatuses(),
       this.testService.getTestByIssue({
         issueId: issueId,
@@ -157,6 +148,17 @@ export class IssueViewComponent implements OnInit {
   setStatus(statusId: number) {
     this.issue.status_id = statusId;
     this.saveIssue();
+  }
+
+  isExpressionInvalid() {
+    try {
+      /* tslint:disable */
+      new RegExp(this.issue.expression);
+      /* tslint:enable */
+      return false;
+    } catch (error) {
+      return true;
+    }
   }
 
   private createColumns() {

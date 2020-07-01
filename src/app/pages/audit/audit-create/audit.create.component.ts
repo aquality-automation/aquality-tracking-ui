@@ -1,22 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Audit, AuditStat, Service, Auditor } from '../../../shared/models/audit';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AuditService } from '../../../services/audits.service';
-import { ProjectService } from '../../../services/project.service';
-import { UserService } from '../../../services/user.services';
 import { Project } from '../../../shared/models/project';
-import { DatepickerOptions } from 'custom-a1qa-ng2-datepicker';
-import * as enLocale from 'date-fns/locale/en';
 import { TransformationsService } from '../../../services/transformations.service';
-import { User } from '../../../shared/models/user';
+import { AuditService } from 'src/app/services/audit/audits.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { ProjectService } from 'src/app/services/project/project.service';
 
 @Component({
-  templateUrl: './audit.create.component.html',
-  providers: [
-    TransformationsService,
-    AuditService,
-    UserService
-  ]
+  templateUrl: './audit.create.component.html'
 })
 export class AuditCreateComponent implements OnInit {
   dateUpdated = false;
@@ -26,14 +18,14 @@ export class AuditCreateComponent implements OnInit {
   services: Service[];
   audit: Audit = {};
   project: Project;
-  options: DatepickerOptions = {
-    locale: enLocale,
-    minYear: new Date().getFullYear(),
-    displayFormat: 'MM/DD/YY',
-    barTitleFormat: 'MMMM YYYY',
-    firstCalendarDay: 1,
-    minDate: new Date(new Date().setDate(new Date().getDate() - 1))
-  };
+  // options: DatepickerOptions = {
+  //   locale: enLocale,
+  //   minYear: new Date().getFullYear(),
+  //   displayFormat: 'MM/DD/YY',
+  //   barTitleFormat: 'MMMM YYYY',
+  //   firstCalendarDay: 1,
+  //   minDate: new Date(new Date().setDate(new Date().getDate() - 1))
+  // };
 
   constructor(
     private router: Router,
@@ -41,15 +33,14 @@ export class AuditCreateComponent implements OnInit {
     public userService: UserService,
     private projectService: ProjectService,
     private route: ActivatedRoute
-  ) {
-  }
+  ) { }
 
   async ngOnInit() {
     const [auditors, services, project, auditStats] = await Promise.all([
-      this.userService.getUsers({auditor: 1}).toPromise(),
-      this.auditService.getServices().toPromise(),
-      this.projectService.getProjects({ id: this.route.snapshot.params['projectId'] }).toPromise(),
-      this.auditService.getAuditStats().toPromise()
+      this.userService.getUsers({auditor: 1}),
+      this.auditService.getServices(),
+      this.projectService.getProjects({ id: this.route.snapshot.params['projectId'] }),
+      this.auditService.getAuditStats()
     ]);
 
     this.auditors = auditors;
@@ -78,13 +69,10 @@ export class AuditCreateComponent implements OnInit {
     this.audit.due_date = new Date(new Date($event).setHours(0, 0, 0, 0));
   }
 
-  createAudit() {
-    this.auditService.createOrUpdateAudit(this.audit).subscribe(res => {
-      const newAudit = res;
-      this.auditService.updateAuditors(this.audit.auditors, newAudit.id).subscribe(() => {
-        this.router.navigate([`/audit/${this.route.snapshot.params['projectId']}/info/${newAudit.id}`]);
-      });
-    });
+  async createAudit() {
+    const newAudit = await this.auditService.createOrUpdateAudit(this.audit);
+    await this.auditService.updateAuditors(this.audit.auditors, newAudit.id);
+    this.router.navigate([`/audit/${this.route.snapshot.params['projectId']}/info/${newAudit.id}`]);
   }
 
   serviceUpdate() {

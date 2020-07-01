@@ -12,7 +12,7 @@ import { BaseChart } from '../BaseChart';
 export class ExecuteRateChartComponent extends BaseChart {
   suitesList: TestSuite[] = [];
   @Input() allTestRunStats: TestRunStat[];
-  testRunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[] = [];
+  testrunStatsBySuite: { suite: TestSuite, stats: TestRunStat[] }[] = [];
   chartColors: any[] = [{ backgroundColor: [this.success90, this.success40] }];
   chartColorsGrey: any[] = [{ backgroundColor: [this.grey, this.grey] }];
   pieType = 'pie';
@@ -54,7 +54,7 @@ export class ExecuteRateChartComponent extends BaseChart {
     let i = 0;
       for (const suite of this.suitesList) {
         const teStats: TestRunStat[] = this.allTestRunStats.filter(stat => stat.test_suite_id === suite.id);
-        this.testRunStatsBySuite.push({ suite: suite, stats: teStats });
+        this.testrunStatsBySuite.push({ suite: suite, stats: teStats });
         if (i === this.suitesList.length - 1) {
           this.calculateExecutionRate();
           this.calculateSuccessRate();
@@ -70,7 +70,7 @@ export class ExecuteRateChartComponent extends BaseChart {
     let ttlAppIssue = 0;
     let ttl = 0;
 
-    for (const suiteStat of this.testRunStatsBySuite) {
+    for (const suiteStat of this.testrunStatsBySuite) {
       if (suiteStat.stats[0]) {
         ttlPassed += suiteStat.stats[0].passed;
         ttlAppIssue += suiteStat.stats[0].app_issue;
@@ -100,7 +100,7 @@ export class ExecuteRateChartComponent extends BaseChart {
     let ttlPassed = 0;
     let ttlAppIssue = 0;
 
-    for (const suiteStat of this.testRunStatsBySuite) {
+    for (const suiteStat of this.testrunStatsBySuite) {
       if (suiteStat.stats[0]) {
         ttlPassed += suiteStat.stats[0].passed;
         ttlAppIssue += suiteStat.stats[0].app_issue;
@@ -131,7 +131,7 @@ export class ExecuteRateChartComponent extends BaseChart {
     let ttltestIssue = 0;
     let ttlOther = 0;
 
-    for (const suiteStat of this.testRunStatsBySuite) {
+    for (const suiteStat of this.testrunStatsBySuite) {
       if (suiteStat.stats[0]) {
         ttlNA += suiteStat.stats[0].not_assigned;
         ttltestIssue += suiteStat.stats[0].warning;
@@ -188,7 +188,7 @@ export class ExecuteRateChartComponent extends BaseChart {
     let ttlOther = 0;
     let ttl = 0;
 
-    for (const suiteStat of this.testRunStatsBySuite) {
+    for (const suiteStat of this.testrunStatsBySuite) {
       for (const stat of suiteStat.stats) {
         if (Math.floor(new Date().getTime() - new Date(stat.finish_time).getTime()) / (1000 * 60 * 60 * 24) < 90) {
           ttlNA += stat.not_assigned;

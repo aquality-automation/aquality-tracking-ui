@@ -1,34 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { TestSuite } from '../../../../shared/models/testSuite';
-import { ResultResolutionService } from '../../../../services/result-resolution.service';
-import { FinalResultService } from '../../../../services/final_results.service';
-import { TestService } from '../../../../services/test.service';
-import { TestRunService } from '../../../../services/testRun.service';
-import { TestResultService } from '../../../../services/test-result.service';
-import { TestSuiteService } from '../../../../services/testSuite.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SimpleRequester } from '../../../../services/simple-requester';
 import { Test } from '../../../../shared/models/test';
-import { TransformationsService } from '../../../../services/transformations.service';
-import { TestRun, TestRunLabel } from '../../../../shared/models/testRun';
+import { TestRun, TestRunLabel } from '../../../../shared/models/testrun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { DatePipe } from '@angular/common';
-import { ResultResolution } from '../../../../shared/models/result_resolution';
-import { TFColumnType, TFColumn } from '../../../../elements/table/tfColumn';
+import { TestSuite } from 'src/app/shared/models/test-suite';
+import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { FinalResultService } from 'src/app/services/final-result/final_results.service';
+import { TestService } from 'src/app/services/test/test.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
+import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 
 @Component({
     templateUrl: 'testrun-matrix.component.html',
-    styleUrls: ['testrun-matrix.component.css'],
-    providers: [
-        TestRunService,
-        SimpleRequester,
-        TestSuiteService,
-        TestService,
-        ResultResolutionService,
-        FinalResultService,
-        TestResultService,
-        TransformationsService
-    ]
+    styleUrls: ['testrun-matrix.component.scss']
 })
 export class TestrunMatrixComponent implements OnInit {
     suites: TestSuite[];
@@ -38,13 +25,14 @@ export class TestrunMatrixComponent implements OnInit {
     tests: Test[];
     tbCols: TFColumn[] = [];
     dataToshow: any[] = [];
-    testRuns: TestRun[];
+    testruns: TestRun[];
     finalResults: FinalResult[];
     labels: TestRunLabel[];
     label: TestRunLabel;
     filterValues: any[] = [];
     listOfResolutions: ResultResolution[];
     showResolutions = true;
+    projectId: number;
 
     constructor(
         private resultResolutionService: ResultResolutionService,
@@ -58,10 +46,11 @@ export class TestrunMatrixComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.route.snapshot.params['projectId'] });
+        this.projectId = this.route.snapshot.params['projectId'];
+        this.suites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
         this.finalResults = await this.finalResultService.getFinalResult({});
-        this.labels = await this.testrunService.getTestsRunLabels().toPromise();
-        this.listOfResolutions = await this.resultResolutionService.getResolution(this.route.snapshot.params['projectId']).toPromise();
+        this.labels = await this.testrunService.getTestsRunLabels();
+        this.listOfResolutions = await this.resultResolutionService.getResolution(this.projectId);
         const frFilter = this.finalResults.find(x => x.id === 2);
         frFilter.id = 100000;
         this.listOfResolutions.push(frFilter);
@@ -75,7 +64,7 @@ export class TestrunMatrixComponent implements OnInit {
     }
 
     async getMatrix() {
-        this.testRuns = await this.testrunService.getTestRunWithChilds(
+        this.testruns = await this.testrunService.getTestRunWithChilds(
             this.getTestRunSearchTemplate(),
             this.getResultsNumber()
         );
@@ -91,23 +80,23 @@ export class TestrunMatrixComponent implements OnInit {
         this.dataToshow = [];
         this.tests.forEach(test => {
             const dataEntity = { id: test.id, testName: test.name };
-            this.testRuns.forEach(testRun => {
-                if (testRun.testResults) {
-                    const result = testRun.testResults.find(x => x.test.id === test.id);
+            this.testruns.forEach(testrun => {
+                if (testrun.testResults) {
+                    const result = testrun.testResults.find(x => x.test.id === test.id);
                     if (result) {
                         if (result.final_result.id !== 2) {
-                            dataEntity[`${testRun.id}_resolution`] = result.issue ? result.issue.resolution : undefined;
-                            dataEntity[`${testRun.id}_result`] = result.final_result;
+                            dataEntity[`${testrun.id}_resolution`] = result.issue ? result.issue.resolution : undefined;
+                            dataEntity[`${testrun.id}_result`] = result.final_result;
                         } else {
                             const frFilter = result.final_result;
                             if (frFilter.id === 2) { frFilter.id = 100000; }
-                            dataEntity[`${testRun.id}_resolution`] = frFilter;
-                            dataEntity[`${testRun.id}_result`] = result.final_result;
+                            dataEntity[`${testrun.id}_resolution`] = frFilter;
+                            dataEntity[`${testrun.id}_result`] = result.final_result;
                         }
-                        dataEntity[`${testRun.id}_result`]['comment'] = result.issue ? result.issue.title : '';
+                        dataEntity[`${testrun.id}_result`]['comment'] = result.issue ? result.issue.title : '';
                     } else {
-                        dataEntity[`${testRun.id}_result`] = { name: 'Not Implemented' };
-                        dataEntity[`${testRun.id}_resolution`] = { name: 'Not Implemented' };
+                        dataEntity[`${testrun.id}_result`] = { name: 'Not Implemented' };
+                        dataEntity[`${testrun.id}_resolution`] = { name: 'Not Implemented' };
                     }
                 }
             });
@@ -158,13 +147,13 @@ export class TestrunMatrixComponent implements OnInit {
             type: TFColumnType.text,
             editable: false,
             class: 'ft-width-180',
-            link: { template: `/project/${this.route.snapshot.params['projectId']}/test/{id}`, properties: ['id'] }
+            link: { template: `/project/${this.projectId}/test/{id}`, properties: ['id'] }
         });
-        this.testRuns.forEach(testRun => {
+        this.testruns.forEach(testrun => {
             this.tbCols.push({
-                name: `${testRun.id} | ${testRun.label.name} | ${this.datepipe.transform(new Date(testRun.start_time), 'MM/dd/yy')}`,
-                title: `${testRun.id}_result.comment`,
-                property: state ? `${testRun.id}_resolution` : `${testRun.id}_result`,
+                name: `${testrun.id} | ${testrun.label.name} | ${this.datepipe.transform(new Date(testrun.start_time), 'MM/dd/yy')}`,
+                title: `${testrun.id}_result.comment`,
+                property: state ? `${testrun.id}_resolution` : `${testrun.id}_result`,
                 filter: true,
                 sorting: true,
                 type: TFColumnType.colored,
@@ -173,7 +162,7 @@ export class TestrunMatrixComponent implements OnInit {
                     propToShow: ['name']
                 },
                 class: 'fit',
-                headerlink: `/project/${this.route.snapshot.params['projectId']}/testrun/${testRun.id}`
+                headerlink: `/project/${this.projectId}/testrun/${testrun.id}`
             });
         });
     }

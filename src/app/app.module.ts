@@ -1,34 +1,33 @@
-import { NgModule } from '@angular/core';
-import { BrowserXhr, HttpModule } from '@angular/http';
-import { HashLocationStrategy, LocationStrategy, CommonModule } from '@angular/common';
-import { CookieService, CookieOptions } from 'angular2-cookie/core';
-import { appRouting } from './app.routing';
-import { AppComponent } from './app.component';
-import { NgProgressModule, NgProgressBrowserXhr } from 'ngx-progressbar';
-import { AdministrationModule } from './pages/administration/main/administration.module';
-import { NotFoundComponent } from './pages/general/not-found/not-found.component';
-import { LoginComponent } from './pages/general/authorization/Login.component';
-import { LoginGuard, AuthGuard } from './shared/guards/login-guard.service';
-import { GlobalDataService } from './services/globaldata.service';
-import { SimpleRequester } from './services/simple-requester';
-import { UserService } from './services/user.services';
-import { ProjectModule } from './pages/project/project.module';
-import { SimpleNotificationsModule } from 'angular2-notifications';
-import { AuditModule } from './pages/audit/audit.module';
-import { AuditService } from './services/audits.service';
-import { CalcHeightsDirective } from './derectives/bodyHeight.derective';
-import { UserSettingsComponent } from './pages/general/user-settings/user-settings.component';
-import { CustomerModule } from './pages/customer/customer.module';
-import { CustomerService } from './services/customer.service';
-import { ResultViewCanDeactivate } from './shared/guards/can-deactivate-guard.service';
-import { GuardService } from './shared/guards/guard.service';
-import { LoaderComponent } from './elements/loader/loader.component';
-import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { MatMenuModule, MatIconModule, MatListModule, MatButtonModule } from '@angular/material';
+import { CookieService } from 'ngx-cookie-service';
+import { httpInterceptorProviders } from './services/interceptors';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { UiSwitchModule } from 'ngx-ui-switch';
+import { NgProgressModule } from 'ngx-progressbar';
+import { LoaderComponent } from './elements/loader/loader.component';
+import { SimpleNotificationsModule } from 'angular2-notifications';
+import { GlobalDataService } from './services/globaldata.service';
+import { AuthService } from './services/auth/auth.service';
+import { UserService } from './services/user/user.services';
+import { ProjectService } from './services/project/project.service';
+import { ApplicationSettingsService } from './services/application-settings/application-settings.service';
+import { PermissionsService } from './services/permissions/current-permissions.service';
+import { CommonModule } from '@angular/common';
+import { NotFoundComponent } from './pages/general/not-found/not-found.component';
+import { UserSettingsComponent } from './pages/general/user-settings/user-settings.component';
+import { LoginComponent } from './pages/general/authorization/Login.component';
+import { CalculateHeightDerective } from './derectives/calculate-height.derective';
+import { LoginGuard, AuthGuard } from './shared/guards/login-guard.service';
+import { FormsModule } from '@angular/forms';
+import { ProjectModule } from './pages/project/project.module';
+import { DragulaModule } from 'ng2-dragula';
+import { AuditModule } from './pages/audit/audit.module';
+import { CustomerModule } from './pages/customer/customer.module';
+import { AdministrationModule } from './pages/administration/main/administration.module';
 
 @NgModule({
   declarations: [
@@ -36,43 +35,36 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     NotFoundComponent,
     UserSettingsComponent,
     LoginComponent,
-    CalcHeightsDirective,
+    CalculateHeightDerective,
     LoaderComponent,
   ],
   imports: [
-    FormsModule,
-    CommonModule,
-    BrowserAnimationsModule,
-    HttpModule,
-    HttpClientModule,
-    AdministrationModule,
-    MatMenuModule,
-    MatIconModule,
-    MatListModule,
-    MatButtonModule,
-    FontAwesomeModule,
-    UiSwitchModule,
-    appRouting,
     ProjectModule,
     AuditModule,
     CustomerModule,
+    AdministrationModule,
+    CommonModule,
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FontAwesomeModule,
     NgProgressModule,
-    SimpleNotificationsModule.forRoot()
+    BrowserAnimationsModule,
+    SimpleNotificationsModule.forRoot(),
+    DragulaModule.forRoot()
   ],
   providers: [
-    ResultViewCanDeactivate,
-    GuardService,
-    AuthGuard,
     CookieService,
-    LoginGuard,
+    httpInterceptorProviders,
     GlobalDataService,
-    SimpleRequester,
+    AuthService,
     UserService,
-    AuditService,
-    CustomerService,
-    { provide: BrowserXhr, useClass: NgProgressBrowserXhr },
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    { provide: CookieOptions, useValue: {} }
+    ProjectService,
+    ApplicationSettingsService,
+    PermissionsService,
+    LoginGuard,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

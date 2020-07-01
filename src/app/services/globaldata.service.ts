@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { User } from '../shared/models/user';
 import { Project } from '../shared/models/project';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Injectable()
 export class GlobalDataService {
   private currentProjectSource = new BehaviorSubject<Project>({});
-  currentUser: User;
   auditModule: boolean;
   loading = false;
   public requestQuery = 0;
@@ -32,7 +30,6 @@ export class GlobalDataService {
   }
 
   clear() {
-    this.currentUser = undefined;
     this.auditModule = undefined;
     this.loading = false;
     this.requestQuery = 0;

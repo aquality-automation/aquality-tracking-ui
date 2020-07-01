@@ -1,18 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
-import { FinalResultService } from '../../../services/final_results.service';
 
 
 @Component({
   selector: 'test-duration-chart',
   templateUrl: './testDuration.component.html',
-  providers: [
-    SimpleRequester,
-    FinalResultService,
-    TestResultService
-  ]
 })
 
 export class TestDurationComponent implements OnInit {

@@ -1,19 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { UserService } from '../../../../services/user.services';
 import { User } from '../../../../shared/models/user';
-import { Md5 } from 'ts-md5/dist/md5';
-import { EmailSettingsService } from '../../../../services/emailSettings.service';
-import { EmailSettings } from '../../../../shared/models/appSettings';
-import { TFColumn, TFColumnType, TFOrder } from '../../../../elements/table/tfColumn';
+import { EmailSettings } from 'src/app/shared/models/app-settings';
+import { TFColumn, TFColumnType, TFOrder } from 'src/app/elements/table-filter/tfColumn';
+import { UserService } from 'src/app/services/user/user.services';
+import { EmailSettingsService } from 'src/app/services/email-settings/email-settings.service';
 
 @Component({
     templateUrl: './administration.users.component.html',
-    providers: [
-        UserService,
-        SimpleRequester,
-        EmailSettingsService
-    ]
 })
 export class AdministrationUsersComponent implements OnInit {
     public hideModal = true;
@@ -23,7 +16,6 @@ export class AdministrationUsersComponent implements OnInit {
     private emailSettings: EmailSettings;
     public users: User[];
     public canCreate: boolean;
-    private md5 = new Md5();
     public inProgress = false;
     public clickedUser: User;
     public tbCols: TFColumn[] = [
@@ -128,7 +120,7 @@ export class AdministrationUsersComponent implements OnInit {
 
     async ngOnInit() {
         [this.users, this.emailSettings] = await Promise.all([
-            this.userService.getUsers({}).toPromise(),
+            this.userService.getUsers({}),
             this.emailSettingsService.getEmailSettings()
         ]);
     }
@@ -171,25 +163,23 @@ export class AdministrationUsersComponent implements OnInit {
             account_manager: +user.account_manager,
             unit_coordinator: +user.unit_coordinator
         };
-        this.userService.createOrUpdateUser(userTemplate).subscribe();
+        this.userService.createOrUpdateUser(userTemplate);
     }
 
-    createUser(user: User) {
+    async createUser(user: User) {
         user.admin = +user.admin;
         user.manager = +user.manager;
         user.auditor = +user.auditor;
         user.audit_admin = +user.audit_admin;
         user.unit_coordinator = +user.unit_coordinator;
         user.account_manager = +user.account_manager;
-        this.userService.createOrUpdateUser(user).subscribe(() => {
-            for (const prop of Object.keys(user)) {
-                delete user[prop];
-            }
-            this.userService.getUsers({}).subscribe(users => {
-                this.users = users;
-                this.inProgress = false;
-            });
-        });
+        await this.userService.createOrUpdateUser(user);
+
+        for (const prop of Object.keys(user)) {
+            delete user[prop];
+        }
+        this.users = await this.userService.getUsers({});
+        this.inProgress = false;
     }
 
     resetPassword() {
@@ -198,7 +188,7 @@ export class AdministrationUsersComponent implements OnInit {
 
         } else {
             this.clickedUser.password = '123456';
-            this.userService.createOrUpdateUser(this.clickedUser).subscribe();
+            this.userService.createOrUpdateUser(this.clickedUser);
         }
     }
 
@@ -215,19 +205,16 @@ export class AdministrationUsersComponent implements OnInit {
 
     async execute($event: Promise<boolean>) {
         if (await $event) {
-            this.userService.removeUser(this.userToRemove).subscribe(() => {
-                this.userService.getUsers({}).subscribe(users => {
-                    this.users = users;
-                    this.inProgress = false;
-                });
-            });
+            this.userService.removeUser(this.userToRemove);
+            this.users = await this.userService.getUsers({});
+            this.inProgress = false;
             this.users = this.users.filter(x => x !== this.userToRemove);
         }
         this.hideModal = true;
     }
 
-    wasClosed($event: boolean) {
-        this.hideModal = $event;
+    wasClosed() {
+        this.hideModal = true;
     }
 
     hideVal(entity: User, property: string) {

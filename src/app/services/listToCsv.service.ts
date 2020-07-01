@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { LocalPermissions } from '../shared/models/LocalPermissions';
-import { TestSuiteStat } from '../shared/models/testSuite';
-import { ElementFinder } from 'protractor';
-import { TFColumn } from '../elements/table/tfColumn';
+import { TestSuiteStat } from '../shared/models/test-suite';
+import { LocalPermissions } from '../shared/models/local-permissions';
+import { TFColumn } from '../elements/table-filter/tfColumn';
 
 @Injectable()
 export class ListToCsvService {

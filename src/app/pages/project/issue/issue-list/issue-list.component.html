@@ -13,7 +13,7 @@
   <issue-create-modal *ngIf="!hideCreateModal" (execute)="execute($event)" (closed)="wasClosed()" [resolutions]="resolutions" [users]="users"
   [existingIssues]="issues"></issue-create-modal>
   <table-filter id="issues-table" *ngIf="issues && columns" [data]="issues" [columns]="columns"
-    [hiddenColumns]="hiddenColumns" [defaultSortBy]="defSort" (action)="handleAction($event)" [queryParams]="true"
+    [hiddenColumns]="hiddenColumns" [defaultSortBy]="defSort" [queryParams]="true"
     (dataChange)="updateIssue($event)" (rowClick)="rowClicked($event)" rowsOnPage="20">
   </table-filter>
 </div>

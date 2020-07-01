@@ -1,31 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { CustomerService } from '../../../services/customer.service';
-import { SimpleRequester } from '../../../services/simple-requester';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Customer } from '../../../shared/models/customer';
 import { User } from '../../../shared/models/user';
-import { UserService } from '../../../services/user.services';
 import { Project } from '../../../shared/models/project';
-import { ProjectService } from '../../../services/project.service';
-import { TransformationsService } from '../../../services/transformations.service';
-import { TFColumnType, TFColumn, TFOrder } from '../../../elements/table/tfColumn';
-import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
+import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { PermissionsService, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { CustomerService } from 'src/app/services/customer/customer.service';
+import { ProjectService } from 'src/app/services/project/project.service';
 
 @Component({
     templateUrl: 'customer-info.component.html',
-    styleUrls: ['customer-info.component.css'],
-    providers: [
-        CustomerService,
-        SimpleRequester,
-        UserService,
-        TransformationsService
-    ]
+    styleUrls: ['customer-info.component.scss']
 })
 export class CustomerInfoComponent implements OnInit {
     customer: Customer;
     coordinators: User[];
     accountManagers: User[];
-    URL;
+    URL: string;
     canEdit: boolean;
     users: User[];
     allowCreate: boolean;
@@ -44,27 +36,21 @@ export class CustomerInfoComponent implements OnInit {
     async ngOnInit() {
         this.URL = `/customer/attachment?customer_id=${this.route.snapshot.params.customer_id}`;
         const isAdmin = await this.permissions.hasPermissions([EGlobalPermissions.admin]);
-        this.userService.getUsers({ unit_coordinator: 1 }).subscribe(result => {
-            this.coordinators = result.filter(x => x.unit_coordinator === 1);
-        });
-        this.userService.getUsers({}).subscribe(result => {
-            this.users = result;
-        });
-        this.customerService.getCustomer(+this.route.snapshot.params.customer_id, true).subscribe(res => {
-            this.customer = res[0];
-            this.columns = [
-                {
-                    name: 'Name', property: 'name', filter: true,
-                    sorting: true, type: TFColumnType.text, editable: isAdmin,
-                    creation: {
-                        required: true
-                    }
-                },
-                {
-                    name: 'Created', property: 'created', filter: true, sorting: true, type: TFColumnType.date, class: 'ft-date-width'
+        this.users = await this.userService.getUsers({});
+        this.coordinators = this.users.filter(user => user.unit_coordinator === 1);
+        this.customer = (await this.customerService.getCustomer(+this.route.snapshot.params.customer_id, true))[0];
+        this.columns = [
+            {
+                name: 'Name', property: 'name', filter: true,
+                sorting: true, type: TFColumnType.text, editable: isAdmin,
+                creation: {
+                    required: true
                 }
-            ];
-        });
+            },
+            {
+                name: 'Created', property: 'created', filter: true, sorting: true, type: TFColumnType.date, class: 'ft-date-width'
+            }
+        ];
         this.canEdit = await this.permissions.hasPermissions([EGlobalPermissions.unit_coordinator, EGlobalPermissions.head]);
         this.allowCreate = await this.permissions.hasPermissions([EGlobalPermissions.admin, EGlobalPermissions.manager]);
     }
@@ -88,18 +74,16 @@ export class CustomerInfoComponent implements OnInit {
         this.getProjects();
     }
 
-    getProjects() {
-        this.customerService.getCustomer(+this.route.snapshot.params['customer_id'], true).subscribe(customers =>
-            this.customer.projects = customers[0].projects);
+    async getProjects() {
+        this.customer.projects = (await this.customerService.getCustomer(this.customer.id,  true))[0].projects;
     }
 
-    updateCustomer() {
-        this.customerService.createOrUpdateCustomer(this.customer).subscribe(res => {
-            this.customerService.handleSuccess('Customer was saved.');
-        });
+    async updateCustomer() {
+        await this.customerService.createOrUpdateCustomer(this.customer);
+        this.customerService.handleSuccess('Customer was saved.');
     }
 
-    nameError(event) {
+    nameError() {
         this.customerService.handleSimpleError('Name is invalid', 'Customer name can\'t be empty or less than 3 symbols!');
     }
 

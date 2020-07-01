@@ -11,7 +11,7 @@ const administrationRoutes: Routes = [
       {
         path: '',
         component: AdministrationComponent,
-        loadChildren: './administration.childs.module#AdministrationChildsModule'
+        loadChildren: () => import('./administration.child.module').then(m => m.AdministrationChildModule)
       }]
   }
 ];

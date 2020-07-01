@@ -1,6 +1,6 @@
 <div id="audit-info-page" *ngIf="audit" class="panel-heading form-row">
-  <simple-popup *ngIf="!hideModal" [title]="modalTitle" [message]="modalMessage" [type]="'warning'" [buttons]="buttons"
-    (execute)="execute($event)" (closed)="wasClosed()"></simple-popup>
+  <app-modal *ngIf="!hideModal" [title]="modalTitle" [message]="modalMessage" [type]="'warning'" [buttons]="buttons"
+    (execute)="execute($event)" (closed)="wasClosed()"></app-modal>
   <div class="col-md-9">
     <h2>Audit Info - {{audit.project.name}}
       <span id="status" class="badge" [ngClass]="{
@@ -10,7 +10,7 @@
     }">{{audit.status.name}}</span></h2>
 
   </div>
-  <div *ngIf="canEdit" class="col-md-3 no-padding">
+  <div *ngIf="canEdit" class="col-md-3">
     <div class="btn-group pull-right no-padding">
       <button id="audit-cancel" *ngIf="(audit.status.id === 1 || audit.status.id === 2) && isAuditAdmin"
         class="btn btn-danger btn-secondary" (click)="cancelAudit()">Cancel Audit</button>
@@ -26,59 +26,14 @@
     </div>
   </div>
 </div>
+
+
 <div *ngIf="audit" class="form-row">
   <div>
     <div class="inline info-panel card">
       <div class="form-row card-body">
-        <div class="col-sm-4">
-          <label *ngIf="audit.due_date">Due Date:</label>
-        </div>
-        <div class="col-sm-8">
-          <ng-datepicker id="due-date" name="due-date" [ngModel]="audit.due_date"
-            (ngModelChange)="dateUpdate($event,'due_date')" [options]="DateOpts" [disabled]="!isAuditAdmin">
-          </ng-datepicker>
-        </div>
-
-        <div class="col-sm-4">
-          <label>Created:</label>
-        </div>
-        <div class="col-sm-8">
-          <ng-datepicker id="created-date" name="created-date" [ngModel]="audit.created"
-            (ngModelChange)="dateUpdate($event,'created')" [options]="DateOpts" [disabled]="!isAuditAdmin">
-          </ng-datepicker>
-        </div>
-
-        <div *ngIf="audit.started" class="col-sm-4">
-          <label>Started:</label>
-        </div>
-        <div *ngIf="audit.started" class="col-sm-8">
-          <ng-datepicker id="started-date" name="started-date" [ngModel]="audit.started"
-            (ngModelChange)="dateUpdate($event,'started')" [options]="DateOpts" [disabled]="!isAuditAdmin">
-          </ng-datepicker>
-        </div>
-
-        <div *ngIf="audit.progress_finished" class="col-sm-4">
-          <label>Finished:</label>
-        </div>
-        <div *ngIf="audit.progress_finished" class="col-sm-8">
-          <ng-datepicker id="progress_finished-date" name="progress_finished-date" [ngModel]="audit.progress_finished"
-            (ngModelChange)="dateUpdate($event,'progress_finished')" [options]="DateOpts" [disabled]="!isAuditAdmin">
-          </ng-datepicker>
-        </div>
-
-        <div *ngIf="audit.submitted" class="col-sm-4">
-          <label>Submitted:</label>
-        </div>
-        <div *ngIf="audit.submitted" class="col-sm-8">
-          <ng-datepicker id="submitteddate" name="submitted-date" [ngModel]="audit.submitted"
-            (ngModelChange)="dateUpdate($event,'submitted')" [options]="DateOpts" [disabled]="!isAuditAdmin">
-          </ng-datepicker>
-        </div>
-
-        <div class="col-sm-4">
-          <label class="label-inline">Service:</label>
-        </div>
-        <div class="col-sm-8">
+        
+        <div class="col-sm-12">
           <lookup-colored id="service" *ngIf="audit" [propertiesToShow]="['name']" [array]="services" [small]="true"
             [(model)]="audit.service" (modelChange)="updateService()" colorProperty="color"
             [disabled]="!isAuditAdmin || audit.status.id !== 1" placeholder="Select Auditor"></lookup-colored>
@@ -86,6 +41,32 @@
 
         <hr class="col-sm-12">
 
+        <div class="col-sm-12">
+          <app-datepicker id="due-date" name="due-date" label="Due Date" [(model)]="audit.due_date"
+            (modelChange)="dateUpdate($event,'due_date')" [disabled]="!isAuditAdmin"></app-datepicker>
+        </div>
+
+        <div class="col-sm-12">
+          <app-datepicker id="created-date" name="created-date" label="Created" [(model)]="audit.created"
+            (modelChange)="dateUpdate($event,'created')" [disabled]="!isAuditAdmin"></app-datepicker>
+        </div>
+
+        <div *ngIf="audit.started" class="col-sm-12">
+          <app-datepicker id="started-date" name="started-date" label="Started" [(model)]="audit.started"
+            (modelChange)="dateUpdate($event,'started')" [disabled]="!isAuditAdmin"></app-datepicker>
+        </div>
+
+        <div *ngIf="audit.progress_finished" class="col-sm-12">
+          <app-datepicker id="progress_finished-date" name="progress_finished-date" label="Finished" [(model)]="audit.progress_finished"
+            (modelChange)="dateUpdate($event,'progress_finished')" [disabled]="!isAuditAdmin"></app-datepicker>
+        </div>
+
+        <div *ngIf="audit.submitted" class="col-sm-12">
+          <app-datepicker id="submitteddate" name="submitted-date" label="Submitted" [(model)]="audit.submitted"
+            (modelChange)="dateUpdate($event,'submitted')" [disabled]="!isAuditAdmin"></app-datepicker>
+        </div>
+
+        <hr class="col-sm-12">
 
         <div *ngIf="audit.status.id !== 1" class="col-sm-4">
           <label [ngClass]="{
@@ -93,9 +74,10 @@
             }">Audit Result:</label>
         </div>
         <div *ngIf="audit.status.id !== 1" class="col-sm-8">
-          <inline-editor [disabled]="!canEdit" [config]="{type:'number', size:'sm', saveOnBlur: true}" id="result" minlength=1 maxlength=3
-            [(ngModel)]="audit.result" (onSave)="updateResult()" (onError)="resultError($event)"></inline-editor>
+          <inline-editor placeholder="Audit Result" [disabled]="!canEdit" [config]="{type:'number', size:'sm', saveOnBlur: true}" id="result" minlength=1 maxlength=3
+            [(ngModel)]="audit.result" (onSave)="updateResult()" (onError)="resultError($event)" required="true"></inline-editor>
         </div>
+        
 
         <div class="col-sm-12">
           <label [ngClass]="{
@@ -113,6 +95,8 @@
       </div>
     </div>
 
+    
+
     <div *ngIf="audit.status.id !== 1 && (audit.summary || canEdit)" class="inline summary-panel card">
 
       <div class="card-body">
@@ -121,9 +105,7 @@
             (click)="update()">Save</button>
         </div>
       </div>
-
-      <app-ngx-editor *ngIf="canEdit && editorConfig" id="summary-editor" clickableLinks [config]="editorConfig"
-        [showToolbar]="canEdit" [height]="150" [(ngModel)]="audit.summary"></app-ngx-editor>
+      <ngx-wig *ngIf="canEdit && editorConfig" id="summary-editor" [(ngModel)]="audit.summary"></ngx-wig>
       <div *ngIf="audit.summary && !canEdit" class="summaryShow" [showHtml]="audit.summary"></div>
     </div>
 
@@ -153,7 +135,7 @@
                   <a class="clickable-element fileLink" (click)=downloadAttach(attach)>{{getAttachName(attach)}}</a>
                 </td>
                 <td class="fit">
-                  <button *ngIf="canEdit" type="button" class="btn btn-danger btn-xs"
+                  <button *ngIf="canEdit" type="button" class="btn btn-danger btn-sm"
                     (click)="removeAttachment(attach.id)" [disabled]="removingInProgress">
                     <fa-icon class="icon" [icon]="icons.faTrash"></fa-icon>
                   </button>

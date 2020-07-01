@@ -7,18 +7,15 @@ import {
   Output,
   EventEmitter
 } from '@angular/core';
-import { SimpleRequester } from '../../../services/simple-requester';
-import { TestResultService } from '../../../services/test-result.service';
 import { TestResult } from '../../../shared/models/test-result';
 import { FinalResult } from '../../../shared/models/final-result';
-import { FinalResultService } from '../../../services/final_results.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { colors } from '../../../shared/colors.service';
+import { FinalResultService } from 'src/app/services/final-result/final_results.service';
 
 @Component({
   selector: 'final-result-chart',
   templateUrl: './finalResults.charts.component.html',
-  providers: [SimpleRequester, TestResultService, FinalResultService]
 })
 export class FinalResultChartsComponent implements OnInit, OnChanges {
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;

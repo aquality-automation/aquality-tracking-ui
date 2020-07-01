@@ -6,7 +6,7 @@ import { BaseLookupComponent } from '../baseLookup';
   selector: 'lookup',
   /* tslint:enable:component-selector*/
   templateUrl: './lookup.component.html',
-  styleUrls: ['../baseLookup.css'],
+  styleUrls: ['../baseLookup.scss'],
   providers: []
 })
 export class LookupComponent extends BaseLookupComponent { }
