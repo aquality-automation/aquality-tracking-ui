@@ -45,7 +45,7 @@ exports.config = {
             suite: 'All',
             testrun: {
               build_name: `build_${process.env.AT_CIRCLE_BULD_NUM}_${process.env.AT_CIRCLE_BRANCH})`,
-              ci_build: Iprocess.env.AT_CIRCLE_BUILD_URL,
+              ci_build: process.env.AT_CIRCLE_BUILD_URL,
               execution_environment: 'Docker_Chrome'
             }
         }));
