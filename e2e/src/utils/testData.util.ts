@@ -134,7 +134,7 @@ class TestData {
             } else if (extension && filename.endsWith(extension)) {
                 logger.info(`Found File: ${filename}`);
                 results.push(filename);
-            } else if (startsWith && filename.startsWith(startsWith)) {
+            } else if (startsWith && filename.startsWith(path.join(startPath, startsWith))) {
                 logger.info(`Found File: ${filename}`);
                 results.push(filename);
             }
