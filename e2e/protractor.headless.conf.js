@@ -40,7 +40,7 @@ exports.config = {
     console.log(`Running tests for ${process.env.AT_TESTRUNID} aquality testrun!`);
     jasmine.getEnv().addReporter(new AqualityReporter({
             token: process.env.AT_TOKEN,
-            api_url: 'http://46.243.183.199:8888/api',
+            api_url: 'https://tracking.aquality-automation.ru/api',
             project_id: 1,
             suite: 'All',
             testrun: {
