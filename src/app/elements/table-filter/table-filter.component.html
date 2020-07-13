@@ -340,6 +340,12 @@
 
                             <a *ngIf="col.type === 'externalLink' && transformationsService.getPropertyValue(entity, col.property).link"
                                 [href]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
+                                
+                            <div *ngIf="col.type === 'externalLinks' && transformationsService.getPropertyValue(entity, col.property)">
+                                <a *ngFor="let externalLink of transformationsService.getPropertyValue(entity, col.property)" [href]="externalLink.link">
+                                    {{externalLink.name}}
+                                </a>
+                            </div>
 
                             <div
                                 *ngIf="col.type === 'link' && !transformationsService.getPropertyValue(entity, col.property).link">

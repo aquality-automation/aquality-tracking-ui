@@ -110,7 +110,8 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    NgxMaskModule
+    NgxMaskModule,
+    AttachmentInlineComponent
   ],
   providers: [
     ListToCsvService,

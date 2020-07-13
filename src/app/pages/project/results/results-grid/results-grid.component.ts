@@ -18,6 +18,8 @@ import { TestResultService } from 'src/app/services/test-result/test-result.serv
 import { TestService } from 'src/app/services/test/test.service';
 import { FinalResultService } from 'src/app/services/final-result/final_results.service';
 import { ResultSearcherComponent } from '../results-searcher/results-searcher.component';
+import { GlobalDataService } from 'src/app/services/globaldata.service';
+import { TransformationsService } from 'src/app/services/transformations.service';
 
 @Component({
   selector: 'results-grid',
@@ -29,7 +31,7 @@ export class ResultGridComponent implements OnInit {
   public testResults: TestResult[];
   public refreshedResults: Promise<void>;
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
-  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue'];
+  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue', 'Attachments'];
   @Output() resultUpdated = new EventEmitter<TestResult[]>();
   @Output() refreshed = new EventEmitter<TestResult[]>();
   public listOfResolutions: ResultResolution[];
@@ -60,7 +62,9 @@ export class ResultGridComponent implements OnInit {
     public userService: UserService,
     private finalResultService: FinalResultService,
     private permissions: PermissionsService,
-    private issueService: IssueService
+    private issueService: IssueService,
+    private globalDataService: GlobalDataService,
+    private transformationService: TransformationsService
   ) { }
 
   async ngOnInit() {
@@ -196,6 +200,11 @@ export class ResultGridComponent implements OnInit {
       result['testrun'] = testruns.find(x => x.id === result.test_run_id);
       result['duration'] = this.calculateDuration(result);
       result['combinedLastResults'] = this.testService.combineLastResults(result.test);
+      result.attachments?.forEach(attachment => {
+        attachment.link =
+          `${this.globalDataService.getApiUrl()}/testresult/attachment?id=${attachment.id}&project_id=${attachment.project_id}`;
+        attachment.name = this.transformationService.getFileNameFromPath(attachment.path);
+      });
     });
     this.listOfActiveIssues = this.listOfIssues.filter(x => x.status_id !== 4);
     this.createColumns();
@@ -298,6 +307,12 @@ export class ResultGridComponent implements OnInit {
           addAction: true
         },
         class: 'ft-width-250'
+      },
+      {
+        name: 'Attachments',
+        property: 'attachments',
+        type: TFColumnType.externalLinks,
+        class: 'ft-width-150'
       },
       {
         name: 'Developer',

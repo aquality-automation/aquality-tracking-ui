@@ -8,7 +8,7 @@ export class TestResultService extends BaseHttpService {
 
   getTestResult(testresult: TestResult): Promise<TestResult[]> {
     testresult = this.setProjectId(testresult);
-    return this.http.get<TestResult[]>('/testresult', {params: this.convertToParams(testresult)}).toPromise();
+    return this.http.get<TestResult[]>('/testresult', { params: this.convertToParams(testresult) }).toPromise();
   }
 
   createTestResult(testresult: TestResult): Promise<TestResult> {
@@ -26,15 +26,19 @@ export class TestResultService extends BaseHttpService {
     return this.http.put<void>('/testresult', testresults).toPromise();
   }
 
+  getAttachment() {
+    return this.http.get('/testresult/attachment?id=1&project_id=246', { responseType: 'arraybuffer', withCredentials: true }).toPromise();
+  }
+
   async removeTestResult(testresult: TestResult): Promise<void> {
     testresult = this.setProjectId(testresult);
-    await this.http.delete(`/testrun`, {params: this.convertToParams(testresult)}).toPromise();
+    await this.http.delete(`/testrun`, { params: this.convertToParams(testresult) }).toPromise();
     this.handleSuccess(`Test result '${testresult.id}' was deleted.`);
   }
 
   getTestResultsStat(project_id: number, testrunStartedFrom: string, testrunStartedTo: string): Promise<TestResultStat[]> {
     const params = { project_id: project_id.toString(), testrunStartedFrom, testrunStartedTo };
-    return this.http.get<TestResultStat[]>(`/stats/testresult`, {params}).toPromise();
+    return this.http.get<TestResultStat[]>(`/stats/testresult`, { params }).toPromise();
   }
 
   private setProjectId(testResult: TestResult): TestResult {

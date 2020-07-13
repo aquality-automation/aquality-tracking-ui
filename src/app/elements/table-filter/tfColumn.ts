@@ -85,6 +85,7 @@ export enum TFColumnType {
     date = 'date',
     link = 'link',
     externalLink = 'externalLink',
+    externalLinks = 'externalLinks',
     file = 'file',
     dots = 'dots'
 }

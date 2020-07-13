@@ -15,8 +15,8 @@
             #lookupField name="lookupField" [maxlength]="maxlength" (focus)="toggleOn()" class="form-control"
             (click)="toggleOn()" (keyup.esc)="toggleOff()" (ngModelChange)="onKey($event)" [ngModel]="selectedItemText">
         <div *ngIf="addAction && model && model.id !== 0" class="input-group-append">
-            <label class="input-group-text btn autocomplete-action" (click)="onActionClick(model)">
-                <fa-icon [icon]="faExternalLinkAlt"></fa-icon>
+            <label class="input-group-text btn" (click)="onActionClick(model)">
+                <fa-icon class="autocomplete-action" [icon]="faExternalLinkAlt"></fa-icon>
             </label>
         </div>
 
