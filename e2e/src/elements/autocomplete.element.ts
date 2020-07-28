@@ -10,7 +10,7 @@ export class Autocomplete extends BaseElement implements WithSearch {
 
     private input = new Input(this.element.element(by.tagName('input')));
     private disabledElement = this.element.element(by.css('.disabled-lookup'));
-    private selectedOptionAction = this.element.element(by.css('.input-group-append > .autocomplete-action, .disabled-lookup > .autocomplete-action'));
+    private selectedOptionAction = this.element.element(by.css('.input-group-append .autocomplete-action, .disabled-lookup .autocomplete-action'));
 
     public enterValue(value: string) {
         return this.input.typeText(value);

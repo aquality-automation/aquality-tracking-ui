@@ -1,25 +1,25 @@
-Test Name,Fail Reason,Last Results,Result,Resolution,Issue
-"Class1: AttachmentsAreOptional","","5","Passed",,
-"Class1: Test1","","5,3","Passed",,
-"Class1: Test1","OneTimeSetUp: System.Exception : Assembly SetUpFixture exception.","5,3","Failed",,
-"Class1: Test2","","5,3","Passed",,
-"Class1: Test2","OneTimeSetUp: System.Exception : Assembly SetUpFixture exception.","5,3","Failed",,
-"Class1: Test3","Test exceeded Timeout value of 1000ms","3","Failed",,
-"Class1: Test4","Assertion:   Expected: True   But was:  False ","3","Failed",,
-"Class2: IgnoredTest","My ignore reason","3","Not Executed",,
-"Class2: SyncTest","","5","Passed",,
-"Class2: Test1","","5","Passed",,
-"Class2: Test2","Assertion: My warn message","3","Failed",,
-"Class2: Test3","Assertion: test failed.","3","Failed",,
-"Class2: Test3FailedWithoutMessage","Failed without any message. Please see logs on result page.","3","Failed",,
-"Class2: Test4","","5","Passed",,
-"Class2: TestWithTestCaseSource(0)","","5","Passed",,
-"Class2: TestWithTestCaseSource(1)","","5","Passed",,
-"Class2: TestWithTestCaseSource(2)","","5","Passed",,
-"Class3: Test1","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,
-"Class3: Test2","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,
-"Class3: Test3","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,
-"FailedClass: Test1","OneTimeSetUp: System.Exception : Here is OneTimeSetup exception.","3","Failed",,
-"FailedClass: Test2","OneTimeSetUp: System.Exception : Here is OneTimeSetup exception.","3","Failed",,
-"IgnoredClass: Test1","OneTimeSetUp: Ignore reason for suite","3","Not Executed",,
-"IgnoredClass: Test2","OneTimeSetUp: Ignore reason for suite","3","Not Executed",,
+Test Name,Fail Reason,Last Results,Result,Resolution,Issue,Attachments
+"Class1: AttachmentsAreOptional","","5","Passed",,,""
+"Class1: Test1","","5,3","Passed",,,""
+"Class1: Test1","OneTimeSetUp: System.Exception : Assembly SetUpFixture exception.","5,3","Failed",,,""
+"Class1: Test2","","5,3","Passed",,,""
+"Class1: Test2","OneTimeSetUp: System.Exception : Assembly SetUpFixture exception.","5,3","Failed",,,""
+"Class1: Test3","Test exceeded Timeout value of 1000ms","3","Failed",,,""
+"Class1: Test4","Assertion:   Expected: True   But was:  False ","3","Failed",,,""
+"Class2: IgnoredTest","My ignore reason","3","Not Executed",,,""
+"Class2: SyncTest","","5","Passed",,,""
+"Class2: Test1","","5","Passed",,,""
+"Class2: Test2","Assertion: My warn message","3","Failed",,,""
+"Class2: Test3","Assertion: test failed.","3","Failed",,,""
+"Class2: Test3FailedWithoutMessage","Failed without any message. Please see logs on result page.","3","Failed",,,""
+"Class2: Test4","","5","Passed",,,""
+"Class2: TestWithTestCaseSource(0)","","5","Passed",,,""
+"Class2: TestWithTestCaseSource(1)","","5","Passed",,,""
+"Class2: TestWithTestCaseSource(2)","","5","Passed",,,""
+"Class3: Test1","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,,""
+"Class3: Test2","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,,""
+"Class3: Test3","OneTimeSetUp: System.Exception : Setup exception.","3","Failed",,,""
+"FailedClass: Test1","OneTimeSetUp: System.Exception : Here is OneTimeSetup exception.","3","Failed",,,""
+"FailedClass: Test2","OneTimeSetUp: System.Exception : Here is OneTimeSetup exception.","3","Failed",,,""
+"IgnoredClass: Test1","OneTimeSetUp: Ignore reason for suite","3","Not Executed",,,""
+"IgnoredClass: Test2","OneTimeSetUp: Ignore reason for suite","3","Not Executed",,,""
