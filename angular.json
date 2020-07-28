@@ -126,7 +126,9 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js"
+            "port": 4200,
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "aquality-tracking-ui:serve:production"
           },
           "configurations": {
             "production": {
