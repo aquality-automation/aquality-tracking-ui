@@ -114,20 +114,17 @@
 
                         <div *ngIf="(col.type === 'percent' || col.type === 'number') && col.filter"
                             [ngClass]="{ 'has-error': isRangeInvalid(col) }">
-                            <input placeholder="from" class="inline form-control input-sm ft-range-selector"
-                                (keyup)="rangeKeyUp($event, col)"
-                                (ngModelChange)="handleRangeFilterChange(col, $event, 'from')"
-                                [ngModel]="rangeFilterData(col.property, 'from')" type="number" min="0"
+                            <number-range
+                                [from]="rangeFilterData(col.property, 'from')"
+                                [to]="rangeFilterData(col.property, 'to')"
+                                [small]="true"
                                 [max]="col.type === 'percent' ? 100 : undefined"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                            <input placeholder="to" class="inline form-control input-sm ft-range-selector"
-                                (ngModelChange)="handleRangeFilterChange(col, $event, 'to')"
-                                [ngModel]="rangeFilterData(col.property, 'to')" type="number" min="0"
-                                [max]="col.type === 'percent' ? 100 : undefined" (keyup)="rangeKeyUp($event, col)"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                            <fa-icon class="icon clear-range-filter" [icon]="icons.faTimes" (click)="removeRangeFilter(col.property)">
-                            </fa-icon>
+                                (fromChange)="handleRangeFilterChange(col, $event, 'from')"
+                                (toChange)="handleRangeFilterChange(col, $event, 'to')"
+                                (cleared)="removeRangeFilter(col.property)"
+                            ></number-range>
                         </div>
+                        
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
                             [propertiesToShow]="col.lookup.propToShow"
