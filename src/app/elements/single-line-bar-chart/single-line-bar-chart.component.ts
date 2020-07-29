@@ -1,12 +1,11 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { Component, OnInit, Input, ViewChild, ElementRef, OnChanges } from '@angular/core';
 
 @Component({
   selector: 'app-single-line-bar-chart',
   templateUrl: './single-line-bar-chart.component.html',
-  styleUrls: ['./single-line-bar-chart.component.css']
+  styleUrls: ['./single-line-bar-chart.component.scss']
 })
-export class SingleLineBarChartComponent implements OnInit {
+export class SingleLineBarChartComponent implements OnInit, OnChanges {
 
   @Input() data: SingleLineBarChartData[];
   @Input() activateParts: number[];
@@ -21,7 +20,9 @@ export class SingleLineBarChartComponent implements OnInit {
 
   ngOnChanges() {
     this.updateData();
-    this.setActiveParts(this.activateParts);
+    if (this.lineHolder) {
+     this.setActiveParts(this.activateParts);
+    }
   }
 
   updateData() {
@@ -33,16 +34,17 @@ export class SingleLineBarChartComponent implements OnInit {
         element['index'] = i;
       }
 
-      this.dataToShow = this.data.filter(x => x.value !== 0)
+      this.dataToShow = this.data.filter(x => x.value !== 0);
     }
   }
 
   setActiveParts(partIndexes: number[]) {
-    if(this.data){const holder = this.lineHolder.nativeElement as HTMLElement;
+    if (this.data) {
+      const holder = this.lineHolder.nativeElement as HTMLElement;
       this.data.forEach(dataItem => {
         if (this.dataToShow.find(x => x['index'] === dataItem['index'])) {
           const part = holder.getElementsByClassName(`slc-part-${dataItem['index']}`).item(0);
-          if(part) {
+          if (part) {
             if (partIndexes.includes(dataItem['index'])) {
               part.classList.add('active');
               part.dispatchEvent(new CustomEvent('mouseover'));

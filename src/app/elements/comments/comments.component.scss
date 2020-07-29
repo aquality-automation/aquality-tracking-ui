@@ -1,0 +1,65 @@
+.comment-author{
+  font-style: oblique;
+}
+.comment-body{
+  padding-left: 15px;
+  margin-bottom: 5px;
+}
+.comment-section{
+  padding-left: 10px;
+  padding-right: 10px;
+  border-bottom: 1px solid #9999;
+  padding-top: 5px;
+}
+
+.comments-block{
+  overflow-y: auto;
+  padding-top: 10px; 
+  padding-bottom: 5px;
+}
+
+.comment-editor-hint{
+  position: absolute;
+  bottom: 2px;
+  right: 20px;
+  color: #999999;
+}
+
+.comment-editor-hint:hover{
+  color: grey;
+  cursor: pointer
+}
+
+.comment-editor{
+  position: relative;
+}
+.comment-editor {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+
+.ngx-editor-textarea {
+  border-right: 0 !important;
+  border-left: 0 !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+.ngx-toolbar {
+  border: 0 !important;
+}
+
+.ngx-toolbar-set {
+  margin-top: 5px;
+}
+
+div.comments-block+.comment-editor .ngx-toolbar,
+div.row-button+.comment-editor .ngx-toolbar {
+  border-top: 1px solid #ddd !important;
+}
+
+div.comments-block+.comment-editor .ngx-editor-textarea,
+div.row-button+.comment-editor .ngx-editor-textarea {
+  border-top: 1px solid #ddd !important;
+  border-bottom: 0 !important;
+}
+

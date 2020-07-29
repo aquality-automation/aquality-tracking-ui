@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, NgModel } from '@angular/forms';
-import { ValueAccessorBase } from '../ValueAccessorBase';
+import { ValueAccessorBase } from '../value-accessor-base';
 
 @Component({
   template: '',

@@ -1,15 +1,15 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import * as mime from 'mime-types';
-import { SimpleRequester } from '../../services/simple-requester';
+import { NotificationsService } from 'angular2-notifications';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 
 @Component({
   selector: 'attachment-inline',
   templateUrl: './attachment-inline.component.html',
-  styleUrls: ['./attachment-inline.component.css']
+  styleUrls: ['./attachment-inline.component.scss']
 })
-export class AttachmentInlineComponent {
+export class AttachmentInlineComponent implements OnChanges {
   @Input() name: string;
   @Input() model: string | ArrayBuffer;
   @Input() editable: boolean;
@@ -20,15 +20,24 @@ export class AttachmentInlineComponent {
   src: string | ArrayBuffer;
   showPreview = false;
   faTimes = faTimes;
+  fileUrl: SafeResourceUrl;
+  filename: string;
 
   constructor(
-    private requester: SimpleRequester
+    private notificationsService: NotificationsService,
+    private sanitizer: DomSanitizer
   ) { }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.model){
+      this.prepareLink();
+    }
+  }
 
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
     if (this.fileToUpload.size > 1500000) {
-      this.requester.handleSimpleError('File too big!', 'File size should be less than 1 mb!');
+      this.notificationsService.error('File too big!', 'File size should be less than 1 mb!');
       this.fileToUpload = null;
       return;
     }
@@ -57,19 +66,11 @@ export class AttachmentInlineComponent {
     return this.model ? (<string>this.model).startsWith('data:image/') : false;
   }
 
-  download() {
+  prepareLink() {
     let data: string = (<string>this.model);
-    let filename: string;
-    let link: HTMLAnchorElement;
 
-    filename = `attachment${Date.now()}.${mime.extension(/:(.*);/.exec(data)[1])}`;
+    this.filename = `attachment${Date.now()}`;
     data = encodeURI(data);
-
-    link = document.createElement('a');
-    document.body.appendChild(link);
-    link.setAttribute('type', 'hidden');
-    link.setAttribute('href', data);
-    link.setAttribute('download', filename);
-    link.click();
+    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data);
   }
 }

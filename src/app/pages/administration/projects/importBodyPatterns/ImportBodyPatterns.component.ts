@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectService } from '../../../../services/project.service';
-import { SimpleRequester } from '../../../../services/simple-requester';
 import { Project, ImportBodyPattern } from '../../../../shared/models/project';
+import { ProjectService } from 'src/app/services/project/project.service';
 
 @Component({
     templateUrl: 'ImportBodyPatterns.component.html',
-    providers: [
-        ProjectService,
-        SimpleRequester
-    ]
 })
 export class ImportBodyPatternsComponent implements OnInit {
     constructor(
@@ -19,9 +14,9 @@ export class ImportBodyPatternsComponent implements OnInit {
     removeModalTitle: string;
     removeModalMessage: string;
     projects: Project[];
-    private selectedProject: Project;
+    selectedProject: Project;
     bodyPatterns: ImportBodyPattern[];
-    private patternToRemove: ImportBodyPattern;
+    patternToRemove: ImportBodyPattern;
     tableColumns = [
         {
             name: 'Name', property: 'name', filter: true, sorting: true, type: 'text', editable: true,
@@ -31,12 +26,10 @@ export class ImportBodyPatternsComponent implements OnInit {
         },
     ];
 
-    ngOnInit() {
-        this.projectService.getProjects({}).subscribe(res => {
-            this.projects = res;
-            if (this.projects.length > 0) { this.selectedProject = this.projects[0]; }
-            this.loadBodyPatterns();
-        });
+    async ngOnInit() {
+        this.projects = await this.projectService.getProjects({});
+        if (this.projects.length > 0) { this.selectedProject = this.projects[0]; }
+        this.loadBodyPatterns();
     }
 
     onProjectChange($event) {
@@ -44,11 +37,9 @@ export class ImportBodyPatternsComponent implements OnInit {
         this.loadBodyPatterns();
     }
 
-    loadBodyPatterns() {
+    async loadBodyPatterns() {
         if (this.selectedProject) {
-            this.projectService.getImportBodyPatterns({ project_id: this.selectedProject.id }).subscribe(res => {
-                this.bodyPatterns = res;
-            });
+            this.bodyPatterns = await this.projectService.getImportBodyPatterns({ project_id: this.selectedProject.id });
         }
     }
 
@@ -78,19 +69,21 @@ export class ImportBodyPatternsComponent implements OnInit {
         this.updateBodyPattern(bodyPattern, `Unique Body Pattern '${bodyPattern.name}' successfully updated.`);
     }
 
-    updateBodyPattern(bodyPattern: ImportBodyPattern, message: string) {
+    async updateBodyPattern(bodyPattern: ImportBodyPattern, message: string) {
         bodyPattern.project_id = this.selectedProject.id;
-        this.projectService.createImportBodyPattern(bodyPattern).subscribe(res => {
+        try {
+            await this.projectService.createImportBodyPattern(bodyPattern);
             this.projectService.handleSuccess(message);
+        } finally {
             this.loadBodyPatterns();
-        }, () => { this.loadBodyPatterns(); });
+        }
+
     }
 
     async execute($event) {
         if (await $event) {
-            this.projectService.removeImportBodyPattern(this.patternToRemove).subscribe(res => {
-                this.loadBodyPatterns();
-            });
+            await this.projectService.removeImportBodyPattern(this.patternToRemove);
+            this.loadBodyPatterns();
         }
         this.hideModal = true;
     }

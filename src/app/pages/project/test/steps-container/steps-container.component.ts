@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DragulaService } from 'ng2-dragula';
 import { StepType, Step } from '../../../../shared/models/steps';
-import { StepsService } from '../../../../services/steps.service';
 import { ActivatedRoute } from '@angular/router';
 import { faMinus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { StepsService } from 'src/app/services/steps/steps.service';
 
 @Component({
   selector: 'steps-container',
   templateUrl: './steps-container.component.html',
-  styleUrls: ['./steps-container.component.css']
+  styleUrls: ['./steps-container.component.scss']
 })
 export class StepsContainerComponent implements OnInit {
   @Input() editable: boolean;
@@ -38,7 +38,7 @@ export class StepsContainerComponent implements OnInit {
     this.projectId = this.route.snapshot.params['projectId'];
     const bag: any = this.dragulaService.find('steps-bag');
     if (bag !== undefined) { this.dragulaService.destroy('steps-bag'); }
-    this.dragulaService.setOptions('steps-bag', {
+    this.dragulaService.createGroup('steps-bag', {
       moves: () => {
         return this.editable;
       },

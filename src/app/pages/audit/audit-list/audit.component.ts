@@ -1,19 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { AuditStat, Service } from '../../../shared/models/audit';
-import { AuditService } from '../../../services/audits.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../shared/models/user';
-import { UserService } from '../../../services/user.services';
 import BlobUtils from '../../../shared/utils/blob.utils';
-import { TFColumn, TFColumnType, TFOrder } from '../../../elements/table/tfColumn';
-import { PermissionsService, EGlobalPermissions } from '../../../services/current-permissions.service';
+import { TFOrder, TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
+import { AuditService } from 'src/app/services/audit/audits.service';
+import { UserService } from 'src/app/services/user/user.services';
+import { PermissionsService, EGlobalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import DateUtils from 'src/app/shared/utils/date.utils';
 
 @Component({
-  templateUrl: './audit.component.html',
-  providers: [
-    AuditService,
-    UserService
-  ]
+  templateUrl: './audit.component.html'
 })
 export class AuditComponent implements OnInit {
   services: Service[];
@@ -47,135 +44,136 @@ export class AuditComponent implements OnInit {
 
   async ngOnInit() {
     const isAuditAdmin = await this.permissions.hasPermissions([EGlobalPermissions.audit_admin]);
-    this.auditService.getAuditStats().subscribe(res => {
-      this.stats = res;
-      this.userService.getUsers({ unit_coordinator: 1 }).subscribe(users => this.coordinators = users);
-      this.userService.getUsers({ auditor: 1}).subscribe(users => {
-        this.auditors = users;
-        isAuditAdmin ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
-        this.stats.forEach(stat => {
-          if (stat.last_submitted_date || stat.last_created_due_date) {
-            stat.last_created_due_date = stat.last_submitted_id !== stat.last_created_id
-              ? new Date(stat.last_created_due_date)
-              : this.auditService.createDueDate(new Date(stat.last_submitted_date));
-          } else {
-            stat.last_created_due_date = this.auditService.createDueDate(new Date(stat.created));
-          }
+    this.stats = await this.auditService.getAuditStats();
+    this.coordinators = await this.userService.getUsers({ unit_coordinator: 1 });
+    this.auditors = await this.userService.getUsers({ auditor: 1 });
+    isAuditAdmin ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
+    this.stats.forEach(stat => {
+      if (stat.last_submitted_date || stat.last_created_due_date) {
+        stat.last_created_due_date = stat.last_submitted_id !== stat.last_created_id
+          ? new Date(stat.last_created_due_date)
+          : this.auditService.createDueDate(new Date(stat.last_submitted_date));
+      } else {
+        stat.last_created_due_date = this.auditService.createDueDate(new Date(stat.created));
+      }
 
-          if (stat.last_created_id && (stat.last_submitted_id !== stat.last_created_id)) {
-            stat['next_action'] = { text: stat.status_name, link: `/audit/${stat.id}/info/${stat.last_created_id}` };
-            if (stat.status_name !== 'Open') { stat['hasOpened'] = true; }
-            if (!this.linkNames.includes(stat.status_name) && stat.status_name) { this.linkNames.push(stat.status_name); }
-          } else if (isAuditAdmin) {
-            stat['next_action'] = { text: 'Create New', link: `/audit/${stat.id}/create` };
-          } else {
-            stat['next_action'] = { text: 'Not created' };
-          }
-        });
-        this.auditService.getServices().subscribe(services => {
-          this.services = services;
-          this.columns = [
-            { name: 'Project', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
-            {
-              name: 'Unit Coordinator',
-              property: 'project.customer.coordinator',
-              filter: true,
-              type: TFColumnType.autocomplete,
-              lookup: {
-                propToShow: ['first_name', 'second_name'],
-                values: this.coordinators,
-              },
-              class: 'ft-width-150'
-            },
-            {
-              name: 'Service',
-              property: 'service',
-              filter: true,
-              sorting: true,
-              type: TFColumnType.colored,
-              lookup: {
-                values: this.services,
-                propToShow: ['name']
-              },
-              class: 'fit'
-            },
-            {
-              name: 'Last Audit Result',
-              property: 'result',
-              filter: true,
-              sorting: true,
-              type: TFColumnType.percent,
-              link: {
-                template: '/audit/{id}/info/{last_submitted_id}',
-                properties: ['id', 'last_submitted_id']
-              }
-            },
-            {
-              name: 'Submitted Audit',
-              property: 'last_submitted_date',
-              filter: true,
-              sorting: true,
-              type: TFColumnType.date,
-              class: 'ft-date-width'
-            },
-            {
-              name: 'Last Auditors',
-              property: 'auditors_last',
-              filter: true,
-              type: TFColumnType.multiselect,
-              lookup: {
-                propToShow: ['first_name', 'second_name'],
-                values: this.auditors,
-              },
-              class: 'ft-width-250'
-            },
-            {
-              name: 'Next Due Date',
-              property: 'last_created_due_date',
-              filter: true,
-              sorting: true,
-              type: TFColumnType.date,
-              format: 'MMM dd, yyyy',
-              class: 'fit'
-            },
-            {
-              name: 'Next Project Audit',
-              property: 'next_action',
-              filter: true,
-              sorting: false,
-              type: TFColumnType.link,
-              lookup: {
-                values: this.linkNames,
-                propToShow: []
-              },
-              editable: false,
-              class: 'ft-width-120'
-            },
-            {
-              name: 'Next Auditors',
-              property: 'auditors_next',
-              filter: true,
-              sorting: false,
-              type: TFColumnType.multiselect,
-              lookup: {
-                propToShow: ['first_name', 'second_name'],
-                values: this.auditors,
-              },
-              class: 'ft-width-250'
-            },
-          ];
-        });
-      });
+      if (stat.last_created_id && (stat.last_submitted_id !== stat.last_created_id)) {
+        stat['next_action'] = { text: stat.status_name, link: `/audit/${stat.id}/info/${stat.last_created_id}` };
+        if (stat.status_name !== 'Open') { stat['hasOpened'] = true; }
+        if (!this.linkNames.includes(stat.status_name) && stat.status_name) { this.linkNames.push(stat.status_name); }
+      } else if (isAuditAdmin) {
+        stat['next_action'] = { text: 'Create New', link: `/audit/${stat.id}/create` };
+      } else {
+        stat['next_action'] = { text: 'Not created' };
+      }
     });
+    this.services = await this.auditService.getServices();
+    this.createColumns();
   }
 
-  download(all: boolean) {
-    this.auditService.downloadSubmittedAuditExports('xlsx', all).subscribe(result => {
-      BlobUtils.download(result.blob, result.fileName);
-    });
+  async download(all: boolean) {
+    const result = await this.auditService.downloadSubmittedAuditExports('xlsx', all);
+    const filename = all
+      ? `Aquality_Tracking_All_Submitted_Audits_${DateUtils.getDateFormat()}.xlsx`
+      : `Aquality_Tracking_Last_Submitted_Audits_${DateUtils.getDateFormat()}.xlsx`;
+    BlobUtils.download(result.blob, filename);
   }
 
   rowClicked($event) {
     this.router.navigate([`/audit/${$event.id}`]);
+  }
+
+  createColumns() {
+    this.columns = [
+      { name: 'Project', property: 'name', filter: true, sorting: true, type: TFColumnType.text },
+      {
+        name: 'Unit Coordinator',
+        property: 'project.customer.coordinator',
+        filter: true,
+        type: TFColumnType.autocomplete,
+        lookup: {
+          propToShow: ['first_name', 'second_name'],
+          values: this.coordinators,
+        },
+        class: 'ft-width-150'
+      },
+      {
+        name: 'Service',
+        property: 'service',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.colored,
+        lookup: {
+          values: this.services,
+          propToShow: ['name']
+        },
+        class: 'fit'
+      },
+      {
+        name: 'Last Audit Result',
+        property: 'result',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.percent,
+        link: {
+          template: '/audit/{id}/info/{last_submitted_id}',
+          properties: ['id', 'last_submitted_id']
+        }
+      },
+      {
+        name: 'Submitted Audit',
+        property: 'last_submitted_date',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        format: 'MMM dd, yyyy',
+        class: 'fit'
+      },
+      {
+        name: 'Last Auditors',
+        property: 'auditors_last',
+        filter: true,
+        type: TFColumnType.multiselect,
+        lookup: {
+          propToShow: ['first_name', 'second_name'],
+          values: this.auditors,
+        },
+        class: 'ft-width-250'
+      },
+      {
+        name: 'Next Due Date',
+        property: 'last_created_due_date',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        format: 'MMM dd, yyyy',
+        class: 'fit'
+      },
+      {
+        name: 'Next Project Audit',
+        property: 'next_action',
+        filter: true,
+        sorting: false,
+        type: TFColumnType.link,
+        lookup: {
+          values: this.linkNames,
+          propToShow: []
+        },
+        editable: false,
+        class: 'ft-width-120'
+      },
+      {
+        name: 'Next Auditors',
+        property: 'auditors_next',
+        filter: true,
+        sorting: false,
+        type: TFColumnType.multiselect,
+        lookup: {
+          propToShow: ['first_name', 'second_name'],
+          values: this.auditors,
+        },
+        class: 'ft-width-250'
+      },
+    ];
   }
 }

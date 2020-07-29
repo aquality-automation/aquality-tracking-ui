@@ -1,5 +1,5 @@
 import { Routes, RouterModule } from '@angular/router';
-import { CustomerDashboardGuard, CustomerCreateGuard } from '../../shared/guards/can-activate-customers';
+import { CustomerDashboardGuard, CustomerCreateGuard } from '../../shared/guards/customer-guard.service';
 import { CustomerComponent } from './customer-list/customer.component';
 import { CustomerCreateComponent } from './customer-create/customer-create.component';
 import { CustomerInfoComponent } from './customer-info/customer-info.component';

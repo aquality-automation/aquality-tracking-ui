@@ -45,35 +45,13 @@ jobs:
 
       - run:
           shell: "/bin/bash -eo pipefail"
-          name: Start Aquality Test Run
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            export TESTRUNID="$(npm run aquality:start -- ${TOKEN} All Docker_Chrome build_${CIRCLE_BUILD_NUM}_${CIRCLE_BRANCH})"
-            export TESTRUNID=${TESTRUNID##*$'\n'}
-            echo $TESTRUNID
-            echo "export TESTRUNID=$TESTRUNID" >> $BASH_ENV
-
-      - run:
-          shell: "/bin/bash -eo pipefail"
           name: Run tests
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             sudo mkdir allure-results
-            docker build --build-arg TOKEN="${TOKEN}" --build-arg TESTRUNID="${TESTRUNID}" . -t tests 
+            docker build --build-arg TOKEN="${TOKEN}" --build-arg CIRCLE_BUILD_NUM="${CIRCLE_BUILD_NUM}" --build-arg CIRCLE_BRANCH="${CIRCLE_BRANCH}" --build-arg CIRCLE_BUILD_URL="${CIRCLE_BUILD_URL}" . -t tests 
             docker run -ti --rm -v /home/circleci/repo/allure-results:/app/allure-results --network container:api_tomcat_1 tests
-            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
-
-      - run:
-          shell: "/bin/bash -eo pipefail"
-          when: always
-          name: Finish Aquality Test Run
-          command: |
-            echo ${TESTRUNID}
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            npm run aquality:finish -- ${TOKEN} ${TESTRUNID}
 
       - run:
           when: always

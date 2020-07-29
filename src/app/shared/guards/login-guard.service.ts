@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.services';
-import { GlobalDataService } from '../../services/globaldata.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Injectable()
 export class LoginGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    public userService: UserService
+    private auth: AuthService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const isLogged = await this.userService.handleIsLogged(false);
+    const isLogged = await this.auth.handleIsLogged();
     if (isLogged) {
       this.router.navigate(['/project']);
     }
@@ -24,14 +23,13 @@ export class LoginGuard implements CanActivate {
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
-    public userService: UserService,
-    protected globaldata: GlobalDataService,
+    private auth: AuthService
   ) { }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    const isLogged = await this.userService.handleIsLogged();
+    const isLogged = await this.auth.handleIsLogged();
     if (!isLogged) {
-      this.userService.redirectToLogin(state.url);
+      this.auth.redirectToLogin(state.url);
     }
     return isLogged;
   }

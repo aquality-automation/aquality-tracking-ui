@@ -8,30 +8,21 @@
 
     <div class="form-row">
       <div class="col-sm-4 form-group row">
-        <div class="col-sm-2">
-          <ui-switch id="audits-module" size="small" [(ngModel)]="generalSettings.audits"></ui-switch>
-        </div>
-        <div class="col-sm-10">
-          <label [ngClass]="{'greyout':!generalSettings.audits}">Audits Module</label>
+        <div class="col-sm-12">
+          <mat-slide-toggle id="audits-module" [(ngModel)]="generalSettings.audits">Audits Module</mat-slide-toggle>
         </div>
       </div>
 
       <div class="col-sm-4 form-group row">
-        <div class="col-sm-2">
-          <ui-switch size="small" [ngModel]="generalSettings.ldap_auth" (change)="setLdap($event)"></ui-switch>
-        </div>
-        <div class="col-sm-10">
-          <label [ngClass]="{ 'greyout':!generalSettings.ldap_auth }">LDAP Authorization</label>
+        <div class="col-sm-12">
+          <mat-slide-toggle [(ngModel)]="generalSettings.ldap_auth" (ngModelChange)="setLdap($event)">LDAP Authorization</mat-slide-toggle>
         </div>
       </div>
 
       <div class="col-sm-4 form-group row">
-        <div class="col-sm-2">
-          <ui-switch [disabled]="generalSettings.ldap_auth !== 1 || !generalSettings.ldap_auth" size="small"
-            [(ngModel)]="generalSettings.base_auth"></ui-switch>
-        </div>
-        <div class="col-sm-10">
-          <label [ngClass]="{ 'greyout':!generalSettings.base_auth }">Base Authorization</label>
+        <div class="col-sm-12">
+          <mat-slide-toggle [disabled]="generalSettings.ldap_auth !== 1 || !generalSettings.ldap_auth"
+          [(ngModel)]="generalSettings.base_auth">Base Authorization</mat-slide-toggle>
         </div>
       </div>
     </div>
@@ -189,8 +180,7 @@
 
     <div class="form-row">
       <div class="col-sm-4">
-        <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.enabled"></ui-switch>
-        <label class="pull-left padding-left-15px">Email Notifications</label>
+        <mat-slide-toggle [(ngModel)]="emailSettings.enabled">Email Notifications</mat-slide-toggle>
       </div>
       <div *ngIf="emailSettings.enabled" class="col-sm-4 form-group row">
         <div class="col-sm-4">
@@ -205,8 +195,7 @@
     <div *ngIf="emailSettings.enabled" class="form-row">
       <div class="col-sm-12">
         <div class="col-sm-4 form-group row">
-          <ui-switch class="pull-left " size="small" [(ngModel)]="emailSettings.use_auth"></ui-switch>
-          <label class="pull-left padding-left-15px">Use STMP Authentication</label>
+          <mat-slide-toggle [(ngModel)]="emailSettings.use_auth">Use STMP Authentication</mat-slide-toggle>
         </div>
       </div>
       <div class="col-sm-4 form-group row">

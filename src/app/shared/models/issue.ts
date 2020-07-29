@@ -1,4 +1,4 @@
-import { ResultResolution } from './result_resolution';
+import { ResultResolution } from './result-resolution';
 import { User } from './user';
 import { Label } from './general';
 

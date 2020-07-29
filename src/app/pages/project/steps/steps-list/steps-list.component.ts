@@ -1,22 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { StepsService } from '../../../../services/steps.service';
 import { Step, StepType } from '../../../../shared/models/steps';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from '../../../../services/user.services';
-import { TFColumn, TFColumnType, TFSorting, TFOrder } from '../../../../elements/table/tfColumn';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from '../../../../services/current-permissions.service';
+import { StepsService } from 'src/app/services/steps/steps.service';
+import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 
 @Component({
   selector: 'app-steps-list',
-  templateUrl: './steps-list.component.html',
-  styleUrls: ['./steps-list.component.css']
+  templateUrl: './steps-list.component.html'
 })
 export class StepsListComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
     private stepService: StepsService,
-    private userService: UserService,
     private permissions: PermissionsService
   ) { }
 
@@ -48,7 +45,7 @@ export class StepsListComponent implements OnInit {
     }
   }
 
-  private async createOrUpdateStep(step: Step) {
+  public async createOrUpdateStep(step: Step) {
     step.project_id = this.projectId;
     step.type_id = step.type.id;
     await this.stepService.createStep(step);

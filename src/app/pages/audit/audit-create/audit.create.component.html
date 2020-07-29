@@ -37,12 +37,9 @@
   </div>
 
   <div *ngIf="audit" class="form-group col-sm-12">
-    <div class="col-sm-1">
-      <label for="due-date">Due Date*:</label>
-    </div>
-    <div class="col-sm-3">
-      <ng-datepicker id="due-date" name="due-date" [ngModel]="audit.due_date" (ngModelChange)="dateUpdate($event)"
-        [options]="options"></ng-datepicker>
+    <div class="col-sm-4">
+      <app-datepicker id="due-date" name="due-date" label="Due Date" [(model)]="audit.due_date"
+        (modelChange)="dateUpdate($event)"></app-datepicker>
     </div>
   </div>
 

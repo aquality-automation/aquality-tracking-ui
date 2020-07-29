@@ -1,0 +1,30 @@
+<br>
+<div *ngIf="testResults">
+  <results-searcher *ngIf="listOfResolutions" [listOfResolutions]="listOfResolutions" [finalResults]="finalResults">
+  </results-searcher>
+  <issue-create-modal *ngIf="!hideCreateModal" 
+  (execute)="execute($event)" 
+  (closed)="wasClosed()" 
+  [resolutions]="listOfResolutions" 
+  [users]="users"
+  [issue]="issueForModal"
+  [existingIssues]="listOfIssues"
+  [failReason]="issueFailReason"
+  ></issue-create-modal>
+  <table-filter id="resultsGridMain" *ngIf="tbCols"
+  [hide]="hideVal" 
+  [allowExport]="true" 
+  [data]="testResults" 
+  [rowsOnPageSet]="[5,10,20]" 
+  [rowsOnPage]="20"
+  [columns]="tbCols" 
+  [hiddenColumns]="tbHiddenCols" 
+  [allowBulkUpdate]="canEdit" 
+  [defaultSortBy]="sortBy" 
+  [queryParams]="true" 
+  (customEvent)="serchForSameResults($event)" 
+  (dataChange)="resultUpdate($event)" 
+  (bulkChanges)="bulkResultUpdate($event)"
+  (lookupCreation)="handleLookupCreation($event)"
+  (lookupAction)="handleLookupAction($event)"></table-filter>
+</div>

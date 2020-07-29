@@ -7,7 +7,8 @@ import { AuditCreateComponent } from './audit-create/audit.create.component';
 import { AuditInfoComponent } from './audit-view/audit.info.component';
 import { AuditProjectComponent } from './audit-project-list/audit.project.component';
 import { AuditCreateGuard, AuditProjectGuard, AuditDashboardGuard } from '../../shared/guards/audit-guard.service';
-import { GuardService } from '../../shared/guards/guard.service';
+import { GuardService } from 'src/app/services/guard.service';
+import { BaseHttpService } from 'src/app/services/base-http/base-http.service';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { GuardService } from '../../shared/guards/guard.service';
     AuditComponent
   ],
   providers: [
+    BaseHttpService,
     AuditCreateGuard,
     AuditProjectGuard,
     AuditDashboardGuard,

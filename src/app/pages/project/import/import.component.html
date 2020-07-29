@@ -57,10 +57,10 @@
       <input [required]="reqMark('buildName')" id="build" name="build" [(ngModel)]="importParameters.buildName"
         type="text" trim="blur" class="form-control" placeholder="Build Name" />
     </div>
-    <div *ngIf="suite && !lastTestRun" class="col-md-3">
+    <div *ngIf="suite && !importParameters.addToLastTestRun" class="col-md-3">
       <label for="testrun">Test Run:</label>
-      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testRun" [allowEmptyValue]="true"
-        [propertiesToShow]="['start_time', 'build_name']" [array]="testRuns" placeholder="None"></lookup-autocomplete>
+      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testrun" [allowEmptyValue]="true"
+        [propertiesToShow]="['start_time', 'build_name']" [array]="testruns" placeholder="None"></lookup-autocomplete>
     </div>
     <div class="col-md-3">
       <label for="ci_build">CI Build:</label>
@@ -70,24 +70,19 @@
   </div>
 
   <div *ngIf="fileListArray?.length > 0" class="form-row col-md-12 form-group import-results-panel clearfix">
-    <div *ngIf="!importParameters.addToLastTestRun" class="col-md-3 checbox-section">
-      <label for="singleTestrunToggler" title="All selected files will be Imported in one testrun.">One Test Run:
-        <ui-switch id="singleTestrunToggler" name="singleTestrun" class="pull-right" size="small"
-          [(ngModel)]="importParameters.singleTestRun"></ui-switch>
-      </label>
+    <div *ngIf="!importParameters.addToLastTestRun" class="col-md-3 checbox-section"
+      title="All selected files will be Imported in one testrun.">
+      <mat-slide-toggle id="singleTestrunToggler" name="singleTestrun" [(ngModel)]="importParameters.singleTestRun">One
+        Test Run</mat-slide-toggle>
     </div>
-    <div *ngIf="!testRun" class="col-md-3 checbox-section">
-      <label for="lastTestRunToggler" title="All selected Files will be Imported into Last Test Run.">Add to Last
-        Test Run:
-        <ui-switch id="lastTestRunToggler" name="lastTestRun" class="pull-right" size="small"
-          [(ngModel)]="importParameters.addToLastTestRun"></ui-switch>
-      </label>
+    <div *ngIf="!testrun" class="col-md-3 checbox-section"
+      title="All selected Files will be Imported into Last Test Run.">
+      <mat-slide-toggle id="lastTestRunToggler" name="lastTestRun" [(ngModel)]="importParameters.addToLastTestRun">Add
+        to Last Test Run</mat-slide-toggle>
     </div>
-    <div *ngIf="!testRun" class="col-md-3 checbox-section">
-      <label for="markAsDebug" title="Mark this Test Run as Debug.">Mark as Debug:
-        <ui-switch id="markAsDebug" name="markAsDebug" class="pull-right" size="small"
-          [(ngModel)]="importParameters.debug"></ui-switch>
-      </label>
+    <div *ngIf="!testrun" class="col-md-3 checbox-section" title="Mark this Test Run as Debug.">
+      <mat-slide-toggle id="markAsDebug" name="markAsDebug" [(ngModel)]="importParameters.debug">Mark as Debug
+      </mat-slide-toggle>
     </div>
   </div>
   <div
@@ -97,32 +92,24 @@
       <p>What do you want to use as test name?*</p>
     </div>
     <div>
-      <label *ngIf="format.name !== 'NUnit v3 (.xml)'" for="testNamer"
-        [ngClass]="{ 'greyout':!testNameOptions.testName }">Unit Test Name:
-        <ui-switch id="testName" name="testName" class="pull-right" size="small" [(ngModel)]="testNameOptions.testName">
-        </ui-switch>
-      </label>
+      <mat-slide-toggle *ngIf="format.name !== 'NUnit v3 (.xml)'" id="testName" name="testName"
+        [(ngModel)]="testNameOptions.testName">Unit Test Name
+      </mat-slide-toggle>
     </div>
     <div>
-      <label *ngIf="format.name === 'NUnit v3 (.xml)'" for="featureName"
-        [ngClass]="{ 'greyout':!testNameOptions.featureTest }">Feature: TestName:
-        <ui-switch id="featureName" name="featureName" class="pull-right" size="small"
-          [(ngModel)]="testNameOptions.featureTest"></ui-switch>
-      </label>
+      <mat-slide-toggle *ngIf="format.name === 'NUnit v3 (.xml)'" id="featureName" name="featureName"
+        [(ngModel)]="testNameOptions.featureTest">Feature: TestName
+      </mat-slide-toggle>
     </div>
     <div>
-      <label for="testClassName" [ngClass]="{ 'greyout':!testNameOptions.testClassName }">Unit Test Class Name:
-        <ui-switch id="testClassName" name="testClassName" class="pull-right" size="small"
-          [(ngModel)]="testNameOptions.testClassName"></ui-switch>
-      </label>
+      <mat-slide-toggle id="testClassName" name="testClassName" [(ngModel)]="testNameOptions.testClassName">Unit Test
+        Class Name
+      </mat-slide-toggle>
     </div>
     <div>
-      <label *ngIf="format.name === 'MSTest (.trx)'" for="testDescription"
-        [ngClass]="{ 'greyout':!testNameOptions.testDescription }">Unit
-        Test Description:
-        <ui-switch id="testDescription" name="testDescription" class="pull-right" size="small"
-          [(ngModel)]="testNameOptions.testDescription"></ui-switch>
-      </label>
+      <mat-slide-toggle *ngIf="format.name === 'MSTest (.trx)'" id="testDescription" name="testDescription" 
+      [(ngModel)]="testNameOptions.testDescription">Unit Test Description
+      </mat-slide-toggle>
     </div>
   </div>
 
@@ -134,7 +121,7 @@
           <td class="fit vert-aligned">{{(file.size/1024).toFixed(2)}} KB</td>
           <td>
             <div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
-              <button *ngIf="!importParameters.singleTestRun && !importParameters.lastTestRun" type="submit"
+              <button *ngIf="!importParameters.singleTestRun && !importParameters.addToLastTestRun" type="submit"
                 [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
                 class="btn btn-success" (click)="upload(file, $event)">Import</button>
               <button type="button" class="btn btn-danger" (click)="remove(file)">Remove</button>

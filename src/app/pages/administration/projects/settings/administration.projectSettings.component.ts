@@ -1,17 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Project } from '../../../../shared/models/project';
-import { SimpleRequester } from '../../../../services/simple-requester';
-import { ProjectService } from '../../../../services/project.service';
-import { TransformationsService } from '../../../../services/transformations.service';
+import { ProjectService } from 'src/app/services/project/project.service';
 
 @Component({
   templateUrl: './administration.projectSettings.component.html',
-  styleUrls: ['../../global/app-settings/app-settings.component.css'],
-  providers: [
-    ProjectService,
-    SimpleRequester,
-    TransformationsService
-  ]
+  styleUrls: ['../../global/app-settings/app-settings.component.scss']
 })
 export class AdministrationProjectSettingsComponent implements OnInit {
   hideModal = true;
@@ -26,7 +19,7 @@ export class AdministrationProjectSettingsComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.projects = await this.projectService.getProjects(this.selectedProject).toPromise();
+    this.projects = await this.projectService.getProjects(this.selectedProject);
     this.selectedProject = this.projects[0];
     this.projectToSave = JSON.parse(JSON.stringify(this.projects[0]));
   }
@@ -50,8 +43,8 @@ export class AdministrationProjectSettingsComponent implements OnInit {
     this.hideModal = true;
   }
 
-  wasClosed($event: boolean) {
-    this.hideModal = $event;
+  wasClosed() {
+    this.hideModal = true;
   }
 
   save() {
@@ -66,6 +59,6 @@ export class AdministrationProjectSettingsComponent implements OnInit {
     this.projectToSave.steps = +this.projectToSave.steps;
     this.selectedProject = await this.projectService.createProjects(this.projectToSave);
     this.projectService.handleSuccess(`'${this.projectToSave.name}' project was updated!`);
-    this.projects = await this.projectService.getProjects({}).toPromise();
+    this.projects = await this.projectService.getProjects({});
   }
 }

@@ -1,30 +1,30 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
-import { TestRun } from '../../../../shared/models/testRun';
-import { LocalPermissions } from '../../../../shared/models/LocalPermissions';
-import { BasePopupComponent } from '../../../../elements/modals/basePopup.component';
-import { TestRunService } from '../../../../services/testRun.service';
+import { TestRun } from '../../../../shared/models/testrun';
 import { User } from '../../../../shared/models/user';
 import { DragulaService } from 'ng2-dragula';
+import { ModalComponent } from 'src/app/elements/modals/modal.component';
+import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 
 @Component({
     selector: 'notify-team-modal',
     templateUrl: 'notify-team-modal.component.html',
     styleUrls: ['notify-team-modal.component.css']
 })
-export class NotifyTeamModalComponent extends BasePopupComponent implements OnInit, OnChanges {
+export class NotifyTeamModalComponent extends ModalComponent implements OnInit, OnChanges {
     @Input() isHidden: boolean;
     @Input() users: LocalPermissions[];
     @Input() title = 'Send Test Run Report';
     @Input() type = '';
     @Input() buttons: any[];
-    @Input() testRun: TestRun;
+    @Input() testrun: TestRun;
     @Output() closed = new EventEmitter();
     @Output() execute = new EventEmitter();
     excludedUsers: any[] = [];
     includedUsers: any[] = [];
 
     constructor(
-        private testRunService: TestRunService,
+        private testrunService: TestRunService,
         private dragulaService: DragulaService) {
         super();
         const bag: any = this.dragulaService.find('notification-bag');
@@ -48,17 +48,16 @@ export class NotifyTeamModalComponent extends BasePopupComponent implements OnIn
         this.closed.emit(this.isHidden);
     }
 
-    sendEmail($event) {
+    async sendEmail($event) {
         if ($event) {
             const usersSendTo: User[] = [];
             this.includedUsers.forEach(user => {
                 usersSendTo.push(user.user);
             });
-            this.testRunService.sendReport(this.testRun, usersSendTo).subscribe(res => {
-                this.testRunService.handleSuccess('Email was sent.');
-                this.execute.emit();
-                this.excludedUsers = [];
-            }, error => this.testRunService.handleError(error));
+            await this.testrunService.sendReport(this.testrun, usersSendTo);
+            this.testrunService.handleSuccess('Email was sent.');
+            this.execute.emit();
+            this.excludedUsers = [];
         } else {
             this.execute.emit();
         }

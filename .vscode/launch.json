@@ -7,15 +7,8 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome",
-            "url": "http://localhost:4200",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "chrome",
-            "request": "attach",
-            "name": "Attach to Chrome",
-            "port": 9222,
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
         },
         {
@@ -25,7 +18,7 @@
             "program": "${workspaceRoot}/node_modules/protractor/bin/protractor",
             "stopOnEntry": false,
             "args": [
-                "${workspaceRoot}/protractor.conf.js"
+                "${workspaceRoot}/e2e/protractor.conf.js"
             ]
         },
     ]

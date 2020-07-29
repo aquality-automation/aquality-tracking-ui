@@ -1,0 +1,26 @@
+.active {
+    color: #FFF !important;
+}
+
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 5px 5px;
+}
+
+.navbar {
+    z-index: 100;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.logout-nav {
+    margin-left: 10px;
+}
+
+.nav-link:has(fa-icon) {
+    margin-bottom: -12px;
+    margin-top: -12px;
+}
