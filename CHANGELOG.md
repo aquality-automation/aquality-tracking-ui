@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 1.0.0 (Unreleased)
+## 1.0.0 (2020-07-28)
 
 Features:
   - Migrate to Angular 9 -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/101)
