@@ -1,115 +1,264 @@
 <form #form="ngForm" class="panel-heading no-padding form-row">
-
-  <div class="col-md-6">
-    <h2>Import Test Results</h2>
-  </div>
-  <div class="col-md-6 form-row">
+  <div class="col-md-12 form-row">
     <div class="col-md-6">
-      <lookup id="select-import-type" [propertiesToShow]="['name']" [array]="imports"
-        [disabled]="fileListArray?.length > 0" [(model)]="format" [allowEmptyValue]="false"
-        placeholder="Select Import Type"></lookup>
+      <h2>Import Test Results</h2>
     </div>
-    <div class="col-md-6 btn-group">
-      <label for="file-upload" type="button" class="btn btn-primary" [ngClass]="{
-          'disabled': !format 
-        }">Add Files</label>
-      <button type="submit" *ngIf="fileListArray?.length > 0" id="import-all" class="btn btn-success"
-        [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
-        (click)="uploadAll($event)">Import All</button>
-      <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">Remove
-        All</button>
+
+    <div class="col-md-6">
+      <div class="col-md-12 form-row pb-1">
+        <div class="col-md-6">
+          <lookup id="select-import-type" [propertiesToShow]="['name']" [array]="imports"
+            [disabled]="fileListArray?.length > 0" [(model)]="format" [allowEmptyValue]="false"
+            placeholder="Select Import Type"></lookup>
+        </div>
+        <div class="col-md-6 btn-group">
+          <label for="file-upload" type="button" class="btn btn-primary" [ngClass]="{
+              disabled: !format
+            }">Add Files</label>
+          <button type="submit" *ngIf="fileListArray?.length > 0" id="import-all" class="btn btn-success" [disabled]="
+              loadingInProgress ||
+              form.invalid ||
+              (reqMark('suite') && !suite) ||
+              !isTestNameExtractStrategyDefined()
+            " (click)="uploadAll($event)">
+            Import All
+          </button>
+          <button type="button" *ngIf="fileListArray?.length > 0" class="btn btn-danger" (click)="removeAll()">
+            Remove All
+          </button>
+        </div>
+        <input [disabled]="!format" id="file-upload" type="file" (change)="fileChange($event)" multiple
+          accept=".xml, .trx, .json" />
+      </div>
+      <div *ngIf="format" class="col-md-12 form-row">
+        <div class="col-md-12">
+          <div class="alert alert-info" align="left" role="alert">
+            {{ format.key.description }}
+            <a [href]="format.key.link">More details</a>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="format" class="col-md-12 form-row">
+        <div class="col-md-12">
+          <div class="alert alert-info" align="left" role="alert">
+            {{ format.key.description }}
+            <a [href]="format.key.link">More details</a>
+          </div>
+        </div>
+      </div>
     </div>
-    <input [disabled]="!format" id="file-upload" type="file" (change)="fileChange($event)" multiple
-      accept=".xml, .trx, .json" />
   </div>
 
   <div *ngIf="fileListArray?.length > 0"
     class="col-md-12 form-group import-results-panel it-test-import-options clearfix form-row">
-    <div class="col-md-3">
-      <label for="env">Test Suite Name{{reqMark('suite') ? '*' : ''}}:</label>
-      <lookup-autocomplete (searchText)="createTestSuite($event)" [allowCreation]="true" id="suite" name="suite"
-        [model]="suite" (modelChange)="setSuite($event)" [allowEmptyValue]="!reqMark('suite')"
-        [propertiesToShow]="['name']" [array]="suites" placeholder="None"></lookup-autocomplete>
-    </div>
-    <div class="col-md-3">
-      <label for="env">Environment:</label>
-      <input id="env" name="env" [(ngModel)]="importParameters.environment" type="text" trim="blur" class="form-control"
-        placeholder="Environment" />
-    </div>
-    <div class="col-md-3">
-      <label for="pattern"> Unique body pattern:
-        <fa-icon class="icon clickable-element"
-          title="Put regular expression pattern here, to identify if test was created before by matches in body."
-          [icon]="icons.faInfoCircle">
-        </fa-icon>
-      </label>
-      <lookup-autocomplete (searchText)="createBodyPattern($event)" [allowCreation]="true" id="pattern" name="pattern"
-        [(model)]="importParameters.pattern" [allowEmptyValue]="true" [propertiesToShow]="['name']"
-        [array]="bodyPatterns" placeholder="None"></lookup-autocomplete>
-    </div>
-    <div class="col-md-3">
-      <label for="exec">Executor{{reqMark('executor') ? '*' : ''}}:</label>
-      <input [required]="reqMark('executor')" id="exec" name="exec" [(ngModel)]="importParameters.author" type="text"
-        trim="blur" class="form-control" placeholder="Executor" />
-    </div>
-    <div class="col-md-3">
-      <label for="build">Build Name{{reqMark('buildName') ? '*' : ''}}:</label>
-      <input [required]="reqMark('buildName')" id="build" name="build" [(ngModel)]="importParameters.buildName"
-        type="text" trim="blur" class="form-control" placeholder="Build Name" />
-    </div>
-    <div *ngIf="suite && !importParameters.addToLastTestRun" class="col-md-3">
-      <label for="testrun">Test Run:</label>
-      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testrun" [allowEmptyValue]="true"
-        [propertiesToShow]="['start_time', 'build_name']" [array]="testruns" placeholder="None"></lookup-autocomplete>
-    </div>
-    <div class="col-md-3">
-      <label for="ci_build">CI Build:</label>
-      <input id="ci_build" name="ci_build" [(ngModel)]="importParameters.cilink" type="text" trim="blur"
-        class="form-control" placeholder="CI Build Link" max="500" />
-    </div>
-  </div>
+    <div class="col-md-12 form-row">
+      <div id="accordion" class="col-md-12">
+        <div class="card">
+          <div class="card-header" id="general-settings">
+            <h6 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-general-settings"
+                aria-expanded="true" aria-controls="collapse-general-settings">
+                General Settings
+              </button>
+            </h6>
+          </div>
+          <div id="collapse-general-settings" class="collapse show" aria-labelledby="general-settings">
+            <div class="card-body">
+              <div class="col-md-12 form-row">
+                <div class="col-md-12 form-row">
+                  <div class="col-md-4">
+                    <label for="env">Test Suite Name{{ reqMark("suite") ? "*" : "" }}:</label>
+                    <lookup-autocomplete (searchText)="createTestSuite($event)" [allowCreation]="true" id="suite"
+                      name="suite" [model]="suite" (modelChange)="setSuite($event)"
+                      [allowEmptyValue]="!reqMark('suite')" [propertiesToShow]="['name']" [array]="suites"
+                      placeholder="None"></lookup-autocomplete>
+                  </div>
 
-  <div *ngIf="fileListArray?.length > 0" class="form-row col-md-12 form-group import-results-panel clearfix">
-    <div *ngIf="!importParameters.addToLastTestRun" class="col-md-3 checbox-section"
-      title="All selected files will be Imported in one testrun.">
-      <mat-slide-toggle id="singleTestrunToggler" name="singleTestrun" [(ngModel)]="importParameters.singleTestRun">One
-        Test Run</mat-slide-toggle>
-    </div>
-    <div *ngIf="!testrun" class="col-md-3 checbox-section"
-      title="All selected Files will be Imported into Last Test Run.">
-      <mat-slide-toggle id="lastTestRunToggler" name="lastTestRun" [(ngModel)]="importParameters.addToLastTestRun">Add
-        to Last Test Run</mat-slide-toggle>
-    </div>
-    <div *ngIf="!testrun" class="col-md-3 checbox-section" title="Mark this Test Run as Debug.">
-      <mat-slide-toggle id="markAsDebug" name="markAsDebug" [(ngModel)]="importParameters.debug">Mark as Debug
-      </mat-slide-toggle>
-    </div>
-  </div>
-  <div
-    *ngIf="fileListArray?.length > 0 && (format.name === 'MSTest (.trx)' || format.name === 'TestNG (.xml)' || format.name === 'JUnit (.xml)' ||format.name === 'NUnit v3 (.xml)')"
-    class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
-    <div>
-      <p>What do you want to use as test name?*</p>
-    </div>
-    <div>
-      <mat-slide-toggle *ngIf="format.name !== 'NUnit v3 (.xml)'" id="testName" name="testName"
-        [(ngModel)]="testNameOptions.testName">Unit Test Name
-      </mat-slide-toggle>
-    </div>
-    <div>
-      <mat-slide-toggle *ngIf="format.name === 'NUnit v3 (.xml)'" id="featureName" name="featureName"
-        [(ngModel)]="testNameOptions.featureTest">Feature: TestName
-      </mat-slide-toggle>
-    </div>
-    <div>
-      <mat-slide-toggle id="testClassName" name="testClassName" [(ngModel)]="testNameOptions.testClassName">Unit Test
-        Class Name
-      </mat-slide-toggle>
-    </div>
-    <div>
-      <mat-slide-toggle *ngIf="format.name === 'MSTest (.trx)'" id="testDescription" name="testDescription" 
-      [(ngModel)]="testNameOptions.testDescription">Unit Test Description
-      </mat-slide-toggle>
+                  <div class="col-md-4">
+                    <label for="env">Environment:</label>
+                    <input id="env" name="env" [(ngModel)]="importParameters.environment" type="text" trim="blur"
+                      class="form-control" placeholder="Environment" />
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="exec">Executor{{ reqMark("executor") ? "*" : "" }}:</label>
+                    <input [required]="reqMark('executor')" id="exec" name="exec" [(ngModel)]="importParameters.author"
+                      type="text" trim="blur" class="form-control" placeholder="Executor" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="import-settings">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-import-settings"
+                aria-expanded="true" aria-controls="collapse-import-settings">
+                Import Process Settings
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapse-import-settings" class="collapse show" aria-labelledby="import-settings">
+            <div class="card-body">
+              <div class="col-md-12 form-row">
+                <div class="col-md-12 form-row">
+
+                  <div class="col-md-12 form-row">
+                    <div class="panel">
+                      <div>
+                        <p>How do you want to import results?*</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <div>
+                      <mat-slide-toggle [disabled]="importParameters.addToLastTestRun" id="singleTestrunToggler"
+                        name="singleTestrun" [(ngModel)]="importParameters.singleTestRun">One Test Run
+                      </mat-slide-toggle>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <div>
+                      <mat-slide-toggle [disabled]="testrun" id="lastTestRunToggler" name="lastTestRun"
+                        [(ngModel)]="importParameters.addToLastTestRun" (change)="addToLastTestRun($event)">Add to
+                        Last
+                        Test Run
+                      </mat-slide-toggle>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <div *ngIf="
+                    fileListArray?.length > 0 &&
+                    (format.key === componentImportTypes.MSTest ||
+                      format.key === componentImportTypes.MavenSurefire ||
+                      format.key === componentImportTypes.NUnit_v3)
+                  " class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
+                      <div>
+                        <p>What do you want to use as test name?*</p>
+                      </div>
+                    </div>
+                    <mat-radio-group name="testNameType" [(ngModel)]="testNameType" aria-label="Select an option">
+                      <div class="col-md-12 form-row">
+                        <div>
+                          <mat-radio-button *ngIf="format.key !== componentImportTypes.NUnit_v3" id="testName"
+                            name="testName" [value]="componentImportTestNameTypes.Name">Unit Test Name</mat-radio-button>
+                        </div>
+                      </div>
+                      <div class="col-md-12 form-row">
+                        <div>
+                          <mat-radio-button *ngIf="format.key === componentImportTypes.NUnit_v3" id="featureName"
+                            name="featureName" [value]="componentImportTestNameTypes.FeatureName">Feature: TestName
+                          </mat-radio-button>
+                        </div>
+                      </div>
+                      <div class="col-md-12 form-row">
+                        <div>
+                          <mat-radio-button id="testClassName" name="testClassName" [value]="componentImportTestNameTypes.Class">Unit Test Class Name
+                          </mat-radio-button>
+                        </div>
+                      </div>
+                      <div class="col-md-12 form-row">
+                        <div>
+                          <mat-radio-button *ngIf="format.key === componentImportTypes.MSTest" id="testDescription"
+                            name="testDescription" [value]="componentImportTestNameTypes.Description">Unit Test Description
+                          </mat-radio-button>
+                        </div>
+                      </div>
+                    </mat-radio-group>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" id="advanced-settings">
+            <h5 class="mb-0">
+              <button class="btn btn-link" data-toggle="collapse" data-target="#collapse-advanced-settings"
+                aria-expanded="false" aria-controls="collapse-advanced-settings">
+                Advanced Settings
+              </button>
+            </h5>
+          </div>
+
+          <div id="collapse-advanced-settings" class="collapse" aria-labelledby="advanced-settings">
+            <div class="card-body">
+              <div class="col-md-12 form-row">
+                <div class="col-md-6">
+
+                  <div class="col-md-12 form-row">
+                    <div *ngIf="suite && !importParameters.addToLastTestRun" class="col-md-12">
+                      <label for="testrun">Test Run:</label>
+                      <lookup-autocomplete id="testrun" name="testrun" [(model)]="testrun" [allowEmptyValue]="true"
+                        [propertiesToShow]="['start_time', 'build_name']" [array]="testruns" placeholder="None">
+                      </lookup-autocomplete>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <label for="build">Build Name{{
+                            reqMark("buildName") ? "*" : ""
+                          }}:</label>
+                    <input [required]="reqMark('buildName')" id="build" name="build"
+                      [(ngModel)]="importParameters.buildName" type="text" trim="blur" class="form-control"
+                      placeholder="{{ getBuildName() }}" />
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <label for="ci_build">CI Build:</label>
+                    <input id="ci_build" name="ci_build" [(ngModel)]="importParameters.cilink" type="text" trim="blur"
+                      class="form-control" placeholder="CI Build Link" max="500" />
+                  </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                  <div class="col-md-12 form-row">
+
+                    <div class="col-md-6">
+                      <label for="pattern">
+                        Unique body pattern:
+                      </label>
+                      <lookup-autocomplete (searchText)="createBodyPattern($event)" [allowCreation]="true" id="pattern"
+                        name="pattern" [(model)]="importParameters.pattern" [allowEmptyValue]="true"
+                        [propertiesToShow]="['name']" [array]="bodyPatterns" placeholder="None">
+                      </lookup-autocomplete>
+
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="alert alert-info" align="left" role="alert">
+                        You can put here custom regular expression to extract tests' names from the imported files.
+                        This option may be needed if search by 'test name' or 'test class' is not working for you.
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <div *ngIf="!testrun" class="col-md-12 checbox-section" title="Mark this Test Run as Debug.">
+                      <mat-slide-toggle id="markAsDebug" name="markAsDebug" [(ngModel)]="importParameters.debug">Mark
+                        as Debug
+                      </mat-slide-toggle>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -117,14 +266,26 @@
     <div class="table table-hover">
       <tbody id="filesToImport">
         <tr *ngFor="let file of fileListArray">
-          <td class="vert-aligned">{{file.name}}</td>
-          <td class="fit vert-aligned">{{(file.size/1024).toFixed(2)}} KB</td>
+          <td class="vert-aligned">{{ file.name }}</td>
+          <td class="fit vert-aligned">
+            {{ (file.size / 1024).toFixed(2) }} KB
+          </td>
           <td>
             <div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
-              <button *ngIf="!importParameters.singleTestRun && !importParameters.addToLastTestRun" type="submit"
-                [disabled]="loadingInProgress || form.invalid || (reqMark('suite') && !suite) || !IsTestNameValid()"
-                class="btn btn-success" (click)="upload(file, $event)">Import</button>
-              <button type="button" class="btn btn-danger" (click)="remove(file)">Remove</button>
+              <button *ngIf="
+                  !importParameters.singleTestRun &&
+                  !importParameters.addToLastTestRun
+                " type="submit" [disabled]="
+                  loadingInProgress ||
+                  form.invalid ||
+                  (reqMark('suite') && !suite) ||
+                  !isTestNameExtractStrategyDefined()
+                " class="btn btn-success" (click)="upload(file, $event)">
+                Import
+              </button>
+              <button type="button" class="btn btn-danger" (click)="remove(file)">
+                Remove
+              </button>
             </div>
           </td>
         </tr>

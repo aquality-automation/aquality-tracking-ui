@@ -9,21 +9,16 @@ import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/t
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { ProjectService } from 'src/app/services/project/project.service';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
-import { importTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
+import { importTypes, importTestNameTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
+import { ImportType } from 'src/app/shared/models/import-type';
+import { ImportTestNameType } from 'src/app/shared/models/import-test-name-type';
 
 @Component({
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.scss']
 })
 export class ImportComponent implements OnInit {
-  testNameOptions:
-    {
-      testName: boolean;
-      testDescription: boolean;
-      featureTest: boolean;
-      testClassName: boolean;
-      selectedKey?: '' | 'testName' | 'featureNameTestName' | 'className' | 'descriptionNode';
-    };
+
   importParameters: ImportParameters = new ImportParameters();
   suites: TestSuite[];
   suite: TestSuite;
@@ -35,7 +30,7 @@ export class ImportComponent implements OnInit {
   loadingInProgress: boolean;
   pattern: ImportBodyPattern;
   bodyPatterns: ImportBodyPattern[];
-  format: { name: string, key: string };
+  format: { name: string, key: ImportType };
   importResults: Import[];
   resultsColumnsToShow: TFColumn[];
   timerToken: any;
@@ -53,19 +48,21 @@ export class ImportComponent implements OnInit {
     color: 1
   }];
   sortBy = { order: TFOrder.asc, property: 'started' };
-  imports: { name: string, key: string }[] = [
-    { name: 'MSTest (.trx)', key: importTypes.MSTest },
-    { name: 'Robot (.xml)', key: importTypes.Robot },
-    { name: 'TestNG (.xml)', key: importTypes.TestNG },
-    { name: 'JUnit (.xml)', key: importTypes.JUnit },
-    { name: 'Cucumber (.json)', key: importTypes.Cucumber },
-    { name: 'PHP Codeception (.xml)', key: importTypes.PHPCodeception },
-    { name: 'NUnit v2 (.xml)', key: importTypes.NUnit_v2 },
-    { name: 'NUnit v3 (.xml)', key: importTypes.NUnit_v3 }
+  imports: { name: string, key: ImportType }[] = [
+    { name: importTypes.MavenSurefire.getNameAndExtension(), key: importTypes.MavenSurefire },
+    { name: importTypes.MSTest.getNameAndExtension(), key: importTypes.MSTest },
+    { name: importTypes.Robot.getNameAndExtension(), key: importTypes.Robot },
+    { name: importTypes.Cucumber.getNameAndExtension(), key: importTypes.Cucumber },
+    { name: importTypes.PHPCodeception.getNameAndExtension(), key: importTypes.PHPCodeception },
+    { name: importTypes.NUnit_v2.getNameAndExtension(), key: importTypes.NUnit_v2 },
+    { name: importTypes.NUnit_v3.getNameAndExtension(), key: importTypes.NUnit_v3 }
   ];
   icons = {
     faInfoCircle
   };
+  componentImportTypes = importTypes;
+  componentImportTestNameTypes = importTestNameTypes;
+  testNameType: ImportTestNameType;
 
   constructor(
     private importService: ImportService,
@@ -77,7 +74,6 @@ export class ImportComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.testNameOptions = this.testNameTypes();
     this.bodyPatterns = await this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId });
     this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId }).then(res => {
       this.suites = res;
@@ -178,8 +174,8 @@ export class ImportComponent implements OnInit {
 
   buildParams() {
     this.importParameters.projectId = this.route.snapshot.params.projectId;
-    this.importParameters.testNameKey = this.testNameOptions.selectedKey;
-    this.importParameters.format = this.format.key;
+    this.importParameters.testNameKey = this.testNameType
+    this.importParameters.format = this.format.key.name;
     this.importParameters.suite = this.suite.name;
     if (this.testrun) {
       this.importParameters.testrunId = this.testrun.id;
@@ -208,42 +204,37 @@ export class ImportComponent implements OnInit {
     }
   }
 
-  IsTestNameValid() {
-    if (this.format.key === importTypes.MSTest) {
-      return this.testNameOptions.testClassName || this.testNameOptions.testName || this.testNameOptions.testDescription;
-    } else if (this.format.key === importTypes.TestNG || this.format.key === importTypes.JUnit) {
-      return this.testNameOptions.testClassName || this.testNameOptions.testName;
-    } else if (this.format.key === importTypes.NUnit_v3) {
-      return this.testNameOptions.testClassName || this.testNameOptions.featureTest;
-    } else {
-      return true;
+  getBuildName() {
+    let buildName = this.suite?.name + "-" + this.importParameters.environment + "-" + this.importParameters.author;
+    this.importParameters.buildName = buildName;
+  }
+
+  addToLastTestRun(state: boolean) {
+    if (state) {
+      this.importParameters.singleTestRun = false;
+    }
+  }
+
+  isTestNameExtractStrategyDefined() {
+    switch (this.format.key) {
+      case importTypes.MSTest:
+        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name || this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Description;
+      case importTypes.MavenSurefire:
+        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name;
+      case importTypes.NUnit_v3:
+        return this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Name;
+      case importTypes.Robot:
+      case importTypes.NUnit_v2:
+      case importTypes.Cucumber:
+      case importTypes.PHPCodeception:
+        return true;
+      default:
+        return false;
     }
   }
 
   async setSuite($event) {
     this.suite = $event;
     this.testruns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
-  }
-
-  testNameTypes() {
-    let props = 0;
-
-    return {
-      get testName() { return props === 1; },
-      set testName(val) { if (val) { props = 1; } },
-      get testDescription() { return props === 2; },
-      set testDescription(val) { if (val) { props = 2; } },
-      get featureTest() { return props === 3; },
-      set featureTest(val) { if (val) { props = 3; } },
-      get testClassName() { return props === 4; },
-      set testClassName(val) { if (val) { props = 4; } },
-      get selectedKey() {
-        if (props === 0) { return ''; }
-        if (props === 1) { return 'testName'; }
-        if (props === 2) { return 'descriptionNode'; }
-        if (props === 3) { return 'featureNameTestName'; }
-        if (props === 4) { return 'className'; }
-      }
-    };
   }
 }

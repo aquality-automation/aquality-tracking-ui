@@ -34,6 +34,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {MatRadioModule} from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -66,6 +67,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatListModule,
     MatButtonModule,
     MatSlideToggleModule,
+    MatRadioModule,
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
@@ -109,6 +111,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatListModule,
     MatButtonModule,
     MatSlideToggleModule,
+    MatRadioModule,
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
