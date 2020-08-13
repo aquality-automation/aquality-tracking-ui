@@ -218,7 +218,7 @@ export class ImportComponent implements OnInit {
   isTestNameExtractStrategyDefined() {
     switch (this.format.key) {
       case importTypes.MSTest:
-        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name || this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Description;
+        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name || this.testNameType === importTestNameTypes.Description;
       case importTypes.MavenSurefire:
         return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name;
       case importTypes.NUnit_v3:
