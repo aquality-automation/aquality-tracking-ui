@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpService } from '../base-http/base-http.service';
 import { Import } from 'src/app/shared/models/import';
+import { ImportType } from 'src/app/shared/models/import-type'
+import { ImportTestNameType } from 'src/app/shared/models/import-test-name-type'
+
 
 @Injectable()
 export class ImportService extends BaseHttpService {
@@ -20,19 +23,25 @@ export class ImportService extends BaseHttpService {
 }
 
 export const importTypes = {
-  MSTest: 'MSTest',
-  Robot: 'Robot',
-  TestNG: 'TestNG',
-  Cucumber: 'Cucumber',
-  PHPCodeception: 'PHPCodeception',
-  NUnit_v2: 'NUnit_v2',
-  NUnit_v3: 'NUnit_v3',
-  JUnit: 'JUnit'
+  MavenSurefire: new ImportType('MavenSurefire', 'Most Java projects are using Maven Surefire Plugin to run tests (both for JUnit and TestNG).', 'https://maven.apache.org/surefire/maven-surefire-plugin/usage.html', 'xml'),
+  MSTest: new ImportType('MSTest', 'MSTest generates results files with *.trx extension.', 'https://docs.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-mstest', 'trx'),
+  Robot: new ImportType('Robot', 'RobotFramework provides its own reporting. Use output.xml file to import results.', 'https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html', 'xml'),
+  Cucumber: new ImportType('Cucumber', 'Cucumber provides results in JSON format. This import type can be applied for any programming language implementation of Cucumber (Cucumber JVM, Specflow and etc.).', 'https://cucumber.io/docs/cucumber/reporting/', 'json'),
+  PHPCodeception: new ImportType('PHPCodeception', 'For projects based on Codeception tool.', 'https://codeception.com/docs/reference/Commands', 'xml'),
+  NUnit_v2: new ImportType('NUnit_v2', 'For projects based on NUnit2.', 'https://docs.nunit.org/articles/nunit/technical-notes/usage/XML-Formats.html', 'xml'),
+  NUnit_v3: new ImportType('NUnit_v3', 'For projects based on NUnit3.', 'https://docs.nunit.org/articles/nunit/technical-notes/usage/XML-Formats.html', 'xml')
 };
+
+export const importTestNameTypes = {
+  Name: new ImportTestNameType('testName'),
+  Class: new ImportTestNameType('className'),
+  FeatureName: new ImportTestNameType('featureNameTestName'),
+  Description: new ImportTestNameType('descriptionNode')
+}
 
 export class ImportParameters {
   projectId: number;
-  testNameKey: string;
+  testNameKey: ImportTestNameType;
   environment: string;
   pattern: string;
   format: string;
