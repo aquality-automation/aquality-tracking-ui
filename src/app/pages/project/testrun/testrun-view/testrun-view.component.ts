@@ -26,7 +26,7 @@ export class TestRunViewComponent implements OnInit {
   projectId: number;
   hideNotifyModal = true;
   hidePrintModal = true;
-  testResultTempalte: TestResult;
+  testResultTemplate: TestResult;
   testResults: TestResult[];
   testrun: TestRun;
   milestones: Milestone[];
@@ -65,7 +65,7 @@ export class TestRunViewComponent implements OnInit {
 
     this.canSendEmail = isEmailEnabled && this.canEdit;
     this.testrun = testruns[0];
-    this.testResultTempalte = { test_run_id: testrunId };
+    this.testResultTemplate = { test_run_id: testrunId };
     await this.setTestRunsToCompare();
   }
 

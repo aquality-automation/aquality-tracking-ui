@@ -68,9 +68,24 @@ export class AttachmentInlineComponent implements OnChanges {
 
   prepareLink() {
     let data: string = (<string>this.model);
-
     this.filename = `attachment${Date.now()}`;
     data = encodeURI(data);
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(data);
+  }
+
+  download() {
+    let data: string = (<string>this.model);
+    let filename: string;
+    let link: HTMLAnchorElement;
+
+    filename = `attachment${Date.now()}`;
+    data = encodeURI(data);
+
+    link = document.createElement('a');
+    document.body.appendChild(link);
+    link.setAttribute('type', 'hidden');
+    link.setAttribute('href', data);
+    link.setAttribute('download', filename);
+    link.click();
   }
 }

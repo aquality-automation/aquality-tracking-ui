@@ -35,3 +35,11 @@ export class TestResultStat {
   developer?: string;
   comment?: string;
 }
+
+export class TestResultAttachment {
+  id?: number;
+  test_result_id?: number;
+  project_id?: number;
+  test_run_id?: number;
+  path?: string;
+}

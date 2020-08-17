@@ -1,7 +1,7 @@
 <div>
     <label *ngIf="!isModelExists() && editable" class="add_btn" [for]="name">Add</label>
     <label *ngIf="isModelExists() && isModelImage()" class="show_btn" (click)="toggleShow()">Show | </label>
-    <a *ngIf="isModelExists() && !isModelImage()" class="download_btn" [href]="fileUrl" [download]="filename">Download | </a>
+    <a *ngIf="isModelExists() && !isModelImage()" class="download_btn" [href]="fileUrl" (click)="download()" [download]="filename">Download | </a>
     <label *ngIf="isModelExists() && editable" class="change_btn" [for]="name">Change | </label>
     <label *ngIf="isModelExists() && editable" class="remove_btn" (click)="remove()">Remove</label>
     <input class="file" type="file" [id]="name" (change)="handleFileInput($event.target.files)" accept=".jpg, .jpeg, .png">

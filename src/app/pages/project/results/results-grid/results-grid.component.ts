@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { TestResult } from '../../../../shared/models/test-result';
+import { TestResult, TestResultAttachment } from '../../../../shared/models/test-result';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { FinalResult } from '../../../../shared/models/final-result';
@@ -24,12 +24,13 @@ import { ResultSearcherComponent } from '../results-searcher/results-searcher.co
   templateUrl: './results-grid.component.html',
 })
 export class ResultGridComponent implements OnInit {
-  @Input() testResultTempalte: TestResult;
+  @Input() testResultTemplate: TestResult;
   @ViewChild(ResultSearcherComponent) resultSearcher: ResultSearcherComponent;
   public testResults: TestResult[];
+  public testResultsAttachments: TestResultAttachment[];
   public refreshedResults: Promise<void>;
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
-  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue'];
+  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue', 'Attachment'];
   @Output() resultUpdated = new EventEmitter<TestResult[]>();
   @Output() refreshed = new EventEmitter<TestResult[]>();
   public listOfResolutions: ResultResolution[];
@@ -186,16 +187,18 @@ export class ResultGridComponent implements OnInit {
 
   private async refreshResults() {
     let testruns: TestRun[];
-    [testruns, this.listOfIssues, this.testResults] = await Promise.all([
+    [testruns, this.listOfIssues, this.testResults, this.testResultsAttachments] = await Promise.all([
       this.testrunService.getTestRun({ project_id: this.projectId }),
       this.issueService.getIssues({ project_id: this.projectId }),
-      this.testResultService.getTestResult(this.testResultTempalte)
+      this.testResultService.getTestResult(this.testResultTemplate),
+      this.testResultService.getTestResultAttachments(new TestResultAttachment())
     ]);
     this.testResults.forEach(result => {
       result['developer'] = this.users.find(x => x.id === result.test.developer_id);
       result['testrun'] = testruns.find(x => x.id === result.test_run_id);
       result['duration'] = this.calculateDuration(result);
       result['combinedLastResults'] = this.testService.combineLastResults(result.test);
+      result['attachment'] = this.testResultsAttachments.find(x => x.test_result_id === result.id).path;
     });
     this.listOfActiveIssues = this.listOfIssues.filter(x => x.status_id !== 4);
     this.createColumns();
@@ -313,10 +316,17 @@ export class ResultGridComponent implements OnInit {
         nullFilter: true,
         class: 'fit'
       },
+      {
+        name: 'Attachment',
+        property: 'attachment',
+        type: TFColumnType.file,
+        editable: this.canEdit,
+        class: 'fit'
+      },
       { name: 'Finished', property: 'finish_date', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
       { name: 'Updated', property: 'updated', filter: true, sorting: true, type: TFColumnType.date, class: 'fit' },
       { name: 'Duration', property: 'duration', filter: true, sorting: true, type: TFColumnType.time, class: 'fit' },
-      { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' },
+      { name: 'Debug', property: 'debug', sorting: true, type: TFColumnType.checkbox, editable: this.canEdit, class: 'fit' }
     ];
     this.tbCols = this.allColumns.filter(x => this.showOnly.includes(x.name));
     this.tbHiddenCols = this.allColumns.filter(x => !this.showOnly.includes(x.name));

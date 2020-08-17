@@ -98,6 +98,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     LookupAutocompleteComponent,
     LookupComponent,
     TableFilterComponent,
+    AttachmentInlineComponent,
     ModalComponent,
     CommentsComponent,
     LargeTextContainerComponent,

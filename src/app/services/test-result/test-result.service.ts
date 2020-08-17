@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpService } from '../base-http/base-http.service';
-import { TestResult, TestResultStat } from 'src/app/shared/models/test-result';
+import { TestResult, TestResultStat, TestResultAttachment } from 'src/app/shared/models/test-result';
 
 
 @Injectable()
@@ -8,7 +8,13 @@ export class TestResultService extends BaseHttpService {
 
   getTestResult(testresult: TestResult): Promise<TestResult[]> {
     testresult = this.setProjectId(testresult);
-    return this.http.get<TestResult[]>('/testresult', {params: this.convertToParams(testresult)}).toPromise();
+    return this.http.get<TestResult[]>('/testresult', { params: this.convertToParams(testresult) }).toPromise();
+  }
+
+  getTestResultAttachments(testResultAttachment: TestResultAttachment): Promise<TestResultAttachment[]> {
+      this.setProjectId(testResultAttachment);
+      return this.http.get<TestResultAttachment[]>('/testresult/attachment',
+       { params: this.convertToParams(testResultAttachment) }).toPromise();
   }
 
   createTestResult(testresult: TestResult): Promise<TestResult> {
@@ -28,13 +34,13 @@ export class TestResultService extends BaseHttpService {
 
   async removeTestResult(testresult: TestResult): Promise<void> {
     testresult = this.setProjectId(testresult);
-    await this.http.delete(`/testrun`, {params: this.convertToParams(testresult)}).toPromise();
+    await this.http.delete(`/testrun`, { params: this.convertToParams(testresult) }).toPromise();
     this.handleSuccess(`Test result '${testresult.id}' was deleted.`);
   }
 
   getTestResultsStat(project_id: number, testrunStartedFrom: string, testrunStartedTo: string): Promise<TestResultStat[]> {
     const params = { project_id: project_id.toString(), testrunStartedFrom, testrunStartedTo };
-    return this.http.get<TestResultStat[]>(`/stats/testresult`, {params}).toPromise();
+    return this.http.get<TestResultStat[]>(`/stats/testresult`, { params }).toPromise();
   }
 
   private setProjectId(testResult: TestResult): TestResult {
