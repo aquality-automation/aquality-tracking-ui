@@ -11,12 +11,6 @@ export class TestResultService extends BaseHttpService {
     return this.http.get<TestResult[]>('/testresult', { params: this.convertToParams(testresult) }).toPromise();
   }
 
-  getTestResultAttachments(testResultAttachment: TestResultAttachment): Promise<TestResultAttachment[]> {
-      this.setProjectId(testResultAttachment);
-      return this.http.get<TestResultAttachment[]>('/testresult/attachment',
-       { params: this.convertToParams(testResultAttachment) }).toPromise();
-  }
-
   createTestResult(testresult: TestResult): Promise<TestResult> {
     testresult.project_id = this.currentProjectId;
     return this.http.post<TestResult>('/testresult', testresult).toPromise();
@@ -30,6 +24,11 @@ export class TestResultService extends BaseHttpService {
       }
     });
     return this.http.put<void>('/testresult', testresults).toPromise();
+  }
+
+  getAttachment(attachment: TestResultAttachment): Promise<TestResultAttachment> {
+    return this.http.get<TestResultAttachment>
+      (`/testresult/attachment?id=${attachment.id}&project_id=${attachment.project_id}`).toPromise();
   }
 
   async removeTestResult(testresult: TestResult): Promise<void> {

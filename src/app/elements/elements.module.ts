@@ -38,6 +38,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { NumberRangeComponent } from './number-range/number-range.component';
+import { AttachmentModalComponent } from './lookup/attachment-modal/attachment-modal/attachment-modal.component';
 
 const maskConfigFunction: () => Partial<IConfig> = () => {
   return {
@@ -88,7 +90,9 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     ManageColumnsModalComponent,
     CommentsComponent,
     SetHTMLDirective,
-    LabeledInputComponent
+    LabeledInputComponent,
+    NumberRangeComponent,
+    AttachmentModalComponent
   ],
   exports: [
     DatepickerComponent,
@@ -111,7 +115,9 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    NgxMaskModule
+    NgxMaskModule,
+    AttachmentInlineComponent,
+    NumberRangeComponent
   ],
   providers: [
     ListToCsvService,

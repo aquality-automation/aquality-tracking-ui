@@ -11,6 +11,9 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
+import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal/attachment-modal.component';
+import { TestResultService } from 'src/app/services/test-result/test-result.service';
+import { TestResultAttachment } from 'src/app/shared/models/test-result';
 
 @Component({
   selector: 'table-filter',
@@ -18,6 +21,8 @@ import { DataTable } from './data-table/DataTable';
   styleUrls: ['./table-filter.component.scss']
 })
 export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+
+  @ViewChild(AttachmentModalComponent) attachmentModal: AttachmentModalComponent;
   @Input() hidePageSets = false;
   @Input() hideFilter = false;
   @Input() data: any[];
@@ -85,13 +90,18 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     faChevronUp,
     faChevronDown
   };
+  type: string;
+  testResultAttachment: TestResultAttachment;
+  attachModalTitle: string;
+  hideAttachModal = true;
 
   constructor(
     private listTocsv: ListToCsvService,
     private route: ActivatedRoute,
     private router: Router,
     private notificationsService: NotificationsService,
-    public transformationsService: TransformationsService
+    public transformationsService: TransformationsService,
+    private testResultService: TestResultService
   ) {
     this.filterHelper = new FilterHelper(this.transformationsService, this.route, this.router);
   }
@@ -133,6 +143,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   ngOnDestroy() {
     clearInterval(this.timerToken);
+  }
+
+  attachModalClosed() {
+    this.attachModalTitle = '';
+    this.hideAttachModal = true;
+  }
+
+  async processAttachModal(testResultAttachment: TestResultAttachment) {
+    this.hideAttachModal = false;
+    this.testResultAttachment = await (await (this.testResultService.getAttachment(testResultAttachment)));
   }
 
   getDefaultSorter(col: TFColumn): TFSorting {

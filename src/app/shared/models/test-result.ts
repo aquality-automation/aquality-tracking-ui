@@ -23,6 +23,7 @@ export class TestResult {
   steps?: StepResult[];
   issue_id?: number;
   issue?: Issue;
+  attachments?: TestResultAttachment[];
 }
 
 export class TestResultStat {
@@ -38,8 +39,11 @@ export class TestResultStat {
 
 export class TestResultAttachment {
   id?: number;
+  path?: string;
   test_result_id?: number;
   project_id?: number;
-  test_run_id?: number;
-  path?: string;
+  link: string;
+  name: string;
+  attachment?: string | ArrayBuffer;
+  mimeType?: string;
 }

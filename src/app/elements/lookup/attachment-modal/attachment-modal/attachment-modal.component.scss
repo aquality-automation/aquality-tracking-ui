@@ -1,0 +1,33 @@
+.mt-overlay{
+    display: block;
+  }
+  
+  .show-modal {
+    opacity: 1;
+  }
+  
+  .modal-dialog {
+    margin: 10rem auto !important;
+    max-width: 1000px !important;
+    min-width: 1000px;
+  }
+  
+  .line-margin{
+    margin-top: 5px; 
+  }
+  
+  hr {
+    margin: 5px;
+    border: none;
+    color: #d6d6d6;
+    background-color: #d6d6d6;
+    height: 1px;
+   }
+  
+   #summary{
+      resize: vertical;
+      height: 115px;
+      max-height: 115px;
+      min-height: 76px;
+      margin-bottom: 5px;
+   }

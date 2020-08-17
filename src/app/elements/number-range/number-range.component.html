@@ -1,0 +1,15 @@
+<div class="input-group" [ngClass]="{'input-group-sm': small, 'is-invalid': rangeForm.controls.toInput.invalid || rangeForm.controls.fromInput.invalid }" [formGroup]="rangeForm">
+  <input type="number" placeholder="from" class="form-control" [ngModel]="from" (ngModelChange)="fromChanged($event)" formControlName="fromInput"
+    [ngClass]="{'is-invalid': rangeForm.controls.fromInput.invalid }" [max]="max">
+  <input type="number" placeholder="to" class="form-control" [ngModel]="to" (ngModelChange)="toChanged($event)" formControlName="toInput"
+    [ngClass]="{'is-invalid': rangeForm.controls.toInput.invalid }" [max]="max">
+  <div class="input-group-append">
+    <button class="btn btn-secondary">
+      <fa-icon class="icon clear-range-filter" [icon]="icons.faTimes" (click)="clear()">
+      </fa-icon>
+    </button>
+  </div>
+</div>
+<div *ngIf="rangeForm.controls.toInput.errors?.invalidRange || rangeForm.controls.fromInput.errors?.invalidRange" class="invalid-feedback">
+  From should be less than To!
+</div>

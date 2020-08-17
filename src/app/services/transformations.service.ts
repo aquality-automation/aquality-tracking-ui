@@ -10,7 +10,7 @@ export class TransformationsService {
     const hours = (duration - duration % 3600) / 3600;
     const minutes = (duration - hours * 3600 - (duration - hours * 3600) % 60) / 60;
     const seconds = duration - (hours * 3600 + minutes * 60);
-    return `${hours > 9 ? hours : '0' + hours}${minutes > 9 ?  minutes : '0' + minutes}${seconds > 9 ?  seconds : '0' + seconds}`;
+    return `${hours > 9 ? hours : '0' + hours}${minutes > 9 ? minutes : '0' + minutes}${seconds > 9 ? seconds : '0' + seconds}`;
   }
 
   getPropertyValue(entity: any, property: string) {
@@ -119,5 +119,9 @@ export class TransformationsService {
   zeroPad(num, places) {
     const zero = places - num.toString().length + 1;
     return Array(+(zero > 0 && zero)).join('0') + num;
+  }
+
+  getFileNameFromPath(path: string) {
+    return path.split('\\').pop().split('/').pop();
   }
 }

@@ -1,4 +1,4 @@
-Test Name,Fail Reason,Last Results,Result,Resolution,Issue
-"Test Feature with all results: step failed","step was failed !”#$%&’()*+,-./:;<=>?@[\]^_`{|}~","3","Failed",,
-"Test Feature with all results: All passed","","5","Passed",,
-"Test Feature with all results: Step skipped","step was skippedstep was skipped","3","Pending",,
+Test Name,Fail Reason,Last Results,Result,Resolution,Issue,Attachments
+"Test Feature with all results: step failed","step was failed !”#$%&’()*+,-./:;<=>?@[\]^_`{|}~","3","Failed",,,""
+"Test Feature with all results: All passed","","5","Passed",,,""
+"Test Feature with all results: Step skipped","step was skippedstep was skipped","3","Pending",,,""

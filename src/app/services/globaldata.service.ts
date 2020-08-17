@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Project } from '../shared/models/project';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { Subject } from 'rxjs/internal/Subject';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class GlobalDataService {
@@ -35,5 +36,9 @@ export class GlobalDataService {
     this.requestQuery = 0;
     this.returnURL = undefined;
     this.teamMember = undefined;
+  }
+
+  getApiUrl() {
+    return environment.host ? environment.host : `${location.origin}/api`;
   }
 }
