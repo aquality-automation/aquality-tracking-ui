@@ -3,12 +3,14 @@ export class ImportType {
   description: string;
   link: string;
   fileExtension: string;
+  isTestNameNodeNeeded: boolean;
   
-  constructor(name: string, description: string, link: string, fileExtension: string) {
+  constructor(name: string, description: string, link: string, fileExtension: string, isTestNameNodeNeeded: boolean) {
     this.name = name;
     this.description = description;
     this.link = link;
     this.fileExtension = fileExtension;
+    this.isTestNameNodeNeeded = isTestNameNodeNeeded;
   }
 
   getNameAndExtension(){

@@ -19,6 +19,10 @@ export class Input extends BaseElement {
         return this.element.sendKeys(Key.DELETE);
     }
 
+    public async clearNative() {
+        return this.element.clear();
+    }
+
     getValue() {
         return this.element.getAttribute('value');
     }

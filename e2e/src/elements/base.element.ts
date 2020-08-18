@@ -1,5 +1,6 @@
 import { element, ElementFinder, Locator, browser } from 'protractor';
 import { waiter } from '../utils/wait.util';
+import { scrollIntoView } from '../utils/js.util';
 
 export class BaseElement {
     public element: ElementFinder;
@@ -9,6 +10,10 @@ export class BaseElement {
         } else {
             this.element = element(locatorOrElement as Locator);
         }
+    }
+
+    async scrollIntoView() {
+        await scrollIntoView(this.element);
     }
 
     async click() {

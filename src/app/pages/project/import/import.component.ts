@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImportBodyPattern } from '../../../shared/models/project';
 import { TestRun } from '../../../shared/models/testrun';
-import { Import } from '../../../shared/models/import';
+import { Import } from '../../../shared/models/imports/import';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { TestSuite } from 'src/app/shared/models/test-suite';
 import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { ProjectService } from 'src/app/services/project/project.service';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
-import { importTypes, importTestNameTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
-import { ImportType } from 'src/app/shared/models/import-type';
-import { ImportTestNameType } from 'src/app/shared/models/import-test-name-type';
+import { importTypes, importTestNameTypes, importProcessTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
+import { ImportType } from 'src/app/shared/models/imports/import-type';
+import { ImportTestNameType } from 'src/app/shared/models/imports/import-test-name-type';
 
 @Component({
   templateUrl: './import.component.html',
@@ -24,6 +24,7 @@ export class ImportComponent implements OnInit {
   suite: TestSuite;
   testruns: TestRun[] = [];
   testrun: TestRun;
+  buildName: string;
   fileListArray: File[];
   fileStatusArray: {}[] = [];
   uploadedArray: {}[] = [];
@@ -62,7 +63,9 @@ export class ImportComponent implements OnInit {
   };
   componentImportTypes = importTypes;
   componentImportTestNameTypes = importTestNameTypes;
+  componentImportProcessTypes = importProcessTypes;
   testNameType: ImportTestNameType;
+  processType: string;
 
   constructor(
     private importService: ImportService,
@@ -78,7 +81,6 @@ export class ImportComponent implements OnInit {
     this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId }).then(res => {
       this.suites = res;
     });
-
     this.getImportResults();
   }
 
@@ -118,6 +120,22 @@ export class ImportComponent implements OnInit {
       this.fileStatusArray.push(false);
     }
     event.target.value = '';
+    this.setDefaultConfigValues();
+  }
+
+  /**
+   * to simplify manual import process we setup default 
+   * configuration values for process type and test name type
+   */
+  setDefaultConfigValues() {
+    this.processType = this.componentImportProcessTypes.TestRunPerFile.key
+    // as 'class name' type can be applied to any formats we set it by default
+    if (this.format.key.isTestNameNodeNeeded) {
+      this.testNameType = this.componentImportTestNameTypes.Class
+    }
+
+    // reset suite to empty value
+    this.suite = undefined;
   }
 
   removeAll() {
@@ -174,12 +192,17 @@ export class ImportComponent implements OnInit {
 
   buildParams() {
     this.importParameters.projectId = this.route.snapshot.params.projectId;
-    this.importParameters.testNameKey = this.testNameType
     this.importParameters.format = this.format.key.name;
+    if (this.format.key.isTestNameNodeNeeded) {
+      this.importParameters.testNameKey = this.testNameType.key
+    }
     this.importParameters.suite = this.suite.name;
     if (this.testrun) {
       this.importParameters.testrunId = this.testrun.id;
     }
+    this.importParameters.addToLastTestRun = (this.processType === this.componentImportProcessTypes.AddToLastTestRun.key);
+    this.importParameters.singleTestRun = (this.processType === this.componentImportProcessTypes.SingleTestRun.key);
+    this.importParameters.buildName = this.buildName === undefined ? this.getBuildName() : this.buildName;
   }
 
   async createBodyPattern($event) {
@@ -200,19 +223,12 @@ export class ImportComponent implements OnInit {
         return true;
       case 'executor':
       case 'buildName':
-        return this.importParameters.singleTestRun;
+        return this.processType == this.componentImportProcessTypes.SingleTestRun.key;
     }
   }
 
   getBuildName() {
-    let buildName = this.suite?.name + "-" + this.importParameters.environment + "-" + this.importParameters.author;
-    this.importParameters.buildName = buildName;
-  }
-
-  addToLastTestRun(state: boolean) {
-    if (state) {
-      this.importParameters.singleTestRun = false;
-    }
+    return this.suite?.name + "-" + this.importParameters.environment + "-" + this.importParameters.author;
   }
 
   isTestNameExtractStrategyDefined() {
@@ -222,7 +238,7 @@ export class ImportComponent implements OnInit {
       case importTypes.MavenSurefire:
         return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name;
       case importTypes.NUnit_v3:
-        return this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Name;
+        return this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Class;
       case importTypes.Robot:
       case importTypes.NUnit_v2:
       case importTypes.Cucumber:

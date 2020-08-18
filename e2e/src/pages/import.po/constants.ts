@@ -1,9 +1,9 @@
 import { by, element } from 'protractor';
 import { Autocomplete } from '../../elements/autocomplete.element';
 import { Lookup } from '../../elements/lookup.element';
-import { UiSwitch } from '../../elements/ui-switch';
 import { SmartTable } from '../../elements/smartTable.element';
 import { Input } from '../../elements/input.element';
+import { MatRadioButton } from '../../elements/mat-radio.element';
 
 export const baseUrl = (id: number) => `/project/${id}/import`;
 
@@ -12,14 +12,15 @@ export const elements = {
     selectImportTypeLookup: new Lookup(by.id('select-import-type')),
     fileUpload: element(by.id('file-upload')),
     importAll: element(by.id('import-all')),
-    unitTestDescriptionSwitch: new UiSwitch(by.id('testDescription')),
-    lastTestRunSwitch: new UiSwitch(by.id('lastTestRunToggler')),
+    unitTestDescriptionSwitch: new MatRadioButton(by.id('testDescription')),
+    lastTestRunSwitch: new MatRadioButton(by.id('addToLastTestRun')),
     importResultsTable: new SmartTable(by.id('datatable')),
     importResultOptionsForm: element(by.id('import-results-options')),
-    featureTestNameSwitch: new UiSwitch(by.id('featureName')),
-    classNameSwitch: new UiSwitch(by.id('testClassName')),
-    testNameSwitch: new UiSwitch(by.id('testName')),
-    testDescriptionSwitch: new UiSwitch(by.id('testDescription')),
+    featureTestNameSwitch: new MatRadioButton(by.id('featureName')),
+    classNameSwitch: new MatRadioButton(by.id('testClassName')),
+    testNameSwitch: new MatRadioButton(by.id('testName')),
+    testDescriptionSwitch: new MatRadioButton(by.id('testDescription')),
+    advancedSettingsButton: new Input(by.css('div[id="advanced-settings"] button')),
     buildName: new Input(by.id('build')),
     uploadedFile: (filename: string) => element(by.xpath(`//tbody[@id='filesToImport']//td[text()='${filename}']`))
 };
@@ -44,7 +45,7 @@ export const names = {
 };
 
 export const importTypes = {
-    cucumber: 'Cucumber (.json)',
-    msTest: 'MSTest (.trx)',
-    nunitV3: 'NUnit v3 (.xml)'
+    cucumber: 'Cucumber (json)',
+    msTest: 'MSTest (trx)',
+    nunitV3: 'NUnit_v3 (xml)'
 };

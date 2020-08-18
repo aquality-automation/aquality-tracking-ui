@@ -38,15 +38,6 @@
           </div>
         </div>
       </div>
-
-      <div *ngIf="format" class="col-md-12 form-row">
-        <div class="col-md-12">
-          <div class="alert alert-info" align="left" role="alert">
-            {{ format.key.description }}
-            <a [href]="format.key.link">More details</a>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -108,70 +99,85 @@
                 <div class="col-md-12 form-row">
 
                   <div class="col-md-12 form-row">
-                    <div class="panel">
-                      <div>
-                        <p>How do you want to import results?*</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-12 form-row">
-                    <div>
-                      <mat-slide-toggle [disabled]="importParameters.addToLastTestRun" id="singleTestrunToggler"
-                        name="singleTestrun" [(ngModel)]="importParameters.singleTestRun">One Test Run
-                      </mat-slide-toggle>
-                    </div>
-                  </div>
-
-                  <div class="col-md-12 form-row">
-                    <div>
-                      <mat-slide-toggle [disabled]="testrun" id="lastTestRunToggler" name="lastTestRun"
-                        [(ngModel)]="importParameters.addToLastTestRun" (change)="addToLastTestRun($event)">Add to
-                        Last
-                        Test Run
-                      </mat-slide-toggle>
-                    </div>
-                  </div>
-
-                  <div class="col-md-12 form-row">
-                    <div *ngIf="
-                    fileListArray?.length > 0 &&
-                    (format.key === componentImportTypes.MSTest ||
-                      format.key === componentImportTypes.MavenSurefire ||
-                      format.key === componentImportTypes.NUnit_v3)
-                  " class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
-                      <div>
-                        <p>What do you want to use as test name?*</p>
-                      </div>
-                    </div>
-                    <mat-radio-group name="testNameType" [(ngModel)]="testNameType" aria-label="Select an option">
-                      <div class="col-md-12 form-row">
+                    <div class="col-md-12 form-row">
+                      <div class="panel">
                         <div>
-                          <mat-radio-button *ngIf="format.key !== componentImportTypes.NUnit_v3" id="testName"
-                            name="testName" [value]="componentImportTestNameTypes.Name">Unit Test Name</mat-radio-button>
+                          <p>How do you want to import results?*</p>
                         </div>
                       </div>
+                    </div>
+
+                    <mat-radio-group name="testProcessType" [(ngModel)]="processType" aria-label="Select an option">
                       <div class="col-md-12 form-row">
                         <div>
-                          <mat-radio-button *ngIf="format.key === componentImportTypes.NUnit_v3" id="featureName"
-                            name="featureName" [value]="componentImportTestNameTypes.FeatureName">Feature: TestName
+                          <mat-radio-button id="runPerFile" name="runPerFile"
+                            [value]="componentImportProcessTypes.TestRunPerFile.key" [checked]="true">
+                            {{componentImportProcessTypes.TestRunPerFile.name}}
                           </mat-radio-button>
                         </div>
                       </div>
-                      <div class="col-md-12 form-row">
+
+                      <div class=" col-md-12 form-row">
                         <div>
-                          <mat-radio-button id="testClassName" name="testClassName" [value]="componentImportTestNameTypes.Class">Unit Test Class Name
+                          <mat-radio-button id="singleTestRun" name="singleTestRun"
+                            [value]="componentImportProcessTypes.SingleTestRun.key">
+                            {{componentImportProcessTypes.SingleTestRun.name}}
                           </mat-radio-button>
                         </div>
                       </div>
-                      <div class="col-md-12 form-row">
+
+                      <div class=" col-md-12 form-row">
                         <div>
-                          <mat-radio-button *ngIf="format.key === componentImportTypes.MSTest" id="testDescription"
-                            name="testDescription" [value]="componentImportTestNameTypes.Description">Unit Test Description
+                          <mat-radio-button id="addToLastTestRun" name="addToLastTestRun"
+                            [value]="componentImportProcessTypes.AddToLastTestRun.key">
+                            {{componentImportProcessTypes.AddToLastTestRun.name}}
                           </mat-radio-button>
                         </div>
                       </div>
                     </mat-radio-group>
+                  </div>
+
+                  <div class="col-md-12 form-row">
+                    <div *ngIf="
+                    fileListArray?.length > 0 && format.key.isTestNameNodeNeeded
+                  " class="panel panel-default import-results-panel col-md-12 it-test-name-selector clearfix">
+                      <div>
+                        <p>What do you want to use as test name?*</p>
+                      </div>
+                      <mat-radio-group name="testNameType" [(ngModel)]="testNameType" aria-label="Select an option">
+                        <div class="col-md-12 form-row">
+                          <div>
+                            <mat-radio-button id="testClassName" name="testClassName"
+                              [value]="componentImportTestNameTypes.Class">{{componentImportTestNameTypes.Class.name}}
+                            </mat-radio-button>
+                          </div>
+                        </div>
+                        <div class="col-md-12 form-row">
+                          <div>
+                            <mat-radio-button *ngIf="format.key !== componentImportTypes.NUnit_v3" id="testName"
+                              name="testName" [value]="componentImportTestNameTypes.Name">
+                              {{componentImportTestNameTypes.Name.name}}
+                            </mat-radio-button>
+                          </div>
+                        </div>
+                        <div class="col-md-12 form-row">
+                          <div>
+                            <mat-radio-button *ngIf="format.key === componentImportTypes.NUnit_v3" id="featureName"
+                              name="featureName" [value]="componentImportTestNameTypes.FeatureName">
+                              {{componentImportTestNameTypes.FeatureName.name}}
+                            </mat-radio-button>
+                          </div>
+                        </div>
+                        <div class="col-md-12 form-row">
+                          <div>
+                            <mat-radio-button *ngIf="format.key === componentImportTypes.MSTest" id="testDescription"
+                              name="testDescription" [value]="componentImportTestNameTypes.Description">
+                              {{componentImportTestNameTypes.Description.name}}
+                            </mat-radio-button>
+                          </div>
+                        </div>
+                      </mat-radio-group>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -195,7 +201,8 @@
                 <div class="col-md-6">
 
                   <div class="col-md-12 form-row">
-                    <div *ngIf="suite && !importParameters.addToLastTestRun" class="col-md-12">
+                    <div *ngIf="suite && !(processType === componentImportProcessTypes.AddToLastTestRun.key)"
+                      class="col-md-12">
                       <label for="testrun">Test Run:</label>
                       <lookup-autocomplete id="testrun" name="testrun" [(model)]="testrun" [allowEmptyValue]="true"
                         [propertiesToShow]="['start_time', 'build_name']" [array]="testruns" placeholder="None">
@@ -208,7 +215,7 @@
                             reqMark("buildName") ? "*" : ""
                           }}:</label>
                     <input [required]="reqMark('buildName')" id="build" name="build"
-                      [(ngModel)]="importParameters.buildName" type="text" trim="blur" class="form-control"
+                      [(ngModel)]="buildName" type="text" trim="blur" class="form-control"
                       placeholder="{{ getBuildName() }}" />
                   </div>
 
@@ -273,8 +280,8 @@
           <td>
             <div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
               <button *ngIf="
-                  !importParameters.singleTestRun &&
-                  !importParameters.addToLastTestRun
+                  !(processType === componentImportProcessTypes.SingleTestRun.key) &&
+                  !(processType === componentImportProcessTypes.AddToLastTestRun.key)
                 " type="submit" [disabled]="
                   loadingInProgress ||
                   form.invalid ||

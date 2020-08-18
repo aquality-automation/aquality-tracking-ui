@@ -1,8 +1,8 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
-body [class^='mat-'],
-body [class*=' mat-'] {
+body [class^="mat-"],
+body [class*=" mat-"] {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-style: normal;
@@ -17,7 +17,7 @@ body [class*=' mat-'] {
 }
 
 body .material-icons {
-  font-family: 'Material Icons';
+  font-family: "Material Icons";
 }
 
 body,
@@ -49,12 +49,12 @@ a:hover {
   text-decoration: none;
 }
 
-ng-component>.panel-heading {
+ng-component > .panel-heading {
   margin-top: 20px !important;
   margin-bottom: 20px !important;
 }
 
-.simple-modal>.panel-heading {
+.simple-modal > .panel-heading {
   margin-top: 0px !important;
 }
 
@@ -94,7 +94,7 @@ h4 {
   text-align: center;
 }
 
-.table tbody>tr>td.vert-aligned {
+.table tbody > tr > td.vert-aligned {
   vertical-align: middle;
 }
 
@@ -143,7 +143,7 @@ select.optional-selectbox {
 }
 
 .charts-row {
-  max-height: 300px
+  max-height: 300px;
 }
 
 .user-text {
@@ -160,12 +160,12 @@ label {
   width: auto !important;
 }
 
-inline-editor-textarea>textarea {
+inline-editor-textarea > textarea {
   width: 100% !important;
   min-height: 100px !important;
 }
 
-inline-editor-number>input {
+inline-editor-number > input {
   width: 100% !important;
 }
 
@@ -242,7 +242,7 @@ pre.logs-form {
   min-height: 50px;
 }
 
-.editable-row>label {
+.editable-row > label {
   margin-top: 6px;
 }
 
@@ -269,7 +269,7 @@ pre.logs-form {
   margin: 0;
 }
 
-app-modal>.overlay {
+app-modal > .overlay {
   display: block;
 }
 
@@ -341,7 +341,7 @@ ul.spinner {
   transform: rotate(45deg) translate(-50%, -50%);
 }
 
-ul.spinner>li {
+ul.spinner > li {
   list-style-type: none;
   position: absolute;
   top: 0px;
@@ -554,7 +554,7 @@ ul.spinner>li {
   font-weight: 700 !important;
 }
 
-.sn-progress-loader>span {
+.sn-progress-loader > span {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
@@ -573,7 +573,7 @@ ul.spinner>li {
 input.ng-invalid.ng-touched:not(.is-invalid) {
   color: #a94442;
   background-color: #f2dede;
-  border-color: #a94442
+  border-color: #a94442;
 }
 
 .chart-holder {
@@ -603,7 +603,7 @@ input:-moz-placeholder {
   opacity: 0;
 }
 
-tr:hover>td>.row-action-button {
+tr:hover > td > .row-action-button {
   opacity: 1;
 }
 
@@ -650,12 +650,12 @@ tfoot {
   width: 100%;
 }
 
-.modal-buttons>.modal-buttons-form {
+.modal-buttons > .modal-buttons-form {
   display: table;
   margin: 0 auto;
 }
 
-.modal-buttons>.modal-buttons-form>button {
+.modal-buttons > .modal-buttons-form > button {
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
@@ -684,7 +684,7 @@ td input.form-control {
   min-width: 150px !important;
 }
 
-td .input-group input.form-control{
+td .input-group input.form-control {
   min-width: unset !important;
 }
 
@@ -744,7 +744,7 @@ td .input-group input.form-control{
   min-height: 30px !important;
 }
 
-.ms-lookup-sm .ms-main-selector>.ms-placeholder {
+.ms-lookup-sm .ms-main-selector > .ms-placeholder {
   color: #999999;
   font-size: 12px;
 }
@@ -761,7 +761,7 @@ label {
   font-size: 16px;
 }
 
-div>.panel-default+.panel-default {
+div > .panel-default + .panel-default {
   margin-left: 15px;
 }
 
@@ -810,13 +810,13 @@ angular2-date-picker .wc-date-container {
   height: inherit !important;
 }
 
-angular2-date-picker .wc-date-container>i {
+angular2-date-picker .wc-date-container > i {
   position: absolute;
   top: -3px;
   right: 3px;
 }
 
-angular2-date-picker .wc-date-container>i.fa-calendar {
+angular2-date-picker .wc-date-container > i.fa-calendar {
   display: none;
   float: none !important;
 }
@@ -836,7 +836,7 @@ textarea.form-control {
   font-size: 12px !important;
 }
 
-.full-width inline-editor-text>input {
+.full-width inline-editor-text > input {
   height: 27px !important;
   margin-top: 2px;
   margin-bottom: 2px;
@@ -844,7 +844,7 @@ textarea.form-control {
   width: calc(100% - 55px) !important;
 }
 
-.name-field inline-editor-text>input {
+.name-field inline-editor-text > input {
   font-size: 25px !important;
   margin-top: 2px;
   margin-bottom: 2px;
@@ -861,7 +861,7 @@ textarea.form-control {
   height: auto;
 }
 
-.c-inline-editor.inlineEditForm.form-inline>div.form-group {
+.c-inline-editor.inlineEditForm.form-inline > div.form-group {
   width: 100%;
 }
 
@@ -901,9 +901,9 @@ textarea.form-control {
   min-height: calc(100vh - 50px);
 }
 
-.glyphicon-refresh-animate>svg {
-  -webkit-animation: spin2 .7s infinite linear;
-  animation: spin2 .7s infinite linear;
+.glyphicon-refresh-animate > svg {
+  -webkit-animation: spin2 0.7s infinite linear;
+  animation: spin2 0.7s infinite linear;
 }
 
 .line {
@@ -924,7 +924,7 @@ textarea.form-control {
   }
 }
 
-@Keyframes spin {
+@keyframes spin {
   from {
     transform: scale(1) rotate(0deg);
   }
@@ -941,7 +941,7 @@ textarea.form-control {
 pre {
   background-color: var(--light);
   padding: 20px;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
 }
 
 html,
@@ -953,7 +953,6 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-
 
 ngx-wig {
   .nw-toolbar {
@@ -979,4 +978,17 @@ table-filter app-datepicker {
   .mat-form-field-underline {
     position: initial !important;
   }
+}
+
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element {
+  opacity: 0 !important; /*click effect color change*/
+  background-color: #28a745 !important;
+}
+
+.mat-radio-button.mat-accent .mat-radio-inner-circle {
+  background-color: #28a745 !important; /*inner circle color change*/
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+  border-color: #28a745 !important; /*outer ring color change*/
 }
