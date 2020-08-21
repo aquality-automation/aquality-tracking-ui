@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
-import { TestResult, TestResultAttachment } from '../../../../shared/models/test-result';
-import { Router, ActivatedRoute } from '@angular/router';
-import { ListToCsvService } from '../../../../services/listToCsv.service';
+import { TestResult } from '../../../../shared/models/test-result';
+import { ActivatedRoute } from '@angular/router';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Issue } from '../../../../shared/models/issue';
 import { User } from '../../../../shared/models/user';
@@ -18,8 +17,6 @@ import { TestResultService } from 'src/app/services/test-result/test-result.serv
 import { TestService } from 'src/app/services/test/test.service';
 import { FinalResultService } from 'src/app/services/final-result/final_results.service';
 import { ResultSearcherComponent } from '../results-searcher/results-searcher.component';
-import { GlobalDataService } from 'src/app/services/globaldata.service';
-import { TransformationsService } from 'src/app/services/transformations.service';
 
 @Component({
   selector: 'results-grid',
@@ -58,14 +55,10 @@ export class ResultGridComponent implements OnInit {
     private testrunService: TestRunService,
     private testService: TestService,
     private route: ActivatedRoute,
-    private router: Router,
     public userService: UserService,
     private finalResultService: FinalResultService,
     private permissions: PermissionsService,
-    private issueService: IssueService,
-    private globalDataService: GlobalDataService,
-    private transformationService: TransformationsService
-  ) { }
+    private issueService: IssueService  ) { }
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
@@ -200,9 +193,6 @@ export class ResultGridComponent implements OnInit {
       result['testrun'] = testruns.find(x => x.id === result.test_run_id);
       result['duration'] = this.calculateDuration(result);
       result['combinedLastResults'] = this.testService.combineLastResults(result.test);
-      result.attachments?.forEach(attachment => {
-        attachment.name = this.transformationService.getFileNameFromPath(attachment.path);
-      });
     });
     this.listOfActiveIssues = this.listOfIssues.filter(x => x.status_id !== 4);
     this.createColumns();

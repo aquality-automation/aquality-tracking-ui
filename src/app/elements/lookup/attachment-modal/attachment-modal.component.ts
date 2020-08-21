@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
-import { TransformationsService } from 'src/app/services/transformations.service';
 
 @Component({
   selector: 'attachment-modal',
@@ -14,28 +13,23 @@ export class AttachmentModalComponent implements OnInit {
   @Input() isHidden: boolean;
   @Input() testResultAttachment: TestResultAttachment;
   @Output() attachModalClosed = new EventEmitter();
+  src: any;
 
-  constructor(private transformationsService: TransformationsService, private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer) { }
 
   ngOnInit(): void {
   }
 
-  hideModal() {
-    this.isHidden = true;
-    this.testResultAttachment = null;
-    this.attachModalClosed.emit();
-  }
-
-  generateData() {
+  generateSrc(): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
 
-  getTitle() {
-    return this.transformationsService.getFileNameFromPath(this.testResultAttachment.path);
+  hideModal() {
+    this.attachModalClosed.emit();
   }
 
   download() {
-    BlobUtils.download(this.getBlob(), this.getTitle());
+    BlobUtils.download(this.getBlob(), this.testResultAttachment.name);
   }
 
   private getBlob(): Blob {

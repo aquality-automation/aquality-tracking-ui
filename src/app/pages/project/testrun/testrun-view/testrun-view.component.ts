@@ -14,7 +14,6 @@ import { EmailSettingsService } from 'src/app/services/email-settings/email-sett
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { ResultResolutionsChartsComponent } from 'src/app/elements/charts/resultResolutions/resultResolutions.charts.component';
 import { ResultGridComponent } from '../../results/results-grid/results-grid.component';
-import { TestResultService } from 'src/app/services/test-result/test-result.service';
 
 @Component({
   templateUrl: './testrun-view.component.html',
@@ -39,7 +38,7 @@ export class TestRunViewComponent implements OnInit {
   canEdit: boolean;
   canSendEmail: boolean;
   icons = { faPlay, faStop, faPaperPlane, faFilePdf };
-  test;
+  test: any;
 
   constructor(
     private milestoneService: MilestoneService,
@@ -48,8 +47,7 @@ export class TestRunViewComponent implements OnInit {
     public userService: UserService,
     private emailSettingService: EmailSettingsService,
     private router: Router,
-    private permissions: PermissionsService,
-    private testResultService: TestResultService
+    private permissions: PermissionsService
   ) { }
 
   async ngOnInit() {

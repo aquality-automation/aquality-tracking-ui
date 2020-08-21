@@ -3,7 +3,7 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title">{{getTitle()}}</h4>
+                <h4 class="modal-title">{{testResultAttachment.name}}</h4>
                 <button type="button" class="close" aria-label="Close" (click)="hideModal()">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div *ngIf="!isHidden" class="col-sm-12 preview">
-                        <iframe width='100%' height='500' [src]='generateData()'></iframe>
+                        <iframe width='100%' height='500' [src]='generateSrc()'></iframe>
                     </div>
                 </div>
                 <div class="col-sm-12 modal-footer modal-buttons">

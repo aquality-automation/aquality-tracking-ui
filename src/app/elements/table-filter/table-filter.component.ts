@@ -92,7 +92,6 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   };
   type: string;
   testResultAttachment: TestResultAttachment;
-  attachModalTitle: string;
   hideAttachModal = true;
 
   constructor(
@@ -146,13 +145,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   attachModalClosed() {
-    this.attachModalTitle = '';
+    this.testResultAttachment = null;
     this.hideAttachModal = true;
   }
 
   async processAttachModal(testResultAttachment: TestResultAttachment) {
     this.hideAttachModal = false;
-    this.testResultAttachment = await (await (this.testResultService.getAttachment(testResultAttachment)));
+    this.testResultAttachment = await (this.testResultService.getAttachment(testResultAttachment));
   }
 
   getDefaultSorter(col: TFColumn): TFSorting {
