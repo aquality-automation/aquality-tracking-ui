@@ -39,7 +39,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NumberRangeComponent } from './number-range/number-range.component';
-import { AttachmentModalComponent } from './lookup/attachment-modal/attachment-modal/attachment-modal.component';
+import { AttachmentModalComponent } from './lookup/attachment-modal/attachment-modal.component';
 
 const maskConfigFunction: () => Partial<IConfig> = () => {
   return {

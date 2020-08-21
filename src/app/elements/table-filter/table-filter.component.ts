@@ -11,7 +11,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
-import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal/attachment-modal.component';
+import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal.component';
 import { TestResultService } from 'src/app/services/test-result/test-result.service';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
 

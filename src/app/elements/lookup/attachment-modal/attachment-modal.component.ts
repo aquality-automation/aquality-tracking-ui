@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import FileSaver from 'file-saver';
+import BlobUtils from '../../../shared/utils/blob.utils';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
 import { TransformationsService } from 'src/app/services/transformations.service';
 
@@ -22,12 +22,12 @@ export class AttachmentModalComponent implements OnInit {
 
   hideModal() {
     this.isHidden = true;
+    this.testResultAttachment = null;
     this.attachModalClosed.emit();
   }
 
   generateData() {
-    const blob = new Blob([atob(this.testResultAttachment.attachment.toString())], {type: this.testResultAttachment.mimeType});
-    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(blob));
+    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
 
   getTitle() {
@@ -35,7 +35,10 @@ export class AttachmentModalComponent implements OnInit {
   }
 
   download() {
-    const blob = new Blob([atob(this.testResultAttachment.attachment.toString())], {type: this.testResultAttachment.mimeType});
-    FileSaver.saveAs(blob, this.getTitle());
+    BlobUtils.download(this.getBlob(), this.getTitle());
+  }
+
+  private getBlob(): Blob {
+    return BlobUtils.b64toBlob(this.testResultAttachment.attachment, this.testResultAttachment.mimeType);
   }
 }
