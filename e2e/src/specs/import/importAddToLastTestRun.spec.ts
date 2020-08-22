@@ -13,7 +13,7 @@ import { ImportFormats } from '../../api/importer.api';
 describe('Import Test Run: Add to Last Testrun', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const ui = {
-        buildName: 'cucumber',
+        buildName: 'UIImport-undefined-undefined',
         suiteName: 'UIImport'
     };
     const api = {

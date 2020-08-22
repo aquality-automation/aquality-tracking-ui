@@ -2,40 +2,36 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ImportBodyPattern } from '../../../shared/models/project';
 import { TestRun } from '../../../shared/models/testrun';
-import { Import } from '../../../shared/models/import';
+import { Import } from '../../../shared/models/imports/import';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { TestSuite } from 'src/app/shared/models/test-suite';
 import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { ProjectService } from 'src/app/services/project/project.service';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
-import { importTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
+import { importTypes, importTestNameTypes, importProcessTypes, ImportService, ImportParameters } from 'src/app/services/import/import.service';
+import { ImportType } from 'src/app/shared/models/imports/import-type';
+import { ImportTestNameType } from 'src/app/shared/models/imports/import-test-name-type';
 
 @Component({
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.scss']
 })
 export class ImportComponent implements OnInit {
-  testNameOptions:
-    {
-      testName: boolean;
-      testDescription: boolean;
-      featureTest: boolean;
-      testClassName: boolean;
-      selectedKey?: '' | 'testName' | 'featureNameTestName' | 'className' | 'descriptionNode';
-    };
+
   importParameters: ImportParameters = new ImportParameters();
   suites: TestSuite[];
   suite: TestSuite;
   testruns: TestRun[] = [];
   testrun: TestRun;
+  buildName: string;
   fileListArray: File[];
   fileStatusArray: {}[] = [];
   uploadedArray: {}[] = [];
   loadingInProgress: boolean;
   pattern: ImportBodyPattern;
   bodyPatterns: ImportBodyPattern[];
-  format: { name: string, key: string };
+  format: { name: string, key: ImportType };
   importResults: Import[];
   resultsColumnsToShow: TFColumn[];
   timerToken: any;
@@ -53,19 +49,23 @@ export class ImportComponent implements OnInit {
     color: 1
   }];
   sortBy = { order: TFOrder.asc, property: 'started' };
-  imports: { name: string, key: string }[] = [
-    { name: 'MSTest (.trx)', key: importTypes.MSTest },
-    { name: 'Robot (.xml)', key: importTypes.Robot },
-    { name: 'TestNG (.xml)', key: importTypes.TestNG },
-    { name: 'JUnit (.xml)', key: importTypes.JUnit },
-    { name: 'Cucumber (.json)', key: importTypes.Cucumber },
-    { name: 'PHP Codeception (.xml)', key: importTypes.PHPCodeception },
-    { name: 'NUnit v2 (.xml)', key: importTypes.NUnit_v2 },
-    { name: 'NUnit v3 (.xml)', key: importTypes.NUnit_v3 }
+  imports: { name: string, key: ImportType }[] = [
+    { name: importTypes.MavenSurefire.getNameAndExtension(), key: importTypes.MavenSurefire },
+    { name: importTypes.MSTest.getNameAndExtension(), key: importTypes.MSTest },
+    { name: importTypes.Robot.getNameAndExtension(), key: importTypes.Robot },
+    { name: importTypes.Cucumber.getNameAndExtension(), key: importTypes.Cucumber },
+    { name: importTypes.PHPCodeception.getNameAndExtension(), key: importTypes.PHPCodeception },
+    { name: importTypes.NUnit_v2.getNameAndExtension(), key: importTypes.NUnit_v2 },
+    { name: importTypes.NUnit_v3.getNameAndExtension(), key: importTypes.NUnit_v3 }
   ];
   icons = {
     faInfoCircle
   };
+  componentImportTypes = importTypes;
+  componentImportTestNameTypes = importTestNameTypes;
+  componentImportProcessTypes = importProcessTypes;
+  testNameType: ImportTestNameType;
+  processType: string;
 
   constructor(
     private importService: ImportService,
@@ -77,12 +77,10 @@ export class ImportComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
-    this.testNameOptions = this.testNameTypes();
     this.bodyPatterns = await this.projectService.getImportBodyPatterns({ project_id: this.route.snapshot.params.projectId });
     this.suiteService.getTestSuite({ project_id: this.route.snapshot.params.projectId }).then(res => {
       this.suites = res;
     });
-
     this.getImportResults();
   }
 
@@ -122,6 +120,22 @@ export class ImportComponent implements OnInit {
       this.fileStatusArray.push(false);
     }
     event.target.value = '';
+    this.setDefaultConfigValues();
+  }
+
+  /**
+   * to simplify manual import process we setup default 
+   * configuration values for process type and test name type
+   */
+  setDefaultConfigValues() {
+    this.processType = this.componentImportProcessTypes.TestRunPerFile.key
+    // as 'class name' type can be applied to any formats we set it by default
+    if (this.format.key.isTestNameNodeNeeded) {
+      this.testNameType = this.componentImportTestNameTypes.Class
+    }
+
+    // reset suite to empty value
+    this.suite = undefined;
   }
 
   removeAll() {
@@ -178,12 +192,17 @@ export class ImportComponent implements OnInit {
 
   buildParams() {
     this.importParameters.projectId = this.route.snapshot.params.projectId;
-    this.importParameters.testNameKey = this.testNameOptions.selectedKey;
-    this.importParameters.format = this.format.key;
+    this.importParameters.format = this.format.key.name;
+    if (this.format.key.isTestNameNodeNeeded) {
+      this.importParameters.testNameKey = this.testNameType.key
+    }
     this.importParameters.suite = this.suite.name;
     if (this.testrun) {
       this.importParameters.testrunId = this.testrun.id;
     }
+    this.importParameters.addToLastTestRun = (this.processType === this.componentImportProcessTypes.AddToLastTestRun.key);
+    this.importParameters.singleTestRun = (this.processType === this.componentImportProcessTypes.SingleTestRun.key);
+    this.importParameters.buildName = this.buildName === undefined ? this.getBuildName() : this.buildName;
   }
 
   async createBodyPattern($event) {
@@ -204,46 +223,34 @@ export class ImportComponent implements OnInit {
         return true;
       case 'executor':
       case 'buildName':
-        return this.importParameters.singleTestRun;
+        return this.processType == this.componentImportProcessTypes.SingleTestRun.key;
     }
   }
 
-  IsTestNameValid() {
-    if (this.format.key === importTypes.MSTest) {
-      return this.testNameOptions.testClassName || this.testNameOptions.testName || this.testNameOptions.testDescription;
-    } else if (this.format.key === importTypes.TestNG || this.format.key === importTypes.JUnit) {
-      return this.testNameOptions.testClassName || this.testNameOptions.testName;
-    } else if (this.format.key === importTypes.NUnit_v3) {
-      return this.testNameOptions.testClassName || this.testNameOptions.featureTest;
-    } else {
-      return true;
+  getBuildName() {
+    return this.suite?.name + "-" + this.importParameters.environment + "-" + this.importParameters.author;
+  }
+
+  isTestNameExtractStrategyDefined() {
+    switch (this.format.key) {
+      case importTypes.MSTest:
+        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name || this.testNameType === importTestNameTypes.Description;
+      case importTypes.MavenSurefire:
+        return this.testNameType === importTestNameTypes.Class || this.testNameType === importTestNameTypes.Name;
+      case importTypes.NUnit_v3:
+        return this.testNameType === importTestNameTypes.FeatureName || this.testNameType === importTestNameTypes.Class;
+      case importTypes.Robot:
+      case importTypes.NUnit_v2:
+      case importTypes.Cucumber:
+      case importTypes.PHPCodeception:
+        return true;
+      default:
+        return false;
     }
   }
 
   async setSuite($event) {
     this.suite = $event;
     this.testruns = await this.testrunService.getTestRun({ test_suite_id: this.suite.id });
-  }
-
-  testNameTypes() {
-    let props = 0;
-
-    return {
-      get testName() { return props === 1; },
-      set testName(val) { if (val) { props = 1; } },
-      get testDescription() { return props === 2; },
-      set testDescription(val) { if (val) { props = 2; } },
-      get featureTest() { return props === 3; },
-      set featureTest(val) { if (val) { props = 3; } },
-      get testClassName() { return props === 4; },
-      set testClassName(val) { if (val) { props = 4; } },
-      get selectedKey() {
-        if (props === 0) { return ''; }
-        if (props === 1) { return 'testName'; }
-        if (props === 2) { return 'descriptionNode'; }
-        if (props === 3) { return 'featureNameTestName'; }
-        if (props === 4) { return 'className'; }
-      }
-    };
   }
 }

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.1 (2020-08-18)
+Changes:
+  - Imports view simplified and redesigned
+
 ## 1.0.0 (2020-07-28)
 
 Features:

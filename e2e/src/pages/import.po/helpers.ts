@@ -1,8 +1,8 @@
 import { testNameTypes, elements } from './constants';
-import { UiSwitch } from '../../elements/ui-switch';
+import { MatRadioButton } from 'src/elements/mat-radio.element';
 
 class ImportHelper {
-    getTestNameSwitcher(testNameType: string): UiSwitch {
+    getTestNameSwitcher(testNameType: string): MatRadioButton {
         switch (testNameType) {
             case testNameTypes.className:
                 return elements.classNameSwitch;
