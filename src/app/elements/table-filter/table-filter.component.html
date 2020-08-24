@@ -78,10 +78,12 @@
 
                         <div *ngIf="col.type === 'date' && col.filter">
                             <app-datepicker class="top-filter-date" [model]="getFilterDate(col.property, 'from')"
-                                (modelChange)="handleDateFilterUpdate({property:col.property, from:$event})" label="From" width="75">
+                                (modelChange)="handleDateFilterUpdate({property:col.property, from:$event})"
+                                label="From" width="75">
                             </app-datepicker>
                             <app-datepicker class="bottom-filter-date" [model]="getFilterDate(col.property, 'to')"
-                                (modelChange)="handleDateFilterUpdate({property:col.property, to:$event})" label="To" width="75">
+                                (modelChange)="handleDateFilterUpdate({property:col.property, to:$event})" label="To"
+                                width="75">
                             </app-datepicker>
                         </div>
                         <lookup class="ms-lookup-sm" [small]="true" [cutLongText]="true"
@@ -114,17 +116,14 @@
 
                         <div *ngIf="(col.type === 'percent' || col.type === 'number') && col.filter"
                             [ngClass]="{ 'has-error': isRangeInvalid(col) }">
-                            <number-range
-                                [from]="rangeFilterData(col.property, 'from')"
-                                [to]="rangeFilterData(col.property, 'to')"
-                                [small]="true"
+                            <number-range [from]="rangeFilterData(col.property, 'from')"
+                                [to]="rangeFilterData(col.property, 'to')" [small]="true"
                                 [max]="col.type === 'percent' ? 100 : undefined"
                                 (fromChange)="handleRangeFilterChange(col, $event, 'from')"
                                 (toChange)="handleRangeFilterChange(col, $event, 'to')"
-                                (cleared)="removeRangeFilter(col.property)"
-                            ></number-range>
+                                (cleared)="removeRangeFilter(col.property)"></number-range>
                         </div>
-                        
+
                         <lookup-autocomplete-multiselect class="ms-lookup-sm" [cutLongText]="true"
                             *ngIf="col.type === 'multiselect' && col.filter" placeholder="{{col?.name}} Filter"
                             [propertiesToShow]="col.lookup.propToShow"
@@ -255,8 +254,7 @@
                             </lookup-autocomplete-multiselect>
 
                             <input *ngIf="col.type === 'time'" class="form-control input-sm ft-duration-input"
-                                mask="00:00:00"
-                                [name]="col.property + 'bulk'" type="text"
+                                mask="00:00:00" [name]="col.property + 'bulk'" type="text"
                                 [ngModel]="transformationsService.calculateDuration(transformationsService.getPropertyValue(bulkChangeEntity, col.property))"
                                 (ngModelChange)="setDuration(bulkChangeEntity, col.property, $event)" />
                         </div>
@@ -272,7 +270,7 @@
                 'warning': rowColor(entity)=='warning'
                 }">
                     <td (click)="rowClicked(entity, col, $event)" *ngFor="let col of columns" class="vert-aligned"
-                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' }" [customListener]="col.listeners"
+                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' || col.type === 'attachmentModals' }" [customListener]="col.listeners"
                         (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
                         <div *ngIf="!isPropertyShouldBeHidden(entity, col.property)" class="ft-cell"
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
@@ -329,7 +327,8 @@
                                 (change)="sendUpdate(entity)"
                                 [disabled]="!col.editable || entity.constantRow || notEditableByProperty(entity, col)" />
 
-                            <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link" class="table-cell-link"
+                            <a *ngIf="col.type === 'link' && transformationsService.getPropertyValue(entity, col.property).link"
+                                class="table-cell-link"
                                 [routerLink]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
 
                             <a *ngIf="!col.editable && col.link" [routerLink]="createRouterLink(col, entity)"
@@ -337,15 +336,17 @@
 
                             <a *ngIf="col.type === 'externalLink' && transformationsService.getPropertyValue(entity, col.property).link"
                                 [href]="transformationsService.getPropertyValue(entity, col.property).link">{{transformationsService.getPropertyValue(entity, col.property).text}}</a>
-                                
-                            <div *ngIf="col.type === 'externalLinks' && transformationsService.getPropertyValue(entity, col.property)">
-                                <div *ngFor="let externalLink of transformationsService.getPropertyValue(entity, col.property)">
-                                    <a  [href]="externalLink.link">
+
+                            <div
+                                *ngIf="col.type === 'externalLinks' && transformationsService.getPropertyValue(entity, col.property)">
+                                <div
+                                    *ngFor="let externalLink of transformationsService.getPropertyValue(entity, col.property)">
+                                    <a [href]="externalLink.link">
                                         {{externalLink.name}}
                                     </a>
                                 </div>
                             </div>
-                            
+
                             <div
                                 *ngIf="col.type === 'link' && !transformationsService.getPropertyValue(entity, col.property).link">
                                 {{transformationsService.getPropertyValue(entity, col.property).text}}</div>
@@ -382,8 +383,7 @@
                                 *ngIf="col.type === 'time' && (!col.editable || entity.constantRow || notEditableByProperty(entity, col))">
                                 {{transformationsService.msToDurationString(transformationsService.getPropertyValue(entity, col.property)) | mask: '00:00:00'}}
                             </div>
-                            <input
-                                mask="00:00:00"
+                            <input mask="00:00:00"
                                 *ngIf="col.type === 'time' && col.editable && !entity.constantRow  && !notEditableByProperty(entity, col)"
                                 class="form-control input-sm ft-duration-input" [name]="col.property + rowNum"
                                 type="text"
@@ -404,12 +404,13 @@
                                 [entitiesId]="transformationsService.getPropertyValue(entity, col.entitiesIdproperty)">
                             </app-color-dots>
 
-                            <div *ngIf="col.type === 'attachmentModals' && transformationsService.getPropertyValue(entity, col.property)">
-                                <div *ngFor="let externalLink of transformationsService.getPropertyValue(entity, col.property)">
-                                    <a (click)="processAttachModal(externalLink)">
-                                        {{externalLink.name}}
-                                    </a>
-                                </div>
+                            <div
+                                *ngIf="col.type === 'attachmentModals' && transformationsService.getPropertyValue(entity, col.property).length>0">
+                                <button
+                                    class="btn btn-sm btn-outline-dark"
+                                    (click)="openAttachModal(entity.test.name, transformationsService.getPropertyValue(entity, col.property))">
+                                    <fa-icon class="icon" [icon]="icons.faFile"></fa-icon>
+                                </button>
                             </div>
                         </div>
 
@@ -419,7 +420,8 @@
                         </button>
                     </td>
                 </tr>
-                <attachment-modal [(isHidden)]="hideAttachModal" (attachModalClosed)="attachModalClosed()" [testResultAttachment]="testResultAttachment">
+                <attachment-modal [(isHidden)]="hideAttachModal" (attachModalClosed)="attachModalClosed()"
+                    [testResultAttachments]="testResultAttachments" [title]="attachModalTitle">
                 </attachment-modal>
             </tbody>
             <tfoot *ngIf="!hidePageSets">

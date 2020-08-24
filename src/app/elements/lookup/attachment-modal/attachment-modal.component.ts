@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, OnDestroy } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
+import { TestResultService } from 'src/app/services/test-result/test-result.service';
 
 @Component({
   selector: 'attachment-modal',
@@ -11,25 +12,35 @@ import { TestResultAttachment } from 'src/app/shared/models/test-result';
 export class AttachmentModalComponent implements OnInit {
 
   @Input() isHidden: boolean;
-  @Input() testResultAttachment: TestResultAttachment;
+  @Input() title: string;
+  @Input() testResultAttachments: TestResultAttachment[];
   @Output() attachModalClosed = new EventEmitter();
-  src: any;
+  src: any = null;
+  testResultAttachment: TestResultAttachment = null;
+  cachedTestResultAttachment: TestResultAttachment[] = [];
 
-  constructor(private sanitizer: DomSanitizer) { }
+  constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) { }
 
-  ngOnInit(): void {
-  }
-
-  generateSrc(): SafeResourceUrl {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
+  async ngOnInit() {
   }
 
   hideModal() {
+    this.src = null;
     this.attachModalClosed.emit();
   }
 
   download() {
     BlobUtils.download(this.getBlob(), this.testResultAttachment.name);
+  }
+
+  async showAttachment(testResultAttachment: TestResultAttachment) {
+    const attachment = this.cachedTestResultAttachment.find(result => result.id === testResultAttachment.id);
+    if (attachment === undefined) {
+      this.testResultAttachment = await this.testResultService.getAttachment(testResultAttachment);
+      this.cachedTestResultAttachment.push(testResultAttachment);
+    }
+
+    this.src = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
 
   private getBlob(): Blob {

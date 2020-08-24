@@ -6,13 +6,12 @@ import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.utils';
 import {
-  faColumns, faCheck, faTimes, faArrowUp,
-  faArrowDown, faSyncAlt, faChevronUp, faChevronDown
+  faColumns, faCheck, faTimes, faArrowUp, faFile,
+  faArrowDown, faSyncAlt, faChevronUp, faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
 import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal.component';
-import { TestResultService } from 'src/app/services/test-result/test-result.service';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
 
 @Component({
@@ -88,10 +87,12 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     faArrowDown,
     faSyncAlt,
     faChevronUp,
-    faChevronDown
+    faChevronDown,
+    faFile
   };
   type: string;
-  testResultAttachment: TestResultAttachment;
+  testResultAttachments: TestResultAttachment[];
+  attachModalTitle: string;
   hideAttachModal = true;
 
   constructor(
@@ -99,8 +100,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     private route: ActivatedRoute,
     private router: Router,
     private notificationsService: NotificationsService,
-    public transformationsService: TransformationsService,
-    private testResultService: TestResultService
+    public transformationsService: TransformationsService
   ) {
     this.filterHelper = new FilterHelper(this.transformationsService, this.route, this.router);
   }
@@ -118,7 +118,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     if ((this.allowDelete || this.allowCreate || this.allowBulkUpdate) && (this.columns && !this.columns.find(x => x.name === 'Action'))) {
       this.columns.push({ name: 'Action', property: 'action', type: TFColumnType.button, editable: true });
     }
-    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete)  && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
+    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete) && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
       this.columns.unshift({ name: 'Selector', property: 'ft_select', type: TFColumnType.selector, editable: true, class: 'fit' });
     }
   }
@@ -145,13 +145,15 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   attachModalClosed() {
-    this.testResultAttachment = null;
+    this.attachModalTitle = null;
+    this.testResultAttachments = null;
     this.hideAttachModal = true;
   }
 
-  async processAttachModal(testResultAttachment: TestResultAttachment) {
+  openAttachModal(testname: string, testResultAttachments: TestResultAttachment[]) {
+    this.attachModalTitle = testname;
+    this.testResultAttachments = testResultAttachments;
     this.hideAttachModal = false;
-    this.testResultAttachment = await (this.testResultService.getAttachment(testResultAttachment));
   }
 
   getDefaultSorter(col: TFColumn): TFSorting {

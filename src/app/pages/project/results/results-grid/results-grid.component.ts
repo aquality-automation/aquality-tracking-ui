@@ -28,7 +28,7 @@ export class ResultGridComponent implements OnInit {
   public testResults: TestResult[];
   public refreshedResults: Promise<void>;
   @Input() sortBy = { property: 'final_result.name', order: TFOrder.desc };
-  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue', 'Attachments'];
+  @Input() showOnly: string[] = ['Test Name', 'Fail Reason', 'Result', 'Resolution', 'Last Results', 'Issue', 'Attach'];
   @Output() resultUpdated = new EventEmitter<TestResult[]>();
   @Output() refreshed = new EventEmitter<TestResult[]>();
   public listOfResolutions: ResultResolution[];
@@ -297,7 +297,7 @@ export class ResultGridComponent implements OnInit {
         class: 'ft-width-250'
       },
       {
-        name: 'Attachments',
+        name: 'Attach',
         property: 'attachments',
         type: TFColumnType.attachmentModals,
         class: 'ft-width-150'
