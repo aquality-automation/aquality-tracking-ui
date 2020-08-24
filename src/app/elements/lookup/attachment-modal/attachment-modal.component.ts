@@ -34,12 +34,13 @@ export class AttachmentModalComponent implements OnInit {
   }
 
   async showAttachment(testResultAttachment: TestResultAttachment) {
-    const attachment = this.cachedTestResultAttachment.find(result => result.id === testResultAttachment.id);
+    let attachment = this.cachedTestResultAttachment.find(result => result.id === testResultAttachment.id);
     if (attachment === undefined) {
-      this.testResultAttachment = await this.testResultService.getAttachment(testResultAttachment);
-      this.cachedTestResultAttachment.push(testResultAttachment);
+      attachment = await this.testResultService.getAttachment(testResultAttachment);
+      this.cachedTestResultAttachment.push(attachment);
     }
 
+    this.testResultAttachment = attachment;
     this.src = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
 
