@@ -1,4 +1,4 @@
-import { browser, element } from 'protractor';
+import { browser, protractor } from 'protractor';
 import { elements, baseUrl, importResultColumns, names, importTypes, testNameTypes } from './constants';
 import { BasePage } from '../base.po';
 import { waiter } from '../../utils/wait.util';
@@ -81,11 +81,11 @@ class Import extends BasePage {
   }
 
   switchOnUnitTestDescription() {
-    return elements.unitTestDescriptionSwitch.switchOn();
+    return elements.unitTestDescriptionSwitch.click();
   }
 
   switchOnIntoLastTestRun() {
-    return elements.lastTestRunSwitch.switchOn();
+    return elements.lastTestRunSwitch.click();
   }
 
   uploadFile(absolutePath: string) {
@@ -93,7 +93,7 @@ class Import extends BasePage {
   }
 
   selectTestNameType(testNameType: string) {
-    return importHelper.getTestNameSwitcher(testNameType).switchOn();
+    return importHelper.getTestNameSwitcher(testNameType).click();
   }
 
   isTestNameTypeSelected(testNameType: string) {
@@ -104,7 +104,12 @@ class Import extends BasePage {
     return importHelper.getTestNameSwitcher(testNameType).isVisible();
   }
 
-  setBuilName(value: string) {
+  async setBuilName(value: string) {
+    await elements.advancedSettingsButton.scrollIntoView();
+    await elements.advancedSettingsButton.click();
+    await browser.wait(protractor.ExpectedConditions.visibilityOf(elements.buildName.element), 5000, `Build name was not displayed under advanced settings`);
+    await elements.buildName.click();
+    await elements.buildName.clearNative();
     return elements.buildName.typeText(value);
   }
 
