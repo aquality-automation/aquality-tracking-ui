@@ -52,7 +52,12 @@ export class AttachmentModalComponent implements OnInit {
 
     this.testResultAttachment = attachment;
     this.subTitle = attachment.name;
-    this.isImage = this.testResultAttachment['mimeType'].toString().includes('image');
+    try {
+      this.isImage = this.testResultAttachment['mimeType'].toString().includes('image');
+    } catch (error) {
+      this.isImage = false;
+    }
+
     this.selectedTestResultAttachment = testResultAttachment;
     this.src = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
