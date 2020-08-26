@@ -20,6 +20,7 @@ export class AttachmentModalComponent implements OnInit {
   testResultAttachment: TestResultAttachment = null;
   cachedTestResultAttachment: TestResultAttachment[] = [];
   isImage = false;
+  selectedTestResultAttachment: TestResultAttachment;
 
   constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) { }
 
@@ -51,13 +52,8 @@ export class AttachmentModalComponent implements OnInit {
 
     this.testResultAttachment = attachment;
     this.subTitle = attachment.name;
-    try {
-      this.isImage = this.testResultAttachment['mimeType'].toString().includes('image');
-    } catch (error) {
-      console.log(error);
-      this.isImage = false;
-    }
-    console.log(this.isImage);
+    this.isImage = this.testResultAttachment['mimeType'].toString().includes('image');
+    this.selectedTestResultAttachment = testResultAttachment;
     this.src = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(this.getBlob()));
   }
 

@@ -42,12 +42,13 @@ h6 {
   width: 100%;
 }
 
-
 .btn-group-item:hover,
 .btn-group-item:active,
-.btn-group-item:focus {
-  color: #bbb;
+.btn-group-item:focus,
+.btn-group-item.selected {
+  color: white;
   box-shadow: none;
+  background-color: #abaeb2 !important;
 }
 
 img,
