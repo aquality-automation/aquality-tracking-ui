@@ -54,7 +54,6 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     FormsModule,
     RouterModule,
     DataTableModule,
-    CommonModule,
     MatMenuModule,
     FontAwesomeModule,
     ClickOutsideModule,
@@ -116,8 +115,8 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatInputModule,
     MatNativeDateModule,
     NgxMaskModule,
-    AttachmentInlineComponent,
-    NumberRangeComponent
+    NumberRangeComponent,
+    AttachmentModalComponent
   ],
   providers: [
     ListToCsvService,

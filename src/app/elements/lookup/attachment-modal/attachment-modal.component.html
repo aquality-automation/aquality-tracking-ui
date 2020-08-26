@@ -8,14 +8,16 @@
                 </button>
             </div>
             <div class="modal-body">
+                <h6 class="modal-title col-sm-8">{{subTitle}}</h6>
                 <div class="row">
-                    <div *ngIf="!isHidden" class="col-sm-10 preview">
-                        <iframe width='100%' height='500' [src]='src'></iframe>
+                    <div clickableImage *ngIf="!isHidden" class="col-sm-8 preview">
+                        <iframe *ngIf="!isImage" [src]="src" frameborder="0"></iframe>
+                        <img *ngIf="isImage" [src]="src" (click)=showInNewTab()>
                     </div>
-                    <div class="col-sm-2 line-margin">
-                        <div class="btn-group-vertical bg-light" width='100%'>
+                    <div class="col-sm-4 line-margin">
+                        <div class="col-sm-12 btnGroup">
                             <button *ngFor="let attach of testResultAttachments" (click)="showAttachment(attach)"
-                                class="btn btn-group-item">{{attach['name']}}</button>
+                                class="btn btn-group-item bg-light">{{attach['name']}}</button>
                         </div>
                     </div>
                 </div>
