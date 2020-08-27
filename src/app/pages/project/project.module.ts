@@ -99,7 +99,7 @@ import { ImportService } from 'src/app/services/import/import.service';
     IssueListComponent,
     IssueViewComponent,
     StepsListComponent,
-    ImportComponent,
+    ImportComponent
   ],
   providers: [
     TestRunService,

@@ -270,8 +270,8 @@
                 'warning': rowColor(entity)=='warning'
                 }">
                     <td (click)="rowClicked(entity, col, $event)" *ngFor="let col of columns" class="vert-aligned"
-                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' || col.type === 'attachmentModals' }" [customListener]="col.listeners"
-                        (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
+                        [ngClass]="{ 'text-center fit': col.type === 'checkbox' || col.type === 'attachmentModals' }"
+                        [customListener]="col.listeners" (customEvent)="sendCustomEvent($event)" [setClass]="col.class">
                         <div *ngIf="!isPropertyShouldBeHidden(entity, col.property)" class="ft-cell"
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
@@ -405,9 +405,8 @@
                             </app-color-dots>
 
                             <div
-                                *ngIf="col.type === 'attachmentModals' && transformationsService.getPropertyValue(entity, col.property).length>0">
-                                <button
-                                    class="btn btn-sm btn-outline-dark"
+                                *ngIf="col.type === 'attachmentModals' && transformationsService.getPropertyValue(entity, col.property).length > 0">
+                                <button class="btn btn-sm btn-outline-dark"
                                     (click)="openAttachModal(entity.test.name, transformationsService.getPropertyValue(entity, col.property))">
                                     <fa-icon class="icon" [icon]="icons.faFile"></fa-icon>
                                 </button>
