@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import * as mime from 'mime-types';
 import { BaseHttpService } from 'src/app/services/base-http/base-http.service';
 
 @Component({
@@ -53,5 +54,21 @@ export class AttachmentInlineComponent {
 
   isModelImage() {
     return this.model ? (<string>this.model).startsWith('data:image/') : false;
+  }
+
+  download() {
+    let data: string = (<string>this.model);
+    let filename: string;
+    let link: HTMLAnchorElement;
+
+    filename = `attachment${Date.now()}.${mime.extension(/:(.*);/.exec(data)[1])}`;
+    data = encodeURI(data);
+
+    link = document.createElement('a');
+    document.body.appendChild(link);
+    link.setAttribute('type', 'hidden');
+    link.setAttribute('href', data);
+    link.setAttribute('download', filename);
+    link.click();
   }
 }

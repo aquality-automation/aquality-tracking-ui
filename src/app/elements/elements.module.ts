@@ -14,7 +14,7 @@ import { LookupColorsComponent } from './lookup/colored/lookupColors.component';
 import { LookupAutocompleteMultiselectComponent } from './lookup/multiselect/lookupAutocompleteMultiselect.component';
 import { InlineEditorComponent } from './inline-editor/inline-editor.component';
 import { LargeTextContainerComponent } from './containers/largeTextContainer.component';
-import { AttachmentInlineComponent } from './attachment-inline/attachment-inline.component';
+import { AttachmentInlineComponent } from './lookup/attachment-inline/attachment-inline.component';
 import { ColorDotsComponent } from './color-dots/color-dots.component';
 import { TristateCheckboxComponent } from './tristate-checkbox/tristate-checkbox.component';
 import { ModalComponent } from './modals/modal.component';
