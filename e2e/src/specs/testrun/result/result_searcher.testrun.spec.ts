@@ -1,10 +1,10 @@
-import { logIn } from '../../pages/login.po';
-import { projectView } from '../../pages/project/view.po';
-import { testrunView } from '../../pages/testrun/view.po';
-import { ProjectHelper } from '../../helpers/project.helper';
-import cucumberImport from '../../data/import/cucumber.json';
-import users from '../../data/users.json';
-import { testrunList } from '../../pages/testrun/list.po';
+import { logIn } from '../../../pages/login.po';
+import { projectView } from '../../../pages/project/view.po';
+import { testrunView } from '../../../pages/testrun/view.po';
+import { ProjectHelper } from '../../../helpers/project.helper';
+import cucumberImport from '../../../data/import/cucumber.json';
+import users from '../../../data/users.json';
+import { testrunList } from '../../../pages/testrun/list.po';
 
 describe('Test Run Result Searcher', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();

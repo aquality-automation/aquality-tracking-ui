@@ -10,6 +10,7 @@ import { InlineAttach } from '../inlineAttach.element';
 import { Multiselect } from '../multiselect.element';
 import { Dots } from '../dots.element';
 import { DatePicker } from '../datepicker.element';
+import { Icon } from '../icon.element';
 
 export class Row extends BaseElement {
     constructor(locator: ElementFinder | Locator) {
@@ -62,7 +63,8 @@ export class Row extends BaseElement {
             inlineAttachment: () => new InlineAttach(cell.element(by.xpath('.//attachment-inline'))),
             multiselect: () => new Multiselect(cell.element(by.xpath('.//lookup-autocomplete-multiselect'))),
             date: () => new DatePicker(cell.element(by.xpath('.//app-datepicker'))),
-            dots: () => new Dots(cell.element(by.xpath('.//app-color-dots')))
+            dots: () => new Dots(cell.element(by.xpath('.//app-color-dots'))),
+            attachIcon: () => new Icon(cell.element(by.xpath('.//fa-icon')))
         };
     }
 
@@ -213,4 +215,5 @@ export class CellElements {
     multiselect: () => Multiselect;
     dots: () => Dots;
     date: () => DatePicker;
+    attachIcon: () => Icon;
 }

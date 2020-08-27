@@ -196,7 +196,17 @@ class TestRunView extends BasePage {
 
   async isIssuePresent(title: string, testName: string): Promise<boolean> {
     return (await elements.resultsTable
-      .getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().hasOption(title);
+      .getElementsForCell(columns.attach, testName, columns.testName)).autocomplete().hasOption(title);
+  }
+
+  async isAttachmentExist(testName: string): Promise<boolean> {
+    return (await elements.resultsTable
+      .getElementsForCell(columns.attach, testName, columns.testName)).attachIcon().isPresent();
+  }
+
+  async openAttachment(testName: string): Promise<void> {
+    return (await elements.resultsTable
+      .getElementsForCell(columns.attach, testName, columns.testName)).attachIcon().click();
   }
 }
 
