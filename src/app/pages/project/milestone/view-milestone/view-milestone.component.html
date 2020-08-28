@@ -1,12 +1,13 @@
 <print-milestone-modal *ngIf="!hidePrintModal"
                        [(isHidden)]="hidePrintModal"
                        [testResults]="resultsToShow"
+                       [viewData]="viewData"
                        [milestone]="milestone"
                        [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]"
                        (execute)="execute($event)"
                        (closed)="wasClosed()"
 ></print-milestone-modal>
-transferResults
+
 
 <div *ngIf="milestone" class="panel-heading form-row">
   <div class="col-sm-4">
