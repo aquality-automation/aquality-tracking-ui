@@ -166,6 +166,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return undefined;
   }
 
+  getMaxLength(col: TFColumn): number {
+    return col.creation ? (col.creation.creationLength ? col.creation.creationLength : 100) : 100;
+  }
+
   handleLookupCreation(value: string, column: TFColumn, entity: any) {
     this.lookupCreation.emit({ value, column, entity });
   }
