@@ -12,7 +12,7 @@
                 <div class="row">
                     <div clickableImage *ngIf="!isHidden" class="col-sm-8 preview">
                         <iframe *ngIf="!isImage()" [src]="src" frameborder="0"></iframe>
-                        <img *ngIf="isImage()" [src]="src" (click)=showInNewTab()>
+                        <img *ngIf="isImage()" [src]="src" (click)="showInNewTab()">
                     </div>
                     <div class="col-sm-4 line-margin">
                         <div class="col-sm-12 btnGroup">

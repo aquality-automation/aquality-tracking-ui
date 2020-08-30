@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
@@ -10,25 +10,32 @@ import { TestResultService } from 'src/app/services/test-result/test-result.serv
   styleUrls: ['./attachment-modal.component.scss']
 })
 
-export class AttachmentModalComponent implements OnInit {
+export class AttachmentModalComponent implements OnChanges {
   @Input() isHidden: boolean;
   @Input() title: string;
   @Input() testResultAttachments: TestResultAttachment[];
   @Output() attachModalClosed = new EventEmitter();
+  isFirstOpen = false;
   src: any = null;
   subTitle: string = null;
   testResultAttachment: TestResultAttachment = null;
   cachedTestResultAttachment: TestResultAttachment[] = [];
   selectedTestResultAttachment: TestResultAttachment;
 
-  constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) { }
+  constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) {
+  }
 
-  async ngOnInit() {
+  ngOnChanges() {
+    if (this.isHidden === this.isFirstOpen) {
+      this.showAttachment(this.testResultAttachments[0]);
+      this.isFirstOpen = true;
+    }
   }
 
   hideModal() {
     this.subTitle = null;
     this.src = null;
+    this.isFirstOpen = false;
     this.attachModalClosed.emit();
   }
 
