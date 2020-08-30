@@ -35,7 +35,7 @@ export class AttachmentModalComponent implements OnChanges {
     }
   }
 
-  isSupportedPreviewFile(): boolean {
+  isSupportedPreviewFileType(): boolean {
     let isSupported = false;
     this.supportedPreviewTypes.forEach(type => {
       if (isSupported === true) {
@@ -45,6 +45,21 @@ export class AttachmentModalComponent implements OnChanges {
     });
 
     return isSupported;
+  }
+
+  isSupportedPreviewFileSize(): boolean {
+    return this.testResultAttachment.attachment.toString().length / 1024 / 1024 < 5;
+  }
+
+  getNotSupportedMessage(): string {
+    let message = '';
+    if (!this.isSupportedPreviewFileType()) {
+      message = 'Preview is not available for this file type.';
+    }
+    if (!this.isSupportedPreviewFileSize()) {
+      message = 'Preview is not available, the file size should be less than 5Mb.';
+    } else { message = 'Preview is not available for the file.'; }
+    return `${message} You can download the file.`;
   }
 
   hideModal() {
