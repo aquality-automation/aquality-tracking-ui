@@ -11,8 +11,12 @@
                 <h6 class="modal-sub-title col-sm-8">{{subTitle}}</h6>
                 <div class="row">
                     <div clickableImage *ngIf="!isHidden" class="col-sm-8 preview">
-                        <iframe *ngIf="!isImage()" [src]="src" frameborder="0"></iframe>
+                        <iframe *ngIf="isSupportedPreviewFile() && !isImage()" [src]="src" frameborder="0"></iframe>
                         <img *ngIf="isImage()" [src]="src" (click)="showInNewTab()">
+                        <div class="file-preview" *ngIf="!isSupportedPreviewFile()">
+                            <fa-icon class="icon fa-10x" [icon]="icon" title="file is not supported for preview"></fa-icon>
+                            <p>Preview is not available. You can download the file.</p>
+                        </div>
                     </div>
                     <div class="col-sm-4 line-margin">
                         <div class="col-sm-12 btnGroup">

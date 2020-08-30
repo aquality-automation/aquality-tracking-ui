@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import BlobUtils from '../../../shared/utils/blob.utils';
 import { TestResultAttachment } from 'src/app/shared/models/test-result';
 import { TestResultService } from 'src/app/services/test-result/test-result.service';
+import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'attachment-modal',
@@ -21,6 +22,8 @@ export class AttachmentModalComponent implements OnChanges {
   testResultAttachment: TestResultAttachment = null;
   cachedTestResultAttachment: TestResultAttachment[] = [];
   selectedTestResultAttachment: TestResultAttachment;
+  supportedPreviewTypes = ['text', 'image', 'message'];
+  icon = faFile;
 
   constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) {
   }
@@ -30,6 +33,18 @@ export class AttachmentModalComponent implements OnChanges {
       this.showAttachment(this.testResultAttachments[0]);
       this.isFirstOpen = true;
     }
+  }
+
+  isSupportedPreviewFile(): boolean {
+    let isSupported = false;
+    this.supportedPreviewTypes.forEach(type => {
+      if (isSupported === true) {
+        return true;
+      }
+      isSupported = this.isFileType(type);
+    });
+
+    return isSupported;
   }
 
   hideModal() {
@@ -62,8 +77,12 @@ export class AttachmentModalComponent implements OnChanges {
   }
 
   isImage(): boolean {
+    return this.isFileType('image');
+  }
+
+  isFileType(type: string): boolean {
     try {
-      return this.testResultAttachment['mimeType'].toString().includes('image');
+      return this.testResultAttachment['mimeType'].toString().includes(type);
     } catch (error) {
       return false;
     }
