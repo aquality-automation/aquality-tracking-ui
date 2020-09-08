@@ -54,7 +54,6 @@ describe('Check Test Run result attachment', () => {
         await testrunView.openAttachment(result.test.name);
         expect(testResultAttachmentModal.isOpened()).toBe(true, 'Test Result Attachment Modal should be opened');
         expect(testResultAttachmentModal.getTitle()).toBe(result.test.name, 'Test Result Attachment Modal Name should be equal test name');
-        expect(testResultAttachmentModal.isSubTitleIsdisplayed()).toBe(false, 'Sub title should not be displayed after first opening');
         expect(testResultAttachmentModal.isFileAttached(imageAttachName)).toBe(true, 'Image should be attached');
         return expect(testResultAttachmentModal.isFileAttached(txtAttachName)).toBe(true, 'File should be attached');
     });
