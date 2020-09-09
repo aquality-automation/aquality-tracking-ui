@@ -13,7 +13,7 @@
                 <p>{{message}}</p>
                 <div class="col-sm-12 modal-footer modal-buttons">
                     <div class="modal-buttons-form">
-                        <button autofocus (click)="onClick(button.execute)" class="btn btn-sm" [ngClass]="{
+                        <button autofocus (click)="onClick(button.execute)" [id]="button.id" class="btn btn-sm" [ngClass]="{
                             'btn-secondary': !button.execute,
                             'btn-success': button.execute
                         }" *ngFor="let button of buttons">{{button.name}}</button>

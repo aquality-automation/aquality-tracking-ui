@@ -78,13 +78,15 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
 
     this.buttons = [{
       name: 'Cancel',
-      execute: false
+      execute: false,
+      id: 'issue-create-modal-cancel'
     }];
 
     if (this.canEdit) {
       this.buttons.unshift({
         name: this.issue.id ? 'Update' : 'Create',
-        execute: true
+        execute: true,
+        id: 'issue-create-modal-create'
       });
     }
   }

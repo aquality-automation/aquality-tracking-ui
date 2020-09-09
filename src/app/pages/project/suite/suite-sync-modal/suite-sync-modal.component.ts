@@ -14,7 +14,7 @@ import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service
 export class SyncSuiteModalComponent extends ModalComponent implements OnInit {
     title = 'Sync suite';
     @Input() type = 'info';
-    @Input() buttons = [{ name: 'Sync', execute: true }, { name: 'Cancel', execute: false }];
+    @Input() buttons = [{ name: 'Sync', execute: true, id: 'Sync' }, { name: 'Cancel', execute: false, id: 'Cancel' }];
     @Input() suites: TestSuite[];
     @Input() suite: TestSuite;
     @Output() testSyncTo = new EventEmitter();

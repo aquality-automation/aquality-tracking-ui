@@ -36,7 +36,7 @@
                             title="Check if you want to remove all Not Executed results till first meaningful result." />
                     </div>
                     <div class="col-sm-4 modal-buttons-form">
-                        <button [id]="button.name" autofocus (click)="accept(button.execute)"
+                        <button [id]="button.id" autofocus (click)="accept(button.execute)"
                             [disabled]="button.execute && (!suite || !notExecutedFor)" class="btn btn-sm btn-secondary" [ngClass]="{
                                 'btn-secondary': !button.execute,
                                 'btn-success': button.execute
