@@ -10,7 +10,7 @@ import { testData } from '../../../utils/testData.util';
 import { TestResult } from '../../../../../src/app/shared/models/test-result';
 import { browser } from 'protractor';
 
-fdescribe('Check Test Run result attachment', () => {
+describe('Check Test Run result attachment', () => {
     const projectHelper: ProjectHelper = new ProjectHelper();
     const builds = { build_1: 'Build_1' };
     const imageAttachName = 'image.jpg';
