@@ -48,7 +48,7 @@ const doneIssue: Issue = {
   status_id: 4
 };
 
-fdescribe('Test Run: Issue:', () => {
+describe('Test Run: Issue:', () => {
   using(editorExamples, (user, description) => {
     describe(`${description} role:`, () => {
       const projectHelper: ProjectHelper = new ProjectHelper();
