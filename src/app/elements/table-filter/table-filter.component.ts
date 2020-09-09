@@ -12,7 +12,7 @@ import {
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
 import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal.component';
-import { TestResultAttachment } from 'src/app/shared/models/test-result';
+import { TestResultAttachment } from '../../shared/models/test-result';
 
 @Component({
   selector: 'table-filter',
