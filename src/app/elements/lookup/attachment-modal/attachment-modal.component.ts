@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import BlobUtils from '../../../shared/utils/blob.utils';
-import { TestResultAttachment } from 'src/app/shared/models/test-result';
-import { TestResultService } from 'src/app/services/test-result/test-result.service';
+import { TestResultAttachment } from '../../../shared/models/test-result';
+import { TestResultService } from '../../../services/test-result/test-result.service';
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
