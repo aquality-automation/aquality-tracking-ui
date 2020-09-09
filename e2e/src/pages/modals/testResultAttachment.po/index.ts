@@ -1,10 +1,13 @@
 import { BasePage } from '../../base.po';
 import { elements, names, fileButton } from './constants';
+import {browser, ExpectedConditions} from 'protractor';
 
 class TestResultAttachmentModalView extends BasePage {
   constructor() {
     super(elements.uniqueElement, names.pageName);
   }
+
+  waitForFileNameTimeoutMs : number = 10000;
 
   async getTitle(): Promise<string> {
     return elements.titleElement.getText();
@@ -19,7 +22,7 @@ class TestResultAttachmentModalView extends BasePage {
   }
 
   async isFileAttached(file: string): Promise<boolean> {
-    return fileButton(file).isDisplayed();
+    return browser.wait(ExpectedConditions.elementToBeClickable(fileButton(file)), this.waitForFileNameTimeoutMs);
   }
 
   async selectFile(file: string): Promise<void> {
@@ -27,7 +30,7 @@ class TestResultAttachmentModalView extends BasePage {
   }
 
   async isFileSelected(file: string): Promise<boolean> {
-    return (await fileButton(file).getAttribute('class')).includes('selected');
+    return browser.wait(fileButton(file).getAttribute('class').then(attr => attr.includes('selected')), this.waitForFileNameTimeoutMs);
   }
 
   async isImageDisplayed(): Promise<boolean> {

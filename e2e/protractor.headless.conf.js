@@ -33,7 +33,6 @@ exports.config = {
     require('ts-node').register({
       project: 'e2e/tsconfig.json'
     });
-    browser.manage().timeouts().implicitlyWait(10000);
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
     const AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());
