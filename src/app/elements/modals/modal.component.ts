@@ -12,7 +12,7 @@ export class ModalComponent implements OnInit {
   @Input() title: string;
   @Input() message: string;
   @Input() type = '';
-  @Input() buttons: { name: String, execute: String | boolean }[];
+  @Input() buttons: { name: String, execute: String | boolean, id: String }[];
   @Output() closed = new EventEmitter();
   @Output() execute = new EventEmitter();
   answer: Promise<String | boolean>;

@@ -87,5 +87,6 @@ export enum TFColumnType {
     externalLink = 'externalLink',
     externalLinks = 'externalLinks',
     file = 'file',
-    dots = 'dots'
+    dots = 'dots',
+    attachmentModals = 'attachmentModals'
 }

@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import * as mime from 'mime-types';
 import { BaseHttpService } from 'src/app/services/base-http/base-http.service';
 
 @Component({
@@ -61,7 +60,7 @@ export class AttachmentInlineComponent {
     let filename: string;
     let link: HTMLAnchorElement;
 
-    filename = `attachment${Date.now()}.${mime.extension(/:(.*);/.exec(data)[1])}`;
+    filename = `attachment${Date.now()}`;
     data = encodeURI(data);
 
     link = document.createElement('a');

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpService } from '../base-http/base-http.service';
-import { TestResult, TestResultStat } from 'src/app/shared/models/test-result';
+import { TestResult, TestResultStat, TestResultAttachment } from 'src/app/shared/models/test-result';
 
 
 @Injectable()
@@ -26,8 +26,9 @@ export class TestResultService extends BaseHttpService {
     return this.http.put<void>('/testresult', testresults).toPromise();
   }
 
-  getAttachment() {
-    return this.http.get('/testresult/attachment?id=1&project_id=246', { responseType: 'arraybuffer', withCredentials: true }).toPromise();
+  getAttachment(attachment: TestResultAttachment): Promise<TestResultAttachment> {
+    return this.http.get<TestResultAttachment>
+      (`/testresult/attachment?id=${attachment.id}&project_id=${attachment.project_id}`).toPromise();
   }
 
   async removeTestResult(testresult: TestResult): Promise<void> {

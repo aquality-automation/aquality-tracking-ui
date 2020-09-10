@@ -198,6 +198,16 @@ class TestRunView extends BasePage {
     return (await elements.resultsTable
       .getElementsForCell(columns.issue, testName, columns.testName)).autocomplete().hasOption(title);
   }
+
+  async isAttachmentExist(testName: string): Promise<boolean> {
+    return (await elements.resultsTable
+      .getElementsForCell(columns.attach, testName, columns.testName)).attachIcon().isPresent();
+  }
+
+  async openAttachment(testName: string): Promise<void> {
+    return (await elements.resultsTable
+      .getElementsForCell(columns.attach, testName, columns.testName)).attachIcon().click();
+  }
 }
 
 export const testrunView = new TestRunView();

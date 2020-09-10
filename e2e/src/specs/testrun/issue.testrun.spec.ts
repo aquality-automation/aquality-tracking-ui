@@ -76,7 +76,7 @@ describe('Test Run: Issue:', () => {
       afterAll(async () => {
         return projectHelper.dispose();
       });
-
+      
       it('I can Open Create Issue modal from issue lookup', async () => {
         const results = await projectHelper.editorAPI.getResults({ test_run_id: imported[1].id });
         resultCurrent = results.find(x => x.final_result_id === 1);

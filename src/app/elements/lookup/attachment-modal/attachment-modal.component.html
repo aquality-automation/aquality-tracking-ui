@@ -1,0 +1,39 @@
+<div [hidden]="isHidden" class="overlay mt-overlay modal fade" [ngClass]="{'show-modal': !this.isHidden}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="hideModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6 class="modal-sub-title col-sm-8">{{subTitle}}</h6>
+                <div class="row">
+                    <div clickableImage *ngIf="!isHidden" class="col-sm-8 preview">
+                        <iframe *ngIf="isSupportedPreviewFileType() && isSupportedPreviewFileSize() && !isImage()"
+                            [src]="src" frameborder="0"></iframe>
+                        <img *ngIf="isImage() && isSupportedPreviewFileSize()" [src]="src" (click)="showInNewTab()">
+                        <div class="file-preview" *ngIf="!isSupportedPreviewFileType() || !isSupportedPreviewFileSize()">
+                            <fa-icon class="icon fa-10x" [icon]="icon"></fa-icon>
+                            <p>{{getNotSupportedMessage()}}</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 line-margin">
+                        <div class="col-sm-12 btnGroup">
+                            <button *ngFor="let attach of testResultAttachments" (click)="showAttachment(attach)"
+                                [class.selected]="attach === selectedTestResultAttachment"
+                                class="btn btn-group-item bg-light">{{attach['name']}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 modal-footer modal-buttons">
+                <div class="modal-buttons-form">
+                    <button autofocus (click)="download()" id="attachment-modal-download" class="btn btn-sm btn-success">Download</button>
+                    <button (click)="hideModal()" id="attachment-modal-close" class="btn btn-sm btn-secondary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

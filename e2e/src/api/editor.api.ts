@@ -3,7 +3,7 @@ import { Test } from '../../../src/app/shared/models/test';
 import { Step, StepToTest } from '../../../src/app/shared/models/steps';
 import { TestRun } from '../../../src/app/shared/models/testrun';
 import { Milestone } from '../../../src/app/shared/models/milestone';
-import { TestResult } from '../../../src/app/shared/models/test-result';
+import { TestResult, TestResultAttachment } from '../../../src/app/shared/models/test-result';
 import { BaseAPI } from './base.api';
 import { Issue } from '../../../src/app/shared/models/issue';
 
@@ -16,7 +16,8 @@ enum Endpoints {
     testresult = '/testresult',
     testSteps = '/test/steps',
     testToSuite = '/testToSuite',
-    issue = '/issues'
+    issue = '/issues',
+    testResultAttachment = '/testresult/attachment'
 }
 
 export class EditorAPI extends BaseAPI {
@@ -98,5 +99,17 @@ export class EditorAPI extends BaseAPI {
             milestone.suites = [suite];
         }
         return this.createMilestone(milestone);
+    }
+
+    public async addTestResultAttachment(
+        testResultAttachment: TestResultAttachment,
+        files: string[],
+        fileNames: string[]) {
+        return this.sendPostFiles(Endpoints.testResultAttachment,
+            {
+                project_id: this.project.id,
+                test_result_id: testResultAttachment.test_result_id
+            },
+            files, fileNames, this.token, this.project.id);
     }
 }

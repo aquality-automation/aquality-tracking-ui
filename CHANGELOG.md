@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.2 (2020-09-09)
+Changes:
+  - Add Attachments for Test Result -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/102)
+
 ## 1.0.1 (2020-08-18)
 Changes:
   - Imports view simplified and redesigned

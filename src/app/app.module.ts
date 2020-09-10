@@ -36,7 +36,7 @@ import { AdministrationModule } from './pages/administration/main/administration
     UserSettingsComponent,
     LoginComponent,
     CalculateHeightDerective,
-    LoaderComponent,
+    LoaderComponent
   ],
   imports: [
     ProjectModule,

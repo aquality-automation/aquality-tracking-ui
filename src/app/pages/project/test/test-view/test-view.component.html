@@ -93,7 +93,7 @@
   </div>
 </div>
 
-<div *ngIf="testResultTempalte">
-  <results-grid [testResultTempalte]="testResultTempalte" [showOnly]="columns" [sortBy]="resultSorter" (refreshed)="testResults=$event">Loading...
+<div *ngIf="testResultTemplate">
+  <results-grid [testResultTemplate]="testResultTemplate" [showOnly]="columns" [sortBy]="resultSorter" (refreshed)="testResults=$event">Loading...
   </results-grid>
 </div>

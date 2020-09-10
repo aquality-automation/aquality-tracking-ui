@@ -186,7 +186,7 @@
     </div>
   </div>
 
-  <div *ngIf="testResultTempalte">
-    <results-grid id="testrunViewResultsGrid" [testResultTempalte]="testResultTempalte" (refreshed)="assigneResults($event)">Loading...</results-grid>
+  <div *ngIf="testResultTemplate">
+    <results-grid id="testrunViewResultsGrid" [testResultTemplate]="testResultTemplate" (refreshed)="assigneResults($event)">Loading...</results-grid>
   </div>
 </div>
