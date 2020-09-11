@@ -42,6 +42,8 @@ export class TestResultAttachment {
   path?: string;
   test_result_id?: number;
   project_id?: number;
-  link: string;
-  name: string;
+  link?: string;
+  name?: string;
+  attachment?: string | ArrayBuffer;
+  mimeType?: string;
 }

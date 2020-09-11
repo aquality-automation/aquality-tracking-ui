@@ -6,11 +6,13 @@ import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.utils';
 import {
-  faColumns, faCheck, faTimes, faArrowUp,
-  faArrowDown, faSyncAlt, faChevronUp, faChevronDown
+  faColumns, faCheck, faTimes, faArrowUp, faFile,
+  faArrowDown, faSyncAlt, faChevronUp, faChevronDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
+import { AttachmentModalComponent } from '../lookup/attachment-modal/attachment-modal.component';
+import { TestResultAttachment } from '../../shared/models/test-result';
 
 @Component({
   selector: 'table-filter',
@@ -18,6 +20,8 @@ import { DataTable } from './data-table/DataTable';
   styleUrls: ['./table-filter.component.scss']
 })
 export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+
+  @ViewChild(AttachmentModalComponent) attachmentModal: AttachmentModalComponent;
   @Input() hidePageSets = false;
   @Input() hideFilter = false;
   @Input() data: any[];
@@ -83,8 +87,13 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     faArrowDown,
     faSyncAlt,
     faChevronUp,
-    faChevronDown
+    faChevronDown,
+    faFile
   };
+  type: string;
+  testResultAttachments: TestResultAttachment[];
+  attachModalTitle: string;
+  hideAttachModal = true;
 
   constructor(
     private listTocsv: ListToCsvService,
@@ -109,7 +118,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     if ((this.allowDelete || this.allowCreate || this.allowBulkUpdate) && (this.columns && !this.columns.find(x => x.name === 'Action'))) {
       this.columns.push({ name: 'Action', property: 'action', type: TFColumnType.button, editable: true });
     }
-    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete)  && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
+    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete) && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
       this.columns.unshift({ name: 'Selector', property: 'ft_select', type: TFColumnType.selector, editable: true, class: 'fit' });
     }
   }
@@ -135,6 +144,18 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     clearInterval(this.timerToken);
   }
 
+  attachModalClosed() {
+    this.attachModalTitle = null;
+    this.testResultAttachments = null;
+    this.hideAttachModal = true;
+  }
+
+  openAttachModal(testname: string, testResultAttachments: TestResultAttachment[]) {
+    this.attachModalTitle = testname;
+    this.testResultAttachments = testResultAttachments;
+    this.hideAttachModal = false;
+  }
+
   getDefaultSorter(col: TFColumn): TFSorting {
     if (col.sorting) {
       return col.sorter
@@ -143,6 +164,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     }
 
     return undefined;
+  }
+
+  getMaxLength(col: TFColumn): number {
+    return col.creation ? (col.creation.creationLength ? col.creation.creationLength : 100) : 100;
   }
 
   handleLookupCreation(value: string, column: TFColumn, entity: any) {

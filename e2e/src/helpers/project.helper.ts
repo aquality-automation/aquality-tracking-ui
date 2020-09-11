@@ -50,7 +50,7 @@ export class ProjectHelper {
             await logIn.logInAs(this.admin.user_name, this.admin.password);
             const authCookie = await browser.manage().getCookie('iio78');
             this.adminAPI = new UserAPI(decodeURIComponent(authCookie.value), this.admin);
-            
+
             logger.info('Createing project');
             this.project = await this.adminAPI.createProject(this.project);
             logger.info(`Project created ${this.project.id}`);

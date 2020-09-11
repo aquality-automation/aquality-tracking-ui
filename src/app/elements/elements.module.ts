@@ -14,7 +14,7 @@ import { LookupColorsComponent } from './lookup/colored/lookupColors.component';
 import { LookupAutocompleteMultiselectComponent } from './lookup/multiselect/lookupAutocompleteMultiselect.component';
 import { InlineEditorComponent } from './inline-editor/inline-editor.component';
 import { LargeTextContainerComponent } from './containers/largeTextContainer.component';
-import { AttachmentInlineComponent } from './attachment-inline/attachment-inline.component';
+import { AttachmentInlineComponent } from './lookup/attachment-inline/attachment-inline.component';
 import { ColorDotsComponent } from './color-dots/color-dots.component';
 import { TristateCheckboxComponent } from './tristate-checkbox/tristate-checkbox.component';
 import { ModalComponent } from './modals/modal.component';
@@ -40,6 +40,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgxMaskModule, IConfig } from 'ngx-mask';
 import { NumberRangeComponent } from './number-range/number-range.component';
+import { AttachmentModalComponent } from './lookup/attachment-modal/attachment-modal.component';
 
 const maskConfigFunction: () => Partial<IConfig> = () => {
   return {
@@ -54,7 +55,6 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     FormsModule,
     RouterModule,
     DataTableModule,
-    CommonModule,
     MatMenuModule,
     FontAwesomeModule,
     ClickOutsideModule,
@@ -92,7 +92,8 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     CommentsComponent,
     SetHTMLDirective,
     LabeledInputComponent,
-    NumberRangeComponent
+    NumberRangeComponent,
+    AttachmentModalComponent
   ],
   exports: [
     DatepickerComponent,
@@ -102,6 +103,7 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     LookupAutocompleteComponent,
     LookupComponent,
     TableFilterComponent,
+    AttachmentInlineComponent,
     ModalComponent,
     CommentsComponent,
     LargeTextContainerComponent,
@@ -116,8 +118,8 @@ const maskConfigFunction: () => Partial<IConfig> = () => {
     MatInputModule,
     MatNativeDateModule,
     NgxMaskModule,
-    AttachmentInlineComponent,
-    NumberRangeComponent
+    NumberRangeComponent,
+    AttachmentModalComponent
   ],
   providers: [
     ListToCsvService,

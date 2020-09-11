@@ -30,7 +30,7 @@ export class TestViewComponent implements OnInit, OnDestroy {
   columns: string[] = ['Started', 'Build Name', 'Execution Environment', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Issue'];
   testMoveFrom: Test;
   testResults: TestResult[];
-  public testResultTempalte: TestResult;
+  public testResultTemplate: TestResult;
   showTableResults: boolean;
   users: LocalPermissions[];
   selectedDeveloper: LocalPermissions;
@@ -64,7 +64,7 @@ export class TestViewComponent implements OnInit, OnDestroy {
       id: this.route.snapshot.params.testId
     };
 
-    this.testResultTempalte = { test_id: this.test.id };
+    this.testResultTemplate = { test_id: this.test.id };
     this.test = (await this.testService.getTest(this.test))[0];
     this.selectedDeveloper = this.test.developer;
     this.users = await this.userService.getProjectUsers(this.projectId);
