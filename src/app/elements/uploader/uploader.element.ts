@@ -3,7 +3,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { faTrash, faUpload, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { CookieService } from 'ngx-cookie-service';
 import { BaseHttpService } from 'src/app/services/base-http/base-http.service';
-import { environment } from 'src/environments/environment';
+import { GlobalDataService } from 'src/app/services/globaldata.service';
 
 @Component({
   selector: 'file-uploader',
@@ -20,11 +20,12 @@ export class UploaderComponent implements OnInit {
 
   constructor(
     private cookieService: CookieService,
-    private baseHttpService: BaseHttpService
+    private baseHttpService: BaseHttpService,
+    private globaldata: GlobalDataService
   ) { }
 
   ngOnInit() {
-    const URL = `${environment.host}/${this.URL}`;
+    const URL = this.globaldata.getApiUrl() + `${this.URL}`;
     const authToken = 'Basic ' + this.cookieService.get('iio78');
     this.uploader = new FileUploader({
       url: URL,
