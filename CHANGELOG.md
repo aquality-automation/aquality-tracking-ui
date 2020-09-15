@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.3 (2020-09-15)
+Bugfixes:
+ - Fixed issue with uploading attachments into audit
+
 ## 1.0.2 (2020-09-09)
 Changes:
   - Add Attachments for Test Result -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/102)
