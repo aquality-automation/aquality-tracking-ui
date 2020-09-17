@@ -53,6 +53,7 @@ export class PrintMilestoneComponent extends ModalComponent implements OnInit {
     new ReportToggle(ReportOptions.resolutions_other, true),
     new ReportToggle(ReportOptions.resolutions_not_executed, false)];
   other_toggles: ReportToggle[] = [
+    new ReportToggle(ReportOptions.tests_list, true),
     new ReportToggle(ReportOptions.issues_list, true),
     new ReportToggle(ReportOptions.trend_chart_show, true)];
   showChart = this.other_toggles.find(t => t.option === ReportOptions.trend_chart_show).state;
@@ -109,7 +110,9 @@ export class PrintMilestoneComponent extends ModalComponent implements OnInit {
       optionalHeightPosition += this.addIssuesList(textheight, optionalHeightPosition);
     }
 
-    this.addTable(textheight, optionalHeightPosition);
+    if (this.other_toggles.find(t => t.option === ReportOptions.tests_list).state) {
+      this.addTable(textheight, optionalHeightPosition);
+    }
 
     this.pdf = this.doc.output('datauristring');
   }

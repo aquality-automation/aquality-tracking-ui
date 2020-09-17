@@ -28,7 +28,7 @@
             </div>
             <hr class="col-sm-12 no-padding">
             <div>
-              <label class="pull-left col-sm-12 inline-label clearfix">Resulutions:</label>
+              <label class="pull-left col-sm-12 inline-label clearfix">Resolutions:</label>
               <div *ngFor="let toggle of resolutions_toggles" class="col-sm-12 no-padding clearfix">
                 <mat-slide-toggle [(ngModel)]="toggle.state" (ngModelChange)="regenerate()">{{toggle.option.name}}
                 </mat-slide-toggle>

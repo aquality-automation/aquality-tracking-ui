@@ -1,7 +1,7 @@
 import {ReportOption, Section} from './report-option';
 
 export class ReportOptions {
-  static issues_list: ReportOption = new ReportOption(Section.Other, 'Issue List');
+  static issues_list: ReportOption = new ReportOption(Section.Other, 'Show Issues');
   static results_failed: ReportOption = new ReportOption(Section.Result, 'Failed');
   static results_passed: ReportOption = new ReportOption(Section.Result, 'Passed');
   static results_other: ReportOption = new ReportOption(Section.Result, 'Other');
@@ -11,5 +11,6 @@ export class ReportOptions {
   static resolutions_other: ReportOption = new ReportOption(Section.Resolution, 'Other');
   static resolutions_not_executed: ReportOption = new ReportOption(Section.Resolution, 'Not Executed');
   static trend_chart_show: ReportOption = new ReportOption(Section.Other, 'Show Chart');
+  static tests_list: ReportOption = new ReportOption(Section.Other, 'Show Tests');
 }
 

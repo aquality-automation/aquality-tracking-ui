@@ -69,13 +69,13 @@ describe('Create Test Run:', () => {
                 return expect(testrunCreate.isCreateButtonEnabled()).toBe(false, 'Create button is enabled when Build Name is empty');
             });
 
-            it('Test Run can be created without milestones', async () => {
+            it('Test Run can be created without Milestone', async () => {
                 await testrunCreate.fillBuildNameField(`${testrun.build_name}_no_milestone`);
                 await testrunCreate.clickCreateButton();
                 return expect(testrunView.isOpened()).toBe(true, 'Test Run View page was not opened');
             });
 
-            it('Test Run can be created with milestones', async () => {
+            it('Test Run can be created with Milestone', async () => {
                 await (await projectView.menuBar.create()).testrun();
                 await testrunCreate.fillBuildNameField(testrun.build_name);
                 await testrunCreate.selectTestSuite(suite.name);
@@ -89,9 +89,9 @@ describe('Create Test Run:', () => {
                     .toEqual(testrun.build_name, 'Build Name is incorrect on Test Run View page');
             });
 
-            it('milestones should be inherited from create page', async () => {
+            it('Milestone should be inherited from create page', async () => {
                 return expect(testrunView.getMilestone())
-                    .toEqual(milestone.name, 'milestones is incorrect on Test Run View page');
+                    .toEqual(milestone.name, 'Milestone is incorrect on Test Run View page');
             });
 
             it('Test Suite should be inherited from create page', async () => {

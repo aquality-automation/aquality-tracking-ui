@@ -78,13 +78,13 @@ describe('View Manual Test Run:', () => {
                 return expect(testrunView.getBuildName()).toBe(testrun.build_name, 'Build Name was cleared!');
             });
 
-            it('Can edit milestones', async () => {
+            it('Can edit Milestone', async () => {
                 await testrunView.setMilestone(milestone.name);
                 await testrunView.refreshByBackButton();
                 return expect(testrunView.getMilestone()).toBe(milestone.name, 'milestones was not updated!');
             });
 
-            it('Can remove milestones', async () => {
+            it('Can remove Milestone', async () => {
                 await testrunView.setMilestone('Not Selected');
                 await testrunView.refreshByBackButton();
                 return expect(testrunView.getMilestone()).toBe('', 'milestones was not cleared!');

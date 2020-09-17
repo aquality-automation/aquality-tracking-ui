@@ -66,17 +66,17 @@ describe('Test Run List:', () => {
                 return expect(testrunList.isOpened()).toBe(true, 'Should be able to open Test Run List!');
             });
 
-            it('Can edit Test Run milestones with only active milestones', async () => {
+            it('Can edit Test Run milestones with only active Milestone', async () => {
                 return expect(testrunList.doesMilestonePresentInEdit(milestones.inactive.name, testruns.build_2.build_name))
                     .toBe(false, 'Inactive milestones should not be available in edit!');
             });
 
-            it('Can add Test Run milestones', async () => {
+            it('Can add Test Run Milestone', async () => {
                 await testrunList.setMilestone(milestones.active.name, testruns.build_2.build_name);
                 return testrunList.notification.assertIsSuccess();
             });
 
-            it('Can filter by inactive milestones', async () => {
+            it('Can filter by inactive Milestone', async () => {
                 await testrunList.filterByMilestone(milestones.inactive.name);
                 await expect(testrunList.areAllTestRunsDisplayed(testruns.build_2.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
@@ -84,7 +84,7 @@ describe('Test Run List:', () => {
                     .toBe(true, 'Test run with milestone is not present');
             });
 
-            it('Can filter by active milestones', async () => {
+            it('Can filter by active Milestone', async () => {
                 await testrunList.filterByMilestone(milestones.active.name);
                 await expect(testrunList.areAllTestRunsDisplayed(testruns.build_1.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
@@ -92,7 +92,7 @@ describe('Test Run List:', () => {
                     .toBe(true, 'Test run with milestone is not present');
             });
 
-            it('Can remove Test Run milestones', async () => {
+            it('Can remove Test Run Milestone', async () => {
                 await testrunList.setMilestone('Not Assigned', testruns.build_2.build_name);
                 return testrunList.notification.assertIsSuccess();
             });
@@ -119,7 +119,7 @@ describe('Test Run List:', () => {
                 return expect(testrunList.isTableEditable()).toBe(false, 'Should not be able to edit Test Runs!');
             });
 
-            it('Can filter by inactive milestones', async () => {
+            it('Can filter by inactive Milestone', async () => {
                 await testrunList.filterByMilestone(milestones.inactive.name);
                 await expect(testrunList.areAllTestRunsDisplayed(testruns.build_2.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
@@ -127,7 +127,7 @@ describe('Test Run List:', () => {
                     .toBe(true, 'Test run with milestone is not present');
             });
 
-            it('Can filter by active milestones', async () => {
+            it('Can filter by active Milestone', async () => {
                 await testrunList.filterByMilestone(milestones.active.name);
                 await expect(testrunList.areAllTestRunsDisplayed(testruns.build_1.build_name))
                     .toBe(false, 'Test run with another milestone is still present');
