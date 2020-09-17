@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { UserService } from 'src/app/services/user/user.services';
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';

@@ -15,54 +15,39 @@
             <iframe type="application/pdf" width='100%' height='500' [src]='pdf | safe'></iframe>
           </div>
           <div class="col-sm-2 line-margin">
+            <div>
+              <label class="pull-left col-sm-12 inline-label clearfix">Results:</label>
+              <div *ngFor="let toggle of results_toggles" class="col-sm-12 no-padding clearfix">
+                <mat-slide-toggle [(ngModel)]="toggle.state" (ngModelChange)="regenerate()">{{toggle.option.name}}
+                </mat-slide-toggle>
+              </div>
+              <hr class="col-sm-12 no-padding">
+            </div>
             <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showIssueList" (ngModelChange)="regenerate()">Issue List
-              </mat-slide-toggle>
+              <mat-slide-toggle [(ngModel)]="orAnd.state" (ngModelChange)="regenerate()">{{orAnd.state ? 'AND' : 'OR'}}</mat-slide-toggle>
             </div>
             <hr class="col-sm-12 no-padding">
-            <label class="pull-left col-sm-12 inline-label clearfix">Results:</label>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showFailed" (ngModelChange)="regenerate()">Failed
-              </mat-slide-toggle>
+            <div>
+              <label class="pull-left col-sm-12 inline-label clearfix">Resulutions:</label>
+              <div *ngFor="let toggle of resolutions_toggles" class="col-sm-12 no-padding clearfix">
+                <mat-slide-toggle [(ngModel)]="toggle.state" (ngModelChange)="regenerate()">{{toggle.option.name}}
+                </mat-slide-toggle>
+              </div>
+              <hr class="col-sm-12 no-padding">
+            </div>
+            <div>
+              <label class="pull-left col-sm-12 inline-label clearfix">Other:</label>
+              <div *ngFor="let toggle of other_toggles" class="col-sm-12 no-padding clearfix">
+                <mat-slide-toggle [(ngModel)]="toggle.state" (ngModelChange)="regenerate()">{{toggle.option.name}}
+                </mat-slide-toggle>
+              </div>
+              <hr class="col-sm-12 no-padding">
             </div>
             <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showPassed" (ngModelChange)="regenerate()">Passed
-              </mat-slide-toggle>
-            </div>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showOther" (ngModelChange)="regenerate()">Other</mat-slide-toggle>
-            </div>
-            <hr class="col-sm-12 no-padding">
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="orAnd"
-                                (ngModelChange)="regenerate()">{{orAnd ? 'AND' : 'OR'}}</mat-slide-toggle>
-            </div>
-            <hr class="col-sm-12 no-padding">
-            <label class="pull-left col-sm-12 inline-label clearfix">Resolutions:</label>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showAppIssues" (ngModelChange)="regenerate()">App Issue</mat-slide-toggle>
-            </div>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showTestIssue" (ngModelChange)="regenerate()">Test Issue</mat-slide-toggle>
-            </div>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showOtherResolutions" (ngModelChange)="regenerate()">Other
-              </mat-slide-toggle>
-            </div>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showNotExecuted" (ngModelChange)="regenerate()">Not Executed
-              </mat-slide-toggle>
-            </div>
-            <hr class="col-sm-12 no-padding">
-            <label class="pull-left col-sm-12 inline-label clearfix">Trend Chart:</label>
-            <div class="col-sm-12 no-padding clearfix">
-              <mat-slide-toggle [(ngModel)]="showChart" (ngModelChange)="regenerate()">Show</mat-slide-toggle>
-            </div>
-            <div class="col-sm-12 no-padding clearfix">
+              <label for="summary" class=" col-sm-12">Test runs to show:</label>
               <input class="pull-right form-control form-control-sm" (blur)="regenerate()" type="number"
                      min="5" max="30" step="5" [disabled]="!showChart" [(ngModel)]="testrunsToShow"/>
             </div>
-            <hr class="col-sm-12 no-padding">
             <div class="col-sm-12 no-padding clearfix">
               <label for="summary" class=" col-sm-12">Summary:</label>
               <textarea class="form-control" rows="5" id="summary" [(ngModel)]="text"

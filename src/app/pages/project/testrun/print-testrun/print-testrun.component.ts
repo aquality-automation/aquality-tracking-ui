@@ -190,7 +190,7 @@ export class PrintTestrunComponent extends ModalComponent implements OnInit {
         this.doc.setFontType('bold');
         this.doc.text(75, height, 'Suite:');
         this.doc.text(75, height + 5, 'Build:');
-        if (this.testrun.milestone) { this.doc.text(75, height + 10, 'Milestone:'); }
+        if (this.testrun.milestone) { this.doc.text(75, height + 10, 'milestones:'); }
         this.doc.text(75, height + 15, 'Started:');
         this.doc.text(75, height + 20, 'Finished:');
     }

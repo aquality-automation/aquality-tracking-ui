@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { TestRun } from '../../../../shared/models/testrun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Test } from '../../../../shared/models/test';

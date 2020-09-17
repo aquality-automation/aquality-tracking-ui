@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TestRun, TestRunLabel } from '../../../../shared/models/testrun';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { ListToCsvService } from '../../../../services/listToCsv.service';
 import { TestResultStat } from '../../../../shared/models/test-result';
 import { TestRunStat } from 'src/app/shared/models/testrun-stats';

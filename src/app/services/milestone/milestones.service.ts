@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpService } from '../base-http/base-http.service';
-import { Milestone } from 'src/app/shared/models/milestone';
+import { Milestone } from 'src/app/shared/models/milestones/milestone';
 import { TestResult } from 'src/app/shared/models/test-result';
 
 

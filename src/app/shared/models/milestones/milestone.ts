@@ -1,4 +1,4 @@
-import { TestSuite } from './test-suite';
+import { TestSuite } from '../test-suite';
 
 export class Milestone {
   id?: number;

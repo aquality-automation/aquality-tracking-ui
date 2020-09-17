@@ -5,7 +5,7 @@ import { testrunList } from '../../pages/testrun/list.po';
 import { suiteView } from '../../pages/suite/view.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
-import { Milestone } from '../../../../src/app/shared/models/milestone';
+import { Milestone } from '../../../../src/app/shared/models/milestones/milestone';
 import { TestRun } from '../../../../src/app/shared/models/testrun';
 import users from '../../data/users.json';
 import using from 'jasmine-data-provider';
@@ -78,16 +78,16 @@ describe('View Manual Test Run:', () => {
                 return expect(testrunView.getBuildName()).toBe(testrun.build_name, 'Build Name was cleared!');
             });
 
-            it('Can edit Milestone', async () => {
+            it('Can edit milestones', async () => {
                 await testrunView.setMilestone(milestone.name);
                 await testrunView.refreshByBackButton();
-                return expect(testrunView.getMilestone()).toBe(milestone.name, 'Milestone was not updated!');
+                return expect(testrunView.getMilestone()).toBe(milestone.name, 'milestones was not updated!');
             });
 
-            it('Can remove Milestone', async () => {
+            it('Can remove milestones', async () => {
                 await testrunView.setMilestone('Not Selected');
                 await testrunView.refreshByBackButton();
-                return expect(testrunView.getMilestone()).toBe('', 'Milestone was not cleared!');
+                return expect(testrunView.getMilestone()).toBe('', 'milestones was not cleared!');
             });
 
             it('Can edit Executor', async () => {
