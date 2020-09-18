@@ -66,7 +66,7 @@ describe('Test Run List:', () => {
                 return expect(testrunList.isOpened()).toBe(true, 'Should be able to open Test Run List!');
             });
 
-            it('Can edit Test Run milestones with only active Milestone', async () => {
+            it('Can edit Test Run Milestone with only active milestones', async () => {
                 return expect(testrunList.doesMilestonePresentInEdit(milestones.inactive.name, testruns.build_2.build_name))
                     .toBe(false, 'Inactive milestones should not be available in edit!');
             });

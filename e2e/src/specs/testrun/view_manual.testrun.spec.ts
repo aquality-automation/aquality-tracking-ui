@@ -81,13 +81,13 @@ describe('View Manual Test Run:', () => {
             it('Can edit Milestone', async () => {
                 await testrunView.setMilestone(milestone.name);
                 await testrunView.refreshByBackButton();
-                return expect(testrunView.getMilestone()).toBe(milestone.name, 'milestones was not updated!');
+                return expect(testrunView.getMilestone()).toBe(milestone.name, 'Milestone was not updated!');
             });
 
             it('Can remove Milestone', async () => {
                 await testrunView.setMilestone('Not Selected');
                 await testrunView.refreshByBackButton();
-                return expect(testrunView.getMilestone()).toBe('', 'milestones was not cleared!');
+                return expect(testrunView.getMilestone()).toBe('', 'Milestone was not cleared!');
             });
 
             it('Can edit Executor', async () => {
