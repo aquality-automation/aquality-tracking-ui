@@ -8,7 +8,7 @@ import { Autocomplete } from '../../../elements/autocomplete.element';
 import { Checkbox } from '../../../elements/checkbox.element';
 
 export const baseUrl = function (projectId: number, testrunId: number) {
-    return `project/${projectId}/testrun/${testrunId}`;
+    return `#/project/${projectId}/testrun/${testrunId}`;
 };
 
 export const names = {
