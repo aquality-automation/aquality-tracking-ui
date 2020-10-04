@@ -1,6 +1,6 @@
 import { by, element } from 'protractor';
 
-export const baseUrl = (projectId: number, testId: number) => `project/${projectId}/test/${testId}`;
+export const baseUrl = (projectId: number, testId: number) => `#/project/${projectId}/test/${testId}`;
 
 export const elements = {
     uniqueElement: element(by.id('test-page')),
