@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { GlobalDataService } from '../../../../services/globaldata.service';
 import { Project } from '../../../../shared/models/project';
 import { TestSuite } from 'src/app/shared/models/test-suite';

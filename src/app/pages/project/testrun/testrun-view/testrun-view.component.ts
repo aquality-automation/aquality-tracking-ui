@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TestResult } from '../../../../shared/models/test-result';
 import { TestRun } from '../../../../shared/models/testrun';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';

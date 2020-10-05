@@ -28,6 +28,7 @@ import { DragulaModule } from 'ng2-dragula';
 import { AuditModule } from './pages/audit/audit.module';
 import { CustomerModule } from './pages/customer/customer.module';
 import { AdministrationModule } from './pages/administration/main/administration.module';
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { AdministrationModule } from './pages/administration/main/administration
     ApplicationSettingsService,
     PermissionsService,
     LoginGuard,
-    AuthGuard
+    AuthGuard,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })

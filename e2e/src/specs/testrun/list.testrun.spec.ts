@@ -4,7 +4,7 @@ import { ProjectHelper } from '../../helpers/project.helper';
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
 import { testrunList } from '../../pages/testrun/list.po';
 import { TestRun } from '../../../../src/app/shared/models/testrun';
-import { Milestone } from '../../../../src/app/shared/models/milestone';
+import { Milestone } from '../../../../src/app/shared/models/milestones/milestone';
 import users from '../../data/users.json';
 import using from 'jasmine-data-provider';
 import cucumberImport from '../../data/import/cucumber.json';

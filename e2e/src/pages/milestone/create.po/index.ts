@@ -1,6 +1,6 @@
 import { elements, names } from './constants';
 import { BasePage } from '../../base.po';
-import { Milestone } from '../../../../../src/app/shared/models/milestone';
+import { Milestone } from '../../../../../src/app/shared/models/milestones/milestone';
 
 class MilestoneCreate extends BasePage {
     constructor() {

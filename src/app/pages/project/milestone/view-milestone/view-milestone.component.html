@@ -1,28 +1,48 @@
+<print-milestone-modal *ngIf="!hidePrintModal"
+                       [(isHidden)]="hidePrintModal"
+                       [testResults]="resultsToShow"
+                       [viewData]="viewData"
+                       [milestone]="milestone"
+                       [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]"
+                       (execute)="execute($event)"
+                       (closed)="wasClosed()"
+></print-milestone-modal>
+
+
 <div *ngIf="milestone" class="panel-heading form-row">
-  <div class="col-sm-6">
+  <div class="col-sm-4">
     <h2 id="milestone-view">Milestone {{milestone.name}}
       <fa-icon *ngIf="warningMessage" class="warning-icon" [icon]="icons.faExclamationTriangle"
-        [title]="warningMessage"></fa-icon>
+               [title]="warningMessage"></fa-icon>
     </h2>
   </div>
   <div class="col-sm-2 due-date-wrapper">
     <app-datepicker id="milestone-due-date" label="Due Date" [(model)]="milestone.due_date"
-    [disabled]="!canEdit || !milestone.active" (modelChange)="updateMilestone()"></app-datepicker>
+                    [disabled]="!canEdit || !milestone.active" (modelChange)="updateMilestone()"></app-datepicker>
   </div>
   <div class="col-sm-2">
     <mat-slide-toggle id="active-switch" [(ngModel)]="milestone.active" (ngModelChange)="updateMilestone()"
-      title="Mark milestone as Active or Inactive" [disabled]="!canEdit">Active</mat-slide-toggle>
+                      title="Mark milestone as Active or Inactive" [disabled]="!canEdit">Active
+    </mat-slide-toggle>
   </div>
   <div class="col-sm-2">
     <mat-slide-toggle id="stack-suites" [ngModel]="stackSuites" (ngModelChange)="updateStackSuites($event)"
-      title="Show Latest results by uniq Test or by uniq Suite and Test">Distinct Tests</mat-slide-toggle>
+                      title="Show Latest results by uniq Test or by uniq Suite and Test">Distinct Tests
+    </mat-slide-toggle>
   </div>
+  <div class="col-sm-2">
+    <button class="btn btn-success" (click)="generatePDFReport()">PDF Report
+      <fa-icon class="icon" [icon]="icons.faFilePdf"></fa-icon>
+    </button>
+  </div>
+
   <hr class="col-sm-12 no-padding">
   <div class="col-sm-12">
     <label><b>Selected Suites:</b></label>
     <lookup-autocomplete-multiselect id="suites" *ngIf="suites" placeholder="Selected Suites"
-      [disabled]="!canEdit || !milestone.active" [propertiesToShow]="['name']" [array]="suites"
-      [(model)]="milestone.suites" (onClosed)="updateMilestone()">
+                                     [disabled]="!canEdit || !milestone.active" [propertiesToShow]="['name']"
+                                     [array]="suites"
+                                     [(model)]="milestone.suites" (onClosed)="updateMilestone()">
     </lookup-autocomplete-multiselect>
   </div>
   <div *ngIf="notExecutedSuites" class="col-sm-12">
@@ -47,5 +67,6 @@
 </div>
 
 <table-filter id="suite-results" *ngIf="columns" [hide]="hideTableValue" [allowExport]="true" [data]="viewData"
-  [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20" [columns]="columns" [defaultSortBy]="sortBy" [queryParams]="true">
+              [rowsOnPageSet]="[5,10,20]" [rowsOnPage]="20" [columns]="columns" [defaultSortBy]="sortBy"
+              [queryParams]="true">
 </table-filter>

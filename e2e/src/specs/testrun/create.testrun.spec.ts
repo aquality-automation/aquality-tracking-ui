@@ -5,7 +5,7 @@ import { testrunView } from '../../pages/testrun/view.po';
 import { notFound } from '../../pages/notFound.po';
 import { ProjectHelper } from '../../helpers/project.helper';
 import { TestSuite } from '../../../../src/app/shared/models/test-suite';
-import { Milestone } from '../../../../src/app/shared/models/milestone';
+import { Milestone } from '../../../../src/app/shared/models/milestones/milestone';
 import { TestRun } from '../../../../src/app/shared/models/testrun';
 import users from '../../data/users.json';
 import using from 'jasmine-data-provider';

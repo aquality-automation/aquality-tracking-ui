@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Milestone } from '../../../../shared/models/milestone';
+import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { TestRun } from '../../../../shared/models/testrun';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Test } from '../../../../shared/models/test';
@@ -8,7 +8,7 @@ import { TestResult } from '../../../../shared/models/test-result';
 import { TransformationsService } from '../../../../services/transformations.service';
 import { ResultResolutionsChartsComponent } from '../../../../elements/charts/resultResolutions/resultResolutions.charts.component';
 import { FinalResultChartsComponent } from '../../../../elements/charts/finalResults/finalResults.charts.component';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import {faExclamationTriangle, faFilePdf} from '@fortawesome/free-solid-svg-icons';
 import { Issue } from '../../../../shared/models/issue';
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { UserService } from 'src/app/services/user/user.services';
@@ -23,7 +23,6 @@ import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { TestSuite } from 'src/app/shared/models/test-suite';
 import { TFColumn, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ConditionalExpr } from '@angular/compiler';
 
 @Component({
   templateUrl: './view-milestone.component.html',
@@ -48,6 +47,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
 
   @ViewChild(ResultResolutionsChartsComponent) resultResolutionsChart: ResultResolutionsChartsComponent;
   @ViewChild(FinalResultChartsComponent) finalResultChart: FinalResultChartsComponent;
+  hidePrintModal = true;
   milestone: Milestone;
   viewData: ViewData[];
   resolutions: ResultResolution[];
@@ -64,7 +64,7 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
   paramsSubscription: Subscription;
   notExecutedSuites: string;
   canEdit: boolean;
-  icons = { faExclamationTriangle };
+  icons = { faExclamationTriangle, faFilePdf };
   warningMessage: string;
   myDate = new Date().getTime();
 
@@ -320,6 +320,18 @@ export class ViewMilestoneComponent implements OnInit, OnDestroy {
     if (this.finalResultChart) {
       this.finalResultChart.ngOnChanges();
     }
+  }
+
+  generatePDFReport() {
+    this.hidePrintModal = false;
+  }
+
+  execute($event) {
+    this.hidePrintModal = true;
+  }
+
+  wasClosed() {
+    this.hidePrintModal = true;
   }
 }
 

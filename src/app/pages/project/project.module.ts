@@ -57,6 +57,7 @@ import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ImportComponent } from './import/import.component';
 import { ImportService } from 'src/app/services/import/import.service';
+import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
 
 @NgModule({
   imports: [
@@ -75,6 +76,7 @@ import { ImportService } from 'src/app/services/import/import.service';
     ResultResolutionsChartsComponent,
     TestRunsComponent,
     PrintTestrunComponent,
+    PrintMilestoneComponent,
     NotifyTeamModalComponent,
     CreateIssueModalComponent,
     ResultSearcherComponent,

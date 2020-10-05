@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 1.0.4 (2020-10-02)
+Changes:
+ - Added PDF report for milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/110)
+ 
+Bugfixes:
+ - Fixed issue with routing (switched to Hash location strategy) -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/124)
+ 
 ## 1.0.3 (2020-09-15)
 Bugfixes:
  - Fixed issue with uploading attachments into audit

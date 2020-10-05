@@ -1,5 +1,5 @@
 import { TestResult } from './test-result';
-import { Milestone } from './milestone';
+import { Milestone } from './milestones/milestone';
 import { TestSuite } from './test-suite';
 
 export class TestRun {
