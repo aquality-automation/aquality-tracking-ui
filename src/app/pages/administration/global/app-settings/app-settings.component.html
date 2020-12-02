@@ -198,6 +198,11 @@
           <mat-slide-toggle [(ngModel)]="emailSettings.use_auth">Use STMP Authentication</mat-slide-toggle>
         </div>
       </div>
+      <div class="col-sm-12">
+        <div class="col-sm-4 form-group row">
+          <mat-slide-toggle [(ngModel)]="emailSettings.starttls">Use STARTTLS</mat-slide-toggle>
+        </div>
+      </div>
       <div class="col-sm-4 form-group row">
         <div class="col-sm-4">
           <label for="smtpHost" class="label-inline">STMP Host</label>
@@ -225,13 +230,14 @@
             [disabled]="!emailSettings.enabled">
         </div>
       </div>
+      
       <div class="col-sm-4 form-group row">
         <div class="col-sm-4">
           <label for="smtpUser" class="label-inline">STMP User</label>
         </div>
         <div class="col-sm-8">
           <input id="smtpUser" maxlength="100" class="form-control input-sm" [(ngModel)]="emailSettings.user"
-            [disabled]="!emailSettings.enabled">
+            [disabled]="!emailSettings.use_auth">
         </div>
       </div>
       <div class="col-sm-4 form-group row">
@@ -240,7 +246,7 @@
         </div>
         <div class="col-sm-8">
           <input id="smtpPassword" maxlength="100" class="form-control input-sm" type="password"
-            [(ngModel)]="emailSettings.password" [disabled]="!emailSettings.enabled">
+            [(ngModel)]="emailSettings.password" [disabled]="!emailSettings.use_auth">
         </div>
       </div>
 
