@@ -57,6 +57,7 @@ export class AppSettingsComponent implements OnInit {
     saveEmail() {
         this.emailSettings.enabled = +this.emailSettings.enabled;
         this.emailSettings.use_auth = +this.emailSettings.use_auth;
+        this.emailSettings.starttls = +this.emailSettings.starttls;
         if (this.isEmailPatternValid()) {
             this.emailSettingsService.updateEmailSettings(this.emailSettings);
         } else {

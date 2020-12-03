@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.1.0 (2020-12-02)
+- added starttls email option
+- fixed logic of disanling username and password fields
+- fixed notification modal to use two-way binding
+
 ## 1.0.4 (2020-10-02)
 Changes:
  - Added PDF report for milestone -> [View Issue](https://github.com/aquality-automation/aquality-tracking/issues/110)

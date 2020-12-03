@@ -30,6 +30,7 @@ export class EmailSettings {
   from_email?: string;
   port?: number;
   use_auth?: number;
+  starttls?: number;
   default_email_pattern?: string;
   base_url?: string;
 }

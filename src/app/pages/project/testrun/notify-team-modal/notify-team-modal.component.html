@@ -15,13 +15,13 @@
                     <div class="col-sm-6">Send To:</div>
                     <div class="col-sm-6  me-drop-parent">
                         <ul class="col-sm-12 bg-light no-padding me-droppable" [dragula]="'notification-bag'"
-                            [dragulaModel]='excludedUsers'>
+                            [(dragulaModel)]='excludedUsers'>
                             <li class="me-draggable" *ngFor="let exuser of excludedUsers">{{exuser.user.user_name}}</li>
                         </ul>
                     </div>
                     <div class="col-sm-6 me-drop-parent">
                         <ul class="col-sm-12 bg-light no-padding me-droppable" [dragula]="'notification-bag'"
-                            [dragulaModel]='includedUsers'>
+                            [(dragulaModel)]='includedUsers'>
                             <li class="me-draggable" *ngFor="let user of includedUsers">{{user.user.user_name}}</li>
                         </ul>
                     </div>
