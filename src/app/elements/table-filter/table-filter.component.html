@@ -2,7 +2,7 @@
     [hiddenColumns]="hiddenColumns" [buttons]="[{name:'Apply', execute:true }, {name:'cancel', execute:false}]"
     (execute)="execute($event)" (closed)="wasClosed()"></manage-columns-modal>
 <app-modal *ngIf="!hideBulkDeleteModal" title="Bulk Delete"
-    message="You are about to permanently delete selected Test Runs. You will not be able to recover these Test Runs. This action cannot be undone!"
+    message="You are about to permanently delete {{getSelectedEntitites().length}} selected rows. This action cannot be undone!"
     [type]="'warning'" [buttons]="[{name:'I know what I`m doing', execute:true }, {name:'cancel', execute:false}]"
     (execute)="executeBulkDelete($event)" (closed)="wasClosed()"></app-modal>
 
@@ -60,7 +60,7 @@
                             (contextmenu)="openlink(col.headerlink)"
                             title="Right click to open">{{col?.name}}{{col?.type === 'percent' ? ', %' : ''}}</a>
                         <input *ngIf="col.type === 'selector'" name="select_all" type="checkbox"
-                            [title]="selectAll ? 'Deselect All' : 'Select All'" [ngModel]="selectAll"
+                            [title]="selectAll ? 'Deselect All' : 'Select All'" [(ngModel)]="selectAll"
                             (ngModelChange)="toggleSelectAll($event)" />
                     </th>
                 </tr>
@@ -212,15 +212,15 @@
                         <div *ngIf="col.editable && col.bulkEdit" class="ft-cell">
                             <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent')"
-                                [maxlength]="getMaxLength(col)"
+                                [maxlength]="getMaxLength(col)" 
                                 [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
                             </inline-editor>
 
                             <inline-editor class="full-width" [placeholder]="'Add ' + col?.name"
-                                *ngIf="col.type === 'textarea'"
-                                [maxlength]="getMaxLength(col)"
+                                *ngIf="col.type === 'textarea'" 
+                                [maxlength]="getMaxLength(col)" 
                                 [name]="col.property" trim="blur" [config]="{type:'textarea', size:'sm'}"
                                 [ngModel]="transformationsService.getPropertyValue(bulkChangeEntity, col.property)"
                                 (onSave)="setPropertyValue(bulkChangeEntity, col.property, $event, false, false)">
@@ -276,7 +276,7 @@
                             [title]="transformationsService.getPropertyValue(entity, col.title) || ''">
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 *ngIf="(col.type === 'text'  || col.type=='email' || col.type=='percent') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxlength]="getMaxLength(col)"
+                                [maxlength]="getMaxLength(col)" 
                                 [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
@@ -285,7 +285,7 @@
                             <inline-editor class="full-width" [placeholder]="col?.name"
                                 [config]="{type:'textarea', size:'sm'}"
                                 *ngIf="(col.type === 'textarea') && col.editable && !entity.constantRow && !notEditableByProperty(entity, col)"
-                                [maxlength]="getMaxLength(col)"
+                                [maxlength]="getMaxLength(col)" 
                                 [name]="col.property" trim="blur"
                                 [ngModel]="transformationsService.getPropertyValue(entity, col.property)"
                                 (onSave)="setPropertyValue(entity, col.property, $event)">
@@ -426,7 +426,8 @@
             <tfoot *ngIf="!hidePageSets">
                 <tr>
                     <td [attr.colspan]="columns.length">
-                        <bootstrap-paginator class="paginator-bottom" [rowsOnPageSet]="rowsOnPageSet">
+                        <bootstrap-paginator class="paginator-bottom" [rowsOnPageSet]="rowsOnPageSet"
+                            (onPageChange)="displayActivePage()">
                         </bootstrap-paginator>
                     </td>
                 </tr>

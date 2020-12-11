@@ -1,6 +1,8 @@
 import { Component, Input, Output, EventEmitter, ViewChild, OnInit, AfterViewInit, OnDestroy, OnChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListToCsvService } from '../../services/listToCsv.service';
+import { CollectionsService } from '../../services/utilities/collections/collections.service';
+import { ChunkedData } from '../../services/utilities/collections/chunked.data';
 import { TransformationsService } from '../../services/transformations.service';
 import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
@@ -63,6 +65,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   emailFieldError = 'Email should be equal to this pattern: example@domain.com';
   activePage = 1;
   filteredData: any[];
+  chunkedData: ChunkedData;
   showCreation = false;
   appliedFilters: Filter[] = [];
   newEntity: {} = {};
@@ -217,7 +220,14 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   toggleSelectAll(isSelected: boolean) {
-    this.filteredData.forEach(entity => entity.ft_select = isSelected);
+    if(this.chunkedData === undefined || (this.chunkedData.chunkSize != this.rowsOnPage)){
+      this.chunkedData = CollectionsService.chunk(this.filteredData, this.rowsOnPage)
+    }
+    this.chunkedData.data[this.activePage - 1].forEach(entity => entity.ft_select = isSelected);
+  }
+
+  displayActivePage(){
+    this.selectAll = false;
   }
 
   hasSelectedRows() {
