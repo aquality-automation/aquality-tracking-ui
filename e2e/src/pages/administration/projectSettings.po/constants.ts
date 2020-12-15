@@ -3,7 +3,7 @@ import { UiSwitch } from '../../../elements/ui-switch';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 import { Input } from '../../../elements/input.element';
 
-export const baseUrl = 'administration/project/projectSettings';
+export const baseUrl = '/#/administration/project/projectSettings';
 
 export const elements = {
     uniqueElement: element(by.css('#projectSettings-administration.active')),

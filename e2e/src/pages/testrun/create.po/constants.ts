@@ -2,7 +2,7 @@ import { by, element } from 'protractor';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 import { Input } from '../../../elements/input.element';
 
-export const baseUrl = (projectId: number) => `project/${projectId}/create/testrun`;
+export const baseUrl = (projectId: number) => `/#/project/${projectId}/create/testrun`;
 
 export const elements = {
     uniqueElement: element(by.id('create-test-run')),

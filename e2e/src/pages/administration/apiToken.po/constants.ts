@@ -1,7 +1,7 @@
 import { by, element } from 'protractor';
 import { Autocomplete } from '../../../elements/autocomplete.element';
 
-export const baseUrl = 'administration/project/apiToken';
+export const baseUrl = '/#/administration/project/apiToken';
 
 export const elements = {
     uniqueElement: element(by.css('#api-token-administration.active')),
