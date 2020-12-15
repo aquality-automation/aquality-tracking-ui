@@ -53,7 +53,7 @@ export class TestResultViewComponent implements OnInit {
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
-    this.listOfResolutions = await this.resultResolutionService.getResolution();
+    this.listOfResolutions = await this.resultResolutionService.getResolution(this.projectId);
     this.listOfFinalResults = await this.finalResultService.getFinalResult({});
     this.issues = (await this.issueService.getIssues({project_id: this.projectId})).filter(x => x.status_id !== 4);
     let projectUsers: LocalPermissions[] = await this.userService.getProjectUsers(this.projectId);
