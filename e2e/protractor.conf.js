@@ -25,8 +25,8 @@ exports.config = {
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
-    defaultTimeoutInterval: 20000,
-    allScriptsTimeout:40000,
+    defaultTimeoutInterval: 30000,
+    allScriptsTimeout:50000,
     print: function () { }
   },
   onPrepare() {

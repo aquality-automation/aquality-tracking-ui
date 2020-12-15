@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.2.0 (2020-12-15)
+ - Fix [Test result view is empty if it was opened by shared link or by opening in new tab] (https://github.com/aquality-automation/aquality-tracking/issues/126)
+ - Fix [Select items on the page] (https://github.com/aquality-automation/aquality-tracking/issues/127)
+ 
 ## 1.1.0 (2020-12-02)
 - added starttls email option
 - fixed logic of disanling username and password fields

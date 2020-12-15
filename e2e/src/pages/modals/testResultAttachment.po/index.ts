@@ -7,7 +7,7 @@ class TestResultAttachmentModalView extends BasePage {
     super(elements.uniqueElement, names.pageName);
   }
 
-  waitForFileNameTimeoutMs : number = 10000;
+  waitForFileNameTimeoutMs : number = 20000;
 
   async getTitle(): Promise<string> {
     return elements.titleElement.getText();
