@@ -676,7 +676,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   openlink(link: string) {
-    window.open(link);
+    let baseUrl = window.location.href.replace(this.router.url, '')
+    window.open(baseUrl + link);
   }
 
   rowClicked(entity: any, col: any, $event: any) {
