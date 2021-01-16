@@ -270,9 +270,10 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   }
 
   async saveDashboard() {
+    let suites = TestSuite.getCreateDashboardDtos(this.suitesToShow);
     await this.testSuiteService.createSuiteDashboard({
       name: this.newDashboardName,
-      suites: this.suitesToShow,
+      suites: suites,
       detailed: this.detailed === true || this.detailed === 1 ? 1 : 0,
       project_id: this.route.snapshot.params['projectId']
     });
