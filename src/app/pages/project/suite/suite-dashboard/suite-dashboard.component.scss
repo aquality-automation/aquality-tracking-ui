@@ -79,6 +79,10 @@
     color: var(--light);
 }
 
+::ng-deep .mat-slide-toggle {
+    color: #ffffff;
+}
+
 .autoRefresh {
     margin-top: 10px;
     margin-bottom: 10px;
