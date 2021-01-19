@@ -19,6 +19,7 @@ import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestSuite, SuiteDashboard } from 'src/app/shared/models/test-suite';
 import { colors } from 'src/app/shared/colors.service';
 import { TestRunStat } from 'src/app/shared/models/testrun-stats';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-suite-dashboard',
@@ -48,7 +49,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
     private testSuiteService: TestSuiteService,
     private testrunService: TestRunService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   @ViewChildren(BaseChartDirective) charts: QueryList<BaseChartDirective>;
 
@@ -94,8 +95,8 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
     });
   }
 
-  async generateChartsData(detailed: boolean | number) {
-    this.detailed = detailed;
+  async generateChartsData(detailed: boolean | number | MatSlideToggleChange) {
+    this.detailed = (detailed instanceof MatSlideToggleChange) ? detailed.checked : detailed;
     this.suite_stats = await this.getSuiteStats();
     this.detailed
       ? this.generateDetailedData(this.suite_stats)
@@ -153,13 +154,12 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
           `Passed | ${suite.stat.passed}`,
           `Application Issues | ${suite.stat.app_issue}`,
           `Test Issues | ${suite.stat.warning +
-            suite.stat.not_assigned +
-            suite.stat.other}`,
+          suite.stat.not_assigned +
+          suite.stat.other}`,
           `Total | ${suite.stat.total}`
         ];
-        const options = JSON.parse(JSON.stringify(this.chartOptions));
-        options.id = suite.id;
-        suite['options'] = options;
+        
+        this.addChartOptionsToSuite(suite);
       }
     }
     return suites;
@@ -223,9 +223,17 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
           `Other | ${suite.stat.other}`,
           `Total | ${suite.stat.total}`
         ];
+
+        this.addChartOptionsToSuite(suite);
       }
     }
     return suites;
+  }
+
+  addChartOptionsToSuite(suite: any) {
+    const options = JSON.parse(JSON.stringify(this.chartOptions));
+    options.id = suite.id;
+    suite['options'] = options;
   }
 
   getDuration(testrunStat: TestRunStat): string {
@@ -284,7 +292,7 @@ export class SuiteDashboardComponent implements OnInit, OnDestroy {
   isDashboardNameValid(): boolean {
     const isAlreadyExists = this.dashboards
       ? this.dashboards.find(x => x.name === this.newDashboardName) !==
-        undefined
+      undefined
       : true;
     return (
       this.newDashboardName &&

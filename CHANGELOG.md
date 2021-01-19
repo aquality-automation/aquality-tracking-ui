@@ -1,6 +1,9 @@
 # CHANGELOG
 
-## 1.2.1 (2020-12-16)
+## 1.2.2 (2021-01-19)
+ - Fix of an issue with switching between detailed/non-detailed view on the dashboard
+
+## 1.2.1 (2021-01-17)
  - Fix [[BUG] on a dashboard page cannot delete a dashboard](https://github.com/aquality-automation/aquality-tracking/issues/130)
 
 ## 1.2.0 (2020-12-15)
