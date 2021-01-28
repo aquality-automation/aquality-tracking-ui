@@ -58,6 +58,10 @@ import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ImportComponent } from './import/import.component';
 import { ImportService } from 'src/app/services/import/import.service';
 import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
+import { LinkedIssueComponent } from './test/links/linked-issue/linked-issue.component';
+import { LinkedIssuesComponent } from './test/links/linked-issues/linked-issues.component';
+import { IntegrationSystemService } from 'src/app/services/integrations/integration-system.service';
+import { IntegrationTestService } from 'src/app/services/integrations/integration-test.service';
 
 @NgModule({
   imports: [
@@ -101,7 +105,9 @@ import {PrintMilestoneComponent} from './milestone/print-milestone/print-milesto
     IssueListComponent,
     IssueViewComponent,
     StepsListComponent,
-    ImportComponent
+    ImportComponent,
+    LinkedIssueComponent,
+    LinkedIssuesComponent
   ],
   providers: [
     TestRunService,
@@ -131,7 +137,9 @@ import {PrintMilestoneComponent} from './milestone/print-milestone/print-milesto
     CreateMilestoneGuard,
     CreateTestRunGuard,
     ImportService,
-    ProjectImportGuard
+    ProjectImportGuard,
+    IntegrationSystemService,
+    IntegrationTestService
   ]
 })
 export class ProjectModule { }
