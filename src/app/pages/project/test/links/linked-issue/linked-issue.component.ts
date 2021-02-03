@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { IntegrationSystem } from 'src/app/shared/models/integration-system';
+import { SystemType } from 'src/app/shared/models/integrations/system-type';
 
 @Component({
   selector: 'app-linked-issue',
@@ -8,7 +8,7 @@ import { IntegrationSystem } from 'src/app/shared/models/integration-system';
 })
 export class LinkedIssueComponent implements OnInit {
 
-  @Input() system : IntegrationSystem;
+  @Input() system : SystemType;
   
   constructor() { }
 

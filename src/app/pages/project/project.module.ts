@@ -60,8 +60,8 @@ import { ImportService } from 'src/app/services/import/import.service';
 import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
 import { LinkedIssueComponent } from './test/links/linked-issue/linked-issue.component';
 import { LinkedIssuesComponent } from './test/links/linked-issues/linked-issues.component';
-import { IntegrationSystemService } from 'src/app/services/integrations/integration-system.service';
-import { IntegrationTestService } from 'src/app/services/integrations/integration-test.service';
+import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
+import { TestReferenceService } from 'src/app/services/integrations/test-reference.service';
 
 @NgModule({
   imports: [
@@ -138,8 +138,8 @@ import { IntegrationTestService } from 'src/app/services/integrations/integratio
     CreateTestRunGuard,
     ImportService,
     ProjectImportGuard,
-    IntegrationSystemService,
-    IntegrationTestService
+    SystemTypeService,
+    TestReferenceService
   ]
 })
 export class ProjectModule { }

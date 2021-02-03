@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { IntegrationSystemService } from 'src/app/services/integrations/integration-system.service';
-import { IntegrationSystem } from 'src/app/shared/models/integration-system';
+import { Component, Input, OnInit } from '@angular/core';
+import { SystemService } from 'src/app/services/integrations/system.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { IntegrationTestService } from 'src/app/services/integrations/integration-test.service';
-import { IntegrationTest } from 'src/app/shared/models/integration-test';
+import { TestReferenceService } from 'src/app/services/integrations/test-reference.service';
+import { Reference } from 'src/app/shared/models/integrations/reference';
+import { System } from 'src/app/shared/models/integrations/system';
 
 @Component({
   selector: 'app-linked-issues',
@@ -14,11 +14,16 @@ export class LinkedIssuesComponent implements OnInit {
 
   addLinkForm: FormGroup;
 
-  systems: IntegrationSystem[] = [];
+  systems: System[] = [];
+  references: Reference[] = [];
+
+  //TODO: add project id and test id as inputs
+  @Input() projectId: number;
+  @Input() testId: number;
 
   constructor(
-    private integrationSystemService: IntegrationSystemService,
-    private integrationTestService: IntegrationTestService
+    private systemService: SystemService,
+    private testReferenceService: TestReferenceService
   ) { }
 
   ngOnInit(): void {
@@ -27,32 +32,40 @@ export class LinkedIssuesComponent implements OnInit {
       linkSystem: new FormControl('')
     });
 
-    this.integrationSystemService.getIntegrationSystems()
+    this.systemService.getSystems(this.projectId)
       .subscribe(systems => {
         this.systems = systems;
         this.addLinkForm.controls.linkSystem.setValue(systems[0]);
       })
+
+    this.testReferenceService.get(this.projectId, this.testId)
+      .subscribe(references => {
+        this.references = references;
+      })
   }
 
-  public deleteLink(link: IntegrationSystem) {
+  public getSystemName(reference: Reference): string {
+    return this.systems.filter(system => system.id === reference.int_system)[0].name;
+  }
+
+  public deleteReference(link: Reference) {
     //TODO: remame variables
     // add call the service
-    this.systems = this.systems.filter(system => (system.name !== link.name));
+    this.testReferenceService.delete(this.projectId, link.id)
+      .subscribe(() => {
+        this.references = this.references.filter(reference => (reference.id !== link.id));
+      });
   }
 
-  public addLink() {
-    let link = new IntegrationTest();
-    link.key = this.addLinkForm.controls.linkKey.value;
-    link.test_id = 109806; //TODO: need to find how to get id. Probably via @Input()
-    link.integration_system_id = this.addLinkForm.controls.linkSystem.value.id;
-    //TODO: need to find how to get id. 
-    //Maybe there is some storage with common data like current project?
-    link.project_id = 70;
-    console.log(`link to add ${link.key}`)
-    this.integrationTestService.createLink(link)
+  public addReference() {
+    let reference = new Reference();
+    reference.key = this.addLinkForm.controls.linkKey.value;
+    reference.entity_id = this.testId;
+    reference.int_system = this.addLinkForm.controls.linkSystem.value.id;
+    reference.project_id = this.projectId;
+    this.testReferenceService.create(reference)
       .subscribe(item => {
-        console.log(`Added item was ${item.key}`)
-      }
-      );
+        this.references.push(item);
+      });
   }
 }

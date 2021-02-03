@@ -1,4 +1,4 @@
-export class IntegrationSystem {
+export class SystemType {
     id: number;
     name: string;
 }

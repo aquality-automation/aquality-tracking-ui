@@ -48,9 +48,7 @@
               </lookup-autocomplete>
             </div>
             <div class="col-sm-12 no-padding">
-              <label for="issue-external-url">External Issue:</label>
-              <inline-editor placeholder="External Issue" id="issue-external-url" [(ngModel)]="issue.external_url"
-                [disabled]="!canEdit" [config]="{type:'link', saveOnEnter:true, saveOnBlur:true}"></inline-editor>
+              <app-linked-issues [projectId]="issue.project_id" [testId]="13143"></app-linked-issues>
             </div>
           </div>
         </div>

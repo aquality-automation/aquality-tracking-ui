@@ -1,9 +1,9 @@
 <div class="container">
     <div class="row p-2">
-        <form [formGroup]="addLinkForm" (ngSubmit)="addLink()">
+        <form [formGroup]="addLinkForm" (ngSubmit)="addReference()">
             <div class="form-row">
 
-                <div class="col-md-4 p-2">
+                <div class="col-md-6 p-2">
                     <select id="select-int-system" formControlName="linkSystem"
                         class="form-control form-control-sm input-lg">
                         <option *ngFor="let system of systems" [ngValue]="system"
@@ -13,12 +13,12 @@
                     <i class="fa fa-caret-down"></i>
                 </div>
 
-                <div class="col-md-4 p-2">
+                <div class="col-md-3 p-2">
                     <input id="link-key" formControlName="linkKey" type="text" trim="blur"
                         class="form-control form-control-sm" placeholder="linked issue key" required>
                 </div>
 
-                <div class="col-md-4 p-2">
+                <div class="col-md-3 p-2">
                     <button id="add-link" type="submit" class="btn btn-primary btn-sm"
                         [disabled]="addLinkForm.invalid">Add</button>
                 </div>
@@ -37,12 +37,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let system of systems; let number = index">
+                <tr *ngFor="let reference of references; let number = index">
                     <th scope="row">{{number}}</th>
-                    <td>{{system.name}}</td>
-                    <td>{{system.name}}</td>
+                    <td>{{getSystemName(reference)}}</td>
+                    <td>{{reference.key}}</td>
                     <td>
-                        <button id="delete-link" (click)="deleteLink(system)"
+                        <button id="delete-link" (click)="deleteReference(reference)"
                             class="btn btn-primary btn-sm">Delete</button>
                     </td>
                 </tr>
