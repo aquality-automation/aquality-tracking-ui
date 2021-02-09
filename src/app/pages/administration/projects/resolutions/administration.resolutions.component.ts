@@ -4,6 +4,7 @@ import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { TFOrder, TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { ProjectService } from 'src/app/services/project/project.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { resolutionTypesArray } from 'src/app/shared/models/resolution-type';
 
 @Component({
   templateUrl: './administration.resolutions.component.html'
@@ -16,12 +17,7 @@ export class AdministrationResolutionsComponent implements OnInit {
   projects: Project[];
   selectedProject: Project;
   resolutions: ResultResolution[];
-  colors = [
-    { id: 1, title: 'Danger', color: 1 },
-    { id: 2, title: 'Warning', color: 2 },
-    { id: 3, title: 'Primary', color: 3 },
-    { id: 4, title: 'Info', color: 4 },
-    { id: 5, title: 'Success', color: 5 }];
+  colors = resolutionTypesArray;
   public sortBy = 'name';
   public sortOrder = TFOrder.asc;
   public tbCols: TFColumn[];

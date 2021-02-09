@@ -8,7 +8,7 @@ import { SystemType } from 'src/app/shared/models/integrations/system-type';
 })
 export class SystemTypeService extends BaseHttpService {
 
-  public getSystemTypes(): Observable<SystemType[]>{
+  public getTypes(): Observable<SystemType[]>{
       return this.http.get<SystemType[]>('/integration/system/types');
   }
 }

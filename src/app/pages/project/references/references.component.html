@@ -4,7 +4,7 @@
             <div class="form-row">
 
                 <div class="col-md-6 p-2">
-                    <select id="select-int-system" formControlName="linkSystem"
+                    <select id="select-int-system" formControlName="refSystem"
                         class="form-control form-control-sm input-lg">
                         <option *ngFor="let system of systems" [ngValue]="system"
                             [attr.selected]="systems.length > 0 ? systems[0] : null">
@@ -14,12 +14,12 @@
                 </div>
 
                 <div class="col-md-3 p-2">
-                    <input id="link-key" formControlName="linkKey" type="text" trim="blur"
-                        class="form-control form-control-sm" placeholder="linked issue key" required>
+                    <input id="ref-key" formControlName="refKey" type="text" trim="blur"
+                        class="form-control form-control-sm" placeholder="Key" required>
                 </div>
 
                 <div class="col-md-3 p-2">
-                    <button id="add-link" type="submit" class="btn btn-primary btn-sm"
+                    <button id="add-ref" type="submit" class="btn btn-primary btn-sm"
                         [disabled]="addLinkForm.invalid">Add</button>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                 <tr *ngFor="let reference of references; let number = index">
                     <th scope="row">{{number}}</th>
                     <td>{{getSystemName(reference)}}</td>
-                    <td>{{reference.key}}</td>
+                    <td><a (click)="openReference(reference)">{{reference.key}}</a></td>
                     <td>
                         <button id="delete-link" (click)="deleteReference(reference)"
                             class="btn btn-primary btn-sm">Delete</button>

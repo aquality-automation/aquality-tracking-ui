@@ -12,6 +12,7 @@ import { IssueService } from 'src/app/services/issue/issue.service';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { TestService } from 'src/app/services/test/test.service';
+import { ReferenceType, referenceTypes } from 'src/app/shared/models/integrations/reference-type';
 
 @Component({
   templateUrl: './issue-view.component.html',
@@ -55,6 +56,7 @@ export class IssueViewComponent implements OnInit {
       class: 'ft-width-250',
     },
   ];
+  referenceType: ReferenceType = referenceTypes.Issue;
 
   constructor(
     public userService: UserService,

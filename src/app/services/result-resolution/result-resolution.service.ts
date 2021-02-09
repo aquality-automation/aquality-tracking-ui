@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseHttpService } from '../base-http/base-http.service';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';
+import { ResolutionType } from 'src/app/shared/models/resolution-type';
 
 
 @Injectable()

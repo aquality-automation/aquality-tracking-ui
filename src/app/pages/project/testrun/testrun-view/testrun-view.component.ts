@@ -14,6 +14,7 @@ import { EmailSettingsService } from 'src/app/services/email-settings/email-sett
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { ResultResolutionsChartsComponent } from 'src/app/elements/charts/resultResolutions/resultResolutions.charts.component';
 import { ResultGridComponent } from '../../results/results-grid/results-grid.component';
+import { ReferenceType, referenceTypes } from 'src/app/shared/models/integrations/reference-type';
 
 @Component({
   templateUrl: './testrun-view.component.html',
@@ -39,6 +40,7 @@ export class TestRunViewComponent implements OnInit {
   canSendEmail: boolean;
   icons = { faPlay, faStop, faPaperPlane, faFilePdf };
   test: any;
+  referenceType: ReferenceType = referenceTypes.TestRun;
 
   constructor(
     private milestoneService: MilestoneService,

@@ -1,0 +1,67 @@
+<form [formGroup]='addSystemForm' (ngSubmit)="addSystem()">
+    <div class="form-row">
+
+        <div class="col-md-1 p-2">
+            <select id="system-type" formControlName="type" class="form-control form-control-sm input-lg">
+                <option *ngFor="let type of systemTypes" [ngValue]="type"
+                    [attr.selected]="systemTypes.length > 0 ? systemTypes[0] : null">
+                    {{type.name}}</option>
+            </select>
+            <i class="fa fa-caret-down"></i>
+        </div>
+
+        <div class="col-md-2 p-2">
+            <input id="system-name" formControlName="name" type="text" trim="blur"
+                class="form-control form-control-sm" placeholder="Name" required>
+        </div>
+
+        <div class="col-md-3 p-2">
+            <input id="system-url" formControlName="url" type="text" trim="blur"
+                class="form-control form-control-sm" placeholder="URL" required>
+        </div>
+
+        <div class="col-md-1 p-2">
+            <input id="system-username" formControlName="username" type="text" trim="blur"
+                class="form-control form-control-sm" placeholder="Username" required>
+        </div>
+
+        <div class="col-md-1 p-2">
+            <input id="system-password" formControlName="password" type="text" trim="blur"
+                class="form-control form-control-sm" placeholder="Password" required>
+        </div>
+
+        <div class="col-md-3 p-2">
+            <input id="system-api-token" formControlName="apiToken" type="text" trim="blur"
+                class="form-control form-control-sm" placeholder="API Token" required>
+        </div>
+
+        <div class="col-md-1 p-2">
+            <button id="system-add" type="submit" class="btn btn-primary btn-sm"
+                [disabled]="addSystemForm.invalid">Add</button>
+        </div>
+    </div>
+</form>
+
+<div *ngIf="systems.length > 0" class="row p-2">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">System</th>
+                <th scope="col">Name</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let system of systems; let number = index">
+                <th scope="row">{{number}}</th>
+                <td>{{getSystemTypeName(system)}}</td>
+                <td>{{system.name}}</td>
+                <td>
+                    <button id="delete-link" (click)="deleteSystem(system)"
+                        class="btn btn-primary btn-sm">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

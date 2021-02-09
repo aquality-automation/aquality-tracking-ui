@@ -58,17 +58,16 @@ import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ImportComponent } from './import/import.component';
 import { ImportService } from 'src/app/services/import/import.service';
 import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
-import { LinkedIssueComponent } from './test/links/linked-issue/linked-issue.component';
-import { LinkedIssuesComponent } from './test/links/linked-issues/linked-issues.component';
+import { ReferencesComponent } from './references/references.component'
 import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
-import { TestReferenceService } from 'src/app/services/integrations/test-reference.service';
+import { ReferenceService } from 'src/app/services/integrations/reference.service';
 
 @NgModule({
   imports: [
     ProjectRoutingModule,
     CommonModule,
     SharedModule
-  ],
+  ], 
   declarations: [
     ProjectListComponent,
     ProjectViewComponent,
@@ -106,8 +105,7 @@ import { TestReferenceService } from 'src/app/services/integrations/test-referen
     IssueViewComponent,
     StepsListComponent,
     ImportComponent,
-    LinkedIssueComponent,
-    LinkedIssuesComponent
+    ReferencesComponent
   ],
   providers: [
     TestRunService,
@@ -139,7 +137,7 @@ import { TestReferenceService } from 'src/app/services/integrations/test-referen
     ImportService,
     ProjectImportGuard,
     SystemTypeService,
-    TestReferenceService
+    ReferenceService
   ]
 })
 export class ProjectModule { }
