@@ -61,6 +61,8 @@ import {PrintMilestoneComponent} from './milestone/print-milestone/print-milesto
 import { ReferencesComponent } from './references/references.component'
 import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
 import { ReferenceService } from 'src/app/services/integrations/reference.service';
+import { PublishResultsModalComponent } from './testrun/publish-results-modal/publish-results-modal.component';
+import { RefItemComponent } from './testrun/publish-results-modal/ref-item/ref-item.component';
 
 @NgModule({
   imports: [
@@ -105,7 +107,9 @@ import { ReferenceService } from 'src/app/services/integrations/reference.servic
     IssueViewComponent,
     StepsListComponent,
     ImportComponent,
-    ReferencesComponent
+    ReferencesComponent,
+    PublishResultsModalComponent,
+    RefItemComponent
   ],
   providers: [
     TestRunService,

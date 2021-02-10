@@ -7,6 +7,12 @@
   [buttons]="[{name:'Download', execute:true }, {name:'Cancel', execute:false}]" (execute)="execute($event)"
   (closed)="wasClosed()"></print-testrun-modal>
 
+<app-publish-results-modal *ngIf="!isPublishModalHidden" [projectId]="projectId" [(isHidden)]="isPublishModalHidden"
+  [testRun]="testrun" [testResults]="testResults"
+  [buttons]="[{name:'Publish', execute:true }, {name:'Cancel', execute:false}]" (closed)="wasClosed()"
+  [runReferences]="runReferences">
+</app-publish-results-modal>
+
 <div *ngIf="testrun" class="container-fluid panel-padding">
 
   <div class="row">
@@ -17,6 +23,11 @@
     </div>
     <div *ngIf="testrun" class="col-sm-10">
       <div class="btn-group pull-right margin-right-cut-md">
+
+        <button *ngIf="isPublishAvailable()" id="publish" class="btn btn-success" (click)="publish()">Publish
+          <fa-icon class="icon" [icon]="icons.faUpload"></fa-icon>
+        </button>
+
         <button *ngIf="canEdit && !isFinished() && canFinish()" id="finish" class="btn btn-success"
           (click)="finishTestRun()">Finish
           <fa-icon class="icon" [icon]="icons.faStop"></fa-icon>
@@ -92,7 +103,7 @@
           </div>
         </div>
       </div>
-    
+
       <div class="row">
         <div *ngIf="testrun.author || canEdit" class="col-sm-4">
           <div class="row">
@@ -106,20 +117,21 @@
             </div>
           </div>
         </div>
-    
+
         <div *ngIf="testrun.execution_environment || canEdit" class="col-sm-4">
           <div class="row">
             <div class="col-sm-3">
               <label for="execution_environment">Environment:</label>
             </div>
             <div class="col-sm-9">
-              <inline-editor id="execution_environment" [disabled]="!canEdit" maxLength="500" name="ExecutionEnvironment"
-                placeholder="Execution Environment" trim="blur" [(ngModel)]="testrun.execution_environment"
-                (onSave)="testrunUpdate()" [required]="false"></inline-editor>
+              <inline-editor id="execution_environment" [disabled]="!canEdit" maxLength="500"
+                name="ExecutionEnvironment" placeholder="Execution Environment" trim="blur"
+                [(ngModel)]="testrun.execution_environment" (onSave)="testrunUpdate()" [required]="false">
+              </inline-editor>
             </div>
           </div>
         </div>
-    
+
         <div *ngIf="testrun?.finish_time" class="col-sm-4">
           <div class="row">
             <div class="col-sm-3">
@@ -130,7 +142,7 @@
             </div>
           </div>
         </div>
-    
+
         <div class="col-sm-4">
           <div class="row">
             <div class="col-sm-3">
@@ -142,7 +154,7 @@
             </div>
           </div>
         </div>
-    
+
         <div *ngIf="(testrun.ci_build || canEdit) && testrun.label_id !== 2" class="col-sm-4">
           <div class="row">
             <div class="col-sm-3">
@@ -155,7 +167,7 @@
             </div>
           </div>
         </div>
-    
+
         <div *ngIf="testrun.milestone || canEdit" class="col-sm-4">
           <div class="row">
             <div class="col-sm-3">
@@ -174,7 +186,9 @@
     </div>
 
     <div class="col-sm-3">
-      <app-reference [projectId]="projectId" [referenceType]="referenceType" [entityId]="testrun.id"></app-reference>
+      <app-reference [projectId]="projectId" [referenceType]="referenceType" [entityId]="testrun.id"
+        (onReferencesChanged)="addReference($event)">
+      </app-reference>
     </div>
   </div>
 
@@ -195,6 +209,7 @@
   </div>
 
   <div *ngIf="testResultTemplate">
-    <results-grid id="testrunViewResultsGrid" [testResultTemplate]="testResultTemplate" (refreshed)="assigneResults($event)">Loading...</results-grid>
+    <results-grid id="testrunViewResultsGrid" [testResultTemplate]="testResultTemplate"
+      (refreshed)="assigneResults($event)">Loading...</results-grid>
   </div>
 </div>

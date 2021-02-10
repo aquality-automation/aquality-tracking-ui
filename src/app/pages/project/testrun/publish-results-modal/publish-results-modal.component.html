@@ -1,0 +1,96 @@
+<div [hidden]="isHidden" class="overlay mt-overlay modal fade" [ngClass]="{'show-modal': !this.isHidden}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="hideModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2 p-2">
+                        Publish to:
+                    </div>
+                    <div class="col-md-4 p-2">
+
+                        <select *ngIf="runReferences.length > 0" id="select-int-system" [(ngModel)]="selectedRun"
+                            class="form-control form-control-sm input-lg">
+                            <option *ngFor="let runRef of runReferences; let item = index;" [ngValue]="runRef">
+                                {{runRef.key}}</option>
+                        </select>
+                        <i class="fa fa-caret-down"></i>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <table id="tests-table" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Test Name</th>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Resolution Type</th>
+                                <th scope="col">Issue</th>
+                                <th scope="col">Issue Reference</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let result of testResults; let number = index">
+                                <th scope="row">{{number}}</th>
+                                <td>{{result.test.name}}</td>
+                                <td *ngIf="hasTestReference(result.test)">
+                                    {{getTestReference(result.test).key}}
+                                </td>
+                                <td *ngIf="!hasTestReference(result.test)">
+                                    <app-ref-item 
+                                        [projectId]="projectId" 
+                                        [runReference]="selectedRun" 
+                                        [testResult]="result" 
+                                        [refType]="referenceTypes.Test"
+                                        (onReferenceAdded)="addTestReference($event)">
+                                    </app-ref-item>
+                                </td>
+
+                                <td>{{getResolutionType(result)?.title}}</td>
+
+                                <td>{{result.issue?.title}}</td>
+
+                                <td *ngIf="hasReferencedIssue(result)">
+                                    <p>
+                                        {{getIssueReference(result.issue).key}}
+                                        <fa-icon class="icon" [icon]="icons.faTimes"></fa-icon>
+                                    </p>
+                                    
+
+                                </td>
+
+                                <td *ngIf="!hasReferencedIssue(result)">
+                                    no ref issues
+                                </td>
+
+                                <td>
+                                    <button id="delete-link" class="btn btn-primary btn-sm">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 modal-footer modal-buttons">
+                        <div class="modal-buttons-form">
+                            <button autofocus class="btn btn-sm" [ngClass]="{
+                                'btn-secondary': !button.execute,
+                                'btn-success': button.execute
+                            }" *ngFor="let button of buttons">{{button.name}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
