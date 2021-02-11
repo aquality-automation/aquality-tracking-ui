@@ -57,19 +57,25 @@ import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ImportComponent } from './import/import.component';
 import { ImportService } from 'src/app/services/import/import.service';
-import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
+import { PrintMilestoneComponent } from './milestone/print-milestone/print-milestone.component';
 import { ReferencesComponent } from './references/references.component'
 import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
 import { ReferenceService } from 'src/app/services/integrations/reference.service';
 import { PublishResultsModalComponent } from './testrun/publish-results-modal/publish-results-modal.component';
 import { RefItemComponent } from './testrun/publish-results-modal/ref-item/ref-item.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   imports: [
     ProjectRoutingModule,
     CommonModule,
-    SharedModule
-  ], 
+    SharedModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatPaginatorModule
+  ],
   declarations: [
     ProjectListComponent,
     ProjectViewComponent,

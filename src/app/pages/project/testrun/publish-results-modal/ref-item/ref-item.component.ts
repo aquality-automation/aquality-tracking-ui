@@ -3,7 +3,6 @@ import { ReferenceService } from 'src/app/services/integrations/reference.servic
 import { IEntityId } from 'src/app/shared/models/i-entity-id';
 import { Reference } from 'src/app/shared/models/integrations/reference';
 import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';
-import { TestResult } from 'src/app/shared/models/test-result';
 
 @Component({
   selector: 'app-ref-item',
@@ -14,7 +13,7 @@ export class RefItemComponent implements OnInit {
 
   @Input() projectId: number;
   @Input() runReference: Reference;
-  @Input() testResult: TestResult;
+  @Input() refEntity: IEntityId;
   @Input() refType: ReferenceType;
 
   @Output() onReferenceAdded: EventEmitter<Reference> = new EventEmitter<Reference>();
@@ -24,10 +23,10 @@ export class RefItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  addReference(entity: IEntityId, key: string) {
+  addReference(key: string) {
     let ref = new Reference();
     ref.key = key;
-    ref.entity_id = entity.id;
+    ref.entity_id = this.refEntity.id;
     ref.project_id = this.projectId;
     ref.int_system = this.runReference.int_system;
     this.referenceService.create(ref, this.refType)

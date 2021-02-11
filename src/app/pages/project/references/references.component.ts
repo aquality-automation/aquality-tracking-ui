@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SystemService } from 'src/app/services/integrations/system.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { errors, ReferenceService } from 'src/app/services/integrations/reference.service';
+import { ReferenceService } from 'src/app/services/integrations/reference.service';
 import { Reference } from 'src/app/shared/models/integrations/reference';
 import { System } from 'src/app/shared/models/integrations/system';
 import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';

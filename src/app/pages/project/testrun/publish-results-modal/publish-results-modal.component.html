@@ -26,60 +26,61 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <table id="tests-table" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Test Name</th>
-                                <th scope="col">Reference</th>
-                                <th scope="col">Resolution Type</th>
-                                <th scope="col">Issue</th>
-                                <th scope="col">Issue Reference</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let result of testResults; let number = index">
-                                <th scope="row">{{number}}</th>
-                                <td>{{result.test.name}}</td>
-                                <td *ngIf="hasTestReference(result.test)">
-                                    {{getTestReference(result.test).key}}
-                                </td>
-                                <td *ngIf="!hasTestReference(result.test)">
-                                    <app-ref-item 
-                                        [projectId]="projectId" 
-                                        [runReference]="selectedRun" 
-                                        [testResult]="result" 
-                                        [refType]="referenceTypes.Test"
-                                        (onReferenceAdded)="addTestReference($event)">
-                                    </app-ref-item>
-                                </td>
+                <mat-form-field>
+                    <input matInput #filter (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    <button mat-icon-button matSuffix aria-label="clear" *ngIf="filter.value"
+                        (click)="filter.value=''; applyFilter('');">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
 
-                                <td>{{getResolutionType(result)?.title}}</td>
+                <mat-table #table [dataSource]="dataSource">
 
-                                <td>{{result.issue?.title}}</td>
+                    <ng-container matColumnDef="{{tableColumns.TestName.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.TestName.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry"> {{entry.test.name}} </mat-cell>
+                    </ng-container>
 
-                                <td *ngIf="hasReferencedIssue(result)">
-                                    <p>
-                                        {{getIssueReference(result.issue).key}}
-                                        <fa-icon class="icon" [icon]="icons.faTimes"></fa-icon>
-                                    </p>
-                                    
+                    <ng-container matColumnDef="{{tableColumns.TestRef.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.TestRef.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">
+                            <p *ngIf="hasTestReference(entry)">{{entry.testRef?.key}}</p>
+                            <app-ref-item *ngIf="!hasTestReference(entry)" 
+                                [projectId]="projectId"
+                                [runReference]="selectedRun" 
+                                [refEntity]="entry.test" 
+                                [refType]="referenceTypes.Test"
+                                (onReferenceAdded)="addTestReference($event)">
+                            </app-ref-item>
+                        </mat-cell>
+                    </ng-container>
 
-                                </td>
+                    <ng-container matColumnDef="{{tableColumns.IssueName.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueName.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.issue?.title}}</mat-cell>
+                    </ng-container>
 
-                                <td *ngIf="!hasReferencedIssue(result)">
-                                    no ref issues
-                                </td>
+                    <ng-container matColumnDef="{{tableColumns.IssueRef.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueRef.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">
+                            <p *ngIf="hasReferencedIssue(entry)">{{entry.issueRef?.key}}</p>
+                            <app-ref-item *ngIf="hasIssue(entry) && !hasReferencedIssue(entry)" 
+                                [projectId]="projectId"
+                                [runReference]="selectedRun" 
+                                [refEntity]="entry.issue" 
+                                [refType]="referenceTypes.Issue" 
+                                (onReferenceAdded)="addIssueReference($event)">
+                            </app-ref-item>
+                        </mat-cell>
+                    </ng-container>
 
-                                <td>
-                                    <button id="delete-link" class="btn btn-primary btn-sm">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator [length]="100" [pageSize]="2" [pageSizeOptions]="[2, 5, 10, 20]" showFirstLastButtons>
+                </mat-paginator>
+
                 <div class="row">
                     <div class="col-sm-12 modal-footer modal-buttons">
                         <div class="modal-buttons-form">

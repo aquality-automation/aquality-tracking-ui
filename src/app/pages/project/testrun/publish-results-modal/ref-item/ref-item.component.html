@@ -1,12 +1,12 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <input id="test-ref-key" type="text" trim="blur"
-                class="form-control form-control-sm" placeholder="Key" required #refKey>
-        </div>
-        <div class="col-md-6">
-            <button id="test-ref-add" class="btn btn-primary btn-sm"
-                (click)="addReference(testResult.test, refKey.value)">Add</button>
-        </div>
+<div class="row">
+    <div class="col-md-1 p-2"></div>
+    <div class="col-md-6 p-2">
+        <input id="test-ref-key" type="text" trim="blur"
+            class="form-control form-control-sm" placeholder="Key" required #refKey>
     </div>
+    <div class="col-md-4 p-2">
+        <button id="test-ref-add" class="btn btn-primary btn-sm"
+            (click)="addReference(refKey.value)">Add</button>
+    </div>
+    <div class="col-md-1 p-2"></div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ModalComponent } from 'src/app/elements/modals/modal.component';
 import { ReferenceService } from 'src/app/services/integrations/reference.service';
 import { Test } from 'src/app/shared/models/test';
@@ -9,7 +9,11 @@ import { ReferenceType, referenceTypes } from 'src/app/shared/models/integration
 import { ResolutionType, resolutionTypesArray } from 'src/app/shared/models/resolution-type';
 import { Issue } from 'src/app/shared/models/issue';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { forkJoin } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { IEntityId } from 'src/app/shared/models/i-entity-id';
+import { Data } from '@angular/router';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -31,78 +35,77 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
 
   icons = { faTimes }
 
+  tableColumns = {
+    TestName: new TableColumn('testName', 'Test Name'),
+    TestRef: new TableColumn('testRef', 'Test Ref'),
+    IssueName: new TableColumn('issueName', 'Issue Name'),
+    IssueRef: new TableColumn('issueRef', 'Issue Ref')
+  }
+
+  displayedColumns = [
+    this.tableColumns.TestName.id,
+    this.tableColumns.TestRef.id,
+    this.tableColumns.IssueName.id,
+    this.tableColumns.IssueRef.id
+  ];
+  dataSource: MatTableDataSource<DataEntry>;
+  data: DataEntry[] = [];
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(private referenceService: ReferenceService) {
     super();
   }
 
   ngOnInit(): void {
     this.selectedRun = this.runReferences[0];
-    this.initTestReferences();
-    this.initIssueeReferences();
-  }
+    forkJoin([
+      this.referenceService.getAll(this.projectId, referenceTypes.Test),
+      this.referenceService.getAll(this.projectId, referenceTypes.Issue)
+    ]
+    ).subscribe(([testReferences, issueReferences]) => {
+      this.testResults.forEach(result => {
+        let entry = new DataEntry();
+        entry.result = result;
+        entry.test = result.test;
+        entry.issue = result.issue;
 
-  private initTestReferences() {
-    let tests: Test[] = this.testResults
-      .map(result => {
-        let test: Test = { id: result.test.id };
-        return test;
+        let findRef = (refereces: Reference[], entityId: number) =>
+          refereces.find(ref => ref.entity_id === entityId);
+        entry.testRef = findRef(testReferences, result.test.id);
+        entry.issueRef = findRef(issueReferences, result.issue?.id);
+        this.data.push(entry);
       })
-    this.testReferences = this.initReferences<TestResult>(tests, referenceTypes.Test);
+      this.dataSource = new MatTableDataSource<DataEntry>(this.data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.filterPredicate = (entry, value) => {
+        return entry.test?.name?.toLowerCase().includes(value) ||
+          entry.testRef?.key?.toLowerCase().includes(value) ||
+          entry.issue?.title?.toLowerCase().includes(value) ||
+          entry.issueRef?.key?.toLowerCase().includes(value)
+      };
+    });
   }
 
-  private initIssueeReferences() {
-    let issues = this.testResults
-      .map(result => result.issue)
-      .filter(issue => issue !== undefined);
-
-    this.issueReferences = this.initReferences<Issue>(issues, referenceTypes.Issue);
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim().toLowerCase();
+    this.dataSource.filter = filterValue;
   }
 
-  private initReferences<T extends IEntityId>(items: T[], refType: ReferenceType): Map<number, Reference> {
-    let data: Map<number, Reference> = new Map<number, Reference>();
-    items.forEach(item => {
-      data.set(item.id, null);
-    })
-
-    this.referenceService.getAll(this.projectId, refType)
-      .subscribe(referenes => {
-        referenes.forEach(ref => {
-          let entityId = ref.entity_id;
-          if (data.has(entityId)) {
-            data.set(entityId, ref);
-          }
-        })
-      });
-
-    return data;
+  hasTestReference(entry: DataEntry): boolean {
+    return entry.testRef !== undefined;
   }
 
-  hasTestReference(test: Test): boolean {
-    return this.testReferences.get(test.id) != undefined;
+  hasReferencedIssue(entry: DataEntry): boolean {
+    return this.hasIssue(entry) && this.hasIssueReference(entry);
   }
 
-  hasReferencedIssue(result: TestResult): boolean {
-    return this.hasIssue(result) && this.hasIssueReference(result.issue);
+  private hasIssueReference(entry: DataEntry): boolean {
+    return entry.issueRef != undefined;
   }
 
-  private hasIssue(result: TestResult): boolean {
-    return result.issue === undefined ? false : true;
-  }
-
-  private hasIssueReference(issue: Issue): boolean {
-    return this.issueReferences.get(issue.id) !== null;
-  }
-
-  getTestReference(test: Test): Reference {
-    return this.getReference(this.testReferences, test);
-  }
-
-  getIssueReference(issue: Issue): Reference {
-    return this.getReference(this.issueReferences, issue);
-  }
-
-  private getReference<T extends IEntityId>(data: Map<number, Reference>, entity: T): Reference {
-    return data.get(entity.id);
+  hasIssue(entry: DataEntry): boolean {
+    return entry.issue !== undefined;
   }
 
   getResolutionType(result: TestResult): ResolutionType {
@@ -110,6 +113,35 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   }
 
   addTestReference(reference: Reference) {
-    this.testReferences.set(reference.entity_id, reference);
+    let entry = this.dataSource.data.find(entry => reference.entity_id === entry.test?.id);
+    entry.testRef = reference;
+    entry.edit = false;
   }
+
+  addIssueReference(reference: Reference) {
+    this.dataSource.data.find(entry => reference.entity_id === entry.issue?.id).issue = reference;
+  }
+
+  editReference(entry: DataEntry) {
+    entry.edit = true;
+  }
+}
+
+export class TableColumn {
+  id: string;
+  name: string;
+
+  constructor(id: string, name: string) {
+    this.id = id;
+    this.name = name;
+  }
+}
+
+export class DataEntry {
+  result: TestResult;
+  test: Test;
+  testRef?: Reference;
+  issue?: Issue;
+  issueRef?: Reference;
+  edit: boolean;
 }
