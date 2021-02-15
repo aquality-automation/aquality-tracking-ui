@@ -62,7 +62,7 @@
 
                     <ng-container matColumnDef="{{tableColumns.Resolution.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.Resolution.name}}</mat-header-cell>
-                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}}</mat-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}} | {{entry.result.issue?.resolution?.name}}</mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="{{tableColumns.IssueName.id}}">

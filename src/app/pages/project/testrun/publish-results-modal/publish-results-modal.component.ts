@@ -14,6 +14,12 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { EventEmitter } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
+import { TtsStatusService } from 'src/app/services/integrations/tts-status.service';
+import { TtsStatus } from 'src/app/shared/models/integrations/tts-status';
+import { finalResultNames } from 'src/app/shared/models/final-result';
+import { SystemWorkflowStatusServiceService } from 'src/app/services/integrations/system-workflow-status-service.service';
+import { SystemWorkflowStatus } from 'src/app/shared/models/integrations/system-workflow-status';
+import { workflowStatusTypes } from 'src/app/shared/models/integrations/system-workflow-status-type';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -61,6 +67,8 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
 
   constructor(
     private referenceService: ReferenceService,
+    private ttsStatusService: TtsStatusService,
+    private wflStatusService: SystemWorkflowStatusServiceService,
     private notificationService: NotificationsService
   ) {
     super();
@@ -133,24 +141,89 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   }
 
   publish() {
-    let testRefValidationResult: boolean = this.validateOn(entry => entry.testRef === undefined, referenceTypes.Test);
-    let issueRefValidationResult: boolean = this.validateOn(entry => entry.issue !== undefined && entry.issueRef === undefined, referenceTypes.Issue);
-    if(testRefValidationResult && issueRefValidationResult){
-      this.notificationService.success('Everything looks fine', 'Results will be submitted');
-    }
-    // validation that all resoltions have mapping to Xray status, if not - warning
+    forkJoin(
+      [
+        this.ttsStatusService.get(this.projectId, this.selectedRun.int_system),
+        this.wflStatusService.get(this.projectId, this.selectedRun.int_system)
+      ]
+    ).subscribe(([statuses, wflStatuses]) => {
+      if (
+        this.hasNoInProgress() &&
+        this.hasNoPending() &&
+        this.hasNoMissedTestRef() &&
+        this.hasNoFailedWithoutIssue() &&
+        this.hasNoMissedIssueRef() &&
+        this.hasNoMappedResolutions(statuses) &&
+        this.hasClosedTypeWflStatus(wflStatuses)
+      ) {
+        this.notificationService.success('Everything looks fine', 'Results will be submitted');
+      }
+    });
+
     // call to jira and check if issues are not closed, then auto remove closed refs and provide message
     // if everything fine send request for integration.
     //this.onPublish.emit();
   }
 
-  private validateOn(filter: (entry: DataEntry) => boolean, refType: ReferenceType): boolean {
-    let noRefsEntries = this.dataSource.data.filter(filter);
-    let size: number = noRefsEntries.length;
+  private hasClosedTypeWflStatus(statuses: SystemWorkflowStatus[]) {
+
+    // TODO create an 
+    let result: boolean = statuses.find(status => status.wf_sts_type_id === workflowStatusTypes.Closed.id) !== undefined;
+    if (!result) {
+      this.notificationService.error(`Workflow status is not defined`,
+        `Wokflow status type ${workflowStatusTypes.Closed.name} is not defined for integration system. Please, configure it in the project -> integrations settings`);
+    }
+    return result;
+  }
+
+  private hasNoMappedResolutions(statuses: TtsStatus[]): boolean {
+    let resolutions: number[] = statuses.map(status => status.resolution_id);
+    return this.validateOn(entry => {
+      return entry.result.final_result?.name.toLowerCase() === finalResultNames.Failed &&
+        !resolutions.includes(entry.issue?.resolution_id)
+    }, 'mapped resolution');
+  }
+
+  private hasNoPending(): boolean {
+    return this.validateOnInComplete(finalResultNames.Pending);
+  }
+
+  private hasNoInProgress(): boolean {
+    return this.validateOnInComplete(finalResultNames.InProgress);
+  }
+
+  private validateOnInComplete(status: string): boolean {
+    return this.validateOn(entry => {
+      return (entry.result.final_result?.name.toLowerCase() === status);
+    }, `result (for ${status})`);
+  }
+
+  private hasNoFailedWithoutIssue() {
+    return this.validateOn(entry => {
+      return (entry.result.final_result?.name.toLowerCase() === finalResultNames.Failed) &&
+        entry.issue === undefined;
+    }, 'issue');
+  }
+
+  private hasNoMissedTestRef(): boolean {
+    return this.validateOnRef(entry => entry.testRef === undefined, referenceTypes.Test);
+  }
+
+  private hasNoMissedIssueRef(): boolean {
+    return this.validateOnRef(entry => entry.issue !== undefined && entry.issueRef === undefined, referenceTypes.Issue);
+  }
+
+  private validateOnRef(filter: (entry: DataEntry) => boolean, refType: ReferenceType): boolean {
+    return this.validateOn(filter, `${refType.name} reference`)
+  }
+
+  private validateOn(filter: (entry: DataEntry) => boolean, missedEntityName: string): boolean {
+    let invalidEntries = this.dataSource.data.filter(filter);
+    let size: number = invalidEntries.length;
     if (size > 0) {
       let maxToDisplay: number = 5;
-      this.notificationService.error(`Results have missed ${refType.name} references`,
-        `Please, add ${refType.name} references to results: ${noRefsEntries.map(entry => entry.result.id).slice(0, maxToDisplay).join(',')}${size > maxToDisplay ? ' and others...' : ''}`);
+      this.notificationService.error(`Results have missed ${missedEntityName}`,
+        `Please add ${missedEntityName} to results: ${invalidEntries.map(entry => entry.result.id).slice(0, maxToDisplay).join(',')}${size > maxToDisplay ? ' and others...' : ''}`);
       return false;
     }
     return true;
@@ -161,7 +234,6 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   cancel() {
     this.onCancel.emit();
   }
-
 }
 
 export class TableColumn {
