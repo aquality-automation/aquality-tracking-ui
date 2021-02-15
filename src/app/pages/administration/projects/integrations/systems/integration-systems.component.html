@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-md-1 p-2">
-            <input id="system-password" formControlName="password" type="text" trim="blur"
+            <input id="system-password" formControlName="password" type="password" trim="blur"
                 class="form-control form-control-sm" placeholder="Password" required>
         </div>
 
@@ -42,26 +42,8 @@
     </div>
 </form>
 
-<div *ngIf="systems.length > 0" class="row p-2">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">System</th>
-                <th scope="col">Name</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let system of systems; let number = index">
-                <th scope="row">{{number}}</th>
-                <td>{{getSystemTypeName(system)}}</td>
-                <td>{{system.name}}</td>
-                <td>
-                    <button id="delete-link" (click)="deleteSystem(system)"
-                        class="btn btn-primary btn-sm">Delete</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+<app-system-view *ngFor="let system of systems" 
+    [projectId]="projectId" 
+    [system]="system" 
+    (onDelete)="deleteSystem($event)">
+</app-system-view>

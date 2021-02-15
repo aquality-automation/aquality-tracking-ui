@@ -71,12 +71,10 @@ export class IntegrationSystemsComponent implements OnInit {
   }
 
   public getSystemTypeName(system: System): string {
-    return this.systemTypes.filter(type => type.id === system.int_system_type)[0].name;
+    return this.systemTypes.filter(type => type.id === system.int_system_type)[0]?.name;
   }
 
   public deleteSystem(system: System) {
-    this.systemService.delete(this.projectId, system.id).subscribe(() => {
-      this.systems = this.systems.filter(current => (current.id !== system.id));
-    })
+    this.systems = this.systems.filter(current => (current.id !== system.id));
   }
 }

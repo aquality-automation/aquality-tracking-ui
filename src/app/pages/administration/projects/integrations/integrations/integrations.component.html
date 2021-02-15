@@ -1,19 +1,18 @@
 <div class="contatiner">
     <div class="row">
         <div *ngIf="projects" class="col-md-12 form-row">
-            
+
             <div class="col-md-1 p-2">
                 Project:
             </div>
 
             <div class="col-md-5 p-2">
-                <lookup-autocomplete id="project-selector" [small]=true placeholder="Select Project" [allowEmptyValue]="false"
-                [propertiesToShow]="['name']" [array]="projects" [model]="selectedProject"
-                (modelChange)="onProjectChange($event)"></lookup-autocomplete>
+                <lookup-autocomplete id="project-selector" [small]=true placeholder="Select Project"
+                    [allowEmptyValue]="false" [propertiesToShow]="['name']" [array]="projects" [model]="selectedProject"
+                    (modelChange)="onProjectChange($event)"></lookup-autocomplete>
             </div>
         </div>
     </div>
-    
+
     <app-integration-systems *ngIf='isProjectSelected()' [projectId]='selectedProject.id'></app-integration-systems>
-    <app-tts-status  *ngIf='isProjectSelected()' [projectId]='selectedProject.id'></app-tts-status>
 </div>

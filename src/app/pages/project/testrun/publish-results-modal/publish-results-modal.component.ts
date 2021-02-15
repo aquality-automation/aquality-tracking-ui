@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ModalComponent } from 'src/app/elements/modals/modal.component';
 import { ReferenceService } from 'src/app/services/integrations/reference.service';
 import { Test } from 'src/app/shared/models/test';
@@ -12,8 +12,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { forkJoin } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { IEntityId } from 'src/app/shared/models/i-entity-id';
-import { Data } from '@angular/router';
+import { EventEmitter } from '@angular/core';
+import { NotificationsService } from 'angular2-notifications';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -27,6 +27,8 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   @Input() testRun: TestRun;
   @Input() runReferences: Reference[];
   @Input() testResults: TestResult[];
+  @Output() onCancel = new EventEmitter();
+  @Output() onPublish = new EventEmitter();
 
   selectedRun: Reference;
   testReferences = new Map<number, Reference>();
@@ -36,15 +38,19 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   icons = { faTimes }
 
   tableColumns = {
+    ResultId: new TableColumn('resultId', 'Result Id'),
     TestName: new TableColumn('testName', 'Test Name'),
     TestRef: new TableColumn('testRef', 'Test Ref'),
+    Resolution: new TableColumn('resultRes', 'Resolution'),
     IssueName: new TableColumn('issueName', 'Issue Name'),
     IssueRef: new TableColumn('issueRef', 'Issue Ref')
   }
 
   displayedColumns = [
+    this.tableColumns.ResultId.id,
     this.tableColumns.TestName.id,
     this.tableColumns.TestRef.id,
+    this.tableColumns.Resolution.id,
     this.tableColumns.IssueName.id,
     this.tableColumns.IssueRef.id
   ];
@@ -53,7 +59,10 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private referenceService: ReferenceService) {
+  constructor(
+    private referenceService: ReferenceService,
+    private notificationService: NotificationsService
+  ) {
     super();
   }
 
@@ -79,7 +88,8 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
       this.dataSource = new MatTableDataSource<DataEntry>(this.data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.filterPredicate = (entry, value) => {
-        return entry.test?.name?.toLowerCase().includes(value) ||
+        return entry.result.id.toString().toLowerCase().includes(value) ||
+          entry.test?.name?.toLowerCase().includes(value) ||
           entry.testRef?.key?.toLowerCase().includes(value) ||
           entry.issue?.title?.toLowerCase().includes(value) ||
           entry.issueRef?.key?.toLowerCase().includes(value)
@@ -119,12 +129,39 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   }
 
   addIssueReference(reference: Reference) {
-    this.dataSource.data.find(entry => reference.entity_id === entry.issue?.id).issue = reference;
+    this.dataSource.data.find(entry => reference.entity_id === entry.issue?.id).issueRef = reference;
   }
 
-  editReference(entry: DataEntry) {
-    entry.edit = true;
+  publish() {
+    let testRefValidationResult: boolean = this.validateOn(entry => entry.testRef === undefined, referenceTypes.Test);
+    let issueRefValidationResult: boolean = this.validateOn(entry => entry.issue !== undefined && entry.issueRef === undefined, referenceTypes.Issue);
+    if(testRefValidationResult && issueRefValidationResult){
+      this.notificationService.success('Everything looks fine', 'Results will be submitted');
+    }
+    // validation that all resoltions have mapping to Xray status, if not - warning
+    // call to jira and check if issues are not closed, then auto remove closed refs and provide message
+    // if everything fine send request for integration.
+    //this.onPublish.emit();
   }
+
+  private validateOn(filter: (entry: DataEntry) => boolean, refType: ReferenceType): boolean {
+    let noRefsEntries = this.dataSource.data.filter(filter);
+    let size: number = noRefsEntries.length;
+    if (size > 0) {
+      let maxToDisplay: number = 5;
+      this.notificationService.error(`Results have missed ${refType.name} references`,
+        `Please, add ${refType.name} references to results: ${noRefsEntries.map(entry => entry.result.id).slice(0, maxToDisplay).join(',')}${size > maxToDisplay ? ' and others...' : ''}`);
+      return false;
+    }
+    return true;
+  }
+
+  private validateOnIssueRefsStatusNotClosed() { }
+
+  cancel() {
+    this.onCancel.emit();
+  }
+
 }
 
 export class TableColumn {

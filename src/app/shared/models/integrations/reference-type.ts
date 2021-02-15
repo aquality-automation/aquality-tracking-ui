@@ -1,10 +1,12 @@
 export class ReferenceType {
     id: number;
     path: string;
+    name: string;
 
     constructor(id: number, path: string) {
         this.id = id;
         this.path = path;
+        this.name = path;
     }
 }
 

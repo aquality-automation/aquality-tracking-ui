@@ -17,8 +17,8 @@ import { AdministrationProjectManagerGuard, AdministrationProjectGuard, Administ
 import { IntegrationSystemsComponent } from '../projects/integrations/systems/integration-systems.component';
 import { IntegrationsComponent } from '../projects/integrations/integrations/integrations.component';
 import { TtsStatusComponent } from '../projects/integrations/tts-status/tts-status.component';
-
-
+import { WorkflowStatusesComponent } from '../projects/integrations/workflow-statuses/workflow-statuses.component';
+import { SystemViewComponent } from '../projects/integrations/system-view/system-view.component';
 @NgModule({
   imports: [
     administrationChildRouting,
@@ -31,10 +31,12 @@ import { TtsStatusComponent } from '../projects/integrations/tts-status/tts-stat
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
     APITokenComponent,
+    AdministrationProjectSettingsComponent,
     IntegrationSystemsComponent,
     IntegrationsComponent,
     TtsStatusComponent,
-    AdministrationProjectSettingsComponent
+    WorkflowStatusesComponent,
+    SystemViewComponent
   ],
   providers: [
     ProjectService,

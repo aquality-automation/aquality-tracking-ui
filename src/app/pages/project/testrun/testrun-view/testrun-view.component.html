@@ -8,8 +8,10 @@
   (closed)="wasClosed()"></print-testrun-modal>
 
 <app-publish-results-modal *ngIf="!isPublishModalHidden" [projectId]="projectId" [(isHidden)]="isPublishModalHidden"
-  [testRun]="testrun" [testResults]="testResults"
-  [buttons]="[{name:'Publish', execute:true }, {name:'Cancel', execute:false}]" (closed)="wasClosed()"
+  [testRun]="testrun" [testResults]="testResults" 
+  [buttons]="[{name:'Publish', execute:true }, {name:'Cancel', execute:false}]" 
+  (closed)="wasClosed()"
+  (onCancel)="wasClosed()"
   [runReferences]="runReferences">
 </app-publish-results-modal>
 

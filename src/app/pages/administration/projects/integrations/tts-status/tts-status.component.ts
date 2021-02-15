@@ -1,11 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NotificationsService } from 'angular2-notifications';
 import { TtsStatusService } from 'src/app/services/integrations/tts-status.service';
 import { TtsTypeService } from 'src/app/services/integrations/tts-type.service';
+import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
+import { System } from 'src/app/shared/models/integrations/system';
 import { TtsStatus } from 'src/app/shared/models/integrations/tts-status';
 import { TtsType } from 'src/app/shared/models/integrations/tts-type';
-import { ResolutionType, resolutionTypesArray } from 'src/app/shared/models/resolution-type';
+import { ResultResolution } from 'src/app/shared/models/result-resolution';
 
 @Component({
   selector: 'app-tts-status',
@@ -15,6 +16,7 @@ import { ResolutionType, resolutionTypesArray } from 'src/app/shared/models/reso
 export class TtsStatusComponent implements OnInit {
 
   @Input() projectId: number;
+  @Input() system: System;
 
   ngOnChanges() {
     this.loadStatuses();
@@ -22,14 +24,14 @@ export class TtsStatusComponent implements OnInit {
 
   addStatusForm: FormGroup;
   types: TtsType[] = [];
-  resolutions: ResolutionType[] = resolutionTypesArray;
+  resolutions: ResultResolution[] = [];
   statuses: TtsStatus[] = [];
   hasStatuses: boolean;
 
   constructor(
+    private resolutionService: ResultResolutionService,
     private ttsTypeService: TtsTypeService,
-    private ttsStatusService: TtsStatusService,
-    private notificationsService: NotificationsService
+    private ttsStatusService: TtsStatusService
   ) { }
 
   ngOnInit(): void {
@@ -45,41 +47,35 @@ export class TtsStatusComponent implements OnInit {
       this.addStatusForm.controls.type.setValue(types[0]);
     })
 
-    this.addStatusForm.controls.resolution.setValue(this.resolutions[0]);
+    this.resolutionService.getResolution(this.projectId).then(resolutions => {
+      this.resolutions = resolutions;
+      this.addStatusForm.controls.resolution.setValue(resolutions[0]);
+    });
 
     this.loadStatuses();
   }
 
   loadStatuses() {
-    this.ttsStatusService.get(this.projectId).subscribe(
+    this.ttsStatusService.get(this.projectId, this.system.id).subscribe(
       statuses => {
         this.statuses = statuses;
         this.hasStatuses = true;
-      },
-      error => {
-        this.ttsStatusService.createTable(this.projectId).subscribe(result => {
-          if (result.created == true) {
-            this.notificationsService.success('Successful', 'Test tracking statuses has been enabled for project!');
-            this.loadStatuses();
-          } else {
-            this.notificationsService.error('Error', 'Test tracking statuses has not been enabled for project. Please, contact your administrator.');
-          }
-        })
       }
     );
   }
 
   getResolutionName(id: number): string {
-    return this.resolutions.find(res => res.id === id).title;
+    return this.resolutions.find(res => res.id === id)?.name;
   }
 
   addStatus() {
     let status = new TtsStatus();
     status.project_id = this.projectId;
-    status.resolution_id = this.addStatusForm.controls.resolution.value.id;
-    status.status_id = this.addStatusForm.controls.id.value;
+    status.int_system_id = this.system.id;
+    status.tts_type_id = this.addStatusForm.controls.type.value.id;
     status.status_name = this.addStatusForm.controls.name.value;
-    status.tts_type = this.addStatusForm.controls.type.value.id;
+    status.status_id = this.addStatusForm.controls.id.value;
+    status.resolution_id = this.addStatusForm.controls.resolution.value.id;
     this.ttsStatusService.create(status).subscribe(status => {
       this.statuses.push(status);
     });

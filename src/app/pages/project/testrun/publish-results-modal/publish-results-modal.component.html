@@ -36,6 +36,11 @@
 
                 <mat-table #table [dataSource]="dataSource">
 
+                    <ng-container matColumnDef="{{tableColumns.ResultId.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.ResultId.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry"> {{entry.result.id}} </mat-cell>
+                    </ng-container>
+
                     <ng-container matColumnDef="{{tableColumns.TestName.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.TestName.name}}</mat-header-cell>
                         <mat-cell *matCellDef="let entry"> {{entry.test.name}} </mat-cell>
@@ -53,6 +58,11 @@
                                 (onReferenceAdded)="addTestReference($event)">
                             </app-ref-item>
                         </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.Resolution.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.Resolution.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}}</mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="{{tableColumns.IssueName.id}}">
@@ -84,10 +94,8 @@
                 <div class="row">
                     <div class="col-sm-12 modal-footer modal-buttons">
                         <div class="modal-buttons-form">
-                            <button autofocus class="btn btn-sm" [ngClass]="{
-                                'btn-secondary': !button.execute,
-                                'btn-success': button.execute
-                            }" *ngFor="let button of buttons">{{button.name}}</button>
+                            <button autofocus class="btn btn-sm btn-success" (click)="publish()">Publish</button>
+                            <button autofocus class="btn btn-sm btn-secondary" (click)="cancel()">Cancel</button>                            
                         </div>
                     </div>
                 </div>

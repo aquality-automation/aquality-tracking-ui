@@ -1,0 +1,32 @@
+<div class="container row p-2"></div>
+<div class="border bg-light rounded p-2">
+    <div class="container row">
+        <div class="col-md-6 p-2">
+            <div class="row">
+                <div class="col-md-4 p-2">
+                    {{system.name}}
+                </div>
+                <div class="col-md-6 p-2">
+                    <a [href]="system.url">{{system.url}}</a>
+                </div>
+                <div class="col-md-2 p-2">
+                    <button id="system-delete" type="submit" class="btn btn-primary btn-sm"
+                        (click)="deleteSystem(system)">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container row">
+        <div class="col-md-12 p-2">
+            <app-tts-status [projectId]="projectId" [system]="system"></app-tts-status>
+        </div>
+    </div>
+
+    <div class="container row">
+        <div class="col-md-12 p-2">
+            <app-workflow-statuses [projectId]="projectId" [system]="system"></app-workflow-statuses>
+        </div>
+    </div>
+
+</div>

@@ -1,5 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProjectService } from 'src/app/services/project/project.service';
+import { System } from 'src/app/shared/models/integrations/system';
 import { Project } from 'src/app/shared/models/project';
 
 @Component({
@@ -11,6 +12,7 @@ export class IntegrationsComponent implements OnInit {
 
   projects: Project[] = [];
   selectedProject: Project;
+  systems: System[] = [];
 
   constructor(private projectService: ProjectService) {
 
@@ -29,5 +31,10 @@ export class IntegrationsComponent implements OnInit {
 
   isProjectSelected(): boolean {
     return this.selectedProject != undefined;
+  }
+
+  //TODO: added system
+  addSystem(){
+
   }
 }
