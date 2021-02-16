@@ -2,19 +2,15 @@
     <form [formGroup]='addStatusForm' (ngSubmit)="addStatus()">
         <div class="form-row">
     
-            <div class="col-md-1 p-2">
-                <select id="status-type" formControlName="type" class="form-control form-control-sm input-lg">
-                    <option *ngFor="let type of types" [ngValue]="type">
-                        {{type.name}}</option>
-                </select>
-                <i class="fa fa-caret-down"></i>
+            <div *ngIf="ttsType !== undefined" class="col-md-1 p-2">
+               {{ttsType.name}}
             </div>
     
             <div class="col-md-3 p-2">
-                <select id="status-resolution" formControlName="resolution"
+                <select id="status-resolution" formControlName="finalResolution"
                     class="form-control form-control-sm input-lg">
-                    <option *ngFor="let resolution of resolutions" [ngValue]="resolution">
-                        {{resolution.name}}</option>
+                    <option *ngFor="let finalResolution of finalResolutions" [ngValue]="finalResolution">
+                        {{finalResolution.name}}</option>
                 </select>
                 <i class="fa fa-caret-down"></i>
             </div>
@@ -52,7 +48,7 @@
                 <tr *ngFor="let status of statuses; let number = index">
                     <th scope="row">{{number}}</th>
                     <td>{{status.tts_type_id}}</td>
-                    <td>{{getResolutionName(status.resolution_id)}}</td>
+                    <td>{{getResolutionName(status)}}</td>
                     <td>{{status.status_name}}</td>
                     <td>{{status.status_id}}</td>
                     <td>

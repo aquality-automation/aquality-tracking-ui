@@ -10,6 +10,15 @@
             <i class="fa fa-caret-down"></i>
         </div>
 
+        <div class="col-md-1 p-2">
+            <select id="system-tts-type" formControlName="ttsType" class="form-control form-control-sm input-lg">
+                <option *ngFor="let ttsType of ttsTypes" [ngValue]="ttsType"
+                    [attr.selected]="ttsTypes.length > 0 ? ttsTypes[0] : null">
+                    {{ttsType.name}}</option>
+            </select>
+            <i class="fa fa-caret-down"></i>
+        </div>
+
         <div class="col-md-2 p-2">
             <input id="system-name" formControlName="name" type="text" trim="blur"
                 class="form-control form-control-sm" placeholder="Name" required>
@@ -30,7 +39,7 @@
                 class="form-control form-control-sm" placeholder="Password" required>
         </div>
 
-        <div class="col-md-3 p-2">
+        <div class="col-md-2 p-2">
             <input id="system-api-token" formControlName="apiToken" type="text" trim="blur"
                 class="form-control form-control-sm" placeholder="API Token" required>
         </div>

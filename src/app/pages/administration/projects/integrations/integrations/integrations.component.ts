@@ -14,9 +14,7 @@ export class IntegrationsComponent implements OnInit {
   selectedProject: Project;
   systems: System[] = [];
 
-  constructor(private projectService: ProjectService) {
-
-  }
+  constructor(private projectService: ProjectService) {}
 
   ngOnInit(): void {
     this.projectService.getProjects({}).then(projects => {
@@ -31,10 +29,5 @@ export class IntegrationsComponent implements OnInit {
 
   isProjectSelected(): boolean {
     return this.selectedProject != undefined;
-  }
-
-  //TODO: added system
-  addSystem(){
-
   }
 }

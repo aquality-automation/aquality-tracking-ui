@@ -13,7 +13,9 @@ export class SystemViewComponent implements OnInit {
   @Input() system: System;
   @Output() onDelete = new EventEmitter<System>();
 
-  constructor(private systemService: SystemService) { }
+  constructor(
+    private systemService: SystemService
+    ) { }
 
   ngOnInit(): void {
   }
