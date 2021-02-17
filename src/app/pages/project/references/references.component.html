@@ -1,29 +1,25 @@
 <div class="container">
     <div class="row p-2">
-        
-            <div class="col-md-6 p-2">
-                <select id="select-int-system" [(ngModel)]="selectedSystem"
-                    class="form-control form-control-sm input-lg">
-                    <option *ngFor="let system of systems" [ngValue]="system">
-                        {{system.name}}</option>
-                </select>
-                <i class="fa fa-caret-down"></i>
-            </div>
 
-            <div class="col-md-6 p-2">
-                <form [formGroup]="addLinkForm" (ngSubmit)="addReference()">
-                    <div class="row p-0">
-                        <div class="col-md-6">
-                            <input id="ref-key" formControlName="refKey" type="text" trim="blur"
-                                class="form-control form-control-sm" placeholder="Key" required>
-                        </div>
-                        <div class="col-md-6">
-                            <button id="add-ref" type="submit" class="btn btn-primary btn-sm"
-                                [disabled]="addLinkForm.invalid">Add</button>
-                        </div>
+        <div class="col-md-6 p-2">
+            <int-system-select [projectId]="projectId" (onSystemSelected)="onSystemSelected($event)"
+                (onSystemsReceived)="onSystemsReceived($event)">
+            </int-system-select>
+        </div>
+        <div class="col-md-6 p-2">
+            <form [formGroup]="addLinkForm" (ngSubmit)="addReference()">
+                <div class="row p-0">
+                    <div [ngClass]="{'col-md-6': isAddBtnShown,'col-md-12': !isAddBtnShown}">
+                        <input id="ref-key" formControlName="refKey" type="text" trim="blur"
+                            class="form-control form-control-sm" placeholder="Key" required>
                     </div>
-                </form>
-            </div>
+                    <div *ngIf="isAddBtnShown" class="col-md-6">
+                        <button id="add-ref" type="submit" class="btn btn-primary btn-sm"
+                            [disabled]="addLinkForm.invalid">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div *ngIf="references.length > 0" class="row p-2">

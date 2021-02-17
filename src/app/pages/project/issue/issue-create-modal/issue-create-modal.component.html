@@ -47,12 +47,22 @@
                 [disabled]="!canEdit">
               </lookup-autocomplete>
             </div>
+
+            <div class="col-sm-12 no-padding">
+              <app-reference #reference 
+              [referenceType]="referenceTypes.Issue" 
+              [projectId]="projectId" 
+              [entityId]="issue.id"
+              [isAddBtnShown]="false">
+              </app-reference>
+            </div>
           </div>
         </div>
 
         <div class="col-sm-12 no-padding">
           <label for="issue-expression">Regular Expression:</label>
-          <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" name="expression" #expression="ngModel" [ngClass]="{
+          <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
+            name="expression" #expression="ngModel" [ngClass]="{
               'is-valid': !isExpressionOverlapped() && !isExpressionInvalid() && expression.touched, 
               'is-invalid': isExpressionOverlapped() || isExpressionInvalid()
               }" [(ngModel)]="issue.expression" (keyup)="onExpressionUpdate()" [disabled]="!canEdit">
@@ -93,7 +103,8 @@
 
         <div class="col-sm-12 modal-footer modal-buttons">
           <div class="modal-buttons-form">
-            <button *ngFor="let button of buttons" [id]="button.id" type="button" autofocus (click)="doAction(button.execute)"
+            <button *ngFor="let button of buttons" [id]="button.id" type="button" autofocus
+              (click)="doAction(button.execute)"
               [disabled]="(isExpressionOverlapped() || isExpressionInvalid()) && button.execute"
               class="btn btn-sm btn-secondary" [ngClass]="{
               'btn-secondary': !button.execute,

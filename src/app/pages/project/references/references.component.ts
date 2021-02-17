@@ -21,7 +21,9 @@ export class ReferencesComponent implements OnInit {
   @Input() referenceType: ReferenceType;
   @Input() projectId: number;
   @Input() entityId: number;
+  @Input() isAddBtnShown: boolean = true;
   @Output() onReferencesChanged = new EventEmitter<Reference[]>();
+  @Output() onAddReference = new EventEmitter<Reference>();
 
   constructor(
     private systemService: SystemService,
@@ -34,21 +36,15 @@ export class ReferencesComponent implements OnInit {
       refKey: new FormControl('', Validators.minLength(2))
     });
 
-    this.systemService.getAll(this.projectId)
-      .subscribe(systems => {
-        this.systems = systems;
-        this.selectedSystem = systems[0];
-      })
-
     this.referenceService.get(this.projectId, this.entityId, this.referenceType)
       .subscribe(references => {
         this.references = references;
         this.onReferencesChanged.emit(this.references);
-      })
+      });
   }
 
   public getSystemName(reference: Reference): string {
-    return this.systems.filter(system => system.id === reference.int_system)[0]?.name;
+    return this.referenceService.getRefSystemName(this.systems, reference);
   }
 
   public deleteReference(ref: Reference) {
@@ -60,9 +56,13 @@ export class ReferencesComponent implements OnInit {
   }
 
   public addReference() {
+    this.addReferenceTo(this.entityId);
+  }
+
+  public addReferenceTo(entityId: number) {
     let reference = new Reference();
     reference.key = this.addLinkForm.controls.refKey.value;
-    reference.entity_id = this.entityId;
+    reference.entity_id = entityId;
     reference.int_system = this.selectedSystem.id;
     reference.project_id = this.projectId;
 
@@ -71,6 +71,7 @@ export class ReferencesComponent implements OnInit {
         item => {
           this.references.push(item);
           this.onReferencesChanged.emit(this.references);
+          this.onAddReference.emit(reference);
         },
         () => {
           this.referenceService.get(this.projectId, reference.entity_id, this.referenceType)
@@ -89,5 +90,13 @@ export class ReferencesComponent implements OnInit {
           window.open(`${url}/browse/${reference.key}`);
         }
       });
+  }
+
+  onSystemSelected(system: System) {
+    this.selectedSystem = system;
+  }
+
+  onSystemsReceived(systems: System[]) {
+    this.systems = systems;
   }
 }

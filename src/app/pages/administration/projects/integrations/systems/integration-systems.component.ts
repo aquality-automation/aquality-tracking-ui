@@ -74,7 +74,7 @@ export class IntegrationSystemsComponent implements OnInit {
     system.password = this.addSystemForm.controls.password.value;
     system.api_token = this.addSystemForm.controls.apiToken.value;
     system.int_system_type = this.addSystemForm.controls.type.value.id;
-    system.int_tts_type = this.addSystemForm.controls.ttsTypes.value.id;
+    system.int_tts_type = this.addSystemForm.controls.ttsType.value.id;
     system.project_id = this.projectId;
     this.systemService.create(system).subscribe(system => {
       this.systems.push(system);

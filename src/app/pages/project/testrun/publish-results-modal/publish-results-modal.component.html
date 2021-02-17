@@ -49,14 +49,7 @@
                     <ng-container matColumnDef="{{tableColumns.TestRef.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.TestRef.name}}</mat-header-cell>
                         <mat-cell *matCellDef="let entry">
-                            <p *ngIf="hasTestReference(entry)">{{entry.testRef?.key}}</p>
-                            <app-ref-item *ngIf="!hasTestReference(entry)" 
-                                [projectId]="projectId"
-                                [runReference]="selectedRun" 
-                                [refEntity]="entry.test" 
-                                [refType]="referenceTypes.Test"
-                                (onReferenceAdded)="addTestReference($event)">
-                            </app-ref-item>
+                            <button class="btn btn-sm btn-success" (click)="openAddRefDialog(projectId, entry.test, referenceTypes.Test)">{{entry.testRef !== undefined ? entry.testRef.key: 'Add'}}</button>
                         </mat-cell>
                     </ng-container>
 
@@ -73,14 +66,7 @@
                     <ng-container matColumnDef="{{tableColumns.IssueRef.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueRef.name}}</mat-header-cell>
                         <mat-cell *matCellDef="let entry">
-                            <p *ngIf="hasReferencedIssue(entry)">{{entry.issueRef?.key}}</p>
-                            <app-ref-item *ngIf="hasIssue(entry) && !hasReferencedIssue(entry)" 
-                                [projectId]="projectId"
-                                [runReference]="selectedRun" 
-                                [refEntity]="entry.issue" 
-                                [refType]="referenceTypes.Issue" 
-                                (onReferenceAdded)="addIssueReference($event)">
-                            </app-ref-item>
+                            <button class="btn btn-sm btn-success" (click)="openAddRefDialog(projectId, entry.issue, referenceTypes.Issue)">{{entry.issueRef !== undefined ? entry.issueRef.key: 'Add'}}</button>
                         </mat-cell>
                     </ng-container>
 

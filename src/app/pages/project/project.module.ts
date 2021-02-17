@@ -66,6 +66,9 @@ import { RefItemComponent } from './testrun/publish-results-modal/ref-item/ref-i
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
+import { IntSystemSelectComponent } from './references/int-system-select/int-system-select.component';
+import { DialogReferencesComponent } from './references/dialog-references/dialog-references.component';
 
 @NgModule({
   imports: [
@@ -74,7 +77,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     SharedModule,
     MatTableModule,
     MatToolbarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ],
   declarations: [
     ProjectListComponent,
@@ -115,7 +119,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ImportComponent,
     ReferencesComponent,
     PublishResultsModalComponent,
-    RefItemComponent
+    RefItemComponent,
+    IntSystemSelectComponent,
+    DialogReferencesComponent
   ],
   providers: [
     TestRunService,

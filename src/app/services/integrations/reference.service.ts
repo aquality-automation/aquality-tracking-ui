@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import { throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
+import { Subject } from 'rxjs/internal/Subject';
 import { Reference } from 'src/app/shared/models/integrations/reference';
 import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';
+import { System } from 'src/app/shared/models/integrations/system';
 import { BaseHttpService } from '../base-http/base-http.service';
 
 @Injectable({
@@ -12,7 +14,13 @@ import { BaseHttpService } from '../base-http/base-http.service';
 export class ReferenceService extends BaseHttpService {
 
   public get(projectId: number, entityId: number, refType: ReferenceType): Observable<Reference[]> {
-    return this.http.get<Reference[]>(`/integration/references/${refType.path}?project_id=${projectId}&entity_id=${entityId}`);
+    if(entityId !== undefined){
+      return this.http.get<Reference[]>(`/integration/references/${refType.path}?project_id=${projectId}&entity_id=${entityId}`);
+    } else {
+      let emptyReferences : Subject<Reference[]> = new Subject<Reference[]>();
+      emptyReferences.next([]);
+      return emptyReferences;
+    }
   }
 
   public getAll(projectId: number, refType: ReferenceType): Observable<Reference[]> {
@@ -27,16 +35,16 @@ export class ReferenceService extends BaseHttpService {
     return this.get(reference.project_id, reference.entity_id, refType)
       .pipe(
         mergeMap(references => {
-            if (references.length == 0) {
+          if (references.length == 0) {
+            return this.createRef(reference, refType);
+          } else {
+            if (this.validateOnSingleRefPerSystem(references, reference)) {
               return this.createRef(reference, refType);
-            } else {
-              if (this.validateOnSingleRefPerSystem(references, reference)) {
-                return this.createRef(reference, refType);
-              }
-              throw throwError(errors.alreadyExists);
             }
-          })
-        );
+            throw throwError(errors.alreadyExists);
+          }
+        })
+      );
   }
 
   private createRef(reference: Reference, refType: ReferenceType): Observable<Reference> {
@@ -52,6 +60,10 @@ export class ReferenceService extends BaseHttpService {
     }
     return true;
   }
+
+  public getRefSystemName(systems: System[], reference: Reference): string {
+    return systems.filter(system => system.id === reference.int_system)[0]?.name;
+  }
 }
 
-export const errors = {alreadyExists: "Reference already exists"}
+export const errors = { alreadyExists: "Reference already exists" }

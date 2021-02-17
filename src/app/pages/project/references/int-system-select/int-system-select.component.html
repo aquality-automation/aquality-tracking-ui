@@ -1,0 +1,6 @@
+<select id="select-int-system" [(ngModel)]="selectedSystem" 
+(ngModelChange)="onSelect($event)" class="form-control form-control-sm input-lg">
+    <option *ngFor="let system of systems" [ngValue]="system">
+        {{system.name}}</option>
+</select>
+<i class="fa fa-caret-down"></i>

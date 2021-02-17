@@ -1,0 +1,11 @@
+<div class="row">
+    <div mat-dialog-content>
+        <app-reference [projectId]="projectId" [entityId]="entityId" [referenceType]="referenceType"
+            (onAddReference)="onAddReference($event)"></app-reference>
+    </div>
+</div>
+<div class="row">
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="addedRef" cdkFocusInitial>Close</button>
+    </div>
+</div>

@@ -20,6 +20,9 @@ import { finalResultNames } from 'src/app/shared/models/final-result';
 import { SystemWorkflowStatusServiceService } from 'src/app/services/integrations/system-workflow-status-service.service';
 import { SystemWorkflowStatus } from 'src/app/shared/models/integrations/system-workflow-status';
 import { workflowStatusTypes } from 'src/app/shared/models/integrations/system-workflow-status-type';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogReferencesComponent } from '../../references/dialog-references/dialog-references.component';
+import { IEntityId } from 'src/app/shared/models/i-entity-id';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -69,7 +72,8 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     private referenceService: ReferenceService,
     private ttsStatusService: TtsStatusService,
     private wflStatusService: SystemWorkflowStatusServiceService,
-    private notificationService: NotificationsService
+    private notificationService: NotificationsService,
+    public dialog: MatDialog
   ) {
     super();
   }
@@ -233,6 +237,26 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
 
   cancel() {
     this.onCancel.emit();
+  }
+
+  openAddRefDialog(projectId: number, entity: IEntityId, referenceType: ReferenceType): void {
+    const dialogRef = this.dialog.open(DialogReferencesComponent, {
+      width: '450px'
+    });
+    let instance = dialogRef.componentInstance;
+    instance.projectId = projectId;
+    instance.entityId = entity.id;
+    instance.referenceType = referenceType;
+
+    dialogRef.afterClosed().subscribe(reference => {
+      if (reference !== null && reference !== undefined) {
+        if (referenceType.id === referenceTypes.Test.id) {
+          this.dataSource.data.find(entry => entry.test.id === entity.id).testRef = reference;
+        } else {
+          this.dataSource.data.find(entry => entry.issue.id === entity.id).issueRef = reference;
+        }
+      }
+    });
   }
 }
 

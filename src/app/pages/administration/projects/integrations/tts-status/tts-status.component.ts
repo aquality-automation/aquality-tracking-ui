@@ -68,9 +68,6 @@ export class TtsStatusComponent implements OnInit {
         res.type = finalResolutionTypes.FinalResult;
         this.finalResolutions.push(res);
       });
-
-      console.log(JSON.stringify(this.finalResolutions))
-
       this.addStatusForm.controls.finalResolution.setValue(this.finalResolutions[0]);
     });
 

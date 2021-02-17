@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { Issue } from '../../../../shared/models/issue';
 import { User } from '../../../../shared/models/user';
 import { ActivatedRoute } from '@angular/router';
@@ -8,6 +8,10 @@ import { TFColumn, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { UserService } from 'src/app/services/user/user.services';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { IssueService } from 'src/app/services/issue/issue.service';
+import { FormGroup } from '@angular/forms';
+import { System } from 'src/app/shared/models/integrations/system';
+import { referenceTypes } from 'src/app/shared/models/integrations/reference-type';
+import { ReferencesComponent } from '../../references/references.component';
 
 @Component({
   selector: 'issue-create-modal',
@@ -20,6 +24,12 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
   @Input() users: User[];
   @Input() issue: Issue;
   @Input() failReason: string;
+  @ViewChild('reference')
+  referenceComponent: ReferencesComponent;
+  projectId: number;
+  selectedSystem: System;
+  formAddRef: FormGroup;
+  referenceTypes = referenceTypes;
   canEdit = false;
   updateResults = true;
   overlappedIssues: Issue[] = [];
@@ -55,11 +65,14 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
   }
 
   async ngOnInit() {
+
+    this.projectId = this.route.snapshot.params.projectId;
+
     if (!this.issue) {
       this.issue = new Issue();
     }
     if (!this.issue.id) {
-      this.issue.project_id = this.route.snapshot.params.projectId;
+      this.issue.project_id = this.projectId;
       this.issue.creator_id = this.userService.currentUser().id;
       this.issue.status_id = 1;
       this.updateResolution(this.resolutions.find(x => x.id === 1));
@@ -130,6 +143,7 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
 
       const issue = await this.issueService.createIssue(this.issue, this.updateResults);
       this.execute.emit({ executed: true, result: issue });
+      this.referenceComponent.addReferenceTo(issue.id);
     } else {
       this.execute.emit({ executed: false });
     }
