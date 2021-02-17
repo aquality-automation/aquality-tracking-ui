@@ -14,6 +14,7 @@ import { ReferenceType } from 'src/app/shared/models/integrations/reference-type
 export class ReferencesComponent implements OnInit {
 
   addLinkForm: FormGroup;
+  keyValidator = Validators.minLength(2);
   selectedSystem: System;
   systems: System[] = [];
   references: Reference[] = [];
@@ -22,8 +23,8 @@ export class ReferencesComponent implements OnInit {
   @Input() projectId: number;
   @Input() entityId: number;
   @Input() isAddBtnShown: boolean = true;
+  @Input() isAddEnabled: boolean = true;
   @Output() onReferencesChanged = new EventEmitter<Reference[]>();
-  @Output() onAddReference = new EventEmitter<Reference>();
 
   constructor(
     private systemService: SystemService,
@@ -33,7 +34,7 @@ export class ReferencesComponent implements OnInit {
   ngOnInit(): void {
 
     this.addLinkForm = new FormGroup({
-      refKey: new FormControl('', Validators.minLength(2))
+      refKey: new FormControl('', this.keyValidator)
     });
 
     this.referenceService.get(this.projectId, this.entityId, this.referenceType)
@@ -61,7 +62,7 @@ export class ReferencesComponent implements OnInit {
 
   public addReferenceTo(entityId: number) {
     let reference = new Reference();
-    reference.key = this.addLinkForm.controls.refKey.value;
+    reference.key = this.getAddingKey();
     reference.entity_id = entityId;
     reference.int_system = this.selectedSystem.id;
     reference.project_id = this.projectId;
@@ -71,7 +72,6 @@ export class ReferencesComponent implements OnInit {
         item => {
           this.references.push(item);
           this.onReferencesChanged.emit(this.references);
-          this.onAddReference.emit(reference);
         },
         () => {
           this.referenceService.get(this.projectId, reference.entity_id, this.referenceType)
@@ -79,6 +79,14 @@ export class ReferencesComponent implements OnInit {
               this.references = references;
             })
         });
+  }
+
+  public getAddingKey(): string {
+    return this.addLinkForm.controls.refKey.value;
+  }
+
+  public isAddingKeyValid(): boolean{
+    return this.getAddingKey().length >= this.keyValidator.length;
   }
 
   openReference(reference: Reference) {

@@ -53,7 +53,8 @@
               [referenceType]="referenceTypes.Issue" 
               [projectId]="projectId" 
               [entityId]="issue.id"
-              [isAddBtnShown]="false">
+              [isAddBtnShown]="false"
+              (onReferencesChanged)="onReferencesChanged($event)">
               </app-reference>
             </div>
           </div>

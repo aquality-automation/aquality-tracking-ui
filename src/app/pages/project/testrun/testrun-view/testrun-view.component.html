@@ -12,6 +12,7 @@
   [buttons]="[{name:'Publish', execute:true }, {name:'Cancel', execute:false}]" 
   (closed)="wasClosed()"
   (onCancel)="wasClosed()"
+  (onPublish)="wasClosed()"
   [runReferences]="runReferences">
 </app-publish-results-modal>
 

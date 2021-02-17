@@ -12,6 +12,7 @@ import { FormGroup } from '@angular/forms';
 import { System } from 'src/app/shared/models/integrations/system';
 import { referenceTypes } from 'src/app/shared/models/integrations/reference-type';
 import { ReferencesComponent } from '../../references/references.component';
+import { Reference } from 'src/app/shared/models/integrations/reference';
 
 @Component({
   selector: 'issue-create-modal',
@@ -26,6 +27,8 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
   @Input() failReason: string;
   @ViewChild('reference')
   referenceComponent: ReferencesComponent;
+  shouldRefBeUpdated: boolean = false;
+  onRefChangeCounter: number = 0;
   projectId: number;
   selectedSystem: System;
   formAddRef: FormGroup;
@@ -72,6 +75,7 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
       this.issue = new Issue();
     }
     if (!this.issue.id) {
+      this.shouldRefBeUpdated = true;
       this.issue.project_id = this.projectId;
       this.issue.creator_id = this.userService.currentUser().id;
       this.issue.status_id = 1;
@@ -143,9 +147,15 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
 
       const issue = await this.issueService.createIssue(this.issue, this.updateResults);
       this.execute.emit({ executed: true, result: issue });
-      this.referenceComponent.addReferenceTo(issue.id);
+      this.updateReference(issue);
     } else {
       this.execute.emit({ executed: false });
+    }
+  }
+
+  private updateReference(issue: Issue){
+    if(this.shouldRefBeUpdated && this.referenceComponent.isAddingKeyValid()){
+      this.referenceComponent.addReferenceTo(issue.id);
     }
   }
 
@@ -170,5 +180,12 @@ export class CreateIssueModalComponent extends ModalComponent implements OnInit 
     } catch (error) {
       return true;
     }
+  }
+
+  onReferencesChanged(references: Reference[]){
+    if(this.onRefChangeCounter > 0 || references.length === 0){
+      this.shouldRefBeUpdated = true
+    }
+    this.onRefChangeCounter++;
   }
 }

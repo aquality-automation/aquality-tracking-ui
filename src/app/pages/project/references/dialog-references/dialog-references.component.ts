@@ -16,7 +16,7 @@ export class DialogReferencesComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<DialogReferencesComponent>,
-    @Inject(MAT_DIALOG_DATA) public addedRef: Reference
+    @Inject(MAT_DIALOG_DATA) public addedReferences: Reference[]
   ) { }
 
   ngOnInit(): void {
@@ -26,7 +26,7 @@ export class DialogReferencesComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onAddReference(reference: Reference) {
-    this.addedRef = reference;
+  onReferencesChanged(references: Reference[]) {
+    this.addedReferences = references;
   }
 }

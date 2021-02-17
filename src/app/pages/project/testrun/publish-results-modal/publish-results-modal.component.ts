@@ -23,6 +23,8 @@ import { workflowStatusTypes } from 'src/app/shared/models/integrations/system-w
 import { MatDialog } from '@angular/material/dialog';
 import { DialogReferencesComponent } from '../../references/dialog-references/dialog-references.component';
 import { IEntityId } from 'src/app/shared/models/i-entity-id';
+import { PublishService } from 'src/app/services/integrations/publish.service';
+import { PubItem } from 'src/app/shared/models/integrations/pub-item';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -73,6 +75,7 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     private ttsStatusService: TtsStatusService,
     private wflStatusService: SystemWorkflowStatusServiceService,
     private notificationService: NotificationsService,
+    private publishService: PublishService,
     public dialog: MatDialog
   ) {
     super();
@@ -160,13 +163,40 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
         this.hasNoMappedResolutions(statuses) &&
         this.hasClosedTypeWflStatus(wflStatuses)
       ) {
-        this.notificationService.success('Everything looks fine', 'Results will be submitted');
+
+        let items: PubItem[] = [];
+        this.dataSource.data.forEach(entry => {
+          let item: PubItem = new PubItem();
+          item.result_id = entry.result.id;
+          item.test_ref = entry.testRef.key;
+          item.status = this.getTtsStatus(entry, statuses).status_id;
+          if (entry.issueRef != undefined) {
+            item.issue_ref = entry.issueRef.key;
+          }
+          items.push(item);
+        });
+
+        this.publishService.publish(
+          items,
+          this.projectId,
+          this.selectedRun.int_system,
+          this.testRun.id,
+          this.selectedRun.key
+        ).subscribe(() => {
+          this.notificationService.success('Success', 'Results were successfully sent');
+          this.onPublish.emit();
+        });
       }
     });
-
     // call to jira and check if issues are not closed, then auto remove closed refs and provide message
-    // if everything fine send request for integration.
-    //this.onPublish.emit();
+  }
+
+  private getTtsStatus(entry: DataEntry, statuses: TtsStatus[]): TtsStatus {
+    if (entry.issue !== undefined) {
+      return statuses.find(status => status.resolution_id === entry.issue.resolution_id);
+    } else {
+      return statuses.find(status => status.final_result_id === entry.result.final_result_id);
+    }
   }
 
   private hasClosedTypeWflStatus(statuses: SystemWorkflowStatus[]) {
@@ -248,13 +278,12 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     instance.entityId = entity.id;
     instance.referenceType = referenceType;
 
-    dialogRef.afterClosed().subscribe(reference => {
-      if (reference !== null && reference !== undefined) {
-        if (referenceType.id === referenceTypes.Test.id) {
-          this.dataSource.data.find(entry => entry.test.id === entity.id).testRef = reference;
-        } else {
-          this.dataSource.data.find(entry => entry.issue.id === entity.id).issueRef = reference;
-        }
+    dialogRef.afterClosed().subscribe(references => {
+      let ref = references.find(ref => ref.int_system === this.selectedRun.int_system);
+      if (referenceType.id === referenceTypes.Test.id) {
+        this.dataSource.data.find(entry => entry.test.id === entity.id).testRef = ref;
+      } else {
+        this.dataSource.data.find(entry => entry.issue.id === entity.id).issueRef = ref;
       }
     });
   }
