@@ -223,8 +223,6 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
   private getClosedIssues(refStatuses: RefStatus[], workflowStatuses: SystemWorkflowStatus[]): RefStatus[] {
     let closeStatuses = workflowStatuses.map(status => status.name.toLowerCase());
     let closedIssues = refStatuses.filter(ref => closeStatuses.includes(ref.status.toLowerCase()));
-    console.log("statuses=" + closeStatuses)
-    console.log("issues=" + closedIssues.map(c => c.status));
     return closedIssues;
   }
 
@@ -239,9 +237,13 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
 
   private hasNoMappedResolutions(statuses: TtsStatus[]): boolean {
     let resolutions: number[] = statuses.map(status => status.resolution_id);
+    let finalResults: number[] = statuses.map(status => status.final_result_id);
     return this.validateOn(entry => {
-      return entry.result.final_result?.name.toLowerCase() === finalResultNames.Failed &&
-        !resolutions.includes(entry.issue?.resolution_id)
+      if (entry.issue !== undefined) {
+        return !resolutions.includes(entry.issue?.resolution_id);
+      } else {
+        return !finalResults.includes(entry.result.final_result_id);
+      }
     }, 'mapped resolution');
   }
 

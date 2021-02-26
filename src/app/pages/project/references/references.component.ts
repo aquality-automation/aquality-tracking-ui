@@ -37,6 +37,10 @@ export class ReferencesComponent implements OnInit {
       refKey: new FormControl('', this.keyValidator)
     });
 
+    this.systemService.getAll(this.projectId).subscribe(systems => {
+      this.systems = systems;
+    })
+
     this.referenceService.get(this.projectId, this.entityId, this.referenceType)
       .subscribe(references => {
         this.references = references;

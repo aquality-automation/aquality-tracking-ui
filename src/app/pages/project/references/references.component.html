@@ -1,9 +1,8 @@
 <div class="container">
-    <div class="row p-2">
+    <div *ngIf="systems.length > 0" class="row p-2">
 
         <div class="col-md-6 p-2">
-            <int-system-select [projectId]="projectId" (onSystemSelected)="onSystemSelected($event)"
-                (onSystemsReceived)="onSystemsReceived($event)">
+            <int-system-select [projectId]="projectId" (onSystemSelected)="onSystemSelected($event)">
             </int-system-select>
         </div>
         <div class="col-md-6 p-2">
