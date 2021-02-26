@@ -1,0 +1,12 @@
+<h3 mat-dialog-title>Publish With Closed References</h3>
+<mat-dialog-content class="mat-typography">
+    Are you sure you want to make publish issues that have 'Closed' references?
+    Closed references:
+    <div *ngFor="let ref of refs">
+        {{ref.key}} {{ref.status}}
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Yes</button>
+</mat-dialog-actions>

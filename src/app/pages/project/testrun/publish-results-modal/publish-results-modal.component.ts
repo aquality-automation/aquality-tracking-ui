@@ -25,6 +25,9 @@ import { DialogReferencesComponent } from '../../references/dialog-references/di
 import { IEntityId } from 'src/app/shared/models/i-entity-id';
 import { PublishService } from 'src/app/services/integrations/publish.service';
 import { PubItem } from 'src/app/shared/models/integrations/pub-item';
+import { RefStatusService } from 'src/app/services/integrations/ref-status.service';
+import { RefStatus } from 'src/app/shared/models/integrations/ref-status';
+import { DialogConfirmPublishComponent } from './dialog-confirm-publish/dialog-confirm-publish.component';
 
 @Component({
   selector: 'app-publish-results-modal',
@@ -76,6 +79,7 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     private wflStatusService: SystemWorkflowStatusServiceService,
     private notificationService: NotificationsService,
     private publishService: PublishService,
+    private refStatusService: RefStatusService,
     public dialog: MatDialog
   ) {
     super();
@@ -147,7 +151,8 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     this.dataSource.data.find(entry => reference.entity_id === entry.issue?.id).issueRef = reference;
   }
 
-  publish() {
+  validateAndPublish() {
+    let keys: string[] = this.dataSource.data.filter(entry => entry.issueRef !== undefined).map(entry => entry.issueRef.key);
     forkJoin(
       [
         this.ttsStatusService.get(this.projectId, this.selectedRun.int_system),
@@ -163,32 +168,48 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
         this.hasNoMappedResolutions(statuses) &&
         this.hasClosedTypeWflStatus(wflStatuses)
       ) {
-
-        let items: PubItem[] = [];
-        this.dataSource.data.forEach(entry => {
-          let item: PubItem = new PubItem();
-          item.result_id = entry.result.id;
-          item.test_ref = entry.testRef.key;
-          item.status = this.getTtsStatus(entry, statuses).status_id;
-          if (entry.issueRef != undefined) {
-            item.issue_ref = entry.issueRef.key;
-          }
-          items.push(item);
-        });
-
-        this.publishService.publish(
-          items,
-          this.projectId,
-          this.selectedRun.int_system,
-          this.testRun.id,
-          this.selectedRun.key
-        ).subscribe(() => {
-          this.notificationService.success('Success', 'Results were successfully sent');
-          this.onPublish.emit();
-        });
+        this.refStatusService.getStatuses(this.projectId, this.selectedRun.int_system, keys)
+          .subscribe(refStatuses => {
+            let closedIssues = this.getClosedIssues(refStatuses, wflStatuses);
+            if (closedIssues.length == 0) {
+              this.publish(statuses);
+            } else {
+              const dialogRef = this.dialog.open(DialogConfirmPublishComponent);
+              dialogRef.componentInstance.refs = closedIssues;
+              dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                  this.publish(statuses);
+                }
+              });
+            }
+          });
       }
     });
-    // call to jira and check if issues are not closed, then auto remove closed refs and provide message
+  }
+
+  private publish(statuses: TtsStatus[]) {
+    let items: PubItem[] = [];
+    this.dataSource.data.forEach(entry => {
+      let item: PubItem = new PubItem();
+      item.result_id = entry.result.id;
+      item.test_ref = entry.testRef.key;
+      item.status = this.getTtsStatus(entry, statuses).status_id;
+      if (entry.issueRef != undefined) {
+        item.issue_ref = entry.issueRef.key;
+      }
+      items.push(item);
+    });
+
+    this.publishService.publish(
+      items,
+      this.projectId,
+      this.selectedRun.int_system,
+      this.testRun.id,
+      this.selectedRun.key
+    ).subscribe(() => {
+      this.notificationService.success('Success', 'Results were successfully sent');
+      this.onPublish.emit();
+    });
   }
 
   private getTtsStatus(entry: DataEntry, statuses: TtsStatus[]): TtsStatus {
@@ -199,9 +220,15 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     }
   }
 
-  private hasClosedTypeWflStatus(statuses: SystemWorkflowStatus[]) {
+  private getClosedIssues(refStatuses: RefStatus[], workflowStatuses: SystemWorkflowStatus[]): RefStatus[] {
+    let closeStatuses = workflowStatuses.map(status => status.name.toLowerCase());
+    let closedIssues = refStatuses.filter(ref => closeStatuses.includes(ref.status.toLowerCase()));
+    console.log("statuses=" + closeStatuses)
+    console.log("issues=" + closedIssues.map(c => c.status));
+    return closedIssues;
+  }
 
-    // TODO create an 
+  private hasClosedTypeWflStatus(statuses: SystemWorkflowStatus[]): boolean {
     let result: boolean = statuses.find(status => status.wf_sts_type_id === workflowStatusTypes.Closed.id) !== undefined;
     if (!result) {
       this.notificationService.error(`Workflow status is not defined`,
@@ -263,16 +290,12 @@ export class PublishResultsModalComponent extends ModalComponent implements OnIn
     return true;
   }
 
-  private validateOnIssueRefsStatusNotClosed() { }
-
   cancel() {
     this.onCancel.emit();
   }
 
   openAddRefDialog(projectId: number, entity: IEntityId, referenceType: ReferenceType): void {
-    const dialogRef = this.dialog.open(DialogReferencesComponent, {
-      width: '450px'
-    });
+    const dialogRef = this.dialog.open(DialogReferencesComponent);
     let instance = dialogRef.componentInstance;
     instance.projectId = projectId;
     instance.entityId = entity.id;

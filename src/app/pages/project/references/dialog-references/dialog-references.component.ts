@@ -20,6 +20,7 @@ export class DialogReferencesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.dialogRef.updateSize('450px');
   }
 
   onClose(): void {

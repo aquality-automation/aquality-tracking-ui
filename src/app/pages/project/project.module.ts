@@ -62,13 +62,13 @@ import { ReferencesComponent } from './references/references.component'
 import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
 import { ReferenceService } from 'src/app/services/integrations/reference.service';
 import { PublishResultsModalComponent } from './testrun/publish-results-modal/publish-results-modal.component';
-import { RefItemComponent } from './testrun/publish-results-modal/ref-item/ref-item.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDialogModule } from '@angular/material/dialog';
 import { IntSystemSelectComponent } from './references/int-system-select/int-system-select.component';
 import { DialogReferencesComponent } from './references/dialog-references/dialog-references.component';
+import { DialogConfirmPublishComponent } from './testrun/publish-results-modal/dialog-confirm-publish/dialog-confirm-publish.component';
 
 @NgModule({
   imports: [
@@ -119,9 +119,9 @@ import { DialogReferencesComponent } from './references/dialog-references/dialog
     ImportComponent,
     ReferencesComponent,
     PublishResultsModalComponent,
-    RefItemComponent,
     IntSystemSelectComponent,
-    DialogReferencesComponent
+    DialogReferencesComponent,
+    DialogConfirmPublishComponent
   ],
   providers: [
     TestRunService,

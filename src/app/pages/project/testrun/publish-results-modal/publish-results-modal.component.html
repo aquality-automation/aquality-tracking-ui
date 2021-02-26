@@ -49,13 +49,16 @@
                     <ng-container matColumnDef="{{tableColumns.TestRef.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.TestRef.name}}</mat-header-cell>
                         <mat-cell *matCellDef="let entry">
-                            <button class="btn btn-sm btn-success" (click)="openAddRefDialog(projectId, entry.test, referenceTypes.Test)">{{entry.testRef !== undefined ? entry.testRef.key: 'Add'}}</button>
+                            <button class="btn btn-sm btn-success"
+                                (click)="openAddRefDialog(projectId, entry.test, referenceTypes.Test)">{{entry.testRef
+                                !== undefined ? entry.testRef.key: 'Add'}}</button>
                         </mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="{{tableColumns.Resolution.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.Resolution.name}}</mat-header-cell>
-                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}} | {{entry.result.issue?.resolution?.name}}</mat-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}} |
+                            {{entry.result.issue?.resolution?.name}}</mat-cell>
                     </ng-container>
 
                     <ng-container matColumnDef="{{tableColumns.IssueName.id}}">
@@ -66,7 +69,9 @@
                     <ng-container matColumnDef="{{tableColumns.IssueRef.id}}">
                         <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueRef.name}}</mat-header-cell>
                         <mat-cell *matCellDef="let entry">
-                            <button *ngIf="hasIssue(entry)" class="btn btn-sm btn-success" (click)="openAddRefDialog(projectId, entry.issue, referenceTypes.Issue)">{{entry.issueRef !== undefined ? entry.issueRef.key: 'Add'}}</button>
+                            <button *ngIf="hasIssue(entry)" class="btn btn-sm btn-success"
+                                (click)="openAddRefDialog(projectId, entry.issue, referenceTypes.Issue)">{{entry.issueRef
+                                !== undefined ? entry.issueRef.key: 'Add'}}</button>
                         </mat-cell>
                     </ng-container>
 
@@ -80,8 +85,8 @@
                 <div class="row">
                     <div class="col-sm-12 modal-footer modal-buttons">
                         <div class="modal-buttons-form">
-                            <button autofocus class="btn btn-sm btn-success" (click)="publish()">Publish</button>
-                            <button autofocus class="btn btn-sm btn-secondary" (click)="cancel()">Cancel</button>                            
+                            <button autofocus class="btn btn-sm btn-success" (click)="validateAndPublish()">Publish</button>
+                            <button autofocus class="btn btn-sm btn-secondary" (click)="cancel()">Cancel</button>
                         </div>
                     </div>
                 </div>
