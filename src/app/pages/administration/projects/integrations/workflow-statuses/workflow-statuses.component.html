@@ -1,0 +1,47 @@
+<div class=" border bg-light rounded p-4">
+    <form [formGroup]='addWorkflowStatusForm' (ngSubmit)="addWorkflowStatus()">
+        <div class="form-row">
+            <div class="col-md-4 p-2">
+                <select id="status-type" formControlName="type" class="form-control form-control-sm input-lg">
+                    <option *ngFor="let type of types" [ngValue]="type">
+                        {{type.name}}</option>
+                </select>
+                <i class="fa fa-caret-down"></i>
+            </div>
+    
+            <div class="col-md-6 p-2">
+                <input id="workflow-status-name" formControlName="name" type="text" trim="blur"
+                    class="form-control form-control-sm" placeholder="Name" required>
+            </div>
+        
+            <div class="col-md-2 p-2">
+                <button id="workflow-status-add" type="submit" class="btn btn-primary btn-sm"
+                    [disabled]="addWorkflowStatusForm.invalid">Add</button>
+            </div>
+        </div>
+    </form>
+    
+    <div *ngIf="hasStatuses()" class="row p-2">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status Name</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let status of statuses; let number = index">
+                    <th scope="row">{{number}}</th>
+                    <td>{{status.wf_sts_type_id}}</td>
+                    <td>{{status.name}}</td>
+                    <td>
+                        <button id="delete-link" (click)="deleteStatus(status)"
+                            class="btn btn-primary btn-sm">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

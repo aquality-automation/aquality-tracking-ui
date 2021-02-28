@@ -57,13 +57,28 @@ import { IssueViewComponent } from './issue/issue-view/issue-view.component';
 import { StepsListComponent } from './steps/steps-list/steps-list.component';
 import { ImportComponent } from './import/import.component';
 import { ImportService } from 'src/app/services/import/import.service';
-import {PrintMilestoneComponent} from './milestone/print-milestone/print-milestone.component';
+import { PrintMilestoneComponent } from './milestone/print-milestone/print-milestone.component';
+import { ReferencesComponent } from './references/references.component'
+import { SystemTypeService } from 'src/app/services/integrations/system-type.service';
+import { ReferenceService } from 'src/app/services/integrations/reference.service';
+import { PublishResultsModalComponent } from './testrun/publish-results-modal/publish-results-modal.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
+import { IntSystemSelectComponent } from './references/int-system-select/int-system-select.component';
+import { DialogReferencesComponent } from './references/dialog-references/dialog-references.component';
+import { DialogConfirmPublishComponent } from './testrun/publish-results-modal/dialog-confirm-publish/dialog-confirm-publish.component';
 
 @NgModule({
   imports: [
     ProjectRoutingModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatPaginatorModule,
+    MatDialogModule
   ],
   declarations: [
     ProjectListComponent,
@@ -101,7 +116,12 @@ import {PrintMilestoneComponent} from './milestone/print-milestone/print-milesto
     IssueListComponent,
     IssueViewComponent,
     StepsListComponent,
-    ImportComponent
+    ImportComponent,
+    ReferencesComponent,
+    PublishResultsModalComponent,
+    IntSystemSelectComponent,
+    DialogReferencesComponent,
+    DialogConfirmPublishComponent
   ],
   providers: [
     TestRunService,
@@ -131,7 +151,9 @@ import {PrintMilestoneComponent} from './milestone/print-milestone/print-milesto
     CreateMilestoneGuard,
     CreateTestRunGuard,
     ImportService,
-    ProjectImportGuard
+    ProjectImportGuard,
+    SystemTypeService,
+    ReferenceService
   ]
 })
 export class ProjectModule { }

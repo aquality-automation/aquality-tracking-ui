@@ -14,6 +14,7 @@ import { UserService } from 'src/app/services/user/user.services';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { StepsContainerComponent } from '../steps-container/steps-container.component';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { ReferenceType, referenceTypes } from 'src/app/shared/models/integrations/reference-type';
 
 @Component({
   templateUrl: './test-view.component.html',
@@ -42,6 +43,7 @@ export class TestViewComponent implements OnInit, OnDestroy {
   public canEdit: boolean;
   projectId: number;
   resultSorter: TFSorting = { property: 'start_date', order: TFOrder.asc };
+  referenceType: ReferenceType = referenceTypes.Test;
 
   constructor(
     private testSuiteService: TestSuiteService,

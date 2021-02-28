@@ -1,0 +1,25 @@
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  background-color: transparent !important;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select + i.fa {
+  float: right;
+  margin-top: -20px;
+  margin-right: 1px;
+  pointer-events: none;
+  background-color: transparent;
+  color: black !important;
+  padding-right: 5px;
+}
+
+select option {
+  padding-right: 21px;
+}

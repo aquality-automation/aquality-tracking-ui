@@ -8,39 +8,27 @@
                 [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
                 Application Settings
             </mat-list-item>
-            <mat-list-item *ngIf="globalEditor" id='users-administration' routerLink="global/users" [routerLinkActiveOptions]="{ exact: false }"
-                routerLinkActive="active">
+            <mat-list-item *ngIf="globalEditor" id='users-administration' routerLink="global/users"
+                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
                 Users
             </mat-list-item>
         </mat-nav-list>
-    
+
         <mat-nav-list>
             <div class="sidebar-header">
                 <span class="sidebar-header">Project</span>
             </div>
-            <mat-list-item *ngIf="localManager" id='projectSettings-administration' routerLink="project/projectSettings"
-                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
-                Settings
-            </mat-list-item>
-            <mat-list-item *ngIf="localManager" id='permissions-administration' routerLink="project/permissions"
-                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
-                Permissions
-            </mat-list-item>
-            <mat-list-item *ngIf="localManager" id='resolutions-administration' routerLink="project/resolutions"
-                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
-                Resolutions
-            </mat-list-item>
-            <mat-list-item *ngIf="localManager" id='body-pattern-administration' routerLink="project/importBodyPatterns"
-                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
-                Unique Body Patterns
-            </mat-list-item>
-            <mat-list-item *ngIf="localManager" id='api-token-administration' routerLink="project/apiToken"
-                [routerLinkActiveOptions]="{ exact: false }" routerLinkActive="active">
-                API Token
-            </mat-list-item>
+
+            <div *ngIf="localManager">
+                <mat-list-item *ngFor="let item of projectSettingItems" id='{{item.id}}'
+                    routerLink="{{item.routerLink}}" [routerLinkActiveOptions]="{ exact: false }"
+                    routerLinkActive="active">
+                    {{item.name}}
+                </mat-list-item>
+            </div>
         </mat-nav-list>
     </div>
-    
+
     <div class="col-sm-10 content">
         <router-outlet></router-outlet>
     </div>

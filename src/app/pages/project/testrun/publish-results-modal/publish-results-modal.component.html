@@ -1,0 +1,96 @@
+<div [hidden]="isHidden" class="overlay mt-overlay modal fade" [ngClass]="{'show-modal': !this.isHidden}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">{{title}}</h4>
+                <button type="button" class="close" aria-label="Close" (click)="hideModal()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="container">
+                <div class="row p-2">
+                    <div class="col-md-2 p-2">
+                        Publish to:
+                    </div>
+                    <div class="col-md-4 p-2">
+
+                        <select *ngIf="runReferences.length > 0" id="select-int-system" [(ngModel)]="selectedRun"
+                            class="form-control form-control-sm input-lg">
+                            <option *ngFor="let runRef of runReferences; let item = index;" [ngValue]="runRef">
+                                {{runRef.key}}</option>
+                        </select>
+                        <i class="fa fa-caret-down"></i>
+
+                    </div>
+                </div>
+
+                <mat-form-field>
+                    <input matInput #filter (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    <button mat-icon-button matSuffix aria-label="clear" *ngIf="filter.value"
+                        (click)="filter.value=''; applyFilter('');">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <mat-table #table [dataSource]="dataSource">
+
+                    <ng-container matColumnDef="{{tableColumns.ResultId.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.ResultId.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry"> {{entry.result.id}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.TestName.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.TestName.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry"> {{entry.test.name}} </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.TestRef.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.TestRef.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">
+                            <button class="btn btn-sm btn-success"
+                                (click)="openAddRefDialog(projectId, entry.test, referenceTypes.Test)">{{entry.testRef
+                                !== undefined ? entry.testRef.key: 'Add'}}</button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.Resolution.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.Resolution.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.result.final_result?.name}} |
+                            {{entry.result.issue?.resolution?.name}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.IssueName.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueName.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">{{entry.issue?.title}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="{{tableColumns.IssueRef.id}}">
+                        <mat-header-cell *matHeaderCellDef>{{tableColumns.IssueRef.name}}</mat-header-cell>
+                        <mat-cell *matCellDef="let entry">
+                            <button *ngIf="hasIssue(entry)" class="btn btn-sm btn-success"
+                                (click)="openAddRefDialog(projectId, entry.issue, referenceTypes.Issue)">{{entry.issueRef
+                                !== undefined ? entry.issueRef.key: 'Add'}}</button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator [length]="100" [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+                </mat-paginator>
+
+                <div class="row">
+                    <div class="col-sm-12 modal-footer modal-buttons">
+                        <div class="modal-buttons-form">
+                            <button autofocus class="btn btn-sm btn-success" (click)="validateAndPublish()">Publish</button>
+                            <button autofocus class="btn btn-sm btn-secondary" (click)="cancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

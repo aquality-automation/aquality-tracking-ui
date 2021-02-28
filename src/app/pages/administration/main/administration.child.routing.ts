@@ -5,6 +5,7 @@ import { APITokenComponent } from '../projects/api-token/api-token.component';
 import { AdministrationPermissionsComponent } from '../projects/permissions/administration.permissions.component';
 import { AdministrationResolutionsComponent } from '../projects/resolutions/administration.resolutions.component';
 import { AdministrationUsersComponent } from '../global/users/administration.users.component';
+import { IntegrationsComponent } from '../projects/integrations/integrations/integrations.component'
 import {
   AdministrationProjectManagerGuard,
   AdministrationGlobalGuard,
@@ -18,11 +19,12 @@ const administrationChildRoutes: Routes = [
   {
     path: 'project', canActivate: [AdministrationProjectGuard],
     children: [
-      { path: 'permissions', component: AdministrationPermissionsComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'resolutions', component: AdministrationResolutionsComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'importBodyPatterns', component: ImportBodyPatternsComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'apiToken', component: APITokenComponent, canActivate: [AdministrationProjectManagerGuard]},
-      { path: 'projectSettings', component: AdministrationProjectSettingsComponent, canActivate: [AdministrationProjectManagerGuard]}
+      { path: 'permissions', component: AdministrationPermissionsComponent, canActivate: [AdministrationProjectManagerGuard] },
+      { path: 'resolutions', component: AdministrationResolutionsComponent, canActivate: [AdministrationProjectManagerGuard] },
+      { path: 'importBodyPatterns', component: ImportBodyPatternsComponent, canActivate: [AdministrationProjectManagerGuard] },
+      { path: 'apiToken', component: APITokenComponent, canActivate: [AdministrationProjectManagerGuard] },
+      { path: 'projectSettings', component: AdministrationProjectSettingsComponent, canActivate: [AdministrationProjectManagerGuard] },
+      { path: 'integrations', component: IntegrationsComponent, canActivate: [AdministrationProjectManagerGuard] }
     ]
   }, {
     path: 'global', canActivate: [AdministrationGlobalGuard],

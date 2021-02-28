@@ -1,0 +1,47 @@
+<div class="container">
+    <div *ngIf="systems.length > 0" class="row p-2">
+
+        <div class="col-md-6 p-2">
+            <int-system-select [projectId]="projectId" (onSystemSelected)="onSystemSelected($event)">
+            </int-system-select>
+        </div>
+        <div class="col-md-6 p-2">
+            <form [formGroup]="addLinkForm" (ngSubmit)="addReference()">
+                <div class="row p-0">
+                    <div [ngClass]="{'col-md-6': isAddBtnShown,'col-md-12': !isAddBtnShown}">
+                        <input id="ref-key" formControlName="refKey" type="text" trim="blur"
+                            class="form-control form-control-sm" placeholder="Key" required>
+                    </div>
+                    <div *ngIf="isAddBtnShown" class="col-md-6">
+                        <button id="add-ref" type="submit" class="btn btn-primary btn-sm"
+                            [disabled]="addLinkForm.invalid">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div *ngIf="references.length > 0" class="row p-2">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">System</th>
+                    <th scope="col">Key</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let reference of references; let number = index">
+                    <th scope="row">{{number}}</th>
+                    <td>{{getSystemName(reference)}}</td>
+                    <td><a (click)="openReference(reference)">{{reference.key}}</a></td>
+                    <td>
+                        <button id="delete-link" (click)="deleteReference(reference)"
+                            class="btn btn-primary btn-sm">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

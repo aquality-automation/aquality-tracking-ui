@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.3.0 (2021-02-26)
+ - Added feature that allows to link aquality entities (tests, issues and test runs) with 3rd party systems like Jira, Xray, TestRail and etc. In this version only Jira and Xray support has been added.
+
 ## 1.2.2 (2021-01-19)
  - Fix of an issue with switching between detailed/non-detailed view on the dashboard
 

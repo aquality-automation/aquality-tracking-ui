@@ -1,8 +1,9 @@
 import { ResultResolution } from './result-resolution';
 import { User } from './user';
 import { Label } from './general';
+import { IEntityId } from './i-entity-id';
 
-export class Issue {
+export class Issue implements IEntityId{
     id?: number;
     resolution_id?: number;
     resolution?: ResultResolution;

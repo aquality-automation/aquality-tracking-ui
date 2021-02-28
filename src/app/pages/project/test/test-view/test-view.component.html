@@ -53,6 +53,9 @@
         </lookup-autocomplete>
       </div>
     </div>
+    <div class="row">
+      <app-reference [projectId]="test.project_id" [entityId]="test.id" [referenceType]="referenceType"></app-reference>
+    </div>
     <div *ngIf="test.suites" class="col-sm-4 margin-bottom-10 clearfix">
       <label class="label-inline pull-left margin-right-10">Test Suites:</label>
       <a *ngFor="let suite of test.suites" class="label-inline pull-left suite-links"

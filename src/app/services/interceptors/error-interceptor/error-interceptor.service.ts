@@ -24,10 +24,15 @@ export class ErrorInterceptorService implements HttpInterceptor {
             .pipe(
                 catchError((error: HttpErrorResponse) => {
                     const errorMessage: ATError = error.error;
+                    
+                    if (errorMessage.message.includes('missed table in your Data Base')) {
+                        return throwError(errorMessage);
+                    }
+
                     if (errorMessage.message && errorMessage.message.startsWith('Duplicate entry')) {
                         const matches = errorMessage.message.match(/'([^']+)'/);
                         errorMessage.message = `The '${matches[1]}' value is duplicated by another entity!`;
-                    }
+                    }               
                     if (+error.status === 401) {
                         this.auth.logOut();
                     }

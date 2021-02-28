@@ -4,7 +4,7 @@ import { TestResult } from '../../../../shared/models/test-result';
 import { TestRun } from '../../../../shared/models/testrun';
 import { Milestone } from '../../../../shared/models/milestones/milestone';
 import { FinalResult } from '../../../../shared/models/final-result';
-import { faPlay, faStop, faPaperPlane, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faStop, faPaperPlane, faFilePdf, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
 import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { UserService } from 'src/app/services/user/user.services';
@@ -14,6 +14,10 @@ import { EmailSettingsService } from 'src/app/services/email-settings/email-sett
 import { MilestoneService } from 'src/app/services/milestone/milestones.service';
 import { ResultResolutionsChartsComponent } from 'src/app/elements/charts/resultResolutions/resultResolutions.charts.component';
 import { ResultGridComponent } from '../../results/results-grid/results-grid.component';
+import { ReferenceType, referenceTypes } from 'src/app/shared/models/integrations/reference-type';
+import { ReferenceService } from 'src/app/services/integrations/reference.service';
+import { SystemService } from 'src/app/services/integrations/system.service';
+import { Reference } from '@angular/compiler/src/render3/r3_ast';
 
 @Component({
   templateUrl: './testrun-view.component.html',
@@ -37,8 +41,13 @@ export class TestRunViewComponent implements OnInit {
   showTableResults: boolean;
   canEdit: boolean;
   canSendEmail: boolean;
-  icons = { faPlay, faStop, faPaperPlane, faFilePdf };
+  icons = { faPlay, faStop, faPaperPlane, faFilePdf, faUpload };
   test: any;
+  referenceType: ReferenceType = referenceTypes.TestRun;
+  isIntegrationEnabled: boolean = false;
+  isTestRunHasReferences: boolean = false;
+  runReferences: Reference[];
+  isPublishModalHidden: boolean = true;
 
   constructor(
     private milestoneService: MilestoneService,
@@ -47,7 +56,9 @@ export class TestRunViewComponent implements OnInit {
     public userService: UserService,
     private emailSettingService: EmailSettingsService,
     private router: Router,
-    private permissions: PermissionsService
+    private permissions: PermissionsService,
+    private systemService: SystemService,
+    private referenceService: ReferenceService
   ) { }
 
   async ngOnInit() {
@@ -63,6 +74,16 @@ export class TestRunViewComponent implements OnInit {
       this.testrunService.getTestRun({ id: testrunId }),
       this.milestoneService.getMilestone({ project_id: this.projectId, active: 1 })
     ]);
+
+    this.systemService.getAll(this.projectId).subscribe(systems => {
+      this.isIntegrationEnabled = systems.length > 0;
+      if (this.isIntegrationEnabled) {
+        this.referenceService.get(this.projectId, testrunId, this.referenceType)
+          .subscribe(references => {
+            this.isTestRunHasReferences = references.length > 0;
+          })
+      }
+    })
 
     this.canSendEmail = isEmailEnabled && this.canEdit;
     this.testrun = testruns[0];
@@ -124,6 +145,7 @@ export class TestRunViewComponent implements OnInit {
   wasClosed() {
     this.hideNotifyModal = true;
     this.hidePrintModal = true;
+    this.isPublishModalHidden = true;
   }
 
   async testrunUpdate() {
@@ -195,5 +217,18 @@ export class TestRunViewComponent implements OnInit {
       finish_time: finish_time,
       project_id: this.testrun.project_id
     })).finish_time;
+  }
+
+  isPublishAvailable(): boolean {
+    return this.isIntegrationEnabled && this.isTestRunHasReferences;
+  }
+
+  publish() {
+    this.isPublishModalHidden = false;
+  }
+
+  addReference(references: Reference[]) {
+    this.runReferences = references;
+    this.isTestRunHasReferences = references.length > 0;
   }
 }

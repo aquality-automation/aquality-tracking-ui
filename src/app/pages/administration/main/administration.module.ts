@@ -7,6 +7,7 @@ import { ProjectService } from 'src/app/services/project/project.service';
 import { UserService } from 'src/app/services/user/user.services';
 import { PermissionsService } from 'src/app/services/permissions/current-permissions.service';
 import { GuardService } from 'src/app/services/guard.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -21,7 +22,9 @@ import { GuardService } from 'src/app/services/guard.service';
     UserService,
     PermissionsService,
     AdministrationGuard,
-    GuardService
+    GuardService,
+    FormsModule,
+    ReactiveFormsModule
   ],
 })
 

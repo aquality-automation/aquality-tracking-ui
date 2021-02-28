@@ -14,7 +14,11 @@ import { PermissionsService } from 'src/app/services/permissions/current-permiss
 import { UserService } from 'src/app/services/user/user.services';
 import { GuardService } from 'src/app/services/guard.service';
 import { AdministrationProjectManagerGuard, AdministrationProjectGuard, AdministrationGlobalGuard } from 'src/app/shared/guards/administration-guard.service';
-
+import { IntegrationSystemsComponent } from '../projects/integrations/systems/integration-systems.component';
+import { IntegrationsComponent } from '../projects/integrations/integrations/integrations.component';
+import { TtsStatusComponent } from '../projects/integrations/tts-status/tts-status.component';
+import { WorkflowStatusesComponent } from '../projects/integrations/workflow-statuses/workflow-statuses.component';
+import { SystemViewComponent } from '../projects/integrations/system-view/system-view.component';
 @NgModule({
   imports: [
     administrationChildRouting,
@@ -27,7 +31,12 @@ import { AdministrationProjectManagerGuard, AdministrationProjectGuard, Administ
     AdministrationResolutionsComponent,
     ImportBodyPatternsComponent,
     APITokenComponent,
-    AdministrationProjectSettingsComponent
+    AdministrationProjectSettingsComponent,
+    IntegrationSystemsComponent,
+    IntegrationsComponent,
+    TtsStatusComponent,
+    WorkflowStatusesComponent,
+    SystemViewComponent
   ],
   providers: [
     ProjectService,

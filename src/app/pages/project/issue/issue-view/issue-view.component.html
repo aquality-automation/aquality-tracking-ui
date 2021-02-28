@@ -80,8 +80,8 @@
             <div class="col-sm-12 no-padding">
                 <label for="issue-expression">Regular Expression:</label>
                 <div class="input-group">
-                    <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression" name="expression" #expression="ngModel" 
-                        [ngClass]="{
+                    <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
+                        name="expression" #expression="ngModel" [ngClass]="{
                     'is-valid': !isExpressionOverlapped() && !isExpressionInvalid() && expression.touched, 
                     'is-invalid': isExpressionOverlapped() || isExpressionInvalid()
                     }" [(ngModel)]="issue.expression" [disabled]="!canEdit || issue.status_id === 4"
@@ -127,9 +127,20 @@
         </div>
 
         <div class="col-sm-6">
-            <table-filter id="affected-tests" [data]="affectedTests" [columns]="affectedTestColumns" [rowsOnPage]="10"
-                [hideFilter]="true" [columnManagement]="false">
-            </table-filter>
+            <div class="row">
+                <div class="col-sm-12 no-padding">
+                    <app-reference [projectId]="issue.project_id" [entityId]='issue.id' [referenceType]="referenceType">
+                    </app-reference>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 no-padding">
+                    <table-filter id="affected-tests" [data]="affectedTests" [columns]="affectedTestColumns"
+                        [rowsOnPage]="10" [hideFilter]="true" [columnManagement]="false">
+                    </table-filter>
+                </div>
+            </div>
         </div>
     </div>
 </div>
