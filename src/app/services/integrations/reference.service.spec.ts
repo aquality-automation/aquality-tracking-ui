@@ -11,7 +11,7 @@ import using from 'jasmine-data-provider';
 import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';
 import { System } from 'src/app/shared/models/integrations/system';
 
-fdescribe('ReferenceService', () => {
+describe('ReferenceService', () => {
   let service: ReferenceService;
   let httpClientSpy: HttpTestingController;
   let notificationServiceSpy: any;
