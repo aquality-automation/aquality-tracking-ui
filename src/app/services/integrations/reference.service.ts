@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { Subject } from 'rxjs/internal/Subject';
@@ -17,9 +17,7 @@ export class ReferenceService extends BaseHttpService {
     if(entityId !== undefined){
       return this.http.get<Reference[]>(`/integration/references/${refType.path}?project_id=${projectId}&entity_id=${entityId}`);
     } else {
-      let emptyReferences : Subject<Reference[]> = new Subject<Reference[]>();
-      emptyReferences.next([]);
-      return emptyReferences;
+      return of([]);
     }
   }
 
