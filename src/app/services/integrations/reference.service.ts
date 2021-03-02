@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
-import { Subject } from 'rxjs/internal/Subject';
 import { Reference } from 'src/app/shared/models/integrations/reference';
 import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';
 import { System } from 'src/app/shared/models/integrations/system';
@@ -14,7 +13,7 @@ import { BaseHttpService } from '../base-http/base-http.service';
 export class ReferenceService extends BaseHttpService {
 
   public get(projectId: number, entityId: number, refType: ReferenceType): Observable<Reference[]> {
-    if(entityId !== undefined){
+    if (entityId !== undefined) {
       return this.http.get<Reference[]>(`/integration/references/${refType.path}?project_id=${projectId}&entity_id=${entityId}`);
     } else {
       return of([]);
