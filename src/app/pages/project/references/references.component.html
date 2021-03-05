@@ -1,5 +1,5 @@
 <div class="container">
-    <div *ngIf="systems.length > 0" class="row p-2">
+    <div *ngIf="systems.length > 0" class="row p-2" id="add-ref-form">
 
         <div class="col-md-6 p-2">
             <int-system-select [projectId]="projectId" (onSystemSelected)="onSystemSelected($event)">
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div *ngIf="references.length > 0" class="row p-2">
+    <div *ngIf="references.length > 0" class="row p-2" id="refs-list-table">
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -32,12 +32,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let reference of references; let number = index">
+                <tr *ngFor="let reference of references; let number = index" id="{{reference.key}}">
                     <th scope="row">{{number}}</th>
                     <td>{{getSystemName(reference)}}</td>
-                    <td><a (click)="openReference(reference)">{{reference.key}}</a></td>
+                    <td id="ref-item-key"><a (click)="openReference(reference)">{{reference.key}}</a>
+                    </td>
                     <td>
-                        <button id="delete-link" (click)="deleteReference(reference)"
+                        <button id="delete-ref-item" (click)="deleteReference(reference)"
                             class="btn btn-primary btn-sm">Delete</button>
                     </td>
                 </tr>
