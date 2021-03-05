@@ -1,61 +1,20 @@
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
-import { of } from 'rxjs/internal/observable/of';
-import { Reference } from 'src/app/shared/models/integrations/reference';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { GlobalDataService } from '../globaldata.service';
-
-import { errors, ReferenceService } from './reference.service';
 import using from 'jasmine-data-provider';
-import { ReferenceType } from 'src/app/shared/models/integrations/reference-type';
-import { System } from 'src/app/shared/models/integrations/system';
+import { of } from 'rxjs/internal/observable/of';
+import { expRefSys1, expRefSys2, projectId, refTypes, system1 } from 'src/app/testing-support/integrations-data.spec';
+import { GlobalDataService } from '../globaldata.service';
+import { errors, ReferenceService } from './reference.service';
+
 
 describe('ReferenceService', () => {
   let service: ReferenceService;
   let httpClientSpy: HttpTestingController;
   let notificationServiceSpy: any;
 
-  const projectId = 1;
-  const system: System = {
-    id: 1,
-    name: 'test system',
-    url: 'http://aquality',
-    username: 'username',
-    password: 'pass',
-    int_system_type: 1,
-    int_tts_type: 1,
-    project_id: projectId,
-    api_token: 'token'
-  };
-
-  const expRefSys1: Reference = {
-    id: 1000,
-    key: 'S1-000001',
-    entity_id: 1,
-    project_id: projectId,
-    int_system: system.id
-  };
-
-  const expRefSys2: Reference = {
-    id: 1000,
-    key: 'S2-000001',
-    entity_id: 2,
-    project_id: projectId,
-    int_system: 2
-  };
-
-  // we already have such array in the project, but to exclude using the same in prod and test
-  // we decided to has another for testing
-  const refTypes: ReferenceType[] = [
-    new ReferenceType(1, 'test'),
-    new ReferenceType(2, 'issue'),
-    new ReferenceType(3, 'testrun')
-  ];
-
   beforeEach(() => {
-
-    system.id = 1;
 
     // mocking dependencies
     notificationServiceSpy = jasmine.createSpyObj('NotificationsService', ['error']);
@@ -151,7 +110,6 @@ describe('ReferenceService', () => {
         error.subscribe(() => { }, message => {
           expect(message).toEqual(errors.alreadyExists);
         })
-
       });
       const req = httpClientSpy.expectOne(`/integration/references/${refType.path}?project_id=${projectId}&entity_id=${expRefSys1.entity_id}`);
       expect(req.request.method).toBe("GET");
@@ -177,9 +135,9 @@ describe('ReferenceService', () => {
     })
   });
 
-  
+
   it(`should be possible to get system name by reference`, () => {
-    let name = service.getRefSystemName([system], expRefSys1);
-    expect(name).toEqual(system.name);
+    let name = service.getRefSystemName([system1], expRefSys1);
+    expect(name).toEqual(system1.name);
   });
 });
