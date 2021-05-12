@@ -34,7 +34,7 @@
     "@pascalhonegger/ng-datatable": "^9.0.1",
     "angular2-notifications": "^9.0.0",
     "bootstrap": "^4.5.0",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
     "jsencrypt": "^3.0.0-rc.1",
