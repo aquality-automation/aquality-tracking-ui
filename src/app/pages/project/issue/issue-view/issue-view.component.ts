@@ -129,6 +129,14 @@ export class IssueViewComponent implements OnInit {
     });
   }
 
+  async saveExpressionAndUnassignIssue() {
+    this.issue = await this.issueService.createIssue(this.issue, false, true);
+    this.affectedTests = await this.testService.getTestByIssue({
+      issueId: this.issue.id,
+      projectId: this.projectId,
+    });
+  }
+
   async saveIssue() {
     if (this.issue.title) {
       this.issue = await this.issueService.createIssue(this.issue, false);

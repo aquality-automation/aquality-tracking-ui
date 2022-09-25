@@ -57,6 +57,7 @@ export class AdministrationProjectSettingsComponent implements OnInit {
 
   async updateProject() {
     this.projectToSave.steps = +this.projectToSave.steps;
+    this.projectToSave.ai_resolutions = +this.projectToSave.ai_resolutions;
     this.selectedProject = await this.projectService.createProjects(this.projectToSave);
     this.projectService.handleSuccess(`'${this.projectToSave.name}' project was updated!`);
     this.projects = await this.projectService.getProjects({});

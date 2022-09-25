@@ -16,7 +16,7 @@ export class IssueService extends BaseHttpService {
         return this.http.get<Issue[]>(this.endpoints.issues, { params: this.convertToParams(issue) }).toPromise();
     }
 
-    async createIssue(issue: Issue, updateResults: boolean = false): Promise<Issue> {
+    async createIssue(issue: Issue, updateResults: boolean = false, unassignIssue: boolean = false): Promise<Issue> {
         if (!issue.expression) {
             updateResults = false;
         }
@@ -29,7 +29,7 @@ export class IssueService extends BaseHttpService {
             issue.external_url = DefaultProperties.blank;
         }
 
-        const result = await this.http.post<Issue>(this.endpoints.issues, issue, {params: { assign: String(updateResults) }}).toPromise();
+        const result = await this.http.post<Issue>(this.endpoints.issues, issue, {params: { assign: String(updateResults), unassign: String(unassignIssue) }}).toPromise();
         issue.id
                 ? this.handleSuccess(`The issue '${issue.title}' was updated.`)
                 : this.handleSuccess(`The issue '${issue.title}' was created.`);

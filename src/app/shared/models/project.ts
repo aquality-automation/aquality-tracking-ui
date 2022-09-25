@@ -11,6 +11,7 @@ export class Project {
   steps?: boolean | number;
   compare_result_pattern?: string;
   stability_count?: number;
+  ai_resolutions?: boolean | number;
 }
 
 export class ImportBodyPattern {
