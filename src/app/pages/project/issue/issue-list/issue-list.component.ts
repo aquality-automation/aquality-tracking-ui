@@ -10,6 +10,7 @@ import { ResultResolutionService } from 'src/app/services/result-resolution/resu
 import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import {ProjectService} from '../../../../services/project/project.service';
 
 @Component({
   templateUrl: './issue-list.component.html',
@@ -23,7 +24,8 @@ export class IssueListComponent implements OnInit {
     private route: ActivatedRoute,
     private issueService: IssueService,
     private permissions: PermissionsService,
-    private resolutionService: ResultResolutionService
+    private resolutionService: ResultResolutionService,
+    private projectService: ProjectService
   ) { }
 
   projectId: number;
@@ -37,16 +39,18 @@ export class IssueListComponent implements OnInit {
   statuses: Label[];
   defSort: TFSorting = { property: 'created', order: TFOrder.asc };
   hideCreateModal = true;
+  isAiOn: boolean;
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
-    [this.issues, this.resolutions, this.canEdit, this.projectUsers, this.statuses] = await Promise.all([
+    [this.issues, this.resolutions, this.canEdit, this.projectUsers, this.statuses, this.isAiOn] = await Promise.all([
       this.issueService.getIssues({ project_id: this.projectId }),
       this.resolutionService.getResolution(this.projectId),
       this.permissions.hasProjectPermissions(this.projectId,
         [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]),
       this.userService.getProjectUsers(this.projectId),
-      this.issueService.getIssueStatuses()
+      this.issueService.getIssueStatuses(),
+      ((await this.projectService.getProject(this.projectId)).ai_resolutions === 1)
     ]);
     this.projectUsers = this.projectUsers.filter(user => user.admin === 1 || user.manager === 1 || user.engineer === 1);
     this.users = this.projectUsers.map(x => x.user);
@@ -78,6 +82,9 @@ export class IssueListComponent implements OnInit {
 
   showCreate() {
     this.hideCreateModal = false;
+  }
+  generateAiIssues() {
+    this.issueService.getAiIssues(this.projectId);
   }
 
   async execute(result: {executed: boolean, result?: Issue}) {

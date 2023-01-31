@@ -1,10 +1,13 @@
 <div class="panel-heading">
   <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
       <h2 id="issues-list">Issues</h2>
     </div>
-    <div *ngIf="canEdit" class="col-sm-6">
-      <button class="btn btn-primary pull-right" id="create-issue-button" (click)="showCreate()">Create Issue</button>
+    <div class="col-md-8">
+      <div class="btn-group pull-right" role="group">
+        <button *ngIf="canEdit" class="btn btn-primary" id="create-issue-button" (click)="showCreate()">Create Issue</button>
+        <button *ngIf="isAiOn" class="btn btn-warning" id="generate-ai-issues" (click)="generateAiIssues()">Generate Issues with AI</button>
+      </div>
     </div>
   </div>
 </div>

@@ -9,7 +9,8 @@ export class IssueService extends BaseHttpService {
 
     endpoints = {
         issues: '/issues',
-        statuses: '/issue/status'
+        statuses: '/issue/status',
+        ai_issues: '/issues/ai'
     };
 
     getIssues(issue: Issue): Promise<Issue[]> {
@@ -29,7 +30,8 @@ export class IssueService extends BaseHttpService {
             issue.external_url = DefaultProperties.blank;
         }
 
-        const result = await this.http.post<Issue>(this.endpoints.issues, issue, {params: { assign: String(updateResults), unassign: String(unassignIssue) }}).toPromise();
+        const result = await this.http.post<Issue>(this.endpoints.issues, issue, {params: { assign: String(updateResults),
+            unassign: String(unassignIssue) }}).toPromise();
         issue.id
                 ? this.handleSuccess(`The issue '${issue.title}' was updated.`)
                 : this.handleSuccess(`The issue '${issue.title}' was created.`);
@@ -39,5 +41,9 @@ export class IssueService extends BaseHttpService {
 
     getIssueStatuses(): Promise<Label[]> {
         return this.http.get<Label[]>(this.endpoints.statuses).toPromise();
+    }
+
+    getAiIssues(project_id: number): Promise<Label[]> {
+      return this.http.get<Label[]>(this.endpoints.ai_issues, { params: { project_id: project_id.toString()}}).toPromise();
     }
 }
