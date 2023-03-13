@@ -48,6 +48,7 @@ export class AuditStat {
   project?: Project;
   id?: number;
   created: Date;
+  last_audit_created_date?: Date|string|number;
   last_created_due_date?: Date;
   last_submitted_date?: Date;
   last_submitted_id?: number;

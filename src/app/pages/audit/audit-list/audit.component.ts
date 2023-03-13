@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuditStat, Service } from '../../../shared/models/audit';
+import { AuditStat, Service, Audit } from '../../../shared/models/audit';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../../../shared/models/user';
 import BlobUtils from '../../../shared/utils/blob.utils';
@@ -17,6 +17,7 @@ export class AuditComponent implements OnInit {
   coordinators: User[];
   stats: AuditStat[];
   auditors: User[];
+  auditsList: Audit[];
   defSort = { property: 'last_created_due_date', order: TFOrder.desc };
   rowColors: any[] = [{
     property: 'last_created_due_date',
@@ -48,7 +49,7 @@ export class AuditComponent implements OnInit {
     this.coordinators = await this.userService.getUsers({ unit_coordinator: 1 });
     this.auditors = await this.userService.getUsers({ auditor: 1 });
     isAuditAdmin ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
-    this.stats.forEach(stat => {
+    this.stats.forEach(async (stat) => {
       if (stat.last_submitted_date || stat.last_created_due_date) {
         stat.last_created_due_date = stat.last_submitted_id !== stat.last_created_id
           ? new Date(stat.last_created_due_date)
@@ -66,6 +67,11 @@ export class AuditComponent implements OnInit {
       } else {
         stat['next_action'] = { text: 'Not created' };
       }
+
+      this.auditsList = await this.auditService.getAudits({ project: { id: stat.id } } );
+      let datesArray: (Date|string|number)[] = [];
+      this.auditsList.forEach(audit => {datesArray.push(audit.created)});
+      stat.last_audit_created_date = new Date(Math.max.apply(null, datesArray));
     });
     this.services = await this.auditService.getServices();
     this.createColumns();
@@ -107,6 +113,15 @@ export class AuditComponent implements OnInit {
           values: this.services,
           propToShow: ['name']
         },
+        class: 'fit'
+      },
+      {
+        name: 'Last Audit Created Date',
+        property: 'last_audit_created_date',
+        filter: true,
+        sorting: true,
+        type: TFColumnType.date,
+        format: 'MMM dd, yyyy',
         class: 'fit'
       },
       {
