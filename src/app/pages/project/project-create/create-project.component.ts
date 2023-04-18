@@ -11,7 +11,7 @@ import { NotificationsService } from 'angular2-notifications';
 })
 export class CreateProjectComponent implements OnInit {
   customers: User[];
-  newProject: Project = { name: '' };
+  newProject: Project = { name: '', ai_resolutions: 0 };
 
   constructor(
     public customerService: CustomerService,
