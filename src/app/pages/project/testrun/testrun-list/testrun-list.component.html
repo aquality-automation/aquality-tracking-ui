@@ -3,7 +3,7 @@
     (execute)="execute($event)" (closed)="wasClosed()"></app-modal>
   <div class="row">
     <div class="col-sm-12">
-      <testrun-result-timeline *ngIf="testrunStatsFiltered" [testrunsStat]="testrunStatsFiltered"></testrun-result-timeline>
+      <testrun-result-timeline  [testrunsStat]="testrunStatsFiltered"></testrun-result-timeline>
       <br>
       <div class="pull-right btn-group right-actions">
         <button id="resultAsCSV" class="btn btn-primary" (click)="uploadResults()">Results As CSV</button>

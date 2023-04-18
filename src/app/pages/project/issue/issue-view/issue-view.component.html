@@ -19,6 +19,10 @@
                     (click)="setStatus(4)">Mark as Done</button>
                 <button *ngIf="+issue.status.id !== 1" id="reopen" type="button" class="btn btn-primary"
                     (click)="setStatus(1)">Re Open</button>
+              <button *ngIf="+issue.status.id !== 1" class="btn btn-warning" type="button" id="save-and-unassign"
+                      (click)="saveExpressionAndUnassignIssue()"
+                      title="Save issue. Unassign this issue to all results where Fail Reason fits the Expression and without assigned issue">Save
+                and Unassign</button>
                 <button *ngIf="+issue.status.id === 3" id="cannot-reproduce" type="button" class="btn btn-info"
                     (click)="setStatus(2)">Can Not Reproduce</button>
                 <button *ngIf="+issue.status.id !== 4" id="save" type="button" class="btn btn-success"
@@ -82,7 +86,7 @@
                 <div class="input-group">
                     <input id="issue-expression" type="text" class="form-control" placeholder="Regular Expression"
                         name="expression" #expression="ngModel" [ngClass]="{
-                    'is-valid': !isExpressionOverlapped() && !isExpressionInvalid() && expression.touched, 
+                    'is-valid': !isExpressionOverlapped() && !isExpressionInvalid() && expression.touched,
                     'is-invalid': isExpressionOverlapped() || isExpressionInvalid()
                     }" [(ngModel)]="issue.expression" [disabled]="!canEdit || issue.status_id === 4"
                         (keyup)="onExpressionUpdate()">
@@ -98,6 +102,9 @@
                             (click)="saveExpressionAndAssignIssue()"
                             title="Save issue. Assign this issue to all results where Fail Reason fits the Expression and without assigned issue">Save
                             and Assign</button>
+                    </div>
+                    <div *ngIf="!isExpressionOverlapped() && !isExpressionInvalid() && canEdit && issue.status_id !== 4"
+                         class="input-group-append">
                     </div>
                 </div>
             </div>

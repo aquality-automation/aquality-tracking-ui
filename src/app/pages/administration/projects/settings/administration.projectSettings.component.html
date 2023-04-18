@@ -26,7 +26,10 @@
                     <mat-slide-toggle *ngIf="projectToSave" id="steps-feature" [(ngModel)]="projectToSave.steps">Steps
                     </mat-slide-toggle>
                 </div>
-
+              <div class="col-sm-4 no-padding">
+                <mat-slide-toggle *ngIf="projectToSave" id="ai-resolutions-feautre" [(ngModel)]="projectToSave.ai_resolutions">AI-resolutions
+                </mat-slide-toggle>
+              </div>
                 <labeled-input *ngIf="projectToSave" [(ngModel)]="projectToSave.compare_result_pattern"
                     label="Import Compare Results Pattern" id="compare-result-pattern-feature">
                 </labeled-input>
