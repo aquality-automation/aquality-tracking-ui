@@ -71,7 +71,7 @@ export class AuditComponent implements OnInit {
       this.auditsList = await this.auditService.getAudits({ project: { id: stat.id } } );
       let datesArray: (Date|string|number)[] = [];
       this.auditsList.forEach(audit => {datesArray.push(audit.created)});
-      stat.last_audit_created_date = new Date(Math.max.apply(null, datesArray));
+      stat.last_audit_created_date = isFinite(Math.max.apply(null, datesArray)) ? new Date(Math.max.apply(null, datesArray)) : undefined;
     });
     this.services = await this.auditService.getServices();
     this.createColumns();
