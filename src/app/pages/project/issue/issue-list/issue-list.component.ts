@@ -3,14 +3,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Issue } from '../../../../shared/models/issue';
 import { Label } from '../../../../shared/models/general';
 import { User } from '../../../../shared/models/user';
+import { Test } from 'src/app/shared/models/test';
 import { UserService } from 'src/app/services/user/user.services';
 import { IssueService } from 'src/app/services/issue/issue.service';
+import { ProjectService } from '../../../../services/project/project.service';
+import { TestResultService } from 'src/app/services/test-result/test-result.service';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
-import {ProjectService} from '../../../../services/project/project.service';
 
 @Component({
   templateUrl: './issue-list.component.html',
@@ -25,7 +27,8 @@ export class IssueListComponent implements OnInit {
     private issueService: IssueService,
     private permissions: PermissionsService,
     private resolutionService: ResultResolutionService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private testResultService: TestResultService
   ) { }
 
   projectId: number;
@@ -55,6 +58,7 @@ export class IssueListComponent implements OnInit {
     this.projectUsers = this.projectUsers.filter(user => user.admin === 1 || user.manager === 1 || user.engineer === 1);
     this.users = this.projectUsers.map(x => x.user);
     this.addLinks();
+    this.addAffectedTests();
     this.createColumns();
   }
 
@@ -64,6 +68,13 @@ export class IssueListComponent implements OnInit {
         ? { text: 'Open', link: issue.external_url }
         : {};
     });
+  }
+
+  async addAffectedTests() {
+    const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null);
+    this.issues.forEach(async issue => {
+      issue['affected_tests_amount'] = (testResults.filter(result => Number(result.issue_id) === issue.id)).length
+    })
   }
 
   async updateIssue(issue: Issue) {
@@ -87,7 +98,7 @@ export class IssueListComponent implements OnInit {
     this.issueService.getAiIssues(this.projectId);
   }
 
-  async execute(result: {executed: boolean, result?: Issue}) {
+  async execute(result: { executed: boolean, result?: Issue }) {
     this.hideCreateModal = true;
     if (result.executed) {
       await this.updateList();
@@ -151,6 +162,13 @@ export class IssueListComponent implements OnInit {
           required: true
         }
       }, {
+        name: 'Affected Tests Amount',
+        property: 'affected_tests_amount',
+        sorting: true,
+        type: TFColumnType.text,
+        class: 'fit',
+      },
+      {
         name: 'Assignee',
         property: 'assignee',
         type: TFColumnType.autocomplete,

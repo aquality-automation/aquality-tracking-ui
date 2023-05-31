@@ -33,9 +33,8 @@ export class TestResultStat {
   name?: string;
   status?: string;
   resolution?: string;
-  assignee?: string;
-  developer?: string;
-  comment?: string;
+  issue_id?: string;
+  issue_title?: string;
 }
 
 export class TestResultAttachment {
