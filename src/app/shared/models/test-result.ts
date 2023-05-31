@@ -1,8 +1,8 @@
-import { FinalResult } from './final-result';
-import { Test } from './test';
-import { StepResult } from './steps';
-import { Issue } from './issue';
-import { IEntityId } from './i-entity-id';
+import { FinalResult } from "./final-result";
+import { Test } from "./test";
+import { StepResult } from "./steps";
+import { Issue } from "./issue";
+import { IEntityId } from "./i-entity-id";
 
 export class TestResult implements IEntityId {
   id?: number;
