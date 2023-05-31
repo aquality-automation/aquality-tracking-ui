@@ -132,6 +132,7 @@ export class IssueListComponent implements OnInit {
   private async updateList() {
     this.issues = await this.issueService.getIssues({ project_id: this.projectId });
     this.addLinks();
+    this.addAffectedTestsAndRuns();
   }
 
   private createColumns() {
@@ -185,8 +186,8 @@ export class IssueListComponent implements OnInit {
         name: "Affected Tests Amount",
         property: "affected_tests_amount",
         sorting: true,
-        type: TFColumnType.text,
-        class: "fit"
+        type: TFColumnType.number,
+        class: "ft-width-175"
       },
       {
         name: "Test Runs",
