@@ -3,11 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Issue } from '../../../../shared/models/issue';
 import { Label } from '../../../../shared/models/general';
 import { User } from '../../../../shared/models/user';
-import { Test } from 'src/app/shared/models/test';
+import { TestRun } from 'src/app/shared/models/testrun';
 import { UserService } from 'src/app/services/user/user.services';
 import { IssueService } from 'src/app/services/issue/issue.service';
 import { ProjectService } from '../../../../services/project/project.service';
 import { TestResultService } from 'src/app/services/test-result/test-result.service';
+import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
 import { ResultResolutionService } from 'src/app/services/result-resolution/result-resolution.service';
 import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
@@ -28,7 +29,8 @@ export class IssueListComponent implements OnInit {
     private permissions: PermissionsService,
     private resolutionService: ResultResolutionService,
     private projectService: ProjectService,
-    private testResultService: TestResultService
+    private testResultService: TestResultService,
+    private testRunService: TestRunService
   ) { }
 
   projectId: number;
@@ -43,6 +45,7 @@ export class IssueListComponent implements OnInit {
   defSort: TFSorting = { property: 'created', order: TFOrder.asc };
   hideCreateModal = true;
   isAiOn: boolean;
+  testRuns: TestRun[]
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
@@ -57,8 +60,9 @@ export class IssueListComponent implements OnInit {
     ]);
     this.projectUsers = this.projectUsers.filter(user => user.admin === 1 || user.manager === 1 || user.engineer === 1);
     this.users = this.projectUsers.map(x => x.user);
+    this.testRuns = await this.testRunService.getTestRun({project_id: this.projectId});
     this.addLinks();
-    this.addAffectedTests();
+    this.addAffectedTestsAndRuns();
     this.createColumns();
   }
 
@@ -70,11 +74,17 @@ export class IssueListComponent implements OnInit {
     });
   }
 
-  async addAffectedTests() {
+  async addAffectedTestsAndRuns() {
     const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null);
-    this.issues.forEach(async issue => {
-      issue['affected_tests_amount'] = (testResults.filter(result => Number(result.issue_id) === issue.id)).length
-    })
+    for (let issue of this.issues) {
+      let affectedTestsArray = testResults.filter(result => Number(result.issue_id) === issue.id);
+      issue['affected_tests_amount'] = affectedTestsArray.length;
+      issue['test_runs'] = [];
+      for (let test of affectedTestsArray) {
+        issue['test_runs'].push(this.testRuns.find(run => run.id === test.test_run_id));
+      };
+      issue['test_runs'] = [...new Set(issue['test_runs'])];
+    }
   }
 
   async updateIssue(issue: Issue) {
@@ -167,6 +177,20 @@ export class IssueListComponent implements OnInit {
         sorting: true,
         type: TFColumnType.text,
         class: 'fit',
+      },
+      {
+        name: 'Test Runs',
+        property: 'test_runs',
+        filter: true,
+        type: TFColumnType.multiselect,
+        lookup: {
+          propToShow: ['build_name'],
+          values: this.testRuns,
+        },
+        editable: false,
+        bulkEdit: true,
+        sorting: true,
+        class: 'ft-width-250'
       },
       {
         name: 'Assignee',
