@@ -19,19 +19,23 @@ export class AuditComponent implements OnInit {
   auditors: User[];
   auditsList: Audit[];
   defSort = { property: 'last_created_due_date', order: TFOrder.desc };
-  rowColors: any[] = [{
-    property: 'last_created_due_date',
-    color: 'warning',
-    higher: new Date(new Date(new Date().setDate(new Date().getDate() - 1)).setHours(0, 0, 0, 0)),
-    lower: new Date(new Date(new Date().setDate(new Date().getDate() + 15)).setHours(0, 0, 0, 0))
-  }, {
-    property: 'hasOpened',
-    color: 'none'
-  }, {
-    property: 'last_created_due_date',
-    color: 'danger',
-    lower: new Date(new Date(new Date().setDate(new Date().getDate())).setHours(0, 0, 0, 0))
-  }];
+  rowColors: Object[] = [
+    {
+      property: 'last_created_due_date',
+      color: 'warning',
+      higher: new Date(new Date(new Date().setDate(new Date().getDate() - 1)).setHours(0, 0, 0, 0)),
+      lower: new Date(new Date(new Date().setDate(new Date().getDate() + 15)).setHours(0, 0, 0, 0))
+    },
+    {
+      property: 'hasOpened',
+      color: 'none'
+    },
+    {
+      property: 'last_created_due_date',
+      color: 'danger',
+      lower: new Date(new Date(new Date().setDate(new Date().getDate())).setHours(0, 0, 0, 0))
+    }
+  ];
   columns: TFColumn[];
   linkNames: string[] = [];
 
@@ -41,7 +45,7 @@ export class AuditComponent implements OnInit {
     public auditService: AuditService,
     public userService: UserService,
     private permissions: PermissionsService
-  ) { }
+  ) {}
 
   async ngOnInit() {
     const isAuditAdmin = await this.permissions.hasPermissions([EGlobalPermissions.audit_admin]);
@@ -51,27 +55,36 @@ export class AuditComponent implements OnInit {
     isAuditAdmin ? this.linkNames.push('Create New') : this.linkNames.push('Not created');
     this.stats.forEach(async (stat) => {
       if (stat.last_submitted_date || stat.last_created_due_date) {
-        stat.last_created_due_date = stat.last_submitted_id !== stat.last_created_id
-          ? new Date(stat.last_created_due_date)
-          : this.auditService.createDueDate(new Date(stat.last_submitted_date));
+        stat.last_created_due_date =
+          stat.last_submitted_id !== stat.last_created_id
+            ? new Date(stat.last_created_due_date)
+            : this.auditService.createDueDate(new Date(stat.last_submitted_date));
       } else {
         stat.last_created_due_date = this.auditService.createDueDate(new Date(stat.created));
       }
 
-      if (stat.last_created_id && (stat.last_submitted_id !== stat.last_created_id)) {
+      if (stat.last_created_id && stat.last_submitted_id !== stat.last_created_id) {
         stat['next_action'] = { text: stat.status_name, link: `/audit/${stat.id}/info/${stat.last_created_id}` };
-        if (stat.status_name !== 'Open') { stat['hasOpened'] = true; }
-        if (!this.linkNames.includes(stat.status_name) && stat.status_name) { this.linkNames.push(stat.status_name); }
+        if (stat.status_name !== 'Open') {
+          stat['hasOpened'] = true;
+        }
+        if (!this.linkNames.includes(stat.status_name) && stat.status_name) {
+          this.linkNames.push(stat.status_name);
+        }
       } else if (isAuditAdmin) {
         stat['next_action'] = { text: 'Create New', link: `/audit/${stat.id}/create` };
       } else {
         stat['next_action'] = { text: 'Not created' };
       }
 
-      this.auditsList = await this.auditService.getAudits({ project: { id: stat.id } } );
-      let datesArray: (Date|string|number)[] = [];
-      this.auditsList.forEach(audit => {datesArray.push(audit.created)});
-      stat.last_audit_created_date = new Date(Math.max.apply(null, datesArray));
+      this.auditsList = await this.auditService.getAudits({ project: { id: stat.id } });
+      const datesArray: (Date | string | number)[] = [];
+      this.auditsList.forEach((audit) => {
+        datesArray.push(audit.created);
+      });
+      stat.last_audit_created_date = isFinite(Math.max.apply(null, datesArray))
+        ? new Date(Math.max.apply(null, datesArray))
+        : undefined;
     });
     this.services = await this.auditService.getServices();
     this.createColumns();
@@ -99,7 +112,7 @@ export class AuditComponent implements OnInit {
         type: TFColumnType.autocomplete,
         lookup: {
           propToShow: ['first_name', 'second_name'],
-          values: this.coordinators,
+          values: this.coordinators
         },
         class: 'ft-width-150'
       },
@@ -151,7 +164,7 @@ export class AuditComponent implements OnInit {
         type: TFColumnType.multiselect,
         lookup: {
           propToShow: ['first_name', 'second_name'],
-          values: this.auditors,
+          values: this.auditors
         },
         class: 'ft-width-250'
       },
@@ -185,10 +198,10 @@ export class AuditComponent implements OnInit {
         type: TFColumnType.multiselect,
         lookup: {
           propToShow: ['first_name', 'second_name'],
-          values: this.auditors,
+          values: this.auditors
         },
         class: 'ft-width-250'
-      },
+      }
     ];
   }
 }
