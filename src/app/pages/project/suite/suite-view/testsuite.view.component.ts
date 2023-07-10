@@ -11,7 +11,11 @@ import { TestRunService } from 'src/app/services/testrun/testrun.service';
 import { TestService } from 'src/app/services/test/test.service';
 import { TestSuiteService } from 'src/app/services/test-suite/test-suite.service';
 import { UserService } from 'src/app/services/user/user.services';
-import { PermissionsService, EGlobalPermissions, ELocalPermissions } from 'src/app/services/permissions/current-permissions.service';
+import {
+  PermissionsService,
+  EGlobalPermissions,
+  ELocalPermissions
+} from 'src/app/services/permissions/current-permissions.service';
 import { TableFilterComponent } from 'src/app/elements/table-filter/table-filter.component';
 import { GlobalDataService } from 'src/app/services/globaldata.service';
 
@@ -53,7 +57,7 @@ export class TestSuiteViewComponent implements OnInit {
     private transformationsService: TransformationsService,
     private permissions: PermissionsService,
     private globalData: GlobalDataService
-  ) { }
+  ) {}
 
   @ViewChild('table')
   private child: TableFilterComponent;
@@ -61,7 +65,7 @@ export class TestSuiteViewComponent implements OnInit {
   async ngOnInit() {
     this.sortBy = { property: 'combinedLastResults', order: TFOrder.asc, weights: this.testService.getResultWeights() };
     const suiteId = +this.route.snapshot.queryParams.suite;
-    const isProjectDefined = new Promise(resolve => {
+    const isProjectDefined = new Promise((resolve) => {
       this.globalData.currentProject$.subscribe(async (project) => {
         this.projectId = project.id;
         if (this.projectId) {
@@ -75,17 +79,26 @@ export class TestSuiteViewComponent implements OnInit {
     this.testSuites = await this.testSuiteService.getTestSuite({ project_id: this.projectId });
     await this.getTestsInfo(suiteId);
     if (suiteId) {
-      this.selectedTestSuite = this.testSuites.find(x => x.id === suiteId);
+      this.selectedTestSuite = this.testSuites.find((x) => x.id === suiteId);
     }
 
-    this.allowEdit = await this.permissions.hasProjectPermissions(this.projectId,
-      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer]);
+    this.allowEdit = await this.permissions.hasProjectPermissions(
+      this.projectId,
+      [EGlobalPermissions.manager],
+      [ELocalPermissions.manager, ELocalPermissions.engineer]
+    );
 
-    this.allowCreation = await this.permissions.hasProjectPermissions(this.projectId,
-      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.admin]);
+    this.allowCreation = await this.permissions.hasProjectPermissions(
+      this.projectId,
+      [EGlobalPermissions.manager],
+      [ELocalPermissions.manager, ELocalPermissions.engineer, ELocalPermissions.admin]
+    );
 
-    this.allowMove = await this.permissions.hasProjectPermissions(this.projectId,
-      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
+    this.allowMove = await this.permissions.hasProjectPermissions(
+      this.projectId,
+      [EGlobalPermissions.manager],
+      [ELocalPermissions.manager, ELocalPermissions.admin]
+    );
 
     this.users = await this.userService.getProjectUsers(this.projectId);
 
@@ -113,27 +126,24 @@ export class TestSuiteViewComponent implements OnInit {
       this.calculateManualDuration();
     }
 
-    this.testSuite.tests.forEach(test => {
+    this.testSuite.tests.forEach((test) => {
       test['combinedLastResults'] = this.testService.combineLastResults(test);
       test['entitiesId'] = this.testService.getLastResultsId(test);
     });
   }
 
   async ExportToCSV() {
-    let stat: TestSuiteStat[];
-    stat = await this.testSuiteService.getTestSuiteStat(this.testSuite);
-    let data, filename, link;
+    const stat: TestSuiteStat[] = await this.testSuiteService.getTestSuiteStat(this.testSuite);
     let csv = this.listTocsv.generateTestCsvString(stat, this.users);
-    if (csv === null) { return; }
-
-    filename = `tests_statatistic_${this.testSuite.name}_${new Date().getTime()}.csv`;
-
-    if (!csv.match(/^data:text\/csv/i)) {
-      csv = 'data:text/csv;charset=utf-8,' + csv;
+    if (csv === null) {
+      return;
     }
-    data = encodeURI(csv);
-
-    link = document.createElement('a');
+    const filename = `tests_statatistic_${this.testSuite.name}_${new Date().getTime()}.csv`;
+    if (!csv.match(/^data:text\/csv/i)) {
+      csv = `data:text/csv;charset=utf-8,${csv}`;
+    }
+    const data = encodeURI(csv);
+    const link = document.createElement('a');
     document.body.appendChild(link);
     link.setAttribute('type', 'hidden');
     link.setAttribute('href', data);
@@ -153,8 +163,10 @@ export class TestSuiteViewComponent implements OnInit {
 
   getLatestFinishedTestRun(): TestRun {
     if (this.testruns && this.testruns.length > 0) {
-      this.testruns = this.testruns.sort((a, b) => new Date(b.finish_time).getTime() - new Date(a.finish_time).getTime());
-      return this.testruns.find(x => x.finish_time !== undefined && x.start_time !== undefined);
+      this.testruns = this.testruns.sort(
+        (a, b) => new Date(b.finish_time).getTime() - new Date(a.finish_time).getTime()
+      );
+      return this.testruns.find((x) => x.finish_time !== undefined && x.start_time !== undefined);
     }
   }
 
@@ -167,17 +179,16 @@ export class TestSuiteViewComponent implements OnInit {
     }
   }
 
-  rowClicked($event: { id: string; }) {
+  rowClicked($event: { id: string }) {
     this.router.navigate([`/project/${this.projectId}/test/${$event.id}`]);
   }
 
   openTestCreation() {
-    this.router.navigate([`/project/${this.projectId}/create/test`],
-      { queryParams: { testSuite: this.testSuite.id } });
+    this.router.navigate([`/project/${this.projectId}/create/test`], { queryParams: { testSuite: this.testSuite.id } });
   }
 
   getUserById(id: number) {
-    return this.users.find(x => x.user.id === id);
+    return this.users.find((x) => x.user.id === id);
   }
 
   async testUpdate($event: Test) {
@@ -193,7 +204,7 @@ export class TestSuiteViewComponent implements OnInit {
   }
 
   async bulkUpdate(tests: Test[]) {
-    tests.forEach(test => {
+    tests.forEach((test) => {
       test.developer_id = test.developer ? test.developer.user_id : undefined;
     });
     await this.testService.bulkUpdate(tests);
@@ -210,7 +221,7 @@ export class TestSuiteViewComponent implements OnInit {
     this.testSuiteService.createTestSuite(updTemplate).then();
   }
 
-  handleAction($event: { action: string; entity: Test; }) {
+  handleAction($event: { action: string; entity: Test }) {
     if ($event.action === 'remove') {
       this.removeTest($event.entity);
     }
@@ -226,7 +237,7 @@ export class TestSuiteViewComponent implements OnInit {
   async execute(answer: any) {
     if (await answer) {
       await this.testService.removeTest(this.testToRemove);
-      this.testSuite.tests = this.testSuite.tests.filter(x => x !== this.testToRemove);
+      this.testSuite.tests = this.testSuite.tests.filter((x) => x !== this.testToRemove);
     }
     this.hideModal = true;
   }
@@ -241,23 +252,25 @@ export class TestSuiteViewComponent implements OnInit {
 
   moveToExecute(answer) {
     if (answer) {
-      this.testSuiteService.getTestSuiteWithChilds({ id: this.route.snapshot.params['testsuiteId'] }).then(testSuites => {
-        this.testSuite = testSuites[0];
-        this.child.data = this.testSuite.tests;
-        this.child.applyFilters();
-        this.calculateManualDuration();
-        this.testrun = {
-          test_suite_id: this.testSuite.id
-        };
-        this.testrunService.getTestRun(this.testrun).then(testruns => {
-          this.testruns = testruns;
+      this.testSuiteService
+        .getTestSuiteWithChilds({ id: this.route.snapshot.params['testsuiteId'] })
+        .then((testSuites) => {
+          this.testSuite = testSuites[0];
+          this.child.data = this.testSuite.tests;
+          this.child.applyFilters();
+          this.calculateManualDuration();
+          this.testrun = {
+            test_suite_id: this.testSuite.id
+          };
+          this.testrunService.getTestRun(this.testrun).then((testruns) => {
+            this.testruns = testruns;
+          });
         });
-      });
     }
   }
 
   nameError($event) {
-    this.testService.handleSimpleError('Name is invalid', 'Test Suite name can\'t be empty or less than 4 symbols!');
+    this.testService.handleSimpleError('Name is invalid', "Test Suite name can't be empty or less than 4 symbols!");
   }
 
   moveTowasClosed() {
@@ -337,7 +350,7 @@ export class TestSuiteViewComponent implements OnInit {
         type: TFColumnType.multiselect,
         lookup: {
           propToShow: ['name'],
-          values: this.testSuites,
+          values: this.testSuites
         },
         editable: this.allowEdit,
         bulkEdit: true,

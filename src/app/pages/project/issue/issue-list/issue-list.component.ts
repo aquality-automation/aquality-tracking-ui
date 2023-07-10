@@ -18,6 +18,7 @@ import { ResultResolutionService } from 'src/app/services/result-resolution/resu
 import { TFColumn, TFSorting, TFOrder, TFColumnType } from 'src/app/elements/table-filter/tfColumn';
 import { ResultResolution } from 'src/app/shared/models/result-resolution';
 import { LocalPermissions } from 'src/app/shared/models/local-permissions';
+import { Filter } from 'src/app/elements/table-filter/filter.helper';
 
 @Component({
   templateUrl: './issue-list.component.html',
@@ -84,12 +85,41 @@ export class IssueListComponent implements OnInit {
     const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null);
     for (const issue of this.issues) {
       const affectedTestsArray = testResults.filter((result) => Number(result.issue_id) === issue.id);
-      issue['affected_tests_amount'] = affectedTestsArray.length;
+      issue['affected_tests_array'] = affectedTestsArray;
+      const testRunColumnObj = this.columns.find((obj) => {
+        return obj.property === 'test_runs';
+      });
+      if (testRunColumnObj?.lookup?.hasOwnProperty('values')) {
+        const runIdsArray = [];
+        for (const value of testRunColumnObj.lookup.values) {
+          runIdsArray.push(value.id);
+        }
+        issue['affected_tests_amount'] = affectedTestsArray.filter((result) =>
+          runIdsArray.includes(Number(result.test_run_id))
+        ).length;
+      } else {
+        issue['affected_tests_amount'] = affectedTestsArray.length;
+      }
       issue['test_runs'] = [];
       for (const test of affectedTestsArray) {
         issue['test_runs'].push(this.testRuns.find((run) => run.id === test.test_run_id));
       }
       issue['test_runs'] = [...new Set(issue['test_runs'])];
+    }
+  }
+
+  async handleFilterLookupChange(event: { property: string; filter: Filter }) {
+    if (event.property === 'test_runs') {
+      if (event.filter.options === '') {
+        return this.addAffectedTestsAndRuns();
+      } else {
+        const filterOptionsArr = event.filter.options.split(',');
+        for (const issue of this.issues) {
+          issue['affected_tests_amount'] = issue['affected_tests_array'].filter((result) =>
+            filterOptionsArr.includes(String(result.test_run_id))
+          ).length;
+        }
+      }
     }
   }
 
