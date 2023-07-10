@@ -86,20 +86,7 @@ export class IssueListComponent implements OnInit {
     for (const issue of this.issues) {
       const affectedTestsArray = testResults.filter((result) => Number(result.issue_id) === issue.id);
       issue['affected_tests_array'] = affectedTestsArray;
-      const testRunColumnObj = this.columns.find((obj) => {
-        return obj.property === 'test_runs';
-      });
-      if (testRunColumnObj?.lookup?.hasOwnProperty('values')) {
-        const runIdsArray = [];
-        for (const value of testRunColumnObj.lookup.values) {
-          runIdsArray.push(value.id);
-        }
-        issue['affected_tests_amount'] = affectedTestsArray.filter((result) =>
-          runIdsArray.includes(Number(result.test_run_id))
-        ).length;
-      } else {
-        issue['affected_tests_amount'] = affectedTestsArray.length;
-      }
+      issue['affected_tests_amount'] = affectedTestsArray.length;
       issue['test_runs'] = [];
       for (const test of affectedTestsArray) {
         issue['test_runs'].push(this.testRuns.find((run) => run.id === test.test_run_id));
