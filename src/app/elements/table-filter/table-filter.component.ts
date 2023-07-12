@@ -1,4 +1,14 @@
-import { Component, Input, Output, EventEmitter, ViewChild, OnInit, AfterViewInit, OnDestroy, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  OnInit,
+  AfterViewInit,
+  OnDestroy,
+  OnChanges
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ListToCsvService } from '../../services/listToCsv.service';
 import { CollectionsService } from '../../services/utilities/collections/collections.service';
@@ -8,8 +18,15 @@ import { Filter, FilterHelper } from './filter.helper';
 import { NotificationsService } from 'angular2-notifications';
 import { copyToClipboard } from '../../shared/utils/clipboard.utils';
 import {
-  faColumns, faCheck, faTimes, faArrowUp, faFile,
-  faArrowDown, faSyncAlt, faChevronUp, faChevronDown,
+  faColumns,
+  faCheck,
+  faTimes,
+  faArrowUp,
+  faFile,
+  faArrowDown,
+  faSyncAlt,
+  faChevronUp,
+  faChevronDown
 } from '@fortawesome/free-solid-svg-icons';
 import { TFColumn, TFSorting, TFColumnType, TFOrder } from './tfColumn';
 import { DataTable } from './data-table/DataTable';
@@ -22,7 +39,6 @@ import { TestResultAttachment } from '../../shared/models/test-result';
   styleUrls: ['./table-filter.component.scss']
 })
 export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
-
   @ViewChild(AttachmentModalComponent) attachmentModal: AttachmentModalComponent;
   @Input() hidePageSets = false;
   @Input() hideFilter = false;
@@ -35,10 +51,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() queryParams: boolean;
   @Input() allowCreate = false;
   @Input() allowDelete = false;
-  @Input() redirect: { url: string, property: string };
+  @Input() redirect: { url: string; property: string };
   @Input() allowExport = false;
   @Input() hide: (entity: any, proprty: string) => boolean;
-  @Input() rowColors: [{ property: string, color: string, higher?: any, lower?: any }];
+  @Input() rowColors: [{ property: string; color: string; higher?: any; lower?: any }];
   @Input() rowsOnPageSet: number[] = [5, 10, 20, 50];
   @Input() actionsHeader = true;
   @Input() allowRefresh = false;
@@ -55,8 +71,9 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Output() refresh = new EventEmitter();
   @Output() bulkChanges = new EventEmitter();
   @Output() bulkDelete = new EventEmitter();
-  @Output() lookupCreation = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
-  @Output() lookupAction = new EventEmitter<{ value: string, column: TFColumn, entity: any }>();
+  @Output() lookupCreation = new EventEmitter<{ value: string; column: TFColumn; entity: any }>();
+  @Output() lookupAction = new EventEmitter<{ value: string; column: TFColumn; entity: any }>();
+  @Output() filterLookupChange = new EventEmitter<{ property: string; filter: Filter }>();
 
   @ViewChild(DataTable) datatable: DataTable;
 
@@ -110,7 +127,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   ngOnInit() {
     if (this.queryParams) {
-      this.route.queryParams.subscribe(params => {
+      this.route.queryParams.subscribe((params) => {
         this.appliedFilters = this.filterHelper.readFilterParams(params);
         this.applyFilters();
         this.activePage = +params['page'] || this.activePage;
@@ -118,11 +135,25 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       });
     }
 
-    if ((this.allowDelete || this.allowCreate || this.allowBulkUpdate) && (this.columns && !this.columns.find(x => x.name === 'Action'))) {
+    if (
+      (this.allowDelete || this.allowCreate || this.allowBulkUpdate) &&
+      this.columns &&
+      !this.columns.find((x) => x.name === 'Action')
+    ) {
       this.columns.push({ name: 'Action', property: 'action', type: TFColumnType.button, editable: true });
     }
-    if ((this.allowBulkUpdate || this.withSelector || this.allowBulkDelete) && (this.columns && !this.columns.find(x => x.name === 'Selector'))) {
-      this.columns.unshift({ name: 'Selector', property: 'ft_select', type: TFColumnType.selector, editable: true, class: 'fit' });
+    if (
+      (this.allowBulkUpdate || this.withSelector || this.allowBulkDelete) &&
+      this.columns &&
+      !this.columns.find((x) => x.name === 'Selector')
+    ) {
+      this.columns.unshift({
+        name: 'Selector',
+        property: 'ft_select',
+        type: TFColumnType.selector,
+        editable: true,
+        class: 'fit'
+      });
     }
   }
 
@@ -132,8 +163,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       this.sort(this.defaultSortBy);
     }
     if (this.datatable && this.queryParams) {
-      this.datatable.onPageChange.subscribe(x => {
-        this.router.navigate([], { queryParams: { page: x.activePage, rows: x.rowsOnPage }, queryParamsHandling: 'merge' });
+      this.datatable.onPageChange.subscribe((x) => {
+        this.router.navigate([], {
+          queryParams: { page: x.activePage, rows: x.rowsOnPage },
+          queryParamsHandling: 'merge'
+        });
       });
     }
   }
@@ -161,9 +195,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   getDefaultSorter(col: TFColumn): TFSorting {
     if (col.sorting) {
-      return col.sorter
-        ? col.sorter
-        : { property: col.property, order: TFOrder.desc };
+      return col.sorter ? col.sorter : { property: col.property, order: TFOrder.desc };
     }
 
     return undefined;
@@ -220,23 +252,23 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   toggleSelectAll(isSelected: boolean) {
-    if(this.chunkedData === undefined || (this.chunkedData.chunkSize != this.rowsOnPage)){
-      this.chunkedData = CollectionsService.chunk(this.filteredData, this.rowsOnPage)
+    if (this.chunkedData === undefined || this.chunkedData.chunkSize !== this.rowsOnPage) {
+      this.chunkedData = CollectionsService.chunk(this.filteredData, this.rowsOnPage);
     }
-    this.chunkedData.data[this.activePage - 1].forEach(entity => entity.ft_select = isSelected);
+    this.chunkedData.data[this.activePage - 1].forEach((entity) => (entity.ft_select = isSelected));
   }
 
-  displayActivePage(){
+  displayActivePage() {
     this.selectAll = false;
   }
 
   hasSelectedRows() {
-    return this.filteredData.find(entity => entity.ft_select === true || entity.ft_select === 1) !== undefined;
+    return this.filteredData.find((entity) => entity.ft_select === true || entity.ft_select === 1) !== undefined;
   }
 
   bulkUpdate() {
     const entitiesToUpdate = this.getSelectedEntitites();
-    entitiesToUpdate.forEach(entity => {
+    entitiesToUpdate.forEach((entity) => {
       for (const property in this.bulkChangeEntity) {
         if (property) {
           entity[property] = this.bulkChangeEntity[property];
@@ -260,9 +292,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     this.hideBulkDeleteModal = true;
   }
 
-
   getSelectedEntitites() {
-    return this.filteredData.filter(entity => entity.ft_select === true || entity.ft_select === 1);
+    return this.filteredData.filter((entity) => entity.ft_select === true || entity.ft_select === 1);
   }
 
   manageColumns() {
@@ -280,7 +311,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   rowColor(entity: any): string {
     let color: string;
     if (this.rowColors && this.rowColors.length > 0) {
-      this.rowColors.forEach(rowcol => {
+      this.rowColors.forEach((rowcol) => {
         const prop = this.transformationsService.getPropertyValue(entity, rowcol.property);
         if (rowcol.lower && rowcol.higher) {
           if (prop > rowcol.higher && prop < rowcol.lower) {
@@ -324,10 +355,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   handleLookupFilterChange(property: string, selectedArray: any[]) {
     const options = [];
-    selectedArray.forEach(element => {
-      if (element && element.findEmpty) {
+    selectedArray.forEach((element) => {
+      if (element?.findEmpty) {
         options.push(0);
-      } else if (element && element.id) {
+      } else if (element?.id) {
         options.push(`${element.id}`);
       } else if (element && this.transformationsService.getPropertyValue(element, property).id) {
         options.push(`${this.transformationsService.getPropertyValue(element, property).id}`);
@@ -335,10 +366,11 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     });
     const newFilter: Filter = { property, options: options.join(',') };
     this.filterChange(newFilter);
+    this.filterLookupChange.emit({ property: property, filter: newFilter });
   }
 
   handleDateFilterUpdate(filterData: any) {
-    let newFilter = this.appliedFilters.find(x => x.property === filterData.property);
+    let newFilter = this.appliedFilters.find((x) => x.property === filterData.property);
     if (!newFilter) {
       newFilter = { property: filterData.property };
       this.appliedFilters.push(newFilter);
@@ -360,16 +392,16 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   isRangeInvalid(col: any) {
-    const filter = this.appliedFilters.find(x => x.property === col.property);
+    const filter = this.appliedFilters.find((x) => x.property === col.property);
     if (filter) {
       const ranges = filter.range.split(',');
-      return (+ranges[0] > +ranges[1]);
+      return +ranges[0] > +ranges[1];
     }
     return false;
   }
 
   rangeFilterData(property: string, type: string) {
-    const filter = this.appliedFilters.find(x => x.property === property);
+    const filter = this.appliedFilters.find((x) => x.property === property);
     if (filter && filter.range) {
       const ranges = filter.range.split(',');
       if (type === 'from') {
@@ -382,12 +414,12 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   getFilterDate(property: string, value: string) {
-    const filter = this.appliedFilters.find(x => x.property === property);
+    const filter = this.appliedFilters.find((x) => x.property === property);
     return filter ? filter[value] : undefined;
   }
 
   getLookupFilterValue(col: TFColumn) {
-    const filter = this.appliedFilters.find(x => {
+    const filter = this.appliedFilters.find((x) => {
       if (col.lookup.objectWithId) {
         return x.property === col.lookup.objectWithId;
       }
@@ -397,10 +429,12 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     let selectedOpts = [];
     if (filter && filter.options) {
       const selectedOptIds = filter.options.split(',');
-      selectedOpts = col.lookup.values.filter(x => {
-        return selectedOptIds.find(y => (x.id ? x.id : this.transformationsService.getPropertyValue(x, filter.property).id) === +y);
+      selectedOpts = col.lookup.values.filter((x) => {
+        return selectedOptIds.find(
+          (y) => (x.id ? x.id : this.transformationsService.getPropertyValue(x, filter.property).id) === +y
+        );
       });
-      if (selectedOptIds.find(y => +y === 0)) {
+      if (selectedOptIds.find((y) => +y === 0)) {
         selectedOpts.push({
           id: 0,
           findEmpty: true
@@ -411,24 +445,18 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   getDotFilterValue(col: TFColumn) {
-    const filter = this.appliedFilters.find(x => x.property === col.property);
-    return filter ? col.dotsFilter.values.find(x => x.name === filter.dots.name) : '';
+    const filter = this.appliedFilters.find((x) => x.property === col.property);
+    return filter ? col.dotsFilter.values.find((x) => x.name === filter.dots.name) : '';
   }
 
   textFilterData(property: string) {
-    const filter = this.appliedFilters.find(x => x.property === property);
+    const filter = this.appliedFilters.find((x) => x.property === property);
     return filter ? filter.value : '';
   }
 
   booleanFilterData(property: string): number {
-    const filter = this.appliedFilters.find(x => x.property === property);
-    return filter
-      ? filter.state === true
-        ? 1
-        : filter.state === false
-          ? 2
-          : 3
-      : 3;
+    const filter = this.appliedFilters.find((x) => x.property === property);
+    return filter ? (filter.state === true ? 1 : filter.state === false ? 2 : 3) : 3;
   }
 
   toggleCreation() {
@@ -436,7 +464,9 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   setNewPage(activePage: number, rowsOnPage: number) {
-    if (this.datatable) { this.datatable.setPage(activePage, rowsOnPage); }
+    if (this.datatable) {
+      this.datatable.setPage(activePage, rowsOnPage);
+    }
   }
 
   getMultiPropertyValueString(entity, property, propToShow: any[]) {
@@ -446,8 +476,8 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       return resultString;
     }
 
-    objs.forEach(obj => {
-      propToShow.forEach(prop => {
+    objs.forEach((obj) => {
+      propToShow.forEach((prop) => {
         resultString += `${this.transformationsService.getPropertyValue(obj, prop)} `;
       });
       resultString = resultString.trim();
@@ -463,7 +493,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       let val = values[0];
       let newProps = props;
       props.forEach((prop, index) => {
-        val[prop] ? val = val[prop] : newProps = newProps.filter(x => x !== prop);
+        val[prop] ? (val = val[prop]) : (newProps = newProps.filter((x) => x !== prop));
       });
       if (newProps.length > 0) {
         return newProps.join('.');
@@ -518,7 +548,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
 
   isNewEntityValid() {
     let messages: string[] = [];
-    this.columns.forEach(column => {
+    this.columns.forEach((column) => {
       if (column.creation) {
         switch (column.type) {
           case TFColumnType.text:
@@ -580,7 +610,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     return this.emptyFieldError;
   }
 
-  handleDotFilterChange(col: TFColumn, value: { name: string, only?: number[], contains?: number[] }) {
+  handleDotFilterChange(col: TFColumn, value: { name: string; only?: number[]; contains?: number[] }) {
     const newFilter: Filter = { property: col.property, dots: value };
     this.filterChange(newFilter);
   }
@@ -596,11 +626,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   filterChange(newFilter: Filter) {
-    const result = this.filterHelper.applyNewFilter(
-      this.data,
-      this.appliedFilters,
-      newFilter,
-      this.queryParams);
+    const result = this.filterHelper.applyNewFilter(this.data, this.appliedFilters, newFilter, this.queryParams);
     this.filteredData = result.filteredData;
     this.appliedFilters = result.newFilters;
     this.sort(this.defaultSortBy);
@@ -611,7 +637,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   removeRangeFilter(property) {
-    const filter: Filter = this.appliedFilters.find(x => x.property === property);
+    const filter: Filter = this.appliedFilters.find((x) => x.property === property);
     if (filter) {
       filter.range = '';
       this.filterChange(filter);
@@ -625,7 +651,9 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   downloadCSV() {
     let data: string, filename: string, link: HTMLAnchorElement;
     const csv = this.getCSV();
-    if (csv === null) { return; }
+    if (csv === null) {
+      return;
+    }
     filename = `export${Date.now()}.csv`;
     data = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
     link = document.createElement('a');
@@ -647,16 +675,21 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   setDuration(entity, property, $event, update = false) {
-    if ($event !== this.transformationsService.calculateDuration(this.transformationsService.getPropertyValue(entity, property))) {
+    if (
+      $event !==
+      this.transformationsService.calculateDuration(this.transformationsService.getPropertyValue(entity, property))
+    ) {
       const strings = $event.match(/.{2}/g);
-      const duration = ((+strings[0] * 3600) + (+strings[1] * 60) + (+strings[2])) * 1000;
-      if (duration !== NaN) { this.setPropertyValue(entity, property, duration, false, update); }
+      const duration = (+strings[0] * 3600 + +strings[1] * 60 + +strings[2]) * 1000;
+      if (!Number.isNaN(duration)) {
+        this.setPropertyValue(entity, property, duration, false, update);
+      }
     }
   }
 
   createRouterLink(col, entity) {
     let routerLink: string = col.link.template;
-    col.link.properties.forEach(property => {
+    col.link.properties.forEach((property) => {
       routerLink = routerLink.replace(`{${property}}`, this.transformationsService.getPropertyValue(entity, property));
     });
     return routerLink;
@@ -676,26 +709,28 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   }
 
   openlink(link: string) {
-    let baseUrl = window.location.href.replace(this.router.url, '')
+    let baseUrl = window.location.href.replace(this.router.url, '');
     window.open(baseUrl + link);
   }
 
   rowClicked(entity: any, col: any, $event: any) {
     const el: HTMLElement = $event.target;
-    const notInlineEditorButton = col.type === TFColumnType.text
-      && el.tagName.toLowerCase() !== 'input'
-      && el.tagName.toLowerCase() !== 'button'
-      && el.tagName.toLowerCase() !== 'path'
-      && el.tagName.toLowerCase() !== 'svg'
-      && el.tagName.toLowerCase() !== 'fa-icon';
-    const notClickableElement = col.type !== TFColumnType.link
-      && col.type !== TFColumnType.externalLink
-      && col.type !== TFColumnType.longtext
-      && col.type !== TFColumnType.autocomplete
-      && !col.link;
+    const notInlineEditorButton =
+      col.type === TFColumnType.text &&
+      el.tagName.toLowerCase() !== 'input' &&
+      el.tagName.toLowerCase() !== 'button' &&
+      el.tagName.toLowerCase() !== 'path' &&
+      el.tagName.toLowerCase() !== 'svg' &&
+      el.tagName.toLowerCase() !== 'fa-icon';
+    const notClickableElement =
+      col.type !== TFColumnType.link &&
+      col.type !== TFColumnType.externalLink &&
+      col.type !== TFColumnType.longtext &&
+      col.type !== TFColumnType.autocomplete &&
+      !col.link;
     const notEditable = !col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell');
 
-    const canClick = (notInlineEditorButton) || (notClickableElement && notEditable);
+    const canClick = notInlineEditorButton || (notClickableElement && notEditable);
 
     if (canClick) {
       this.rowClick.emit(entity);
@@ -705,7 +740,10 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   notEditableByProperty(entity: any, col: TFColumn) {
     if (col.notEditableByProperty) {
       if (typeof col.notEditableByProperty.value === 'boolean') {
-        const currentBoolValue = !!this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);
+        const currentBoolValue = !!this.transformationsService.getPropertyValue(
+          entity,
+          col.notEditableByProperty.property
+        );
         return currentBoolValue === col.notEditableByProperty.value;
       }
       const currentValue = this.transformationsService.getPropertyValue(entity, col.notEditableByProperty.property);

@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.4.3 (2023-07-10)
+ - Changed the logic of the Affected Tests Amount column on the Issues List page, so it is adaptive to the filtering in the Test Runs column now
+
 ## 1.3.0 (2021-02-26)
  - Added feature that allows to link aquality entities (tests, issues and test runs) with 3rd party systems like Jira, Xray, TestRail and etc. In this version only Jira and Xray support has been added.
 
