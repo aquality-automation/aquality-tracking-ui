@@ -62,6 +62,18 @@ export class TestService extends BaseHttpService {
     this.handleSuccess(`Test '${test.name}' was deleted.`);
   }
 
+  async removeTests(tests: Test[]) {
+    const deleteRequests = tests.map(test => 
+      this.http.delete(`/test`, {
+        params: { id: test.id.toString(), project_id: test.project_id.toString() }
+      }).toPromise()
+    );
+  
+    await Promise.all(deleteRequests);
+  
+    this.handleSuccess(`All selected tests were deleted.`);
+  }
+
   public getResultWeights(): { value: number, weight: number } [] {
   return [
     { value: 5, weight: 0 },
