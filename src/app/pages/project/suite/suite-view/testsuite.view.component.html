@@ -64,6 +64,6 @@
   <table-filter id="test-table" *ngIf="tbCols && testSuite && testSuite.tests" #table [rowsOnPageSet]="[5,10,20]"
     [rowsOnPage]="20" [queryParams]="true" [data]="testSuite.tests" [columns]="tbCols"
     [defaultSortBy]="sortBy" [allowDelete]="allowEdit" [allowBulkUpdate]="allowEdit"
-    (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)" (action)="handleAction($event)"
-    (bulkChanges)="bulkUpdate($event)"></table-filter>
+    [urlGenerator]="generateTestUrl" (rowClick)="rowClicked($event)" (dataChange)="testUpdate($event)" 
+    (action)="handleAction($event)" (bulkChanges)="bulkUpdate($event)"></table-filter>
 </div>

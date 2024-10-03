@@ -734,7 +734,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
     const canClick = notInlineEditorButton || (notClickableElement && notEditable);
 
     if (canClick) {
-      if ($event.ctrlKey || $event.metaKey) {
+      if (typeof this.urlGenerator == 'function' && ($event.ctrlKey || $event.metaKey)) {
         const url = this.urlGenerator(entity);
         window.open(`/#${url}`, '_blank');
       } else {

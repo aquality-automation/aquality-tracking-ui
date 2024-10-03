@@ -87,12 +87,12 @@ export class TestRunsComponent implements OnInit {
     this.testrunStatsFiltered = this.testrunStats.filter(stat => $event.find(testrun => testrun.id === stat.id));
   }
 
-  generateRowUrl(entity: TestRun): string {
+  generateTestRunUrl(entity: TestRun): string {
     return `/project/${entity.project_id}/testrun/${entity.id}`
   }
 
   rowClicked($event: TestRun) {
-    this.router.navigate([this.generateRowUrl($event)]);
+    this.router.navigate([this.generateTestRunUrl($event)]);
   }
 
   bulkDelete(testruns: TestRun[]) {

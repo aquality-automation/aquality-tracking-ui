@@ -19,7 +19,8 @@
     [defaultSortBy]="sortBy" 
     [allowDelete]="allowCreateDelete"
     [allowCreate]="allowCreateDelete"
-    (rowClick)="openTestSuite($event.id)"
+    [urlGenerator]="generateTestSuiteUrl"
+    (rowClick)="openTestSuite($event)"
     (dataChange)="suiteUpdate($event)" 
     (action)="handleAction($event)"></table-filter>
 </div>

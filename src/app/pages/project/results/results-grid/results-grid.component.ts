@@ -168,8 +168,12 @@ export class ResultGridComponent implements OnInit {
     }
   }
 
+  generateTestRunUrl(entity: TestResult) {
+    return `/project/${entity.project_id}/testrun/${entity.test_run_id}`;
+  }
+
   rowClicked($event: TestResult) {
-    this.router.navigate([`/project/${$event.project_id}/testrun/${$event.test_run_id}`]);
+    this.router.navigate([this.generateTestRunUrl($event)]);
   }
 
   wasClosed() {

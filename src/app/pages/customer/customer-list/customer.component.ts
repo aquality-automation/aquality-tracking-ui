@@ -62,8 +62,12 @@ export class CustomerComponent implements OnInit {
         ];
     }
 
-    rowClicked($event) {
-        this.router.navigate([`/customer/${$event.id}`]);
+    generateCustomerUrl(entity: Customer) {
+        return`/customer/${entity.id}`;
+    }
+
+    rowClicked($event: Customer) {
+        this.router.navigate([this.generateCustomerUrl($event)]);
     }
 
     handleAction($event) {
