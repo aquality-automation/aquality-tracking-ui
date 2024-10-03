@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { TestResult } from '../../../../shared/models/test-result';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { Issue } from '../../../../shared/models/issue';
 import { User } from '../../../../shared/models/user';
@@ -55,10 +55,11 @@ export class ResultGridComponent implements OnInit {
     private testrunService: TestRunService,
     private testService: TestService,
     private route: ActivatedRoute,
+    private router: Router,
     public userService: UserService,
     private finalResultService: FinalResultService,
     private permissions: PermissionsService,
-    private issueService: IssueService  ) { }
+    private issueService: IssueService) { }
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.params.projectId;
@@ -165,6 +166,10 @@ export class ResultGridComponent implements OnInit {
       await this.resultUpdate(this.resultToAddIssue);
       this.resultToAddIssue = undefined;
     }
+  }
+
+  rowClicked($event: TestResult) {
+    this.router.navigate([`/project/${$event.project_id}/testrun/${$event.test_run_id}`]);
   }
 
   wasClosed() {
