@@ -34,7 +34,17 @@
         <input (change)="changeDebugState($event.srcElement)" id="debug" type="checkbox" name="debug"
           [(ngModel)]="currentState.debug" [disabled]="!canEdit">
       </div>
-    </div>
+      <div *ngIf="currentState.attachments?.length > 0" class="col-sm-2">
+        <label for="attach">Attach:</label>
+        <button id="attach" class="btn btn-sm btn-outline-dark"
+          (click)="openAttachModal(currentState.test.name, currentState.attachments)">
+          <fa-icon class="icon" [icon]="icons.faFile"></fa-icon>
+        </button>
+      </div>
+  </div>
+  <attachment-modal [(isHidden)]="hideAttachModal" (attachModalClosed)="attachModalClosed()"
+    [testResultAttachments]="testResultAttachments" [title]="attachModalTitle">
+  </attachment-modal>
 
     <div id="tr-result-line" class="row line">
       <div class="col-sm-3 margin-y-sm">

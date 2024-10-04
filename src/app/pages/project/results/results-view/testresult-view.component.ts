@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TestResult } from '../../../../shared/models/test-result';
+import { faFile } from '@fortawesome/free-solid-svg-icons';
+import { TestResult, TestResultAttachment } from '../../../../shared/models/test-result';
 import { FinalResult } from '../../../../shared/models/final-result';
 import { ActivatedRoute } from '@angular/router';
 import { NotificationsService } from 'angular2-notifications';
@@ -38,6 +39,12 @@ export class TestResultViewComponent implements OnInit {
   canEdit: boolean;
   public types: StepType[];
   public tbCols: TFColumn[];
+  testResultAttachments: TestResultAttachment[];
+  attachModalTitle: string;
+  hideAttachModal = true;
+  icons = {
+    faFile
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -157,6 +164,18 @@ export class TestResultViewComponent implements OnInit {
     const updates = [];
     $event.forEach(result => updates.push(this.stepResultUpdate(result)));
     return Promise.all(updates);
+  }
+
+  attachModalClosed() {
+    this.attachModalTitle = null;
+    this.testResultAttachments = null;
+    this.hideAttachModal = true;
+  }
+
+  openAttachModal(testname: string, testResultAttachments: TestResultAttachment[]) {
+    this.attachModalTitle = testname;
+    this.testResultAttachments = testResultAttachments;
+    this.hideAttachModal = false;
   }
 
   private fillStepResults(steps: StepResult[]): StepResult[] {
