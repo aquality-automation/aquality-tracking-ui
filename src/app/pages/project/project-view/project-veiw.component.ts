@@ -127,12 +127,20 @@ export class ProjectViewComponent implements OnInit {
     return this.testrunService.getPassRate(stats);
   }
 
+  generateTestRunUrl(entity: TestRun): string {
+    return `/project/${entity.project_id}/testrun/${entity.id}`
+  }
+
+  generateIssueUrl(entity: Issue): string {
+    return `/project/${entity.project_id}/issue/${entity.id}`
+  }
+
   openTestRun(testrun: TestRun) {
-    this.router.navigate([`/project/${testrun.project_id}/testrun/${testrun.id}`]);
+    this.router.navigate([this.generateTestRunUrl(testrun)]);
   }
 
   openIssue(issue: Issue) {
-    this.router.navigate([`/project/${issue.project_id}/issue/${issue.id}`]);
+    this.router.navigate([this.generateIssueUrl(issue)]);
   }
 
   generateAuditNotification(audits: Audit[]): string {

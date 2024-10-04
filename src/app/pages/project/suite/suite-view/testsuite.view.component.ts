@@ -183,8 +183,13 @@ export class TestSuiteViewComponent implements OnInit {
     }
   }
 
-  rowClicked($event: { id: string }) {
-    this.router.navigate([`/project/${this.projectId}/test/${$event.id}`]);
+  generateTestUrl(entity: Test) {
+    return `/project/${entity.project_id}/test/${entity.id}`;
+    //return `/project/${this.projectId}/test/${entity.id}`;
+  }
+
+  rowClicked($event: Test) {
+    this.router.navigate([this.generateTestUrl($event)]);
   }
 
   openTestCreation() {

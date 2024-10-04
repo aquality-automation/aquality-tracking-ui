@@ -13,6 +13,6 @@
 
 <div class="col-sm-12 no-padding">
   <table-filter *ngIf="customers && columns" [data]="customers" [columns]="columns" [defaultSortBy]="defSort"
-    (action)="handleAction($event)" [allowDelete]="allowCreate" [queryParams]="true" (rowClick)="rowClicked($event)"
-    rowsOnPage="20"></table-filter>
+    (action)="handleAction($event)" [allowDelete]="allowCreate" [queryParams]="true" [urlGenerator]="generateCustomerUrl"
+    (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
 </div>
