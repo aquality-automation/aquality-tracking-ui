@@ -14,5 +14,5 @@
   (closed)="wasClosed()"></app-modal>
 
 <table-filter *ngIf="projects && users && columns" [data]="projects" [columns]="columns" [defaultSortBy]="defSort"
-  (action)="handleAction($event)" [queryParams]="true" [allowDelete]="canCreate" (dataChange)="updateProj($event)"
-  (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
+  (action)="handleAction($event)" [queryParams]="true" [allowDelete]="canCreate" [urlGenerator]="generateProjectUrl"
+  (dataChange)="updateProj($event)" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>

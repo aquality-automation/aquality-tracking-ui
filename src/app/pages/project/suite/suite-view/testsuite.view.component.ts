@@ -181,7 +181,6 @@ export class TestSuiteViewComponent implements OnInit {
 
   generateTestUrl(entity: Test) {
     return `/project/${entity.project_id}/test/${entity.id}`;
-    //return `/project/${this.projectId}/test/${entity.id}`;
   }
 
   rowClicked($event: Test) {
