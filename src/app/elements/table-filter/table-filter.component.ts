@@ -727,6 +727,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       col.type !== TFColumnType.externalLink &&
       col.type !== TFColumnType.longtext &&
       col.type !== TFColumnType.autocomplete &&
+      col.type !== TFColumnType.attachmentModals &&
       !col.link;
     const notEditable = !col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell');
 
