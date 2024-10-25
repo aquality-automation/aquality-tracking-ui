@@ -28,8 +28,9 @@ export class AuthService {
     }
 
     public async redirectToLogin(returnUrl?: string) {
-        if (!(await this.router.navigate(['/'], { queryParams: { returnUrl } }))) {
-            await this.router.navigate(['/'], { queryParams: { returnUrl } });
+        const queryParams = returnUrl ? { returnUrl } : {};
+        if (!(await this.router.navigate(['/'], { queryParams }))) {
+            await this.router.navigate(['/'], { queryParams });
         }
     }
 

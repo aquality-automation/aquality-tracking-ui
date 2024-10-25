@@ -3,14 +3,14 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { APIInterceptorService } from './api-interceptor.service';
 
-describe('Service: AuthInterceptor', () => {
+describe('Service: ApiInterceptor', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [APIInterceptorService]
     });
   });
 
-  it('should ...', inject([APIInterceptorService], (service: APIInterceptorService) => {
+  it('should be created', inject([APIInterceptorService], (service: APIInterceptorService) => {
     expect(service).toBeTruthy();
   }));
 });

@@ -7,9 +7,6 @@ import { Customer } from 'src/app/shared/models/customer';
 export class CustomerService extends BaseHttpService {
 
   getCustomer(customer_id?: number, withChildren: boolean = false) {
-    let params = '?';
-    if (customer_id) { params += `id=${customer_id}`; }
-    if (withChildren) { params += `&withChildren=${withChildren}`; }
     return this.http.get<Customer[]>(`/customer`, {
       params: this.convertToParams(
         { id: customer_id?.toString(), withChildren: String(withChildren) })

@@ -7,9 +7,9 @@ import { Subscription } from 'rxjs/internal/Subscription';
 
 @Injectable()
 export class BaseHttpService implements OnDestroy {
-
   protected projectSubscription: Subscription;
   protected currentProjectId: number;
+
   constructor(
     protected http: HttpClient,
     protected notificationsService: NotificationsService,
@@ -52,7 +52,6 @@ export class BaseHttpService implements OnDestroy {
       message
     );
   }
-
 
   protected convertToParams(object: object): HttpParams | { [param: string]: string | string[]; } {
     if (!object) {
