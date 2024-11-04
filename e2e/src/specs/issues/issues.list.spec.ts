@@ -106,11 +106,11 @@ describe('Issues List:', () => {
             });
 
             it('I can open external issue link', async () => {
-                browser.ignoreSynchronization = true;
+                await browser.waitForAngularEnabled(false);
                 await issuesList.openExternalIssueLink(createdIssue.title);
                 await expect(browser.getCurrentUrl()).toBe(createdIssue.external_url, 'Should be navigated to github!');
                 await browser.navigate().back();
-                browser.ignoreSynchronization = false;
+                await browser.waitForAngularEnabled(true);
 
             });
 

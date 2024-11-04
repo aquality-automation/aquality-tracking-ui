@@ -70,7 +70,7 @@ export class BaseAPI {
         for (let i = 0; i < filesAsString.length; i++) {
             const file = filesAsString[i];
             const filename = filenames[i];
-            req.attach('file', new Buffer(file), { filename });
+            req.attach('file', Buffer.from(file), { filename });
         }
 
         return req;

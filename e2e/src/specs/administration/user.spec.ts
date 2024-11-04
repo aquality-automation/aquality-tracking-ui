@@ -5,7 +5,7 @@ import { userAdministration } from '../../pages/administration/users.po';
 import { projectList } from '../../pages/project/list.po';
 import { browser } from 'protractor';
 
-describe('Full Admin Administartion User Flow', () => {
+describe('Full Admin Administration User Flow', () => {
     const userToCreate: User = users.creationTest;
 
     const validateUser = async () => {
@@ -148,11 +148,11 @@ describe('Full Admin Administartion User Flow', () => {
                 userToCreate.user_name, userAdministration.columns.userName);
         });
 
-        it('I can see all filleds updated', () => {
+        it('I can see all fields updated', () => {
             return validateUser();
         });
 
-        it('I can see all filleds updated after refresh', async () => {
+        it('I can see all fields updated after refresh', async () => {
             await browser.refresh();
             return validateUser();
         });

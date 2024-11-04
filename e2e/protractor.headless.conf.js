@@ -15,7 +15,7 @@ exports.config = {
         '--disable-dev-shm-usage',
         '--headless',
         '--disable-gpu',
-        '--window-size=1366,768',
+        '--window-size=1920,1080',
         '--disable-web-security'
       ],
     },
@@ -36,31 +36,27 @@ exports.config = {
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
     const AllureReporter = require('jasmine-allure-reporter');
     jasmine.getEnv().addReporter(new AllureReporter());
-    const AqualityReporter = require('@aquality-automation/aquality-tracking-reporter-jasmine');
-    console.log(`Running tests for ${process.env.AT_TESTRUNID} aquality testrun!`);
-    jasmine.getEnv().addReporter(new AqualityReporter({
-            token: process.env.AT_TOKEN,
-            api_url: 'https://tracking.aquality-automation.ru/api',
-            project_id: 1,
-            suite: 'All',
-            testrun: {
-              build_name: `build_${process.env.AT_CIRCLE_BULD_NUM}_${process.env.AT_CIRCLE_BRANCH}`,
-              ci_build: process.env.AT_CIRCLE_BUILD_URL,
-              execution_environment: 'Docker_Chrome'
-            }
-        }));
     jasmine.getEnv().afterEach(function (done) {
-      browser.takeScreenshot().then(function (png) {
-        allure.createAttachment('Screenshot', function () {
-          return new Buffer(png, 'base64')
-        }, 'image/png')();
+      const promises = [];
+      promises.push(
+        browser.takeScreenshot().then(function (png) {
+          return allure.createAttachment('Screenshot', function () {
+            return Buffer.from(png, 'base64');
+          }, 'image/png')();
+        })
+      );
+      promises.push(
+        browser.manage().logs().get('browser').then(function (browserLog) {
+          return allure.createAttachment('log', function () {
+            return require('util').inspect(browserLog);
+          }, 'text/plain')();
+        })
+      );
+    
+      Promise.all(promises).then(() => {
         done();
-      })
-
-      browser.manage().logs().get('browser').then(function(browserLog) {
-        allure.createAttachment('log', function () {
-          return require('util').inspect(browserLog)
-        }, 'text/plain')();
+      }).catch(err => {
+        console.error('Error creating attachments:', err);
         done();
       });
     });

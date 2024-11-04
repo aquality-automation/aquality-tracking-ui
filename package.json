@@ -10,9 +10,7 @@
     "lint:fix": "ng lint --fix",
     "e2e": "ng e2e",
     "e2e:headless": "ng e2e --protractorConfig e2e/protractor.headless.conf.js",
-    "allure": "allure generate --clean",
-    "aquality:start": "aqualityReporter start http://46.243.183.199:8888/api 1",
-    "aquality:finish": "aqualityReporter finish http://46.243.183.199:8888/api 1"
+    "allure": "allure generate --clean"
   },
   "private": true,
   "dependencies": {

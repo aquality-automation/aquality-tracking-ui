@@ -12,7 +12,6 @@ import { PublicAPI } from '../api/public.api';
 import { browser } from 'protractor';
 import { UserAPI } from '../api/user.api';
 
-
 export enum PermissionType {
     admin = 'admin',
     localAdmin = 'localAdmin',
@@ -22,7 +21,6 @@ export enum PermissionType {
     projectTemp = 'projectTemp',
     viewer = 'viewer',
 }
-
 export class ProjectHelper {
     public project: Project;
     public importer: Importer;
@@ -51,7 +49,7 @@ export class ProjectHelper {
             const authCookie = await browser.manage().getCookie('iio78');
             this.adminAPI = new UserAPI(decodeURIComponent(authCookie.value), this.admin);
 
-            logger.info('Createing project');
+            logger.info('Creating project');
             this.project = await this.adminAPI.createProject(this.project);
             logger.info(`Project created ${this.project.id}`);
             const token = await this.adminAPI.createToken(this.project);
@@ -68,7 +66,7 @@ export class ProjectHelper {
             this.publicAPI = new PublicAPI(this.project, token);
             return projectView.menuBar.clickLogOut();
         } catch (err) {
-            logger.error(err.message);
+            logger.error(`Init project error: ${err.message}`);
         }
     }
 

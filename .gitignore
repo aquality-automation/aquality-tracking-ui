@@ -10,6 +10,7 @@
 
 # tests output
 /allure-results
+/allure-report
 
 # dependencies
 /node_modules

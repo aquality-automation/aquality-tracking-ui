@@ -326,7 +326,7 @@ export class SmartTable extends BaseElement {
         const csvExtension = '.csv';
         await this.getCSVButton.click();
         await new Promise((resolve) => {
-            setTimeout(() => resolve(), 500);
+            setTimeout(() => resolve(undefined), 500);
         });
         await element(by.id('getSCV-Download')).click();
         await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), csvExtension);

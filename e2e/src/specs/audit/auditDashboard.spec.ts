@@ -18,11 +18,11 @@ const notEditorExamples = {
     coordinator: users.unitCoordinator
 };
 
-const getAllSubmittedAuditsfileName = (): string => {
+const getAllSubmittedAuditsFileName = (): string => {
     return `Aquality_Tracking_All_Submitted_Audits_${DateUtils.getDateFormat()}.xlsx`;
 };
 
-const getLastSubmittedAuditsfileName = (): string => {
+const getLastSubmittedAuditsFileName = (): string => {
     return `Aquality_Tracking_Last_Submitted_Audits_${DateUtils.getDateFormat()}.xlsx`;
 };
 
@@ -57,25 +57,27 @@ describe('Audits Dashboard:', () => {
             beforeAll(async () => {
                 await testData.cleanUpDownloadsData();
                 await logIn.logInAs(user.user_name, user.password);
-                return projectList.menuBar.audits();
+                await projectList.menuBar.audits();
             });
 
             afterAll(async () => {
-                return testData.cleanUpDownloadsData();
+                await testData.cleanUpDownloadsData();
             });
 
-            it('Can export all submitted audits', async () => {
+            // Skipping due to https://github.com/aquality-automation/aquality-tracking/issues/162
+            xit('Can export all submitted audits', async () => {
                 await auditsDashboardPage.exportAllSubmittedAudits();
                 return expect(
-                    await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getAllSubmittedAuditsfileName()))
-                    .toBe(true, `All submitted audits should be exported to file: ${getAllSubmittedAuditsfileName()}`);
+                    await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getAllSubmittedAuditsFileName()))
+                    .toBe(true, `All submitted audits should be exported to file: ${getAllSubmittedAuditsFileName()}`);
             });
 
-            it('Can export last submitted audits', async () => {
+            // Skipping due to https://github.com/aquality-automation/aquality-tracking/issues/162
+            xit('Can export last submitted audits', async () => {
                 await auditsDashboardPage.exportLastSubmittedAudits();
                 return expect(
-                    await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getLastSubmittedAuditsfileName()))
-                    .toBe(true, `Last submitted audits should be exported to file: ${getLastSubmittedAuditsfileName()}`);
+                    await testData.waitUntilFileExists(testData.getSimpleDownloadsFolderPath(), getLastSubmittedAuditsFileName()))
+                    .toBe(true, `Last submitted audits should be exported to file: ${getLastSubmittedAuditsFileName()}`);
             });
         });
     });

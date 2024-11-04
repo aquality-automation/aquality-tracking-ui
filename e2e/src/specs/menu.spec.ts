@@ -17,10 +17,10 @@ describe('Report an Issue', () => {
     });
 
     it('After clicking the option the github page is opened', async () => {
-        browser.ignoreSynchronization = true;
+        await browser.waitForAngularEnabled(false);
         await projectList.menuBar.reportIssue();
         await expect(browser.getCurrentUrl()).toBe(githubUrl, 'Should be navigated to github!');
-        browser.ignoreSynchronization = false;
+        await browser.waitForAngularEnabled(true);
     });
 
     it('I`m still logged when back to Aquality Tracking', () => {

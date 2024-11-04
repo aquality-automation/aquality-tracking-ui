@@ -41,7 +41,7 @@ describe('Check Test Run result attachment', () => {
 
     afterAll(async () => {
         await projectHelper.dispose();
-        return testData.cleanUpDownloadsData();
+        await testData.cleanUpDownloadsData();
     });
 
     it('There is attachment icon', async () => {
@@ -81,7 +81,6 @@ describe('Check Test Run result attachment', () => {
     });
 
     it('Download files', async () => {
-        await browser.switchTo().window((await browser.getAllWindowHandles())[0]);
         await testResultAttachmentModal.selectFile(imageAttachName);
         await testResultAttachmentModal.downloadFile();
         await testResultAttachmentModal.selectFile(txtAttachName);
