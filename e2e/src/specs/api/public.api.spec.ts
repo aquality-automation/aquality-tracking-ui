@@ -128,7 +128,7 @@ describe('Public API', () => {
         name: testName,
         suites: [{ id: suite.id }],
         project_id: unaccessibleId
-      }), apiResponseErrors.anonymousNotAllowedToViewTests);
+      }), apiResponseErrors.anonymousNotAllowedToCreateTest);
     });
 
     it('Can create Test via public API', async () => {
@@ -274,7 +274,7 @@ describe('Public API', () => {
           id: testResult.id,
           final_result_id: 2,
           project_id: unaccessibleId
-        }), apiResponseErrors.anonymousNotAllowedToViewTestResults);
+        }), apiResponseErrors.anonymousNotAllowedToUpdateTestResult);
       });
 
       it('Can finish Test Result via public API', async () => {

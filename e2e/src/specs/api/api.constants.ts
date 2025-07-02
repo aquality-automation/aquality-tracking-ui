@@ -27,8 +27,10 @@ class ApiResponseErrors {
     public missedSuites = "You should specify 'suite' array with one element as {id: suite_id}. So the API will ensure this test is assigned to Suite.";
     public anonymousNotAllowedToViewTestSuites = this.anonymousNotAllowedToView('Test Suites');
     public anonymousNotAllowedToViewTests = this.anonymousNotAllowedToView('Tests');
+    public anonymousNotAllowedToCreateTest = this.anonymousNotAllowedToCreate('Test');
     public anonymousNotAllowedToViewTestResults = this.anonymousNotAllowedToView('Test Results');
     public anonymousNotAllowedToCreateTestRun = this.anonymousNotAllowedToCreate('Test Run');
+    public anonymousNotAllowedToUpdateTestResult = this.anonymousNotAllowedToUpdate('Test Result');
     public entityWithIdDoesNotExist = (id: number) => `Entity with specified '${id}' id does not exist!`;
 
     private anonymousNotAllowedToView(entity: string) {
@@ -37,6 +39,10 @@ class ApiResponseErrors {
 
     private anonymousNotAllowedToCreate(entity: string) {
         return `[Permissions anonymous]: Account is not allowed to create ${entity}`;
+    }
+
+    private anonymousNotAllowedToUpdate(entity: string) {
+        return `[Permissions anonymous]: Account is not allowed to update ${entity}`;
     }
 }
 export const apiResponseErrors = new ApiResponseErrors();
