@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.4.4
+ - Additional parameter onlyWithIssue = true for issues page
+
 ## 1.4.3 (2023-07-10)
  - Changed the logic of the Affected Tests Amount column on the Issues List page, so it is adaptive to the filtering in the Test Runs column now
 
