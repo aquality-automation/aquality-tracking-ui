@@ -82,7 +82,7 @@ export class IssueListComponent implements OnInit {
   }
 
   async addAffectedTestsAndRuns() {
-    const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null);
+    const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null, true);
     for (const issue of this.issues) {
       const affectedTestsArray = testResults.filter((result) => Number(result.issue_id) === issue.id);
       issue['affected_tests_array'] = affectedTestsArray;
