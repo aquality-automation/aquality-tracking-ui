@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 1.4.5
+ - onlyWithIssues parameter is added for testrunstatistic for issues page
+
+## 1.4.4 (2024-10-04)
+  fixed issues:
+  aquality-automation/aquality-tracking#145
+  aquality-automation/aquality-tracking#144
+  aquality-automation/aquality-tracking#143
+  aquality-automation/aquality-tracking#142
+  aquality-automation/aquality-tracking#140
+  aquality-automation/aquality-tracking#136
+  aquality-automation/aquality-tracking#102
+
 ## 1.4.3 (2023-07-10)
  - Changed the logic of the Affected Tests Amount column on the Issues List page, so it is adaptive to the filtering in the Test Runs column now
 
