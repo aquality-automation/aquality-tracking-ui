@@ -82,7 +82,7 @@ export class IssueListComponent implements OnInit {
   }
 
   async addAffectedTestsAndRuns() {
-    const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null);
+    const testResults = await this.testResultService.getTestResultsStat(this.projectId, null, null, true);
     for (const issue of this.issues) {
       const affectedTestsArray = testResults.filter((result) => Number(result.issue_id) === issue.id);
       issue['affected_tests_array'] = affectedTestsArray;
@@ -142,8 +142,12 @@ export class IssueListComponent implements OnInit {
     this.hideCreateModal = true;
   }
 
-  rowClicked(issue: Issue) {
-    return this.router.navigate([`/project/${this.route.snapshot.params['projectId']}/issue/${issue.id}`]);
+  generateIssueUrl(entity: Issue) {
+    return `/project/${this.route.snapshot.params['projectId']}/issue/${entity.id}`;
+  }
+
+  rowClicked($event: Issue) {
+    return this.router.navigate([this.generateIssueUrl($event)]);
   }
 
   private async updateList() {

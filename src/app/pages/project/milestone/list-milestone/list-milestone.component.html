@@ -9,5 +9,6 @@
 
   <table-filter id="milestones-table" *ngIf="milestones && columns" [data]="milestones" [columns]="columns" [defaultSortBy]="defSort"
     (action)="handleAction($event)" [queryParams]="true" [allowDelete]="canEdit" [allowCreate]="canEdit"
-    (dataChange)="updateMilestone($event)" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
+    [urlGenerator]="generateMilestoneUrl" (dataChange)="updateMilestone($event)" (rowClick)="rowClicked($event)"
+    rowsOnPage="20"></table-filter>
 </div>

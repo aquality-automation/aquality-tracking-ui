@@ -98,8 +98,12 @@ export class AuditComponent implements OnInit {
     BlobUtils.download(result.blob, filename);
   }
 
-  rowClicked($event) {
-    this.router.navigate([`/audit/${$event.id}`]);
+  generateAuditUrl(entity: AuditStat) {
+    return`/audit/${entity.id}`;
+  }
+
+  rowClicked($event: AuditStat) {
+    this.router.navigate([this.generateAuditUrl($event)]);
   }
 
   createColumns() {

@@ -47,12 +47,12 @@
   <div class="col-sm-6" [ngClass]="{'col-sm-6': isProjectUser, 'col-sm-12': !isProjectUser}">
     <h4>Last Test Runs</h4>
     <table-filter *ngIf="!IsHideAll()" [data]="testruns" [actionsHeader]="false" [columns]="testrunColumns"
-      [allowDelete]="false" [hideFilter]="true" (rowClick)="openTestRun($event)" rowsOnPage="5"></table-filter>
+      [allowDelete]="false" [hideFilter]="true" [urlGenerator]="generateTestRunUrl" (rowClick)="openTestRun($event)" rowsOnPage="5"></table-filter>
   </div>
   <div *ngIf="isProjectUser" class="col-sm-6">
     <h4>My Open Issues</h4>
     <table-filter *ngIf="!IsHideAll()" [data]="myIssues" [actionsHeader]="false" [columns]="issueColumns"
-      [allowDelete]="false" [hideFilter]="true" (rowClick)="openIssue($event)" rowsOnPage="5"></table-filter>
+      [allowDelete]="false" [hideFilter]="true" [urlGenerator]="generateIssueUrl" (rowClick)="openIssue($event)" rowsOnPage="5"></table-filter>
   </div>
 </div>
 

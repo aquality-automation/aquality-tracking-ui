@@ -28,7 +28,7 @@ export class TestViewComponent implements OnInit, OnDestroy {
   MoveModalTitle = 'Move Test';
   suite: TestSuite;
   test: Test;
-  columns: string[] = ['Started', 'Build Name', 'Execution Environment', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Issue'];
+  columns: string[] = ['Started', 'Build Name', 'Execution Environment', 'Fail Reason', 'Result', 'Resolution', 'Assignee', 'Issue', 'Attach'];
   testMoveFrom: Test;
   testResults: TestResult[];
   public testResultTemplate: TestResult;

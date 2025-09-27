@@ -21,7 +21,7 @@
                     </div>
                     <div class="col-sm-4 line-margin">
                         <div class="col-sm-12 btnGroup">
-                            <button *ngFor="let attach of testResultAttachments" (click)="showAttachment(attach)"
+                            <button *ngFor="let attach of sortedTestResultAttachmentsById" (click)="showAttachment(attach)"
                                 [class.selected]="attach === selectedTestResultAttachment"
                                 class="btn btn-group-item bg-light">{{attach['name']}}</button>
                         </div>
