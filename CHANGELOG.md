@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.4.6
+ - fixed csv properties mapping for testrun-list 'Results As CSV' export
+
 ## 1.4.5
  - onlyWithIssues parameter is added for testrunstatistic for issues page
 

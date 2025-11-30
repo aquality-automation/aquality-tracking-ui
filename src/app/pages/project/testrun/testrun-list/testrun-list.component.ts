@@ -240,10 +240,10 @@ export class TestRunsComponent implements OnInit {
       { name: 'Test Run Started', property: 'test_run_started', type: TFColumnType.date },
       { name: 'Test Name', property: 'name', type: TFColumnType.text },
       { name: 'Result', property: 'status', type: TFColumnType.text },
-      { name: 'Resolution', property: 'issue.resolution', type: TFColumnType.text },
-      { name: 'Issue', property: 'issue.title', type: TFColumnType.text },
-      { name: 'Assignee', property: 'issue.assignee', type: TFColumnType.text },
-      { name: 'Developer', property: 'developer', type: TFColumnType.text }];
+      { name: 'Resolution', property: 'resolution', type: TFColumnType.text },
+      { name: 'Issue', property: 'issue_title', type: TFColumnType.text },
+      { name: 'Assignee', property: 'issue_assignee', type: TFColumnType.text },
+      { name: 'Developer', property: 'developer_name', type: TFColumnType.text }];
     const from = this.route.snapshot.queryParamMap.get('f_start_time_from')
       ? new Date(this.route.snapshot.queryParamMap.get('f_start_time_from')).toISOString()
       : '';
