@@ -15,6 +15,7 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { AppElementsModule } from 'src/app/elements/elements.module';
 import { DragulaModule } from 'ng2-dragula';
 import { NgxWigModule } from 'ngx-wig';
+import {TestingSupportModule} from '../testing-support/testing-support.module';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { NgxWigModule } from 'ngx-wig';
     FileUploadModule,
     AppElementsModule,
     DragulaModule,
-    NgxWigModule
+    NgxWigModule,
+    TestingSupportModule
   ]
 })
 export class SharedModule { }
