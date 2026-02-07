@@ -19,12 +19,14 @@
   [rowsOnPage]="20"
   [columns]="tbCols" 
   [hiddenColumns]="tbHiddenCols" 
-  [allowBulkUpdate]="canEdit" 
-  [defaultSortBy]="sortBy" 
-  [queryParams]="true" 
+  [allowBulkUpdate]="canEdit"
+  [defaultSortBy]="sortBy"
+  [queryParams]="true"
+  [urlGenerator]="generateTestRunUrl"
   (customEvent)="serchForSameResults($event)" 
   (dataChange)="resultUpdate($event)" 
   (bulkChanges)="bulkResultUpdate($event)"
   (lookupCreation)="handleLookupCreation($event)"
-  (lookupAction)="handleLookupAction($event)"></table-filter>
+  (lookupAction)="handleLookupAction($event)"
+  (rowClick)="rowClicked($event)"></table-filter>
 </div>

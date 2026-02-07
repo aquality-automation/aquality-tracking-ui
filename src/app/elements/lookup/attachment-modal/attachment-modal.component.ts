@@ -24,6 +24,8 @@ export class AttachmentModalComponent implements OnChanges {
   selectedTestResultAttachment: TestResultAttachment;
   supportedPreviewTypes = ['text', 'image', 'message'];
   icon = faFile;
+  private readonly maxFileSizeBytes = 10 * 1024 * 1024;
+  private readonly base64SizeMultiplier = 4 / 3;
 
   constructor(private sanitizer: DomSanitizer, private testResultService: TestResultService) {
   }
@@ -33,6 +35,10 @@ export class AttachmentModalComponent implements OnChanges {
       this.showAttachment(this.testResultAttachments[0]);
       this.isFirstOpen = true;
     }
+  }
+
+  get sortedTestResultAttachmentsById(): TestResultAttachment[] {
+    return this.testResultAttachments?.sort((a, b) => a.id - b.id) || [];
   }
 
   isSupportedPreviewFileType(): boolean {
@@ -48,7 +54,16 @@ export class AttachmentModalComponent implements OnChanges {
   }
 
   isSupportedPreviewFileSize(): boolean {
-    return this.testResultAttachment.attachment.toString().length / 1024 / 1024 < 5;
+    let attachmentSize = 0;
+  
+    if (typeof this.testResultAttachment?.attachment === 'string') {
+      const base64Length = this.testResultAttachment.attachment.length;
+      attachmentSize = base64Length / this.base64SizeMultiplier;
+    } else if (this.testResultAttachment?.attachment instanceof ArrayBuffer) {
+      attachmentSize = this.testResultAttachment.attachment.byteLength;
+    }
+  
+    return attachmentSize <= this.maxFileSizeBytes;
   }
 
   getNotSupportedMessage(): string {
@@ -57,7 +72,7 @@ export class AttachmentModalComponent implements OnChanges {
       message = 'Preview is not available for this file type.';
     }
     if (!this.isSupportedPreviewFileSize()) {
-      message = 'Preview is not available, the file size should be less than 5Mb.';
+      message = 'Preview is not available, the file size should be less than 10MB.';
     } else { message = 'Preview is not available for the file.'; }
     return `${message} You can download the file.`;
   }

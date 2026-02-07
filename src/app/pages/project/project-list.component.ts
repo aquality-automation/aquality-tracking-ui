@@ -41,8 +41,12 @@ export class ProjectListComponent implements OnInit {
     await this.buildColumns();
   }
 
+  generateProjectUrl(entity: Project) {
+    return `/project/${entity.id}`;
+  }
+
   rowClicked(project: Project) {
-    this.router.navigate([`/project/${project.id}`]);
+    this.router.navigate([this.generateProjectUrl(project)]);
   }
 
   async updateProj($event) {

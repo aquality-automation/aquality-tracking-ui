@@ -90,8 +90,12 @@ export class ListMilestoneComponent implements OnInit {
       }];
   }
 
+  generateMilestoneUrl(entity: Milestone) {
+    return `/project/${entity.project_id}/milestone/${entity.id}`
+  }
+
   rowClicked(milestone: Milestone) {
-    return this.router.navigate([`/project/${this.projectId}/milestone/${milestone.id}`]);
+    return this.router.navigate([this.generateMilestoneUrl(milestone)]);
   }
 
   getMilestones() {

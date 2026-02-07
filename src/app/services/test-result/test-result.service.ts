@@ -37,8 +37,8 @@ export class TestResultService extends BaseHttpService {
     this.handleSuccess(`Test result '${testresult.id}' was deleted.`);
   }
 
-  getTestResultsStat(project_id: number, testrunStartedFrom: string, testrunStartedTo: string): Promise<TestResultStat[]> {
-    const params = { project_id: project_id.toString(), testrunStartedFrom, testrunStartedTo };
+  getTestResultsStat(project_id: number, testrunStartedFrom: string, testrunStartedTo: string, onlyWithIssues = false): Promise<TestResultStat[]> {
+    const params = { project_id: project_id.toString(), testrunStartedFrom, testrunStartedTo, ...(onlyWithIssues ? { onlyWithIssues: 'true' } : {}) };
     return this.http.get<TestResultStat[]>(`/stats/testresult`, { params }).toPromise();
   }
 

@@ -61,6 +61,7 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
   @Input() allowBulkUpdate = false;
   @Input() allowBulkDelete = false;
   @Input() withSelector = false;
+  @Input() urlGenerator!: (entity: any) => string;
 
   @Output() createEntity = new EventEmitter();
   @Output() dataChange = new EventEmitter();
@@ -727,13 +728,19 @@ export class TableFilterComponent implements OnInit, AfterViewInit, OnDestroy, O
       col.type !== TFColumnType.externalLink &&
       col.type !== TFColumnType.longtext &&
       col.type !== TFColumnType.autocomplete &&
+      col.type !== TFColumnType.attachmentModals &&
       !col.link;
     const notEditable = !col.editable || this.notEditableByProperty(entity, col) || el.classList.contains('ft-cell');
 
     const canClick = notInlineEditorButton || (notClickableElement && notEditable);
 
     if (canClick) {
-      this.rowClick.emit(entity);
+      if (typeof this.urlGenerator == 'function' && ($event.ctrlKey || $event.metaKey)) {
+        const url = this.urlGenerator(entity);
+        window.open(`/#${url}`, '_blank');
+      } else {
+        this.rowClick.emit(entity);
+      }
     }
   }
 

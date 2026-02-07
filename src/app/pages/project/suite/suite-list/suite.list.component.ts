@@ -64,8 +64,12 @@ export class TestSuiteComponent implements OnInit {
     this.testSuites = result;
   }
 
-  openTestSuite(id: number) {
-    this.router.navigate([`/project/${this.projectId}/tests`], { queryParams: { suite: id } });
+  generateTestSuiteUrl(entity: TestSuite) {
+    return `/project/${entity.project_id}/tests?suite=${entity.id}`;
+  }
+
+  openTestSuite($event: TestSuite) {
+    this.router.navigate([`/project/${this.projectId}/tests`], { queryParams: { suite: $event.id } });
   }
 
   handleAction(event: { action: string, entity: TestSuite }) {

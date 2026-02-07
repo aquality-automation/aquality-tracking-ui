@@ -40,6 +40,7 @@ export class TestSuiteViewComponent implements OnInit {
   totalManualDuration: string;
   users: LocalPermissions[];
   tbCols: TFColumn[];
+  allowDelete: boolean;
   allowEdit: boolean;
   projectId: number;
   allowCreation: boolean;
@@ -81,6 +82,9 @@ export class TestSuiteViewComponent implements OnInit {
     if (suiteId) {
       this.selectedTestSuite = this.testSuites.find((x) => x.id === suiteId);
     }
+
+    this.allowDelete = await this.permissions.hasProjectPermissions(this.projectId,
+      [EGlobalPermissions.manager], [ELocalPermissions.manager, ELocalPermissions.admin]);
 
     this.allowEdit = await this.permissions.hasProjectPermissions(
       this.projectId,
@@ -179,8 +183,12 @@ export class TestSuiteViewComponent implements OnInit {
     }
   }
 
-  rowClicked($event: { id: string }) {
-    this.router.navigate([`/project/${this.projectId}/test/${$event.id}`]);
+  generateTestUrl(entity: Test) {
+    return `/project/${entity.project_id}/test/${entity.id}`;
+  }
+
+  rowClicked($event: Test) {
+    this.router.navigate([this.generateTestUrl($event)]);
   }
 
   openTestCreation() {
@@ -209,6 +217,11 @@ export class TestSuiteViewComponent implements OnInit {
     });
     await this.testService.bulkUpdate(tests);
     this.calculateManualDuration();
+  }
+
+  bulkDelete(tests: Test[]) {
+    this.testService.removeTests(tests);
+    this.testSuite.tests = this.testSuite.tests.filter(x => !tests.find(y => y.id === x.id));
   }
 
   updateSuite() {

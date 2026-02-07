@@ -22,5 +22,5 @@
 </div>
 <div *ngIf="stats && auditors && columns && services" class="col-sm-12 no-padding">
   <table-filter [data]="stats" [rowColors]="rowColors" [columns]="columns" [defaultSortBy]="defSort"
-    [queryParams]="true" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
+    [queryParams]="true" [urlGenerator]="generateAuditUrl" (rowClick)="rowClicked($event)" rowsOnPage="20"></table-filter>
 </div>
