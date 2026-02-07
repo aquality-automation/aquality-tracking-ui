@@ -14,9 +14,9 @@ services:
   tomcat:
     depends_on: 
       - db
-    image: tomcat:9.0-jre8-alpine
+    image: tomcat:9.0.115-jre8-temurin
     restart: always
-    command: bash -c "apk add --update ttf-dejavu && rm -rf /var/cache/apk/* && catalina.sh run"
+    command: bash -c "apt-get update && apt-get install -y fonts-dejavu && rm -rf /var/lib/apt/lists/* && catalina.sh run"
     volumes:
       - ./apps:/usr/local/tomcat/webapps/
     links:
